@@ -146,33 +146,39 @@ const featuredCases = [
 const workflowSteps = [
   {
     number: "01",
-    title: "Descoberta",
-    description: "Entendemos metas, restrições e métricas do seu negócio",
-    icon: "search"
+    title: "FOUNDRY",
+    description: "Mapeamento completo do contexto organizacional, definindo bases sólidas para o crescimento",
+    icon: "map"
   },
   {
     number: "02", 
-    title: "Arquitetura",
-    description: "Definimos escopo, integrações e roadmap detalhado",
-    icon: "blueprint"
+    title: "OBSERVE",
+    description: "Diagnóstico profundo dos processos atuais e identificação de oportunidades de melhoria",
+    icon: "search"
   },
   {
     number: "03",
-    title: "Entrega iterativa", 
-    description: "Ciclos curtos de desenvolvimento com feedback constante",
-    icon: "code"
+    title: "REFINE",
+    description: "Design estratégico da solução otimizada com base nos insights coletados",
+    icon: "edit"
   },
   {
     number: "04",
-    title: "Validação",
-    description: "Medimos uso, engajamento e ROI real da solução",
-    icon: "chart"
+    title: "GENERATE",
+    description: "Desenvolvimento ágil da solução com tecnologias de ponta e metodologias comprovadas",
+    icon: "code"
   },
   {
     number: "05",
-    title: "Escala & suporte",
-    description: "Suporte contínuo, otimização e evolução do sistema",
-    icon: "rocket"
+    title: "EMPOWER",
+    description: "Implementação e capacitação das equipes para adoção efetiva da solução",
+    icon: "users"
+  },
+  {
+    number: "06",
+    title: "EXPAND",
+    description: "Análise de resultados e expansão estratégica para maximizar o impacto organizacional",
+    icon: "chart"
   }
 ];
 
