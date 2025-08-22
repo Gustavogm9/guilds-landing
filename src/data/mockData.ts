@@ -236,10 +236,6 @@ const valuePillars = [
     description: "Projetos sempre alinhados ao retorno do investimento"
   },
   {
-    title: "Time sênior",
-    description: "Equipe especializada com anos de experiência"
-  },
-  {
     title: "Entrega ágil",
     description: "Metodologia que garante rapidez sem comprometer qualidade"
   }
