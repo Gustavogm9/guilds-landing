@@ -8,7 +8,7 @@ import { Section, HeroSection, ContentSection, FeatureSection } from "@/componen
 import { Grid, ServiceGrid, FeatureGrid, MetricGrid, CaseGrid } from "@/components/ui/grid";
 import { HeroImage } from "@/components/ui/image";
 import { Card } from "@/components/ui/card";
-import { Search, FileText, Code, BarChart3, Rocket, Clock, Unlink, Users, Brain, Globe, Zap, Shield, ArrowRight, Star, CheckCircle, Play, ChevronRight, MessageSquare, Target, TrendingUp, Award, Lightbulb, Settings, Puzzle, Database, Smartphone, Bot, Activity, BookOpen, Hammer } from 'lucide-react';
+import { Search, FileText, Code, BarChart3, Rocket, Clock, Unlink, Users, Brain, Globe, Zap, Shield, ArrowRight, Star, CheckCircle, Play, ChevronRight, MessageSquare, Target, TrendingUp, Award, Lightbulb, Settings, Puzzle, Database, Smartphone, Bot, Activity, BookOpen, Hammer, RefreshCw } from 'lucide-react';
 import { GuildShield, GuildHammer, GuildCrest } from "@/components/icons";
 import heroImage from "@/assets/hero-image.jpg";
 import teamImage from "@/assets/team-collaboration.jpg";
@@ -66,15 +66,77 @@ const Home = () => {
         </div>
       </HeroSection>
 
-      {/* 2. Barra de Valor - 4 Pilares */}
-      <FeatureSection spacing="sm">
-        <FeatureGrid>
-          {valuePillars.map((pillar, index) => <div key={index} className="text-center space-y-2">
-              <h3 className="font-semibold text-foreground">{pillar.title}</h3>
-              <p className="text-sm text-muted-foreground">{pillar.description}</p>
-            </div>)}
-        </FeatureGrid>
-      </FeatureSection>
+      {/* 2. Diferenciais Competitivos */}
+      <section className="py-20 bg-gradient-to-br from-background via-muted/30 to-background">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Nossos <span className="text-gradient bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Diferenciais Competitivos</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              O que nos diferencia no mercado e garante resultados excepcionais para nossos clientes
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {valuePillars.map((pillar, index) => {
+              const icons = {
+                "zap": Zap,
+                "users": Users,
+                "trending-up": TrendingUp,
+                "refresh-cw": RefreshCw
+              };
+              const Icon = icons[pillar.icon as keyof typeof icons];
+              
+              return (
+                <div key={index} className="group relative">
+                  {/* Card Container */}
+                  <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl p-8 h-full hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover-scale relative overflow-hidden">
+                    {/* Background Glow */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    {/* Content */}
+                    <div className="relative space-y-6">
+                      {/* Icon */}
+                      <div className="w-16 h-16 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Icon className="w-8 h-8 text-primary group-hover:text-accent transition-colors duration-300" />
+                      </div>
+
+                      {/* Title & Metric */}
+                      <div>
+                        <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                          {pillar.title}
+                        </h3>
+                        <div className="text-sm font-semibold text-accent mb-3">
+                          {pillar.metric}
+                        </div>
+                      </div>
+
+                      {/* Description */}
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {pillar.description}
+                      </p>
+                    </div>
+
+                    {/* Decorative Element */}
+                    <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Bottom CTA */}
+          <div className="text-center mt-16">
+            <div className="inline-flex items-center gap-3 bg-muted/50 rounded-full px-6 py-3 border border-border/50">
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium">
+                Resultados comprovados em +100 projetos entregues
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
 
 
       {/* 4. O que fazemos - Grid 2x2 */}

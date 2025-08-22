@@ -228,16 +228,28 @@ const services = [
 
 const valuePillars = [
   {
-    title: "Sob medida",
-    description: "Soluções personalizadas para seu contexto específico"
+    title: "Velocidade sem precedentes",
+    description: "Entregas 70% mais rápidas que métodos tradicionais, permitindo que sua empresa capture valor em semanas, não meses",
+    icon: "zap",
+    metric: "70% mais rápido"
   },
   {
-    title: "ROI em foco", 
-    description: "Projetos sempre alinhados ao retorno do investimento"
+    title: "Adoção garantida", 
+    description: "Aplicação de ciência comportamental para assegurar que as soluções sejam efetivamente utilizadas e integradas ao dia a dia",
+    icon: "users",
+    metric: "90% de adoção"
   },
   {
-    title: "Entrega ágil",
-    description: "Metodologia que garante rapidez sem comprometer qualidade"
+    title: "Resultados mensuráveis",
+    description: "ROI positivo tipicamente em 90 dias, com métricas claras para acompanhamento do sucesso",
+    icon: "trending-up",
+    metric: "ROI em 90 dias"
+  },
+  {
+    title: "Flexibilidade total",
+    description: "Adaptação ágil às mudanças. Ajustes em dias, não meses, mantendo sua solução sempre atualizada",
+    icon: "refresh-cw",
+    metric: "Ajustes em dias"
   }
 ];
 
