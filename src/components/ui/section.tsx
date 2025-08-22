@@ -24,7 +24,6 @@ const sectionVariants = cva(
         fluid: "px-6",
         narrow: "container mx-auto px-6 max-w-4xl",
         wide: "container mx-auto px-6 max-w-7xl",
-        fullscreen: "min-h-screen px-6",
       }
     },
     defaultVariants: {
@@ -53,8 +52,7 @@ const Section = React.forwardRef<HTMLElement, SectionProps>(
           container === "default" && "container mx-auto px-6",
           container === "fluid" && "px-6",
           container === "narrow" && "container mx-auto px-6 max-w-4xl",
-          container === "wide" && "container mx-auto px-6 max-w-7xl",
-          container === "fullscreen" && "min-h-screen px-6"
+          container === "wide" && "container mx-auto px-6 max-w-7xl"
         )}>
           {props.children}
         </div>
@@ -70,8 +68,8 @@ const HeroSection = React.forwardRef<HTMLElement, Omit<SectionProps, 'spacing' |
     <Section
       ref={ref}
       spacing="xl"
-      container="fullscreen"
-      className={cn("relative overflow-hidden", className)}
+      container="wide"
+      className={cn("min-h-[80vh] flex items-center", className)}
       {...props}
     />
   )
