@@ -8,14 +8,10 @@ import { Section, HeroSection, ContentSection, FeatureSection } from "@/componen
 import { Grid, ServiceGrid, FeatureGrid, MetricGrid, CaseGrid } from "@/components/ui/grid";
 import { HeroImage } from "@/components/ui/image";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Clock, Unlink, Users, Brain, Search, FileText, Code, BarChart3, Rocket, Hammer, Lightbulb, GraduationCap, Zap, Shield, Trophy } from "lucide-react";
+import { ArrowRight, Clock, Unlink, Users, Brain, Search, FileText, Code, BarChart3, Rocket, Hammer, Lightbulb, GraduationCap, Zap, Shield, Trophy, Globe } from "lucide-react";
 import { GuildShield, GuildHammer, GuildCrest } from "@/components/icons";
 import heroImage from "@/assets/hero-image.jpg";
 import teamImage from "@/assets/team-collaboration.jpg";
-import reactLogo from "@/assets/tech-logos/react-logo.jpg";
-import openaiLogo from "@/assets/tech-logos/openai-logo.jpg";
-import nodejsLogo from "@/assets/tech-logos/nodejs-logo.jpg";
-import whatsappLogo from "@/assets/tech-logos/whatsapp-logo.jpg";
 import { clientLogos, stackLogos, testimonials, featuredCases, workflowSteps, painPoints, services, valuePillars } from "@/data/mockData";
 const Home = () => {
   return <div className="min-h-screen">
@@ -277,47 +273,47 @@ const Home = () => {
             </p>
           </div>
 
-          {/* Principais benefícios com logos */}
+          {/* Principais benefícios com ícones genéricos */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-             <div className="text-center group hover-scale">
-               <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                 <img src={reactLogo} alt="Interface moderna" className="w-12 h-12 object-contain" />
-               </div>
-               <h3 className="font-semibold mb-2 text-primary">Interface Moderna</h3>
-               <p className="text-sm text-muted-foreground">
-                 Interfaces responsivas e intuitivas que funcionam perfeitamente em qualquer dispositivo
-               </p>
-             </div>
+            <div className="text-center group hover-scale">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                <Globe className="w-12 h-12 text-primary" />
+              </div>
+              <h3 className="font-semibold mb-2 text-primary">Interface Moderna</h3>
+              <p className="text-sm text-muted-foreground">
+                Interfaces responsivas e intuitivas que funcionam perfeitamente em qualquer dispositivo
+              </p>
+            </div>
 
-             <div className="text-center group hover-scale">
-               <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-accent/5 flex items-center justify-center group-hover:bg-accent/10 transition-colors">
-                 <img src={openaiLogo} alt="Inteligência Artificial" className="w-12 h-12 object-contain" />
-               </div>
-               <h3 className="font-semibold mb-2 text-accent">IA Integrada</h3>
-               <p className="text-sm text-muted-foreground">
-                 Inteligência artificial para automatizar processos e oferecer insights inteligentes
-               </p>
-             </div>
+            <div className="text-center group hover-scale">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-accent/5 flex items-center justify-center group-hover:bg-accent/10 transition-colors">
+                <Brain className="w-12 h-12 text-accent" />
+              </div>
+              <h3 className="font-semibold mb-2 text-accent">IA Integrada</h3>
+              <p className="text-sm text-muted-foreground">
+                Inteligência artificial para automatizar processos e oferecer insights inteligentes
+              </p>
+            </div>
 
-             <div className="text-center group hover-scale">
-               <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-green-500/5 flex items-center justify-center group-hover:bg-green-500/10 transition-colors">
-                 <img src={nodejsLogo} alt="Performance garantida" className="w-12 h-12 object-contain" />
-               </div>
-               <h3 className="font-semibold mb-2 text-green-600">Performance Garantida</h3>
-               <p className="text-sm text-muted-foreground">
-                 Sistemas otimizados que suportam milhares de usuários simultâneos sem lentidão
-               </p>
-             </div>
+            <div className="text-center group hover-scale">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-green-500/5 flex items-center justify-center group-hover:bg-green-500/10 transition-colors">
+                <Zap className="w-12 h-12 text-green-600" />
+              </div>
+              <h3 className="font-semibold mb-2 text-green-600">Performance Garantida</h3>
+              <p className="text-sm text-muted-foreground">
+                Sistemas otimizados que suportam milhares de usuários simultâneos sem lentidão
+              </p>
+            </div>
 
-             <div className="text-center group hover-scale">
-               <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-emerald-500/5 flex items-center justify-center group-hover:bg-emerald-500/10 transition-colors">
-                 <img src={whatsappLogo} alt="Integração total" className="w-12 h-12 object-contain" />
-               </div>
-               <h3 className="font-semibold mb-2 text-emerald-600">Integração Total</h3>
-               <p className="text-sm text-muted-foreground">
-                 Conectamos seu sistema com WhatsApp, CRMs, ERPs e qualquer ferramenta que usar
-               </p>
-             </div>
+            <div className="text-center group hover-scale">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-emerald-500/5 flex items-center justify-center group-hover:bg-emerald-500/10 transition-colors">
+                <Unlink className="w-12 h-12 text-emerald-600" />
+              </div>
+              <h3 className="font-semibold mb-2 text-emerald-600">Integração Total</h3>
+              <p className="text-sm text-muted-foreground">
+                Conectamos seu sistema com WhatsApp, CRMs, ERPs e qualquer ferramenta que usar
+              </p>
+            </div>
           </div>
 
           {/* Garantias técnicas */}
