@@ -8,11 +8,11 @@ import { Section, HeroSection, ContentSection, FeatureSection } from "@/componen
 import { Grid, ServiceGrid, FeatureGrid, MetricGrid, CaseGrid } from "@/components/ui/grid";
 import { HeroImage } from "@/components/ui/image";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Clock, Unlink, Users, Brain, Search, FileText, Code, BarChart3, Rocket, Hammer, Lightbulb, GraduationCap, Zap, Shield, Trophy, Globe } from "lucide-react";
+import { Search, FileText, Code, BarChart3, Rocket, Clock, Unlink, Users, Brain, Globe, Zap, Shield, ArrowRight, Star, CheckCircle, Play, ChevronRight, MessageSquare, Target, TrendingUp, Award, Lightbulb, Settings, Puzzle, Database, Smartphone, Bot, Activity, GraduationCap, Hammer } from 'lucide-react';
 import { GuildShield, GuildHammer, GuildCrest } from "@/components/icons";
 import heroImage from "@/assets/hero-image.jpg";
 import teamImage from "@/assets/team-collaboration.jpg";
-import { clientLogos, stackLogos, testimonials, featuredCases, workflowSteps, painPoints, services, valuePillars } from "@/data/mockData";
+import { workflowSteps, painPoints, services, valuePillars, testimonials, featuredCases, evaluationFramework } from '../data/mockData';
 const Home = () => {
   return <div className="min-h-screen">
       {/* 1. Hero Section */}
@@ -255,7 +255,147 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 7. Cases em destaque */}
+      {/* 7. Como Resolvemos - Framework de Avaliação */}
+      <section className="py-20 bg-gradient-to-br from-background via-muted/20 to-accent/10">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Como <span className="text-gradient">Resolvemos</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Nosso framework de avaliação garante que cada projeto use a combinação ideal de tecnologias, 
+              maximizando resultados e minimizando complexidade
+            </p>
+          </div>
+
+          {/* Framework Visual */}
+          <div className="mb-16">
+            <div className="relative max-w-4xl mx-auto">
+              {/* Centro - Objetivo do Cliente */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+                <div className="w-32 h-32 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center shadow-2xl">
+                  <div className="text-center text-white">
+                    <Target className="w-8 h-8 mx-auto mb-1" />
+                    <div className="text-sm font-semibold">Objetivo do</div>
+                    <div className="text-sm font-semibold">Cliente</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quadrantes */}
+              <div className="grid grid-cols-2 gap-8 md:gap-12">
+                {evaluationFramework.quadrants.map((quadrant, index) => {
+                  const colors = {
+                    blue: "from-blue-500/10 to-blue-600/5 border-blue-200 text-blue-700",
+                    purple: "from-purple-500/10 to-purple-600/5 border-purple-200 text-purple-700", 
+                    green: "from-green-500/10 to-green-600/5 border-green-200 text-green-700",
+                    orange: "from-orange-500/10 to-orange-600/5 border-orange-200 text-orange-700"
+                  };
+                  const icons = {
+                    "Automação": Bot,
+                    "IA": Brain,
+                    "Database": Database,
+                    "Frontend": Smartphone
+                  };
+                  const Icon = icons[quadrant.title as keyof typeof icons];
+                  
+                  return (
+                    <div key={index} className={`bg-gradient-to-br ${colors[quadrant.color as keyof typeof colors]} border rounded-2xl p-6 relative`}>
+                      <div className="flex items-center gap-3 mb-4">
+                        <Icon className="w-6 h-6" />
+                        <h3 className="font-bold text-lg">{quadrant.title}</h3>
+                      </div>
+                      <div className="space-y-2">
+                        {quadrant.tools.map((tool, toolIndex) => (
+                          <div key={toolIndex} className="text-sm font-medium bg-background/50 rounded-lg px-3 py-2">
+                            {tool}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Processo de Avaliação */}
+          <div className="mb-16">
+            <h3 className="text-2xl font-bold text-center mb-8">Processo de Avaliação</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {evaluationFramework.process.map((step, index) => {
+                const icons = {
+                  target: Target,
+                  settings: Settings,
+                  puzzle: Puzzle,
+                  check: CheckCircle
+                };
+                const Icon = icons[step.icon as keyof typeof icons];
+                
+                return (
+                  <div key={index} className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 text-center hover-scale">
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                      <Icon className="w-6 h-6 text-primary" />
+                    </div>
+                    <h4 className="font-semibold mb-2">{step.title}</h4>
+                    <p className="text-sm text-muted-foreground">{step.description}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Critérios de Decisão */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+            <div>
+              <h3 className="text-xl font-bold mb-6">Critérios de Decisão</h3>
+              <div className="space-y-3">
+                {evaluationFramework.criteria.map((criterion, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                    <span className="text-sm">{criterion}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold mb-6">Exemplos Práticos</h3>
+              <div className="space-y-4">
+                {evaluationFramework.examples.map((example, index) => (
+                  <div key={index} className="bg-background/30 rounded-lg p-4 border border-border/30">
+                    <div className="flex items-start gap-3">
+                      <Activity className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
+                      <div>
+                        <div className="font-medium text-sm mb-1">
+                          <span className="text-muted-foreground">{example.scenario}</span> → <span className="text-primary">{example.solution}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{example.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="text-center">
+            <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl p-8 border border-primary/10">
+              <h3 className="text-xl font-bold mb-4">Quer ver nossa avaliação para seu projeto?</h3>
+              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                Fazemos uma análise gratuita das suas necessidades e apresentamos a combinação ideal de ferramentas
+              </p>
+              <Button size="lg" className="gap-2">
+                Solicitar Avaliação Gratuita
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. Cases em destaque */}
       
 
       {/* 8. Clientes e depoimentos */}

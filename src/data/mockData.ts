@@ -241,6 +241,83 @@ const valuePillars = [
   }
 ];
 
+const evaluationFramework = {
+  quadrants: [
+    {
+      title: "Automação",
+      color: "blue",
+      tools: ["n8n", "Zapier", "Make", "RPA", "Workflows"]
+    },
+    {
+      title: "IA",
+      color: "purple", 
+      tools: ["OpenAI", "Claude", "Gemini", "LangChain", "Agents"]
+    },
+    {
+      title: "Database",
+      color: "green",
+      tools: ["Supabase", "PostgreSQL", "MongoDB", "Firebase", "Redis"]
+    },
+    {
+      title: "Frontend",
+      color: "orange",
+      tools: ["React", "Next.js", "Flutter", "PWAs", "Mobile"]
+    }
+  ],
+  process: [
+    {
+      title: "Mapeamento do Negócio",
+      description: "Entendemos objetivos, restrições, orçamento e timeline",
+      icon: "target"
+    },
+    {
+      title: "Análise Técnica", 
+      description: "Avaliamos integrações, escalabilidade e performance necessárias",
+      icon: "settings"
+    },
+    {
+      title: "Combinação Ideal",
+      description: "Selecionamos stack que maximiza ROI e minimiza complexidade",
+      icon: "puzzle"
+    },
+    {
+      title: "Validação",
+      description: "Protótipos rápidos para validar escolhas antes do desenvolvimento",
+      icon: "check"
+    }
+  ],
+  criteria: [
+    "ROI e custo-benefício",
+    "Tempo de desenvolvimento", 
+    "Facilidade de manutenção",
+    "Escalabilidade futura",
+    "Segurança e compliance",
+    "Integração com sistemas existentes"
+  ],
+  examples: [
+    {
+      scenario: "Automação simples",
+      solution: "n8n/Zapier",
+      description: "Para conectar ferramentas existentes"
+    },
+    {
+      scenario: "IA conversacional",
+      solution: "OpenAI + WhatsApp",
+      description: "Para atendimento inteligente"
+    },
+    {
+      scenario: "Apps escaláveis",
+      solution: "React + Supabase", 
+      description: "Para aplicações robustas"
+    },
+    {
+      scenario: "Análise de dados",
+      solution: "Python + PostgreSQL",
+      description: "Para insights avançados"
+    }
+  ]
+};
+
 // Software & Apps specific data
 import { 
   AlertTriangle, 
@@ -1112,6 +1189,7 @@ export {
   painPoints,
   services,
   valuePillars,
+  evaluationFramework,
   softwareProblems,
   softwareDeliverables,
   softwareProcess,
