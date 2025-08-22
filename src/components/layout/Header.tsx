@@ -25,6 +25,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { GuildShield } from "@/components/icons";
+
 const services = [
   {
     title: "Desenvolvimento de Software & Apps",
@@ -73,11 +75,22 @@ const Header = () => {
         <div className="container">
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-guild-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">G</span>
+            <Link to="/" className="flex items-center space-x-3 group">
+              <div className="relative">
+                <GuildShield 
+                  className="h-10 w-10 text-brand-primary group-hover:text-brand-accent transition-colors duration-200" 
+                  variant="filled"
+                />
+                <div className="absolute inset-0 bg-guild-gold rounded-full blur-sm opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
               </div>
-              <span className="font-sora font-bold text-xl">Guilds</span>
+              <div className="flex flex-col">
+                <span className="text-2xl font-bold font-sora text-neutral-900 dark:text-white">
+                  Guilds
+                </span>
+                <span className="text-xs text-brand-primary font-medium -mt-1">
+                  Digital Forge
+                </span>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
@@ -141,9 +154,15 @@ const Header = () => {
 
             {/* CTA Button */}
             <div className="hidden md:block">
-              <Button asChild className="btn-hero">
+              <Button 
+                className="btn-hero group relative overflow-hidden shadow-guild hover:shadow-forge"
+                asChild
+              >
                 <Link to="/contato">
-                  Falar com a Guilds
+                  <span className="relative z-10 flex items-center gap-2">
+                    <GuildShield className="h-4 w-4" />
+                    Falar com a Guilds
+                  </span>
                 </Link>
               </Button>
             </div>
@@ -162,10 +181,11 @@ const Header = () => {
                   {/* Mobile Logo */}
                   <div className="flex items-center justify-between pb-4 border-b">
                     <Link to="/" className="flex items-center space-x-2" onClick={() => setIsOpen(false)}>
-                      <div className="w-8 h-8 bg-guild-primary rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">G</span>
+                      <GuildShield className="h-8 w-8 text-brand-primary" variant="filled" />
+                      <div className="flex flex-col">
+                        <span className="font-sora font-bold text-lg">Guilds</span>
+                        <span className="text-xs text-brand-primary font-medium -mt-1">Digital Forge</span>
                       </div>
-                      <span className="font-sora font-bold text-xl">Guilds</span>
                     </Link>
                   </div>
 
@@ -226,11 +246,13 @@ const Header = () => {
       </header>
 
       {/* Mobile Persistent CTA */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-background border-t border-border p-4">
-        <Button asChild className="w-full btn-hero">
+      <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-gradient-to-t from-white via-white/95 to-transparent dark:from-neutral-900 dark:via-neutral-900/95 p-4">
+        <Button asChild className="w-full btn-hero shadow-forge group">
           <Link to="/contato">
-            <Phone className="w-4 h-4 mr-2" />
-            Falar com a Guilds
+            <span className="flex items-center justify-center gap-2">
+              <GuildShield className="h-5 w-5" />
+              Forjar Soluções Digitais
+            </span>
           </Link>
         </Button>
       </div>

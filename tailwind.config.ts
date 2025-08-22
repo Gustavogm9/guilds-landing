@@ -35,6 +35,16 @@ export default {
 					dark: 'hsl(var(--brand-accent-dark))',
 				},
 				
+				// Medieval Colors
+				'guild-gold': 'hsl(var(--guild-gold))',
+				'guild-silver': 'hsl(var(--guild-silver))',
+				'guild-bronze': 'hsl(var(--guild-bronze))',
+				
+				// Heraldic colors
+				'heraldic-red': 'hsl(var(--heraldic-red))',
+				'heraldic-blue': 'hsl(var(--heraldic-blue))',
+				'heraldic-green': 'hsl(var(--heraldic-green))',
+				
 				// Neutral Scale
 				'neutral-900': 'hsl(var(--neutral-900))',
 				'neutral-800': 'hsl(var(--neutral-800))',
@@ -108,8 +118,9 @@ export default {
 				'guild': '1320px',
 			},
 			boxShadow: {
-				'guild': 'var(--shadow-lg)',
+				'guild': 'var(--shadow-guild)',
 				'guild-glow': 'var(--shadow-glow)',
+				'forge': 'var(--shadow-forge)',
 			},
 			keyframes: {
 				'accordion-down': {
@@ -127,13 +138,39 @@ export default {
 				'glow': {
 					'0%': { boxShadow: '0 0 20px hsl(var(--brand-primary) / 0.5)' },
 					'100%': { boxShadow: '0 0 30px hsl(var(--brand-primary) / 0.8), 0 0 40px hsl(var(--brand-accent) / 0.3)' }
+				},
+				'forge': {
+					'0%': { 
+						transform: 'scale(1) rotate(0deg)',
+						boxShadow: '0 0 20px hsl(var(--brand-accent) / 0.3)'
+					},
+					'50%': { 
+						transform: 'scale(1.05) rotate(1deg)',
+						boxShadow: '0 0 30px hsl(var(--brand-accent) / 0.6), 0 0 50px hsl(var(--guild-gold) / 0.2)'
+					},
+					'100%': { 
+						transform: 'scale(1) rotate(0deg)',
+						boxShadow: '0 0 20px hsl(var(--brand-accent) / 0.3)'
+					}
+				},
+				'shield-pulse': {
+					'0%, 100%': { 
+						transform: 'scale(1)',
+						filter: 'drop-shadow(0 0 10px hsl(var(--brand-primary) / 0.3))'
+					},
+					'50%': { 
+						transform: 'scale(1.02)',
+						filter: 'drop-shadow(0 0 20px hsl(var(--brand-primary) / 0.6))'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'float': 'float 6s ease-in-out infinite',
-				'glow': 'glow 2s ease-in-out infinite alternate'
+				'glow': 'glow 2s ease-in-out infinite alternate',
+				'forge': 'forge 3s ease-in-out infinite',
+				'shield-pulse': 'shield-pulse 4s ease-in-out infinite'
 			}
 		}
 	},

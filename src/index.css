@@ -7,23 +7,33 @@
 /* Guilds Design System - Medieval meets Future Tech */
 @layer base {
   :root {
-    /* Brand Colors */
-    --brand-primary: 270 91% 65%;
-    --brand-primary-dark: 270 91% 55%;
-    --brand-accent: 175 84% 65%;
-    --brand-accent-dark: 175 84% 55%;
+    /* Brand Colors - Medieval meets Future Tech */
+    --brand-primary: 240 85% 55%; /* Deep Royal Blue - shield strength */
+    --brand-primary-dark: 240 90% 40%; /* Darker royal - forged steel */
+    --brand-accent: 165 85% 45%; /* Teal forge fire */
+    --brand-accent-dark: 165 90% 35%; /* Deep forge flame */
     
-    /* Neutral Scale */
-    --neutral-900: 222 84% 5%;
-    --neutral-800: 222 47% 11%;
-    --neutral-700: 222 32% 17%;
-    --neutral-600: 222 20% 25%;
-    --neutral-500: 222 16% 47%;
-    --neutral-400: 222 13% 65%;
-    --neutral-300: 222 10% 80%;
-    --neutral-200: 222 8% 90%;
-    --neutral-100: 222 6% 95%;
-    --neutral-50: 222 4% 98%;
+    /* Medieval-inspired accent colors */
+    --guild-gold: 45 95% 55%; /* Heraldic gold */
+    --guild-silver: 210 15% 75%; /* Polished silver */
+    --guild-bronze: 25 85% 45%; /* Crafted bronze */
+    
+    /* Neutral Scale - Forged metals */
+    --neutral-900: 240 20% 8%; /* Obsidian black */
+    --neutral-800: 240 15% 14%; /* Wrought iron */
+    --neutral-700: 240 12% 22%; /* Dark steel */
+    --neutral-600: 240 8% 32%; /* Weathered metal */
+    --neutral-500: 240 5% 48%; /* Aged silver */
+    --neutral-400: 240 4% 64%; /* Polished pewter */
+    --neutral-300: 240 6% 76%; /* Light silver */
+    --neutral-200: 240 8% 88%; /* Bright silver */
+    --neutral-100: 240 15% 94%; /* Pearl white */
+    --neutral-50: 240 25% 97%; /* Pure silver */
+    
+    /* Heraldic accent colors */
+    --heraldic-red: 0 85% 50%;
+    --heraldic-blue: 220 100% 45%;
+    --heraldic-green: 140 85% 40%;
     
     /* Semantic Colors */
     --success: 142 76% 36%;
@@ -51,22 +61,28 @@
     --input: var(--neutral-200);
     --ring: var(--brand-primary);
     
-    /* Gradients */
+    /* Gradients - Forged metal effects */
     --gradient-primary: linear-gradient(135deg, hsl(var(--brand-primary)), hsl(var(--brand-primary-dark)));
     --gradient-accent: linear-gradient(135deg, hsl(var(--brand-accent)), hsl(var(--brand-accent-dark)));
     --gradient-hero: linear-gradient(135deg, hsl(var(--brand-primary) / 0.1), hsl(var(--brand-accent) / 0.1));
     --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.1), hsl(0 0% 100% / 0.05));
+    --gradient-guild: linear-gradient(135deg, hsl(var(--guild-gold)), hsl(var(--guild-bronze)));
+    --gradient-shield: linear-gradient(145deg, hsl(var(--guild-silver)), hsl(var(--neutral-300)));
+    --gradient-forge: radial-gradient(circle, hsl(var(--brand-accent)) 0%, hsl(var(--brand-primary-dark)) 100%);
     
-    /* Shadows */
+    /* Shadows - Medieval inspired */
     --shadow-sm: 0 1px 2px hsl(var(--neutral-900) / 0.05);
     --shadow-md: 0 4px 6px hsl(var(--neutral-900) / 0.1);
     --shadow-lg: 0 10px 15px hsl(var(--neutral-900) / 0.1);
     --shadow-xl: 0 20px 25px hsl(var(--neutral-900) / 0.1);
     --shadow-glow: 0 0 40px hsl(var(--brand-primary) / 0.3);
+    --shadow-guild: 0 8px 32px hsl(var(--brand-primary) / 0.12), 0 0 0 1px hsl(var(--guild-silver) / 0.05);
+    --shadow-forge: 0 0 30px hsl(var(--brand-accent) / 0.4), 0 0 60px hsl(var(--brand-primary) / 0.2);
     
-    /* Animations */
+    /* Animations - Smooth like forged steel */
     --transition-base: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-smooth: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-forge: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
     
     --radius: 12px;
   }
@@ -130,9 +146,17 @@
     @apply grid grid-cols-1 md:grid-cols-12 gap-6;
   }
   
-  /* Button Variants */
+  /* Button Variants - Forged with medieval strength */
   .btn-hero {
-    @apply bg-gradient-to-r from-brand-primary to-brand-primary-dark text-white font-semibold px-8 py-4 rounded-2xl shadow-lg hover:shadow-guild-glow transform hover:-translate-y-1 transition-all duration-200;
+    @apply bg-gradient-to-r from-brand-primary to-brand-primary-dark text-white font-semibold px-8 py-4 rounded-2xl shadow-lg hover:shadow-guild-glow transform hover:-translate-y-1 transition-all duration-200 relative overflow-hidden;
+  }
+  
+  .btn-hero::before {
+    @apply content-[''] absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full transition-transform duration-700;
+  }
+  
+  .btn-hero:hover::before {
+    @apply translate-x-full;
   }
   
   .btn-accent {
@@ -143,13 +167,29 @@
     @apply bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md border border-white/20 text-foreground font-medium px-6 py-3 rounded-xl hover:bg-white/20 transition-all duration-200;
   }
   
-  /* Card Variants */
+  .btn-forge {
+    @apply bg-gradient-to-br from-guild-gold to-guild-bronze text-neutral-900 font-bold px-6 py-3 rounded-xl shadow-guild hover:shadow-forge transform hover:scale-105 transition-all duration-300;
+  }
+  
+  /* Card Variants - Shield-inspired designs */
   .card-glass {
     @apply bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg;
   }
   
   .card-elevated {
     @apply bg-card border border-border rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300;
+  }
+  
+  .card-shield {
+    @apply bg-gradient-to-br from-white to-neutral-50 border-2 border-guild-silver/30 rounded-3xl p-8 shadow-guild hover:shadow-forge transform hover:-translate-y-2 transition-all duration-300 relative overflow-hidden;
+  }
+  
+  .card-shield::before {
+    @apply content-[''] absolute top-0 left-0 w-full h-1 bg-gradient-guild;
+  }
+  
+  .card-heraldic {
+    @apply bg-gradient-to-br from-neutral-900 to-neutral-800 border border-guild-silver/20 rounded-2xl p-6 text-white shadow-xl hover:border-brand-accent/50 transition-all duration-300;
   }
   
   /* Text Effects */
@@ -164,6 +204,14 @@
   
   .animate-glow {
     animation: glow 2s ease-in-out infinite alternate;
+  }
+  
+  .animate-forge {
+    animation: forge 3s ease-in-out infinite;
+  }
+  
+  .animate-shield-pulse {
+    animation: shield-pulse 4s ease-in-out infinite;
   }
   
   /* Medieval-Tech Elements */
@@ -189,17 +237,21 @@
   .space-guild-2xl { @apply space-y-24; }
   
   /* Custom Shadows */
-  .shadow-guild { @apply shadow-lg; }
+  .shadow-guild { box-shadow: var(--shadow-guild); }
   .shadow-guild-glow { box-shadow: var(--shadow-glow); }
+  .shadow-forge { box-shadow: var(--shadow-forge); }
   
   /* Gradients */
   .bg-guild-primary { background: var(--gradient-primary); }
   .bg-guild-accent { background: var(--gradient-accent); }
   .bg-guild-hero { background: var(--gradient-hero); }
   .bg-guild-glass { background: var(--gradient-glass); }
+  .bg-guild-forge { background: var(--gradient-forge); }
+  .bg-guild-shield { background: var(--gradient-shield); }
+  .bg-guild-gold { background: var(--gradient-guild); }
 }
 
-/* Keyframes */
+/* Medieval Forge Keyframes */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-20px); }
@@ -208,4 +260,30 @@
 @keyframes glow {
   from { box-shadow: 0 0 20px hsl(var(--brand-primary) / 0.5); }
   to { box-shadow: 0 0 30px hsl(var(--brand-primary) / 0.8), 0 0 40px hsl(var(--brand-accent) / 0.3); }
+}
+
+@keyframes forge {
+  0% { 
+    transform: scale(1) rotate(0deg);
+    box-shadow: 0 0 20px hsl(var(--brand-accent) / 0.3);
+  }
+  50% { 
+    transform: scale(1.05) rotate(1deg);
+    box-shadow: 0 0 30px hsl(var(--brand-accent) / 0.6), 0 0 50px hsl(var(--guild-gold) / 0.2);
+  }
+  100% { 
+    transform: scale(1) rotate(0deg);
+    box-shadow: 0 0 20px hsl(var(--brand-accent) / 0.3);
+  }
+}
+
+@keyframes shield-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    filter: drop-shadow(0 0 10px hsl(var(--brand-primary) / 0.3));
+  }
+  50% { 
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 20px hsl(var(--brand-primary) / 0.6));
+  }
 }
