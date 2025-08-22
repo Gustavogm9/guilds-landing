@@ -1,160 +1,187 @@
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { 
-  Mail,
-  MapPin,
-  Phone,
-  Linkedin,
-  Twitter,
-  Instagram,
-  Github
-} from "lucide-react";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Mail, Phone, MapPin, Linkedin, Instagram, Youtube } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
 
-const Footer = () => {
+export function Footer() {
   return (
-    <footer className="bg-neutral-900 text-neutral-50 mt-24">
-      <div className="container py-16">
+    <footer className="bg-neutral-900 text-neutral-100">
+      <div className="container section">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
-          <div className="lg:col-span-1">
-            <div className="flex items-center space-x-2 mb-6">
-              <div className="w-8 h-8 bg-guild-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">G</span>
-              </div>
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <img 
+                src="/src/assets/guilds-logo-shield.png" 
+                alt="Guilds" 
+                className="h-8 w-auto invert"
+              />
               <span className="font-sora font-bold text-xl">Guilds</span>
             </div>
-            <p className="text-neutral-300 mb-6 text-sm leading-relaxed">
-              Construindo o futuro digital através da expertise coletiva. 
-              Unimos tecnologia de ponta com a sabedoria das guildas ancestrais.
+            <p className="text-neutral-400 text-sm leading-relaxed">
+              Sistemas inteligentes, resultados reais. Desenvolvemos soluções digitais sob medida para impulsionar seu negócio.
             </p>
-            
-            {/* Contact Info */}
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center gap-2 text-neutral-300">
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2 text-sm">
                 <Mail className="h-4 w-4 text-brand-accent" />
                 <span>contato@guilds.com.br</span>
               </div>
-              <div className="flex items-center gap-2 text-neutral-300">
+              <div className="flex items-center space-x-2 text-sm">
                 <Phone className="h-4 w-4 text-brand-accent" />
-                <span>+55 (11) 9999-9999</span>
+                <span>+55 (11) 99999-9999</span>
               </div>
-              <div className="flex items-center gap-2 text-neutral-300">
+              <div className="flex items-center space-x-2 text-sm">
                 <MapPin className="h-4 w-4 text-brand-accent" />
-                <span>São Paulo, Brasil</span>
+                <span>São Paulo, SP</span>
               </div>
             </div>
           </div>
 
           {/* Services */}
-          <div>
-            <h3 className="font-semibold text-lg mb-6 text-brand-accent">Serviços</h3>
-            <nav className="space-y-3">
-              {[
-                { name: "Software & Apps", href: "/servicos/software-apps" },
-                { name: "Automação & IA", href: "/servicos/automacao-ia" },
-                { name: "Jogos & Gamificação", href: "/servicos/jogos-gamificacao" },
-                { name: "Consultoria", href: "/servicos/consultoria" },
-              ].map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className="block text-sm text-neutral-300 hover:text-brand-accent transition-colors"
-                >
-                  {item.name}
+          <div className="space-y-4">
+            <h3 className="font-sora font-semibold text-lg">Serviços</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/servicos/sistemas-web" className="text-neutral-400 hover:text-white transition-colors">
+                  Sistemas Web
                 </Link>
-              ))}
-            </nav>
+              </li>
+              <li>
+                <Link to="/servicos/apps-mobile" className="text-neutral-400 hover:text-white transition-colors">
+                  Apps Mobile
+                </Link>
+              </li>
+              <li>
+                <Link to="/servicos/automacao" className="text-neutral-400 hover:text-white transition-colors">
+                  Automação
+                </Link>
+              </li>
+              <li>
+                <Link to="/servicos/ia" className="text-neutral-400 hover:text-white transition-colors">
+                  Inteligência Artificial
+                </Link>
+              </li>
+              <li>
+                <Link to="/servicos/workshops" className="text-neutral-400 hover:text-white transition-colors">
+                  Workshops B2B
+                </Link>
+              </li>
+              <li>
+                <Link to="/servicos/jogos-corporativos" className="text-neutral-400 hover:text-white transition-colors">
+                  Jogos Corporativos
+                </Link>
+              </li>
+            </ul>
           </div>
 
           {/* Company */}
-          <div>
-            <h3 className="font-semibold text-lg mb-6 text-brand-accent">Empresa</h3>
-            <nav className="space-y-3">
-              {[
-                { name: "Sobre Nós", href: "/sobre" },
-                { name: "Equipe", href: "/equipe" },
-                { name: "Cases", href: "/cases" },
-                { name: "Carreiras", href: "/carreiras" },
-                { name: "Guilds Lab", href: "/lab" },
-                { name: "Guilds Craft", href: "/craft" },
-              ].map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className="block text-sm text-neutral-300 hover:text-brand-accent transition-colors"
-                >
-                  {item.name}
+          <div className="space-y-4">
+            <h3 className="font-sora font-semibold text-lg">Empresa</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/sobre" className="text-neutral-400 hover:text-white transition-colors">
+                  Sobre Nós
                 </Link>
-              ))}
-            </nav>
+              </li>
+              <li>
+                <Link to="/cases" className="text-neutral-400 hover:text-white transition-colors">
+                  Cases de Sucesso
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="text-neutral-400 hover:text-white transition-colors">
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link to="/contato" className="text-neutral-400 hover:text-white transition-colors">
+                  Contato
+                </Link>
+              </li>
+              <li>
+                <Link to="/carreiras" className="text-neutral-400 hover:text-white transition-colors">
+                  Carreiras
+                </Link>
+              </li>
+            </ul>
           </div>
 
           {/* Newsletter */}
-          <div>
-            <h3 className="font-semibold text-lg mb-6 text-brand-accent">Newsletter</h3>
-            <p className="text-sm text-neutral-300 mb-4">
-              Receba insights e novidades sobre tecnologia e inovação.
+          <div className="space-y-4">
+            <h3 className="font-sora font-semibold text-lg">Newsletter</h3>
+            <p className="text-neutral-400 text-sm">
+              Receba insights sobre tecnologia e inovação direto no seu e-mail.
             </p>
-            <div className="space-y-3">
-              <Input 
-                type="email" 
-                placeholder="Seu melhor email"
-                className="bg-neutral-800 border-neutral-700 text-neutral-50 placeholder:text-neutral-400"
+            <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
+              <Input
+                type="email"
+                placeholder="Seu melhor e-mail"
+                className="bg-neutral-800 border-neutral-700 text-white placeholder:text-neutral-500 focus:border-brand-accent"
+                required
               />
-              <Button className="w-full btn-accent">
+              <Button type="submit" className="btn-accent w-full">
                 Inscrever-se
               </Button>
+            </form>
+            
+            {/* Social Media */}
+            <div className="space-y-3">
+              <h4 className="font-medium text-sm">Siga-nos</h4>
+              <div className="flex space-x-3">
+                <a
+                  href="https://linkedin.com/company/guilds"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-neutral-800 rounded-lg hover:bg-brand-accent transition-colors"
+                  aria-label="LinkedIn da Guilds"
+                >
+                  <Linkedin className="h-4 w-4" />
+                </a>
+                <a
+                  href="https://instagram.com/guilds"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-neutral-800 rounded-lg hover:bg-brand-accent transition-colors"
+                  aria-label="Instagram da Guilds"
+                >
+                  <Instagram className="h-4 w-4" />
+                </a>
+                <a
+                  href="https://youtube.com/@guilds"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-neutral-800 rounded-lg hover:bg-brand-accent transition-colors"
+                  aria-label="YouTube da Guilds"
+                >
+                  <Youtube className="h-4 w-4" />
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
+        <Separator className="my-8 bg-neutral-800" />
+
         {/* Bottom Section */}
-        <div className="border-t border-neutral-800 pt-8 mt-12">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            {/* Copyright */}
-            <div className="text-sm text-neutral-400">
-              © 2024 Guilds. Todos os direitos reservados.
-            </div>
-
-            {/* Social Links */}
-            <div className="flex items-center gap-4">
-              {[
-                { icon: Linkedin, href: "#", label: "LinkedIn" },
-                { icon: Twitter, href: "#", label: "Twitter" },
-                { icon: Instagram, href: "#", label: "Instagram" },
-                { icon: Github, href: "#", label: "GitHub" },
-              ].map((social) => {
-                const Icon = social.icon;
-                return (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-neutral-400 hover:text-brand-accent transition-colors"
-                    aria-label={social.label}
-                  >
-                    <Icon className="h-5 w-5" />
-                  </a>
-                );
-              })}
-            </div>
-
-            {/* Legal Links */}
-            <div className="flex items-center gap-6 text-sm">
-              <Link to="/politica-privacidade" className="text-neutral-400 hover:text-brand-accent transition-colors">
+        <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 text-sm text-neutral-400">
+            <span>© 2024 Guilds. Todos os direitos reservados.</span>
+            <div className="flex space-x-4">
+              <Link to="/privacidade" className="hover:text-white transition-colors">
                 Política de Privacidade
               </Link>
-              <Link to="/termos-uso" className="text-neutral-400 hover:text-brand-accent transition-colors">
+              <Link to="/termos" className="hover:text-white transition-colors">
                 Termos de Uso
               </Link>
             </div>
+          </div>
+          <div className="text-sm text-neutral-400">
+            Feito com 💜 pela equipe Guilds
           </div>
         </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}
