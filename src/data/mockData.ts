@@ -1,6 +1,7 @@
+
 // Realistic mock data for Guilds website
 
-export const clientLogos = [
+const clientLogos = [
   {
     name: "Ambev",
     src: "/api/placeholder/120/60",
@@ -33,7 +34,7 @@ export const clientLogos = [
   }
 ];
 
-export const stackLogos = [
+const stackLogos = [
   {
     name: "React",
     src: "/api/placeholder/80/40",
@@ -76,7 +77,7 @@ export const stackLogos = [
   }
 ];
 
-export const testimonials = [
+const testimonials = [
   {
     id: "1",
     quote: "A Guilds transformou completamente nosso processo de vendas. Automatizamos 80% das tarefas manuais e aumentamos a conversão em 35%. Equipe excepcional!",
@@ -109,7 +110,7 @@ export const testimonials = [
   }
 ];
 
-export const featuredCases = [
+const featuredCases = [
   {
     title: "Sistema de Automação Comercial",
     company: "TechFlow Solutions",
@@ -142,7 +143,7 @@ export const featuredCases = [
   }
 ];
 
-export const workflowSteps = [
+const workflowSteps = [
   {
     number: "01",
     title: "Descoberta",
@@ -175,7 +176,7 @@ export const workflowSteps = [
   }
 ];
 
-export const painPoints = [
+const painPoints = [
   {
     title: "Processos manuais lentos",
     description: "que travam o crescimento da empresa",
@@ -198,7 +199,7 @@ export const painPoints = [
   }
 ];
 
-export const services = [
+const services = [
   {
     title: "Desenvolvimento de Software & Apps",
     description: "Produtos digitais sob medida, do zero ao lançamento",
@@ -225,7 +226,7 @@ export const services = [
   }
 ];
 
-export const valuePillars = [
+const valuePillars = [
   {
     title: "Sob medida",
     description: "Soluções personalizadas para seu contexto específico"
@@ -262,7 +263,7 @@ import {
   BarChart3
 } from "lucide-react";
 
-export const softwareProblems = [
+const softwareProblems = [
   {
     title: "Sistemas legados obsoletos",
     description: "Tecnologias desatualizadas que limitam o crescimento e aumentam custos",
@@ -285,7 +286,7 @@ export const softwareProblems = [
   }
 ];
 
-export const softwareDeliverables = [
+const softwareDeliverables = [
   {
     title: "Web Apps Responsivos",
     description: "Aplicações web modernas que funcionam perfeitamente em qualquer dispositivo",
@@ -324,7 +325,7 @@ export const softwareDeliverables = [
   }
 ];
 
-export const softwareProcess = [
+const softwareProcess = [
   {
     number: "01",
     title: "Discovery & Requisitos",
@@ -362,7 +363,7 @@ export const softwareProcess = [
   }
 ];
 
-export const softwareQuality = [
+const softwareQuality = [
   {
     title: "Testes Automatizados",
     description: "Cobertura completa com testes unitários, integração e end-to-end",
@@ -389,7 +390,7 @@ export const softwareQuality = [
   }
 ];
 
-export const softwareCases = [
+const softwareCases = [
   {
     title: "Plataforma de E-commerce B2B",
     company: "Distribuidora Nacional",
@@ -422,7 +423,7 @@ export const softwareCases = [
   }
 ];
 
-export const softwareFAQ = [
+const softwareFAQ = [
   {
     question: "Quanto tempo leva para desenvolver um app?",
     answer: "O prazo varia conforme a complexidade. Apps simples ficam prontos em 8-12 semanas, enquanto sistemas complexos podem levar 16-24 semanas. Fornecemos cronograma detalhado após o discovery inicial."
@@ -446,7 +447,7 @@ export const softwareFAQ = [
 ];
 
 // Automation & IA Specific Data
-export const automationUseCases = [
+const automationUseCases = [
   {
     title: "Workflows n8n",
     description: "Automação visual de processos complexos com interface drag-and-drop.",
@@ -521,7 +522,7 @@ export const automationUseCases = [
   }
 ];
 
-export const automationIntegrations = [
+const automationIntegrations = [
   {
     name: "CRM & Vendas",
     description: "Automações para pipeline de vendas, follow-ups e nutrição de leads.",
@@ -566,7 +567,7 @@ export const automationIntegrations = [
   }
 ];
 
-export const automationDeliverables = [
+const automationDeliverables = [
   {
     title: "Pipelines de Automação",
     description: "Workflows visuais completos, prontos para produção.",
@@ -613,7 +614,7 @@ export const automationDeliverables = [
   }
 ];
 
-export const automationCases = [
+const automationCases = [
   {
     title: "Automação Administrativa",
     company: "Consultoria RH",
@@ -643,7 +644,7 @@ export const automationCases = [
   }
 ];
 
-export const automationSecurity = [
+const automationSecurity = [
   {
     title: "Dados Seguros",
     description: "Criptografia end-to-end e compliance total com LGPD.",
@@ -690,7 +691,7 @@ export const automationSecurity = [
   }
 ];
 
-export const automationFAQ = [
+const automationFAQ = [
   {
     question: "Quanto custa implementar automação na minha empresa?",
     answer: "Os custos variam conforme a complexidade e escopo. Projetos simples de automação começam em R$ 15.000, enquanto soluções completas com IA podem variar de R$ 50.000 a R$ 200.000. Oferecemos um diagnóstico gratuito para estimar o investimento e ROI específico para sua empresa."
