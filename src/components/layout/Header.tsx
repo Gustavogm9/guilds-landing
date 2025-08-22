@@ -26,8 +26,8 @@ import {
 import { cn } from "@/lib/utils";
 
 import { GuildShield } from "@/components/icons";
-import guildsLogoFull from "@/assets/guilds-logo-full.png";
-import guildsLogoShield from "@/assets/guilds-logo-shield.png";
+import guildsLogoFull from "@/assets/guilds-logo-full.svg";
+import guildsLogoShield from "@/assets/guilds-logo-shield.svg";
 
 const services = [
   {

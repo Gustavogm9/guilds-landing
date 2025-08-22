@@ -4,7 +4,7 @@ import { Mail, Phone, MapPin, Linkedin, Instagram, Youtube } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import guildsLogoShield from '@/assets/guilds-logo-shield.png';
+import guildsLogoShield from '@/assets/guilds-logo-shield.svg';
 
 export function Footer() {
   return (
