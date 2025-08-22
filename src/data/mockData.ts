@@ -926,6 +926,187 @@ const gamificationFAQ = [
   }
 ];
 
+// ============= CONSULTORIA & DISCOVERY DATA =============
+const consultoriaServices = [
+  {
+    title: "Diagnóstico Digital",
+    description: "Mapeamento completo de gaps e oportunidades em processos, tecnologias e estratégia digital da empresa.",
+    icon: "Search",
+    features: [
+      "Auditoria completa de sistemas atuais",
+      "Análise de processos e gargalos",
+      "Identificação de oportunidades de melhoria",
+      "Benchmarking com mercado"
+    ]
+  },
+  {
+    title: "Arquitetura de Soluções",
+    description: "Design técnico e estratégico de sistemas escaláveis, considerando performance, segurança e futuro crescimento.",
+    icon: "FileText",
+    features: [
+      "Desenho de arquitetura técnica",
+      "Seleção de tecnologias adequadas",
+      "Planejamento de integração",
+      "Documentação detalhada"
+    ]
+  },
+  {
+    title: "Análise de Viabilidade",
+    description: "Estudo detalhado de ROI, custos, riscos e cronograma para tomada de decisão fundamentada sobre projetos.",
+    icon: "MapPin",
+    features: [
+      "Análise de ROI e payback",
+      "Mapeamento de riscos técnicos",
+      "Estimativa de investimento",
+      "Cenários de implementação"
+    ]
+  },
+  {
+    title: "Roadmaps Trimestrais",
+    description: "Planejamento estratégico detalhado com marcos, prioridades e cronograma para os próximos 12 meses.",
+    icon: "TrendingUp",
+    features: [
+      "Priorização por impacto/esforço",
+      "Marcos e dependências",
+      "Cronograma realista",
+      "KPIs e métricas de sucesso"
+    ]
+  }
+];
+
+const consultoriaDeliverables = [
+  {
+    title: "Documento Estratégico",
+    description: "Relatório completo com diagnóstico atual, recomendações estratégicas e plano de ação detalhado.",
+    duration: "20-30 páginas",
+    icon: "FileText",
+    components: [
+      "Executive Summary",
+      "Diagnóstico detalhado",
+      "Recomendações estratégicas",
+      "Análise de ROI",
+      "Plano de implementação"
+    ]
+  },
+  {
+    title: "Backlog Priorizado",
+    description: "Lista detalhada de features e melhorias ordenadas por impacto no negócio vs esforço de implementação.",
+    duration: "50-100 itens",
+    icon: "Target",
+    components: [
+      "User stories detalhadas",
+      "Critérios de aceitação",
+      "Estimativas de esforço",
+      "Priorização por valor",
+      "Dependências mapeadas"
+    ]
+  },
+  {
+    title: "Plano de Marcos",
+    description: "Timeline detalhada com milestones, entregas, dependências e recursos necessários para cada fase.",
+    duration: "12 meses",
+    icon: "Calendar",
+    components: [
+      "Cronograma macro",
+      "Marcos por trimestre",
+      "Recursos necessários",
+      "Dependências críticas",
+      "Planos de contingência"
+    ]
+  },
+  {
+    title: "Relatório de Viabilidade",
+    description: "Análise financeira e técnica completa com cenários, riscos e recomendações de investimento.",
+    duration: "15-20 páginas",
+    icon: "Shield",
+    components: [
+      "Análise de investimento",
+      "Cenários de ROI",
+      "Mapeamento de riscos",
+      "Recomendações técnicas",
+      "Plano de mitigação"
+    ]
+  }
+];
+
+const consultoriaProcess = [
+  {
+    number: 1,
+    title: "Discovery Intensivo",
+    description: "Workshops colaborativos, entrevistas com stakeholders e análise profunda dos processos atuais da empresa.",
+    duration: "1-2 semanas",
+    deliverables: ["Mapeamento de processos", "Entrevistas stakeholders", "Análise competitiva", "Audit técnico"]
+  },
+  {
+    number: 2,
+    title: "Análise & Arquitetura",
+    description: "Processamento das informações coletadas e desenho da arquitetura de soluções mais adequada.",
+    duration: "1 semana",
+    deliverables: ["Arquitetura proposta", "Stack tecnológico", "Integrações", "Documentação técnica"]
+  },
+  {
+    number: 3,
+    title: "Roadmap & Priorização",
+    description: "Definição de marcos, cronograma e priorização baseada em impacto no negócio vs esforço de implementação.",
+    duration: "1 semana",
+    deliverables: ["Roadmap trimestral", "Backlog priorizado", "Cronograma macro", "KPIs definidos"]
+  },
+  {
+    number: 4,
+    title: "Apresentação & Handoff",
+    description: "Entrega dos documentos finais e alinhamento completo com stakeholders para próximos passos.",
+    duration: "2-3 dias",
+    deliverables: ["Apresentação executiva", "Documentação completa", "Plano de implementação", "Próximos passos"]
+  }
+];
+
+const consultoriaCases = [
+  {
+    title: "Startup FinTech",
+    company: "PayFlow",
+    situation: "Startup com MVP funcional precisava de roadmap para escalar e captar investimento Série A.",
+    solution: "Diagnóstico completo da arquitetura, roadmap de 12 meses focado em escalabilidade e compliance financeiro.",
+    result: "Série A de R$ 15M captados"
+  },
+  {
+    title: "Transformação Digital",
+    company: "Indústria MegaCorp",
+    situation: "Empresa tradicional com processos manuais e sistemas legados precisava se digitalizar.",
+    solution: "Mapeamento de 47 processos, arquitetura híbrida cloud/on-premise e roadmap de transformação em fases.",
+    result: "40% economia de custos operacionais"
+  },
+  {
+    title: "Scale-up E-commerce",
+    company: "ComercioMax",
+    situation: "E-commerce crescendo 300% ao ano com arquitetura não escalável e problemas de performance.",
+    solution: "Redesign completo da arquitetura, migração para microserviços e roadmap de otimização.",
+    result: "Suportou crescimento de 500%"
+  }
+];
+
+const consultoriaFAQ = [
+  {
+    question: "Como funciona o processo de diagnóstico?",
+    answer: "Nosso diagnóstico envolve 4 etapas: workshops colaborativos com stakeholders, análise técnica dos sistemas atuais, benchmarking com mercado e mapeamento completo dos processos. Todo o processo leva de 1-2 semanas e resulta em um documento estratégico completo com recomendações priorizadas."
+  },
+  {
+    question: "Qual o investimento necessário para uma consultoria completa?",
+    answer: "O investimento varia conforme o escopo e complexidade do projeto. Para diagnósticos simples, a partir de R$ 15.000. Para consultorias completas com roadmap trimestral, entre R$ 25.000 e R$ 50.000. Oferecemos sempre uma proposta customizada após conversa inicial gratuita."
+  },
+  {
+    question: "Vocês ajudam na implementação do roadmap?",
+    answer: "Sim! Após a consultoria, podemos acompanhar a implementação do roadmap através de nossos serviços de desenvolvimento. Muitos clientes optam por essa continuidade para garantir que as recomendações sejam implementadas corretamente e dentro do prazo planejado."
+  },
+  {
+    question: "Como garantem a confidencialidade dos dados?",
+    answer: "Levamos a confidencialidade muito a sério. Todos os projetos são cobertos por NDA rigoroso, dados são processados em ambiente seguro, e nossa equipe assina termos de confidencialidade específicos. Temos certificações de segurança e nunca compartilhamos informações entre clientes."
+  },
+  {
+    question: "Quanto tempo leva para ter os primeiros insights?",
+    answer: "Os primeiros insights aparecem já na primeira semana, durante os workshops de discovery. Ao final da segunda semana, você terá o diagnóstico completo com todas as recomendações. O roadmap detalhado fica pronto em até 4 semanas do início do projeto."
+  }
+];
+
 export {
   clientLogos,
   stackLogos,
@@ -952,5 +1133,10 @@ export {
   gamificationMetrics,
   gamificationProcess,
   gamificationCases,
-  gamificationFAQ
+  gamificationFAQ,
+  consultoriaServices,
+  consultoriaDeliverables,
+  consultoriaProcess,
+  consultoriaCases,
+  consultoriaFAQ
 };
