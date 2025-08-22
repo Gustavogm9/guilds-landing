@@ -89,8 +89,8 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {services.map((service, index) => <Link key={index} to={service.href} className="group bg-card border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-300">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {services.map((service, index) => <Link key={index} to={service.href} className="group bg-card border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover-scale">
                 <div className="mb-6">
                   <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4">
                     {index === 0 ? <Code className="h-6 w-6 text-primary" /> : index === 1 ? <Zap className="h-6 w-6 text-primary" /> : index === 2 ? <Users className="h-6 w-6 text-primary" /> : <Search className="h-6 w-6 text-primary" />}
@@ -112,6 +112,54 @@ const Home = () => {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </div>
               </Link>)}
+
+            {/* Guilds Lab Card */}
+            <Link to="/lab" className="group bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover-scale animate-fade-in">
+              <div className="mb-6">
+                <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-4">
+                  <GraduationCap className="h-6 w-6 text-accent" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-accent transition-colors">
+                  Guilds Lab
+                </h3>
+                <p className="text-muted-foreground mb-4">
+                  Workshops práticos em tecnologias emergentes, desenvolvimento de jogos e habilidades do futuro.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="outline" className="text-xs border-accent/20 text-accent">Workshops</Badge>
+                  <Badge variant="outline" className="text-xs border-accent/20 text-accent">Educação</Badge>
+                  <Badge variant="outline" className="text-xs border-accent/20 text-accent">Soft Skills</Badge>
+                </div>
+              </div>
+              <div className="flex items-center text-accent group-hover:translate-x-2 transition-transform">
+                <span className="text-sm font-medium">Explorar Lab</span>
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </div>
+            </Link>
+
+            {/* Guilds Craft Card */}
+            <Link to="/craft" className="group bg-gradient-to-br from-purple-500/10 to-purple-500/5 border border-purple-500/20 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover-scale animate-fade-in">
+              <div className="mb-6">
+                <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-4">
+                  <Lightbulb className="h-6 w-6 text-purple-500" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-purple-500 transition-colors">
+                  Guilds Craft
+                </h3>
+                <p className="text-muted-foreground mb-4">
+                  Parcerias estratégicas e P&D para transformar ideias inovadoras em produtos de impacto real.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="outline" className="text-xs border-purple-500/20 text-purple-500">Parcerias</Badge>
+                  <Badge variant="outline" className="text-xs border-purple-500/20 text-purple-500">P&D</Badge>
+                  <Badge variant="outline" className="text-xs border-purple-500/20 text-purple-500">Inovação</Badge>
+                </div>
+              </div>
+              <div className="flex items-center text-purple-500 group-hover:translate-x-2 transition-transform">
+                <span className="text-sm font-medium">Explorar Craft</span>
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </div>
+            </Link>
           </div>
         </div>
       </section>
