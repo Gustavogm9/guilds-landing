@@ -86,7 +86,7 @@ const Home = () => {
               "trending-up": TrendingUp,
               "refresh-cw": RefreshCw
             };
-            const Icon = icons[pillar.icon as keyof typeof icons];
+            const Icon = icons[pillar.icon as keyof typeof icons] || Zap;
             return <div key={index} className="group relative">
                   {/* Card Container */}
                   <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl p-8 h-full hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover-scale relative overflow-hidden">
@@ -252,7 +252,7 @@ const Home = () => {
               users: Users,
               brain: Brain
             };
-            const Icon = icons[pain.icon as keyof typeof icons];
+            const Icon = icons[pain.icon as keyof typeof icons] || Clock;
             return <div key={index} className="text-center space-y-4">
                   <div className="w-16 h-16 bg-destructive/10 rounded-2xl flex items-center justify-center mx-auto">
                     <Icon className="h-8 w-8 text-destructive" />
@@ -293,7 +293,7 @@ const Home = () => {
                 users: Users,
                 chart: BarChart3
               };
-              const Icon = icons[step.icon as keyof typeof icons];
+              const Icon = icons[step.icon as keyof typeof icons] || Search;
               return <div key={index} className="text-center space-y-4 relative">
                     <div className="w-16 h-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center mx-auto relative z-10">
                       <Icon className="h-8 w-8" />
@@ -352,7 +352,7 @@ const Home = () => {
                   "Database": Database,
                   "Frontend": Smartphone
                 };
-                const Icon = icons[quadrant.title as keyof typeof icons];
+                const Icon = icons[quadrant.title as keyof typeof icons] || Bot;
                 return <div key={index} className={`bg-gradient-to-br ${colors[quadrant.color as keyof typeof colors]} border rounded-2xl p-6 relative`}>
                       <div className="flex items-center gap-3 mb-4">
                         <Icon className="w-6 h-6" />
@@ -380,7 +380,7 @@ const Home = () => {
                 puzzle: Puzzle,
                 check: CheckCircle
               };
-              const Icon = icons[step.icon as keyof typeof icons];
+              const Icon = icons[step.icon as keyof typeof icons] || Target;
               return <div key={index} className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 text-center hover-scale">
                     <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
                       <Icon className="w-6 h-6 text-primary" />
