@@ -225,15 +225,15 @@
 @layer utilities {
   /* Layout Utilities */
   .section {
-    @apply py-16 md:py-24;
-  }
-  
-  .section-sm {
     @apply py-12 md:py-16;
   }
   
+  .section-sm {
+    @apply py-8 md:py-12;
+  }
+  
   .section-lg {
-    @apply py-20 md:py-32;
+    @apply py-16 md:py-20;
   }
   
   /* Spacing Utilities */

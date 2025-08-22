@@ -40,7 +40,7 @@ const Contact = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-guild-hero py-24">
+      <section className="bg-guild-hero py-16 md:py-20">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto">
             <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20 mb-6">
@@ -59,7 +59,7 @@ const Contact = () => {
       </section>
 
       {/* Contact Form & Info */}
-      <section className="py-24">
+      <section className="py-12 md:py-16">
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Contact Form */}
@@ -250,7 +250,7 @@ const Contact = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-24 bg-muted/30">
+      <section className="py-12 md:py-16 bg-muted/30">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-sora font-bold mb-4">

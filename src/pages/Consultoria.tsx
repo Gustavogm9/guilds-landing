@@ -24,7 +24,7 @@ export default function Consultoria() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="py-24 bg-gradient-to-br from-primary/5 to-secondary/10">
+      <section className="py-16 md:py-20 bg-gradient-to-br from-primary/5 to-secondary/10">
         <div className="container">
           <Breadcrumb className="mb-8">
             <BreadcrumbList>
@@ -82,7 +82,7 @@ export default function Consultoria() {
       </section>
 
       {/* Serviços de Consultoria */}
-      <section className="py-20">
+      <section className="py-12 md:py-16">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -134,7 +134,7 @@ export default function Consultoria() {
       </section>
 
       {/* Entregáveis Estratégicos */}
-      <section className="py-20 bg-muted/50">
+      <section className="py-12 md:py-16 bg-muted/50">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -191,7 +191,7 @@ export default function Consultoria() {
       </section>
 
       {/* Metodologia & Processo */}
-      <section className="py-20">
+      <section className="py-12 md:py-16">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -246,7 +246,7 @@ export default function Consultoria() {
       </section>
 
       {/* Casos de Sucesso */}
-      <section className="py-20 bg-muted/50">
+      <section className="py-12 md:py-16 bg-muted/50">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -299,7 +299,7 @@ export default function Consultoria() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20">
+      <section className="py-12 md:py-16">
         <div className="container max-w-4xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -315,7 +315,7 @@ export default function Consultoria() {
       </section>
 
       {/* CTA Final */}
-      <section className="py-20 bg-gradient-to-br from-primary to-secondary text-white">
+      <section className="py-12 md:py-16 bg-gradient-to-br from-primary to-secondary text-white">
         <div className="container text-center">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">

@@ -54,7 +54,7 @@ const Services = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section - Intro Curta */}
-      <section className="py-20 lg:py-32">
+      <section className="py-12 md:py-16 lg:py-20">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto">
             <Badge className="bg-primary/10 text-primary border-primary/20 mb-6">
@@ -131,7 +131,7 @@ const Services = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-12 md:py-16 bg-muted/30">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-sora font-bold mb-6">

@@ -7,10 +7,11 @@ const sectionVariants = cva(
   {
     variants: {
       spacing: {
-        sm: "py-12 md:py-16",
-        md: "py-16 md:py-24", 
-        lg: "py-20 md:py-32",
-        xl: "py-24 md:py-40",
+        xs: "py-6 md:py-8",
+        sm: "py-8 md:py-12",
+        md: "py-12 md:py-16", 
+        lg: "py-16 md:py-20",
+        xl: "py-20 md:py-24",
       },
       background: {
         default: "bg-background",
@@ -27,7 +28,7 @@ const sectionVariants = cva(
       }
     },
     defaultVariants: {
-      spacing: "md",
+      spacing: "sm",
       background: "default", 
       container: "default",
     },
@@ -67,9 +68,9 @@ const HeroSection = React.forwardRef<HTMLElement, Omit<SectionProps, 'spacing' |
   ({ className, ...props }, ref) => (
     <Section
       ref={ref}
-      spacing="xl"
+      spacing="lg"
       container="wide"
-      className={cn("min-h-[80vh] flex items-center", className)}
+      className={cn("min-h-[75vh] flex items-center", className)}
       {...props}
     />
   )
@@ -80,7 +81,7 @@ const ContentSection = React.forwardRef<HTMLElement, Omit<SectionProps, 'spacing
   ({ className, ...props }, ref) => (
     <Section
       ref={ref}
-      spacing="lg"
+      spacing="md"
       className={className}
       {...props}
     />

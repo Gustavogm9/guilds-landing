@@ -114,7 +114,7 @@ const Home = () => {
       </HeroSection>
 
       {/* 2. Barra de Valor - 4 Pilares */}
-      <FeatureSection spacing="sm">
+      <FeatureSection spacing="xs">
         <FeatureGrid>
           {valuePillars.map((pillar, index) => (
             <div key={index} className="text-center space-y-2">
@@ -126,7 +126,7 @@ const Home = () => {
       </FeatureSection>
 
       {/* 3. Guilds Lab & Guilds Craft - Seção Dedicada */}
-      <ContentSection>
+      <Section spacing="sm">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Nossos <span className="text-gradient bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Produtos</span>
@@ -195,10 +195,10 @@ const Home = () => {
             </Button>
           </Card>
         </ServiceGrid>
-      </ContentSection>
+      </Section>
 
       {/* 4. O que fazemos - Grid 2x2 */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-12 md:py-16 bg-muted/30">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -248,7 +248,7 @@ const Home = () => {
       </section>
 
       {/* 5. Dores que resolvemos */}
-      <section className="py-20 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -286,7 +286,7 @@ const Home = () => {
       </section>
 
       {/* 6. Como trabalhamos - 5 passos */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-12 md:py-16 bg-muted/30">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -331,7 +331,7 @@ const Home = () => {
       </section>
 
       {/* 7. Cases em destaque */}
-      <section className="py-20 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -381,7 +381,7 @@ const Home = () => {
       </section>
 
       {/* 8. Clientes e depoimentos */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-12 md:py-16 bg-muted/30">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -426,7 +426,7 @@ const Home = () => {
       </section>
 
       {/* 9. Stack & Integrações */}
-      <section className="py-20 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -460,7 +460,7 @@ const Home = () => {
       </section>
 
       {/* 10. CTA Final */}
-      <section className="py-20 bg-gradient-to-br from-primary to-accent text-primary-foreground relative overflow-hidden">
+      <section className="py-12 md:py-16 bg-gradient-to-br from-primary to-accent text-primary-foreground relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="container relative">
           <div className="text-center max-w-3xl mx-auto">

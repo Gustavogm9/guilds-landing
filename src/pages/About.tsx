@@ -80,7 +80,7 @@ const About = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-guild-hero py-24">
+      <section className="bg-guild-hero py-16 md:py-20">
         <div className="container">
           <div className="text-center max-w-4xl mx-auto">
             <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20 mb-6">
@@ -100,7 +100,7 @@ const About = () => {
       </section>
 
       {/* Mission & Vision */}
-      <section className="py-24">
+      <section className="py-12 md:py-16">
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -133,7 +133,7 @@ const About = () => {
       </section>
 
       {/* Values */}
-      <section className="py-24 bg-muted/30">
+      <section className="py-12 md:py-16 bg-muted/30">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-sora font-bold mb-4">
@@ -164,7 +164,7 @@ const About = () => {
       </section>
 
       {/* Stats */}
-      <section className="py-24">
+      <section className="py-12 md:py-16">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-sora font-bold mb-4">
@@ -192,7 +192,7 @@ const About = () => {
       </section>
 
       {/* Timeline */}
-      <section className="py-24 bg-muted/30">
+      <section className="py-12 md:py-16 bg-muted/30">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-sora font-bold mb-4">
@@ -233,7 +233,7 @@ const About = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-neutral-900 text-white">
+      <section className="py-12 md:py-16 bg-neutral-900 text-white">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-sora font-bold mb-6">

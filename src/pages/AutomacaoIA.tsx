@@ -128,7 +128,7 @@ const AutomacaoIA = () => {
       />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-primary/5 to-background py-20">
+      <section className="bg-gradient-to-b from-primary/5 to-background py-12 md:py-16">
         <div className="container mx-auto px-4">
           <Breadcrumb className="mb-8">
             <BreadcrumbList>
@@ -228,7 +228,7 @@ const AutomacaoIA = () => {
       </section>
 
       {/* Casos de Uso */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-12 md:py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
@@ -271,7 +271,7 @@ const AutomacaoIA = () => {
       </section>
 
       {/* Integrações Disponíveis */}
-      <section className="py-20">
+      <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
@@ -315,7 +315,7 @@ const AutomacaoIA = () => {
       </section>
 
       {/* Entregáveis */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-12 md:py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
@@ -355,7 +355,7 @@ const AutomacaoIA = () => {
       </section>
 
       {/* Cases & Ganhos */}
-      <section className="py-20">
+      <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
@@ -409,7 +409,7 @@ const AutomacaoIA = () => {
       </section>
 
       {/* Segurança & Privacidade */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-12 md:py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
@@ -449,7 +449,7 @@ const AutomacaoIA = () => {
       </section>
 
       {/* FAQ */}
-      <section className="py-20">
+      <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
@@ -468,7 +468,7 @@ const AutomacaoIA = () => {
       </section>
 
       {/* CTA Final */}
-      <section className="py-20 bg-gradient-to-r from-primary/10 to-secondary/10">
+      <section className="py-12 md:py-16 bg-gradient-to-r from-primary/10 to-secondary/10">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
