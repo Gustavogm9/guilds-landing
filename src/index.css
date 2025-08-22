@@ -1,96 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Manrope:wght@200;300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
+/* Guilds Design System - Medieval meets Future Tech */
 @layer base {
   :root {
+    /* Brand Colors */
+    --brand-primary: 270 91% 65%;
+    --brand-primary-dark: 270 91% 55%;
+    --brand-accent: 175 84% 65%;
+    --brand-accent-dark: 175 84% 55%;
+    
+    /* Neutral Scale */
+    --neutral-900: 222 84% 5%;
+    --neutral-800: 222 47% 11%;
+    --neutral-700: 222 32% 17%;
+    --neutral-600: 222 20% 25%;
+    --neutral-500: 222 16% 47%;
+    --neutral-400: 222 13% 65%;
+    --neutral-300: 222 10% 80%;
+    --neutral-200: 222 8% 90%;
+    --neutral-100: 222 6% 95%;
+    --neutral-50: 222 4% 98%;
+    
+    /* Semantic Colors */
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+    --danger: 0 84% 60%;
+    
+    /* System Colors - Light Mode */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: var(--neutral-900);
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: var(--neutral-900);
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --popover-foreground: var(--neutral-900);
+    --primary: var(--brand-primary);
+    --primary-foreground: 0 0% 100%;
+    --secondary: var(--neutral-100);
+    --secondary-foreground: var(--neutral-900);
+    --muted: var(--neutral-100);
+    --muted-foreground: var(--neutral-500);
+    --accent: var(--brand-accent);
+    --accent-foreground: var(--neutral-900);
+    --destructive: var(--danger);
+    --destructive-foreground: 0 0% 100%;
+    --border: var(--neutral-200);
+    --input: var(--neutral-200);
+    --ring: var(--brand-primary);
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--brand-primary)), hsl(var(--brand-primary-dark)));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--brand-accent)), hsl(var(--brand-accent-dark)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--brand-primary) / 0.1), hsl(var(--brand-accent) / 0.1));
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.1), hsl(0 0% 100% / 0.05));
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px hsl(var(--neutral-900) / 0.05);
+    --shadow-md: 0 4px 6px hsl(var(--neutral-900) / 0.1);
+    --shadow-lg: 0 10px 15px hsl(var(--neutral-900) / 0.1);
+    --shadow-xl: 0 20px 25px hsl(var(--neutral-900) / 0.1);
+    --shadow-glow: 0 0 40px hsl(var(--brand-primary) / 0.3);
+    
+    /* Animations */
+    --transition-base: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    --radius: 12px;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* System Colors - Dark Mode */
+    --background: var(--neutral-900);
+    --foreground: var(--neutral-50);
+    --card: var(--neutral-800);
+    --card-foreground: var(--neutral-50);
+    --popover: var(--neutral-800);
+    --popover-foreground: var(--neutral-50);
+    --primary: var(--brand-primary);
+    --primary-foreground: 0 0% 100%;
+    --secondary: var(--neutral-800);
+    --secondary-foreground: var(--neutral-50);
+    --muted: var(--neutral-800);
+    --muted-foreground: var(--neutral-400);
+    --accent: var(--brand-accent);
+    --accent-foreground: var(--neutral-900);
+    --destructive: var(--danger);
+    --destructive-foreground: 0 0% 100%;
+    --border: var(--neutral-700);
+    --input: var(--neutral-700);
+    --ring: var(--brand-primary);
   }
 }
 
@@ -100,6 +101,111 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter leading-relaxed;
+    font-size: 16px;
+    line-height: 1.6;
   }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sora font-semibold tracking-tight;
+  }
+  
+  .font-display {
+    @apply font-manrope;
+  }
+  
+  .font-mono {
+    @apply font-jetbrains;
+  }
+}
+
+@layer components {
+  /* Grid System */
+  .container {
+    @apply mx-auto px-6;
+    max-width: 1320px;
+  }
+  
+  .grid-12 {
+    @apply grid grid-cols-1 md:grid-cols-12 gap-6;
+  }
+  
+  /* Button Variants */
+  .btn-hero {
+    @apply bg-gradient-to-r from-brand-primary to-brand-primary-dark text-white font-semibold px-8 py-4 rounded-2xl shadow-lg hover:shadow-glow transform hover:-translate-y-1 transition-all duration-200;
+  }
+  
+  .btn-accent {
+    @apply bg-brand-accent text-neutral-900 font-semibold px-6 py-3 rounded-xl hover:bg-brand-accent-dark transition-colors duration-150;
+  }
+  
+  .btn-glass {
+    @apply bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md border border-white/20 text-foreground font-medium px-6 py-3 rounded-xl hover:bg-white/20 transition-all duration-200;
+  }
+  
+  /* Card Variants */
+  .card-glass {
+    @apply bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg;
+  }
+  
+  .card-elevated {
+    @apply bg-card border border-border rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300;
+  }
+  
+  /* Text Effects */
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-primary to-brand-accent bg-clip-text text-transparent;
+  }
+  
+  /* Animations */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  
+  /* Medieval-Tech Elements */
+  .guild-border {
+    @apply relative;
+  }
+  
+  .guild-border::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-brand-primary to-brand-accent rounded-2xl;
+    padding: 2px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: exclude;
+  }
+}
+
+@layer utilities {
+  /* Spacing Utilities */
+  .space-guild-sm { @apply space-y-4; }
+  .space-guild-md { @apply space-y-8; }
+  .space-guild-lg { @apply space-y-12; }
+  .space-guild-xl { @apply space-y-16; }
+  .space-guild-2xl { @apply space-y-24; }
+  
+  /* Custom Shadows */
+  .shadow-guild { @apply shadow-lg; }
+  .shadow-guild-glow { box-shadow: var(--shadow-glow); }
+  
+  /* Gradients */
+  .bg-guild-primary { background: var(--gradient-primary); }
+  .bg-guild-accent { background: var(--gradient-accent); }
+  .bg-guild-hero { background: var(--gradient-hero); }
+  .bg-guild-glass { background: var(--gradient-glass); }
+}
+
+/* Keyframes */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 20px hsl(var(--brand-primary) / 0.5); }
+  to { box-shadow: 0 0 30px hsl(var(--brand-primary) / 0.8), 0 0 40px hsl(var(--brand-accent) / 0.3); }
 }
