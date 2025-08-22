@@ -714,6 +714,218 @@ const automationFAQ = [
   }
 ];
 
+// Gamification & Games Specific Data
+const gamificationFormats = [
+  {
+    title: "Workshops Gamificados",
+    description: "Dinâmicas interativas presenciais ou online que transformam treinamentos em experiências memoráveis.",
+    icon: "Users",
+    features: ["Facilitação especializada", "Dinâmicas customizadas", "Materiais interativos", "Certificação digital"]
+  },
+  {
+    title: "Simulações Empresariais",
+    description: "Cenários realistas de negócios onde equipes praticam tomada de decisão em ambiente seguro.",
+    icon: "BarChart3",
+    features: ["Cenários personalizados", "Métricas em tempo real", "Debriefing estruturado", "Relatórios de performance"]
+  },
+  {
+    title: "Serious Games",
+    description: "Jogos digitais desenvolvidos especificamente para objetivos de aprendizado e desenvolvimento.",
+    icon: "Gamepad2",
+    features: ["Narrativa envolvente", "Mecânicas adaptativas", "Analytics detalhado", "Multiplataforma"]
+  },
+  {
+    title: "Plataformas L&D",
+    description: "Learning & Development gamificado com trilhas personalizadas e reconhecimento por conquistas.",
+    icon: "Trophy",
+    features: ["Sistema de pontos", "Badges e conquistas", "Ranking social", "Trilhas personalizadas"]
+  }
+];
+
+const gamificationObjectives = [
+  {
+    title: "Onboarding",
+    description: "Integração envolvente de novos colaboradores com a cultura e processos da empresa.",
+    icon: "UserPlus",
+    benefits: ["90% retenção talentos", "50% tempo integração", "95% satisfação processo"]
+  },
+  {
+    title: "Treinamento de Vendas",
+    description: "Simulação de clientes, objeções e técnicas de vendas em ambiente gamificado.",
+    icon: "TrendingUp",
+    benefits: ["35% conversão", "60% engajamento", "80% aplicação prática"]
+  },
+  {
+    title: "Segurança do Trabalho",
+    description: "Cenários de risco e prevenção de acidentes através de simulações realistas.",
+    icon: "Shield",
+    benefits: ["70% redução acidentes", "85% retenção normas", "90% participação"]
+  },
+  {
+    title: "Compliance",
+    description: "Normas e regulamentações apresentadas de forma interativa e memorável.",
+    icon: "FileCheck",
+    benefits: ["95% conclusão", "80% retenção", "60% menos infrações"]
+  },
+  {
+    title: "Cultura Organizacional",
+    description: "Valores e comportamentos da empresa vivenciados através de experiências práticas.",
+    icon: "Heart",
+    benefits: ["85% engajamento cultural", "70% melhoria clima", "50% turnover"]
+  },
+  {
+    title: "Liderança",
+    description: "Desenvolvimento de soft skills e tomada de decisão através de simulações de gestão.",
+    icon: "Crown",
+    benefits: ["80% melhoria gestão", "65% satisfação equipe", "40% promoções internas"]
+  }
+];
+
+const gamificationMetrics = [
+  {
+    title: "85% vs 23%",
+    description: "Taxa de retenção: gamificação vs métodos tradicionais",
+    icon: "TrendingUp",
+    highlight: "3.7x mais eficaz"
+  },
+  {
+    title: "3.2x",
+    description: "Mais tempo de engajamento com conteúdo de treinamento",
+    icon: "Clock",
+    highlight: "Aprendizado profundo"
+  },
+  {
+    title: "92%",
+    description: "Taxa de conclusão dos treinamentos gamificados",
+    icon: "CheckCircle",
+    highlight: "vs 45% tradicional"
+  },
+  {
+    title: "67%",
+    description: "Melhoria na aplicação prática do conhecimento",
+    icon: "Target",
+    highlight: "ROI comprovado"
+  }
+];
+
+const gamificationProcess = [
+  {
+    number: "01",
+    title: "Diagnóstico & Análise",
+    description: "Mapeamento de necessidades, público-alvo e objetivos de aprendizagem.",
+    duration: "1 semana",
+    deliverables: ["Análise de gap de competências", "Personas de aprendizagem", "Objetivos SMART"]
+  },
+  {
+    number: "02", 
+    title: "Game Design",
+    description: "Criação das mecânicas de jogo, narrativa e estrutura de recompensas.",
+    duration: "2-3 semanas",
+    deliverables: ["Game Design Document", "Wireframes interativos", "Sistema de pontuação"]
+  },
+  {
+    number: "03",
+    title: "Desenvolvimento",
+    description: "Construção do protótipo, testes de usabilidade e refinamentos.",
+    duration: "3-4 semanas", 
+    deliverables: ["Protótipo funcional", "Testes com usuários", "Manual do facilitador"]
+  },
+  {
+    number: "04",
+    title: "Piloto & Validação",
+    description: "Teste com grupo controle, coleta de feedback e ajustes finais.",
+    duration: "1 semana",
+    deliverables: ["Relatório de piloto", "Métricas de engajamento", "Versão ajustada"]
+  },
+  {
+    number: "05",
+    title: "Lançamento & Suporte",
+    description: "Deploy completo, treinamento de facilitadores e acompanhamento contínuo.",
+    duration: "Contínuo",
+    deliverables: ["Plataforma ativa", "Dashboard analytics", "Suporte técnico"]
+  }
+];
+
+const gamificationCases = [
+  {
+    title: "Onboarding Gamificado - TechCorp",
+    company: "Empresa de Tecnologia",
+    problem: "Alta rotatividade de novos funcionários (40%) e processo de integração de 3 meses pouco eficaz.",
+    solution: "Jornada gamificada de 30 dias com missões, badges e mentoria peer-to-peer integrada.",
+    technologies: ["Unity", "React", "Node.js", "MongoDB"],
+    metrics: [
+      { label: "Retenção de talentos", value: "90%", improvement: "+50%" },
+      { label: "Tempo de integração", value: "15 dias", improvement: "-50%" },
+      { label: "Satisfação do processo", value: "4.8/5", improvement: "+60%" }
+    ],
+    testimonial: {
+      quote: "Transformamos completamente nosso onboarding. Os novos colaboradores chegam mais engajados e produtivos em tempo recorde.",
+      author: "Marina Santos",
+      role: "Head de People & Culture",
+      avatar: "/api/placeholder/60/60"
+    }
+  },
+  {
+    title: "Treinamento de Vendas - RetailMax",
+    company: "Rede de Varejo Nacional", 
+    problem: "Baixa conversão de vendas (12%) e treinamentos teóricos sem aplicação prática efetiva.",
+    solution: "Simulador de vendas com IA, cenários realistas e gamificação por equipes regionais.",
+    technologies: ["OpenAI", "React Native", "Python", "PostgreSQL"],
+    metrics: [
+      { label: "Conversão de vendas", value: "18.5%", improvement: "+35%" },
+      { label: "Engajamento treinamento", value: "87%", improvement: "+60%" },
+      { label: "Aplicação técnicas", value: "92%", improvement: "+45%" }
+    ],
+    testimonial: {
+      quote: "Nossos vendedores agora praticam situações reais antes de enfrentar os clientes. O resultado foi imediato nas vendas.",
+      author: "Carlos Mendes",
+      role: "Diretor Comercial",
+      avatar: "/api/placeholder/60/60"
+    }
+  },
+  {
+    title: "Segurança Industrial - ManufacturingPro",
+    company: "Indústria Metalúrgica",
+    problem: "15 acidentes/ano e baixa adesão (30%) aos treinamentos obrigatórios de segurança.",
+    solution: "Realidade virtual para simulação de riscos e gamificação de práticas seguras no dia a dia.",
+    technologies: ["Unity VR", "Oculus", "C#", "Analytics"],
+    metrics: [
+      { label: "Redução de acidentes", value: "80%", improvement: "-80%" },
+      { label: "Participação treinamentos", value: "95%", improvement: "+65%" },
+      { label: "Retenção normas", value: "88%", improvement: "+55%" }
+    ],
+    testimonial: {
+      quote: "A simulação em VR fez nossos funcionários vivenciarem situações de risco sem perigo real. Revolucionou nossa cultura de segurança.",
+      author: "Ana Rodrigues",
+      role: "Gerente de Segurança",
+      avatar: "/api/placeholder/60/60"
+    }
+  }
+];
+
+const gamificationFAQ = [
+  {
+    question: "Como funciona a gamificação em treinamentos corporativos?",
+    answer: "Aplicamos elementos de jogos (pontos, badges, rankings, narrativas) em contextos de aprendizagem. Isso inclui missões estruturadas, feedback imediato, progressão clara e recompensas significativas que mantêm o engajamento e facilitam a retenção do conhecimento."
+  },
+  {
+    question: "Qual o investimento necessário para gamificar nossos treinamentos?", 
+    answer: "O investimento varia conforme complexidade e escopo. Workshops gamificados começam em R$ 25.000, simulações empresariais de R$ 60.000 a R$ 150.000, e serious games customizados de R$ 120.000 a R$ 400.000. Oferecemos diagnóstico gratuito para calcular ROI específico."
+  },
+  {
+    question: "Funcionários mais velhos se adaptam bem à gamificação?",
+    answer: "Sim! Nossos dados mostram 85%+ de engajamento em todas as faixas etárias. O segredo está em focar na narrativa e desafios relevantes ao invés de elementos infantis. Colaboradores experientes valorizam especialmente simulações realistas e reconhecimento por expertise."
+  },
+  {
+    question: "Como medir o ROI da gamificação corporativa?",
+    answer: "Medimos através de KPIs específicos: taxa de conclusão (+90% vs 45% tradicional), retenção de conhecimento (+67%), aplicação prática (+80%), engajamento (+200%), e métricas de negócio como redução de acidentes, aumento de vendas e diminuição de turnover."
+  },
+  {
+    question: "Quanto tempo leva para desenvolver um serious game customizado?",
+    answer: "Serious games simples ficam prontos em 8-12 semanas, enquanto simulações complexas podem levar 16-24 semanas. Workshops gamificados são desenvolvidos em 4-6 semanas. Sempre entregamos em fases para você começar a ver resultados rapidamente."
+  }
+];
+
 export {
   clientLogos,
   stackLogos,
@@ -734,5 +946,11 @@ export {
   automationDeliverables,
   automationCases,
   automationSecurity,
-  automationFAQ
+  automationFAQ,
+  gamificationFormats,
+  gamificationObjectives,  
+  gamificationMetrics,
+  gamificationProcess,
+  gamificationCases,
+  gamificationFAQ
 };
