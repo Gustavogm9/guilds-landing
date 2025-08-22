@@ -185,7 +185,13 @@
   }
   
   .card-shield::before {
-    @apply content-[''] absolute top-0 left-0 w-full h-1 bg-gradient-guild;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--gradient-guild);
   }
   
   .card-heraldic {
