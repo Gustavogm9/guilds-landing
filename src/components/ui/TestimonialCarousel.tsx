@@ -102,8 +102,8 @@ export function TestimonialCarousel({
         <div className="max-w-4xl mx-auto text-center">
           {/* Quote Icon */}
           <div className="flex justify-center mb-8">
-            <div className="p-4 bg-primary/10 rounded-full">
-              <Quote className="h-8 w-8 text-primary" />
+            <div className="p-4 bg-brand-primary/10 rounded-full">
+              <Quote className="h-8 w-8 text-brand-primary" />
             </div>
           </div>
 
@@ -120,7 +120,7 @@ export function TestimonialCarousel({
                   src={currentTestimonial.author.avatar} 
                   alt={`Foto de ${currentTestimonial.author.name}`}
                 />
-                <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                <AvatarFallback className="bg-brand-primary/10 text-brand-primary font-semibold">
                   {currentTestimonial.author.name?.split(' ').map(n => n[0]).join('') || 'XX'}
                 </AvatarFallback>
               </Avatar>
@@ -145,7 +145,7 @@ export function TestimonialCarousel({
                   variant="outline"
                   size="sm"
                   onClick={goToPrevious}
-                  className="p-2 h-10 w-10 rounded-full border-neutral-300 hover:border-primary hover:bg-primary hover:text-white transition-all"
+                  className="p-2 h-10 w-10 rounded-full border-neutral-300 hover:border-brand-primary hover:bg-brand-primary hover:text-white transition-all"
                   aria-label="Depoimento anterior"
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -159,7 +159,7 @@ export function TestimonialCarousel({
                       onClick={() => goToSlide(index)}
                       className={`w-3 h-3 rounded-full transition-all duration-300 ${
                         index === currentIndex 
-                          ? 'bg-primary scale-110' 
+                          ? 'bg-brand-primary scale-110' 
                           : 'bg-neutral-300 hover:bg-neutral-400'
                       }`}
                       aria-label={`Ir para depoimento ${index + 1}`}
@@ -173,7 +173,7 @@ export function TestimonialCarousel({
                   variant="outline"
                   size="sm"
                   onClick={goToNext}
-                  className="p-2 h-10 w-10 rounded-full border-neutral-300 hover:border-primary hover:bg-primary hover:text-white transition-all"
+                  className="p-2 h-10 w-10 rounded-full border-neutral-300 hover:border-brand-primary hover:bg-brand-primary hover:text-white transition-all"
                   aria-label="Próximo depoimento"
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -186,7 +186,7 @@ export function TestimonialCarousel({
                   variant="ghost"
                   size="sm"
                   onClick={togglePlayPause}
-                  className="text-muted-foreground hover:text-primary transition-colors"
+                  className="text-muted-foreground hover:text-brand-primary transition-colors"
                   aria-label={isPlaying ? "Pausar rotação automática" : "Iniciar rotação automática"}
                 >
                   {isPlaying ? (
@@ -204,7 +204,7 @@ export function TestimonialCarousel({
             <div className="mt-4 w-full max-w-xs mx-auto bg-neutral-200 rounded-full h-1 overflow-hidden">
               <div 
                 ref={progressRef}
-                className="h-full bg-primary rounded-full transition-all duration-200"
+                className="h-full bg-brand-primary rounded-full transition-all duration-200"
                 style={{
                   animation: `progressBar ${rotateInterval}ms linear infinite`
                 }}

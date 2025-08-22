@@ -15,10 +15,10 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        hero: "bg-gradient-to-r from-primary to-accent text-white shadow-lg hover:shadow-guild-glow transform hover:-translate-y-1 transition-all duration-200",
-        accent: "bg-accent text-white hover:bg-accent/90",
+        hero: "bg-gradient-to-r from-brand-primary to-brand-accent text-white shadow-lg hover:shadow-guild-glow transform hover:-translate-y-1 transition-all duration-200",
+        accent: "bg-brand-accent text-white hover:bg-brand-accent/90",
         glass: "bg-background/50 backdrop-blur-sm border border-border/50 hover:bg-background/80",
-        premium: "bg-gradient-to-r from-primary via-accent to-primary bg-size-200 bg-pos-0 hover:bg-pos-100 text-white shadow-guild transition-all duration-500",
+        premium: "bg-gradient-to-r from-brand-primary via-brand-accent to-brand-primary bg-size-200 bg-pos-0 hover:bg-pos-100 text-white shadow-guild transition-all duration-500",
       },
       size: {
         default: "h-10 px-4 py-2",
