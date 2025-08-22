@@ -80,16 +80,14 @@ const Home = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {valuePillars.map((pillar, index) => {
-              const icons = {
-                "zap": Zap,
-                "users": Users,
-                "trending-up": TrendingUp,
-                "refresh-cw": RefreshCw
-              };
-              const Icon = icons[pillar.icon as keyof typeof icons];
-              
-              return (
-                <div key={index} className="group relative">
+            const icons = {
+              "zap": Zap,
+              "users": Users,
+              "trending-up": TrendingUp,
+              "refresh-cw": RefreshCw
+            };
+            const Icon = icons[pillar.icon as keyof typeof icons];
+            return <div key={index} className="group relative">
                   {/* Card Container */}
                   <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl p-8 h-full hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover-scale relative overflow-hidden">
                     {/* Background Glow */}
@@ -121,19 +119,13 @@ const Home = () => {
                     {/* Decorative Element */}
                     <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
                   </div>
-                </div>
-              );
-            })}
+                </div>;
+          })}
           </div>
 
           {/* Bottom CTA */}
           <div className="text-center mt-16">
-            <div className="inline-flex items-center gap-3 bg-muted/50 rounded-full px-6 py-3 border border-border/50">
-              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium">
-                Resultados comprovados em +100 projetos entregues
-              </span>
-            </div>
+            
           </div>
         </div>
       </section>
@@ -347,36 +339,31 @@ const Home = () => {
               {/* Quadrantes */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                 {evaluationFramework.quadrants.map((quadrant, index) => {
-                  const colors = {
-                    blue: "from-blue-500/10 to-blue-600/5 border-blue-200 text-blue-700",
-                    purple: "from-purple-500/10 to-purple-600/5 border-purple-200 text-purple-700", 
-                    green: "from-green-500/10 to-green-600/5 border-green-200 text-green-700",
-                    orange: "from-orange-500/10 to-orange-600/5 border-orange-200 text-orange-700"
-                  };
-                  const icons = {
-                    "Automação": Bot,
-                    "IA": Brain,
-                    "Database": Database,
-                    "Frontend": Smartphone
-                  };
-                  const Icon = icons[quadrant.title as keyof typeof icons];
-                  
-                  return (
-                    <div key={index} className={`bg-gradient-to-br ${colors[quadrant.color as keyof typeof colors]} border rounded-2xl p-6 relative`}>
+                const colors = {
+                  blue: "from-blue-500/10 to-blue-600/5 border-blue-200 text-blue-700",
+                  purple: "from-purple-500/10 to-purple-600/5 border-purple-200 text-purple-700",
+                  green: "from-green-500/10 to-green-600/5 border-green-200 text-green-700",
+                  orange: "from-orange-500/10 to-orange-600/5 border-orange-200 text-orange-700"
+                };
+                const icons = {
+                  "Automação": Bot,
+                  "IA": Brain,
+                  "Database": Database,
+                  "Frontend": Smartphone
+                };
+                const Icon = icons[quadrant.title as keyof typeof icons];
+                return <div key={index} className={`bg-gradient-to-br ${colors[quadrant.color as keyof typeof colors]} border rounded-2xl p-6 relative`}>
                       <div className="flex items-center gap-3 mb-4">
                         <Icon className="w-6 h-6" />
                         <h3 className="font-bold text-lg">{quadrant.title}</h3>
                       </div>
                       <div className="grid grid-cols-2 gap-2">
-                        {quadrant.tools.map((tool, toolIndex) => (
-                          <div key={toolIndex} className="text-sm font-medium bg-background/50 rounded-lg px-3 py-2">
+                        {quadrant.tools.map((tool, toolIndex) => <div key={toolIndex} className="text-sm font-medium bg-background/50 rounded-lg px-3 py-2">
                             {tool}
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
-                    </div>
-                  );
-                })}
+                    </div>;
+              })}
               </div>
             </div>
           </div>
@@ -386,24 +373,21 @@ const Home = () => {
             <h3 className="text-2xl font-bold text-center mb-8">Processo de Avaliação</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {evaluationFramework.process.map((step, index) => {
-                const icons = {
-                  target: Target,
-                  settings: Settings,
-                  puzzle: Puzzle,
-                  check: CheckCircle
-                };
-                const Icon = icons[step.icon as keyof typeof icons];
-                
-                return (
-                  <div key={index} className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 text-center hover-scale">
+              const icons = {
+                target: Target,
+                settings: Settings,
+                puzzle: Puzzle,
+                check: CheckCircle
+              };
+              const Icon = icons[step.icon as keyof typeof icons];
+              return <div key={index} className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 text-center hover-scale">
                     <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
                       <Icon className="w-6 h-6 text-primary" />
                     </div>
                     <h4 className="font-semibold mb-2">{step.title}</h4>
                     <p className="text-sm text-muted-foreground">{step.description}</p>
-                  </div>
-                );
-              })}
+                  </div>;
+            })}
             </div>
           </div>
 
@@ -412,20 +396,17 @@ const Home = () => {
             <div>
               <h3 className="text-xl font-bold mb-6">Critérios de Decisão</h3>
               <div className="space-y-3">
-                {evaluationFramework.criteria.map((criterion, index) => (
-                  <div key={index} className="flex items-center gap-3">
+                {evaluationFramework.criteria.map((criterion, index) => <div key={index} className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
                     <span className="text-sm">{criterion}</span>
-                  </div>
-                ))}
+                  </div>)}
               </div>
             </div>
 
             <div>
               <h3 className="text-xl font-bold mb-6">Exemplos Práticos</h3>
               <div className="space-y-4">
-                {evaluationFramework.examples.map((example, index) => (
-                  <div key={index} className="bg-background/30 rounded-lg p-4 border border-border/30">
+                {evaluationFramework.examples.map((example, index) => <div key={index} className="bg-background/30 rounded-lg p-4 border border-border/30">
                     <div className="flex items-start gap-3">
                       <Activity className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
                       <div>
@@ -435,8 +416,7 @@ const Home = () => {
                         <p className="text-xs text-muted-foreground">{example.description}</p>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  </div>)}
               </div>
             </div>
           </div>
