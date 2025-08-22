@@ -283,7 +283,7 @@ const Home = () => {
               </div>
 
               {/* Quadrantes */}
-              <div className="grid grid-cols-2 gap-8 md:gap-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                 {evaluationFramework.quadrants.map((quadrant, index) => {
                   const colors = {
                     blue: "from-blue-500/10 to-blue-600/5 border-blue-200 text-blue-700",

@@ -246,7 +246,7 @@ const evaluationFramework = {
     {
       title: "Automação",
       color: "blue",
-      tools: ["n8n", "Zapier", "Make", "RPA", "Workflows"]
+      tools: ["n8n", "Zapier", "Make", "RPA", "Workflows", "Integrações diversas"]
     },
     {
       title: "IA",
@@ -261,7 +261,7 @@ const evaluationFramework = {
     {
       title: "Frontend",
       color: "orange",
-      tools: ["React", "Next.js", "Flutter", "PWAs", "Mobile"]
+      tools: ["React", "Next.js", "Flutter", "PWAs", "Mobile", "Bubble", "Lovable", "Trae"]
     }
   ],
   process: [
