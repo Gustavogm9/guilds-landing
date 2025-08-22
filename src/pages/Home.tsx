@@ -334,7 +334,7 @@ const Home = () => {
                 <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto mb-4">
                   <Shield className="h-6 w-6 text-blue-500" />
                 </div>
-                <h4 className="font-semibold mb-2">Segurança Bancária</h4>
+                <h4 className="font-semibold mb-2">Segurança</h4>
                 <p className="text-sm text-muted-foreground">
                   Criptografia de ponta a ponta e conformidade com LGPD para proteger seus dados
                 </p>
