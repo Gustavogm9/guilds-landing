@@ -118,51 +118,65 @@ const Home = () => {
               </Link>)}
 
             {/* Guilds Lab Card */}
-            <Link to="/lab" className="group bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover-scale animate-fade-in">
+            <Link to="/lab" className="group bg-card border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover-scale animate-fade-in">
               <div className="mb-6">
-                <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-4">
-                  <GraduationCap className="h-6 w-6 text-accent" />
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                    <GraduationCap className="h-6 w-6 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold group-hover:text-accent transition-colors">
+                      Guilds Lab
+                    </h3>
+                    <p className="text-accent font-medium text-sm">Pessoas no centro. Habilidades que escalam.</p>
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-3 group-hover:text-accent transition-colors">
-                  Guilds Lab
-                </h3>
                 <p className="text-muted-foreground mb-4">
-                  Workshops práticos em tecnologias emergentes, desenvolvimento de jogos e habilidades do futuro.
+                  Workshops práticos em tecnologia, desenvolvimento de jogos e aplicativos, 
+                  focados nas habilidades que o mercado pede.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="outline" className="text-xs border-accent/20 text-accent">Workshops</Badge>
-                  <Badge variant="outline" className="text-xs border-accent/20 text-accent">Educação</Badge>
-                  <Badge variant="outline" className="text-xs border-accent/20 text-accent">Soft Skills</Badge>
+                  <Badge variant="secondary" className="text-xs">Workshops</Badge>
+                  <Badge variant="secondary" className="text-xs">Educação Tech</Badge>
+                  <Badge variant="secondary" className="text-xs">Soft Skills</Badge>
+                  <Badge variant="secondary" className="text-xs">Certificação</Badge>
                 </div>
               </div>
-              <div className="flex items-center text-accent group-hover:translate-x-2 transition-transform">
-                <span className="text-sm font-medium">Explorar Lab</span>
+              <Button className="w-full bg-accent hover:bg-accent/90 text-white">
+                Explorar Guilds Lab
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </div>
+              </Button>
             </Link>
 
             {/* Guilds Craft Card */}
-            <Link to="/craft" className="group bg-gradient-to-br from-purple-500/10 to-purple-500/5 border border-purple-500/20 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover-scale animate-fade-in">
+            <Link to="/craft" className="group bg-card border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover-scale animate-fade-in">
               <div className="mb-6">
-                <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-4">
-                  <Lightbulb className="h-6 w-6 text-purple-500" />
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <Lightbulb className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">
+                      Guilds Craft
+                    </h3>
+                    <p className="text-primary font-medium text-sm">Da ideia ao impacto.</p>
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-3 group-hover:text-purple-500 transition-colors">
-                  Guilds Craft
-                </h3>
                 <p className="text-muted-foreground mb-4">
-                  Parcerias estratégicas e P&D para transformar ideias inovadoras em produtos de impacto real.
+                  Parcerias e P&D para testar, construir e lançar soluções com potencial real. 
+                  Transformamos ideias em produtos de impacto.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="outline" className="text-xs border-purple-500/20 text-purple-500">Parcerias</Badge>
-                  <Badge variant="outline" className="text-xs border-purple-500/20 text-purple-500">P&D</Badge>
-                  <Badge variant="outline" className="text-xs border-purple-500/20 text-purple-500">Inovação</Badge>
+                  <Badge variant="secondary" className="text-xs">Parcerias</Badge>
+                  <Badge variant="secondary" className="text-xs">P&D</Badge>
+                  <Badge variant="secondary" className="text-xs">Validação</Badge>
+                  <Badge variant="secondary" className="text-xs">Lançamento</Badge>
                 </div>
               </div>
-              <div className="flex items-center text-purple-500 group-hover:translate-x-2 transition-transform">
-                <span className="text-sm font-medium">Explorar Craft</span>
+              <Button className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white">
+                Explorar Guilds Craft
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </div>
+              </Button>
             </Link>
           </div>
         </div>
