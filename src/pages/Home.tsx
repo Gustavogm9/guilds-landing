@@ -16,7 +16,7 @@ import { workflowSteps, painPoints, services, valuePillars, testimonials, featur
 const Home = () => {
   return <div className="min-h-screen">
       {/* 1. Hero Section */}
-      <HeroSection className="relative overflow-hidden pb-24 md:pb-32">
+      <HeroSection className="relative overflow-hidden pb-16 md:pb-20">
         <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/50 to-background opacity-80"></div>
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
         <div className="relative">
@@ -67,9 +67,9 @@ const Home = () => {
       </HeroSection>
 
       {/* 2. Diferenciais Competitivos */}
-      <section className="py-24 md:py-32 bg-gradient-to-br from-background via-muted/30 to-background">
+      <section className="py-16 md:py-20 bg-gradient-to-br from-background via-muted/30 to-background">
         <div className="container">
-          <div className="text-center mb-20">
+          <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Nossos <span className="text-gradient bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Diferenciais Competitivos</span>
             </h2>
@@ -132,9 +132,9 @@ const Home = () => {
 
 
       {/* 4. O que fazemos - Grid 2x2 */}
-      <section className="py-24 md:py-32 bg-muted/30">
+      <section className="py-16 md:py-20 bg-muted/30">
         <div className="container">
-          <div className="text-center mb-20">
+          <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               O que <span className="text-gradient">fazemos</span>
             </h2>
@@ -233,9 +233,9 @@ const Home = () => {
       </section>
 
       {/* 5. Dores que resolvemos */}
-      <section className="py-24 md:py-32 bg-background">
+      <section className="py-16 md:py-20 bg-background">
         <div className="container">
-          <div className="text-center mb-20">
+          <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Dores que <span className="text-gradient">resolvemos</span>
             </h2>
@@ -268,7 +268,7 @@ const Home = () => {
       </section>
 
       {/* 6. Como trabalhamos - 5 passos */}
-      <section className="py-24 md:py-32 bg-muted/30">
+      <section className="py-16 md:py-20 bg-muted/30">
         <div className="container">
           <div className="text-center mb-20">
             <div className="inline-flex items-center gap-3 bg-primary/10 px-6 py-3 rounded-full mb-6">
@@ -384,9 +384,9 @@ const Home = () => {
       </section>
 
       {/* 7. Como Resolvemos - Framework de Avaliação */}
-      <section className="py-24 md:py-32 bg-gradient-to-br from-background via-muted/20 to-accent/10">
+      <section className="py-16 md:py-20 bg-gradient-to-br from-background via-muted/20 to-accent/10">
         <div className="container">
-          <div className="text-center mb-20">
+          <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Como <span className="text-gradient">Resolvemos</span>
             </h2>
@@ -518,9 +518,9 @@ const Home = () => {
       
 
       {/* 9. Stack & Integrações */}
-      <section className="py-24 md:py-32 bg-background">
+      <section className="py-16 md:py-20 bg-background">
         <div className="container">
-          <div className="text-center mb-20">
+          <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Por que nossos <span className="text-gradient">sistemas são confiáveis</span>
             </h2>
@@ -632,8 +632,8 @@ const Home = () => {
       </section>
 
       {/* 9. Guilds Lab & Guilds Craft - Seção Dedicada */}
-      <ContentSection className="py-24 md:py-32">
-        <div className="text-center mb-20">
+      <ContentSection className="py-16 md:py-20">
+          <div className="text-center mb-12 md:mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Nossos <span className="text-gradient bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Produtos</span>
           </h2>
@@ -704,7 +704,7 @@ const Home = () => {
       </ContentSection>
 
       {/* 10. CTA Final */}
-      <section className="py-24 md:py-32 bg-gradient-to-br from-primary to-accent text-primary-foreground relative overflow-hidden">
+      <section className="py-16 md:py-20 bg-gradient-to-br from-primary to-accent text-primary-foreground relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="container relative">
           <div className="text-center max-w-3xl mx-auto">
