@@ -41,12 +41,9 @@ const Section = React.forwardRef<HTMLElement, SectionProps>(({
   as: Comp = "section",
   ...props
 }, ref) => {
-  return <Comp className={cn(sectionVariants({
-    spacing,
-    background
-  }), className)} ref={ref} {...props}>
-        
-      </Comp>;
+  return (
+    <Comp className={cn(sectionVariants({ spacing, background }), className)} ref={ref} {...props} />
+  );
 });
 Section.displayName = "Section";
 
