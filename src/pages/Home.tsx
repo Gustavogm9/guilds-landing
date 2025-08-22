@@ -12,6 +12,10 @@ import { ArrowRight, Clock, Unlink, Users, Brain, Search, FileText, Code, BarCha
 import { GuildShield, GuildHammer, GuildCrest } from "@/components/icons";
 import heroImage from "@/assets/hero-image.jpg";
 import teamImage from "@/assets/team-collaboration.jpg";
+import reactLogo from "@/assets/tech-logos/react-logo.jpg";
+import openaiLogo from "@/assets/tech-logos/openai-logo.jpg";
+import nodejsLogo from "@/assets/tech-logos/nodejs-logo.jpg";
+import whatsappLogo from "@/assets/tech-logos/whatsapp-logo.jpg";
 import { clientLogos, stackLogos, testimonials, featuredCases, workflowSteps, painPoints, services, valuePillars } from "@/data/mockData";
 const Home = () => {
   return <div className="min-h-screen">
@@ -252,27 +256,110 @@ const Home = () => {
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Stack & <span className="text-gradient">Integrações</span>
+              Por que nossos <span className="text-gradient">sistemas são confiáveis</span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Tecnologias de ponta que utilizamos para criar soluções robustas
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Utilizamos as tecnologias mais modernas e seguras do mercado para garantir que sua solução seja rápida, escalável e sempre disponível
             </p>
           </div>
 
-          <LogoStrip title="Tecnologias que dominamos" logos={stackLogos} />
+          {/* Principais benefícios com logos */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+             <div className="text-center group hover-scale">
+               <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                 <img src={reactLogo} alt="Interface moderna" className="w-12 h-12 object-contain" />
+               </div>
+               <h3 className="font-semibold mb-2 text-primary">Interface Moderna</h3>
+               <p className="text-sm text-muted-foreground">
+                 Interfaces responsivas e intuitivas que funcionam perfeitamente em qualquer dispositivo
+               </p>
+             </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-            <div className="text-center">
-              <h3 className="font-semibold mb-2">Frontend</h3>
-              <p className="text-sm text-muted-foreground">React, Next.js, TypeScript, Tailwind CSS</p>
+             <div className="text-center group hover-scale">
+               <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-accent/5 flex items-center justify-center group-hover:bg-accent/10 transition-colors">
+                 <img src={openaiLogo} alt="Inteligência Artificial" className="w-12 h-12 object-contain" />
+               </div>
+               <h3 className="font-semibold mb-2 text-accent">IA Integrada</h3>
+               <p className="text-sm text-muted-foreground">
+                 Inteligência artificial para automatizar processos e oferecer insights inteligentes
+               </p>
+             </div>
+
+             <div className="text-center group hover-scale">
+               <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-green-500/5 flex items-center justify-center group-hover:bg-green-500/10 transition-colors">
+                 <img src={nodejsLogo} alt="Performance garantida" className="w-12 h-12 object-contain" />
+               </div>
+               <h3 className="font-semibold mb-2 text-green-600">Performance Garantida</h3>
+               <p className="text-sm text-muted-foreground">
+                 Sistemas otimizados que suportam milhares de usuários simultâneos sem lentidão
+               </p>
+             </div>
+
+             <div className="text-center group hover-scale">
+               <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-emerald-500/5 flex items-center justify-center group-hover:bg-emerald-500/10 transition-colors">
+                 <img src={whatsappLogo} alt="Integração total" className="w-12 h-12 object-contain" />
+               </div>
+               <h3 className="font-semibold mb-2 text-emerald-600">Integração Total</h3>
+               <p className="text-sm text-muted-foreground">
+                 Conectamos seu sistema com WhatsApp, CRMs, ERPs e qualquer ferramenta que usar
+               </p>
+             </div>
+          </div>
+
+          {/* Garantias técnicas */}
+          <div className="bg-muted/30 rounded-3xl p-8 md:p-12">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold mb-4">Garantias técnicas que oferecemos</h3>
+              <p className="text-muted-foreground">
+                Trabalhamos apenas com tecnologias comprovadas e com suporte de longo prazo
+              </p>
             </div>
-            <div className="text-center">
-              <h3 className="font-semibold mb-2">Backend & IA</h3>
-              <p className="text-sm text-muted-foreground">Node.js, Python, OpenAI, Supabase</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Shield className="h-6 w-6 text-blue-500" />
+                </div>
+                <h4 className="font-semibold mb-2">Segurança Bancária</h4>
+                <p className="text-sm text-muted-foreground">
+                  Criptografia de ponta a ponta e conformidade com LGPD para proteger seus dados
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Zap className="h-6 w-6 text-green-500" />
+                </div>
+                <h4 className="font-semibold mb-2">99.9% Uptime</h4>
+                <p className="text-sm text-muted-foreground">
+                  Infraestrutura em nuvem com alta disponibilidade e backup automático
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Rocket className="h-6 w-6 text-purple-500" />
+                </div>
+                <h4 className="font-semibold mb-2">Evolução Contínua</h4>
+                <p className="text-sm text-muted-foreground">
+                  Atualizações automáticas e novas funcionalidades sem interrupção do serviço
+                </p>
+              </div>
             </div>
-            <div className="text-center">
-              <h3 className="font-semibold mb-2">Automação</h3>
-              <p className="text-sm text-muted-foreground">n8n, Zapier, WhatsApp Business, CRMs</p>
+          </div>
+
+          {/* Parceiros tecnológicos */}
+          <div className="mt-16 text-center">
+            <p className="text-sm text-muted-foreground mb-8">
+              Parceiros tecnológicos confiáveis
+            </p>
+            <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
+              <span className="text-sm font-medium">React</span>
+              <span className="text-sm font-medium">OpenAI</span>
+              <span className="text-sm font-medium">Node.js</span>
+              <span className="text-sm font-medium">Supabase</span>
+              <span className="text-sm font-medium">Vercel</span>
+              <span className="text-sm font-medium">WhatsApp Business</span>
             </div>
           </div>
         </div>
