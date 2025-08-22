@@ -297,3 +297,24 @@
     filter: drop-shadow(0 0 20px hsl(var(--brand-primary) / 0.6));
   }
 }
+
+@keyframes progressBar {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+/* Accessibility - Respect motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-glow,
+  .animate-forge,
+  .animate-shield-pulse {
+    animation: none !important;
+  }
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

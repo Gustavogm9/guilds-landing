@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ChevronLeft, ChevronRight, Quote, Play, Pause } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
@@ -24,10 +24,14 @@ interface TestimonialCarouselProps {
 export function TestimonialCarousel({ 
   testimonials, 
   autoRotate = true, 
-  rotateInterval = 6000,
+  rotateInterval = 12000,
   className = "" 
 }: TestimonialCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(autoRotate);
+  const [isPaused, setIsPaused] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
@@ -45,13 +49,38 @@ export function TestimonialCarousel({
     );
   };
 
-  // Auto-rotate functionality
+  const togglePlayPause = () => {
+    setIsPlaying(!isPlaying);
+    setIsPaused(!isPlaying);
+  };
+
+  const handleMouseEnter = () => {
+    if (isPlaying) setIsPaused(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (isPlaying) setIsPaused(false);
+  };
+
+  // Auto-rotate functionality with pause support
   useEffect(() => {
-    if (autoRotate && testimonials.length > 1) {
-      const interval = setInterval(goToNext, rotateInterval);
-      return () => clearInterval(interval);
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    if (isPlaying && !isPaused && !prefersReducedMotion && testimonials.length > 1) {
+      intervalRef.current = setInterval(goToNext, rotateInterval);
+    } else if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
-  }, [autoRotate, rotateInterval, testimonials.length]);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [isPlaying, isPaused, rotateInterval, testimonials.length]);
 
   if (!testimonials.length) return null;
 
@@ -63,7 +92,12 @@ export function TestimonialCarousel({
   }
 
   return (
-    <section className={`section ${className}`} aria-label="Depoimentos de clientes">
+    <section 
+      className={`section ${className}`} 
+      aria-label="Depoimentos de clientes"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <div className="container">
         <div className="max-w-4xl mx-auto text-center">
           {/* Quote Icon */}
@@ -104,51 +138,77 @@ export function TestimonialCarousel({
 
           {/* Navigation */}
           {testimonials.length > 1 && (
-            <div className="flex items-center justify-center space-x-6 mt-12">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={goToPrevious}
-                className="p-2 h-10 w-10 rounded-full border-neutral-300 hover:border-brand-primary hover:bg-brand-primary hover:text-white transition-all"
-                aria-label="Depoimento anterior"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
+            <div className="flex flex-col items-center space-y-6 mt-12">
+              {/* Main Controls */}
+              <div className="flex items-center justify-center space-x-6">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={goToPrevious}
+                  className="p-2 h-10 w-10 rounded-full border-neutral-300 hover:border-brand-primary hover:bg-brand-primary hover:text-white transition-all"
+                  aria-label="Depoimento anterior"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
 
-              {/* Dots Indicator */}
-              <div className="flex space-x-2" role="tablist">
-                {testimonials.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => goToSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      index === currentIndex 
-                        ? 'bg-brand-primary scale-110' 
-                        : 'bg-neutral-300 hover:bg-neutral-400'
-                    }`}
-                    aria-label={`Ir para depoimento ${index + 1}`}
-                    role="tab"
-                    aria-selected={index === currentIndex}
-                  />
-                ))}
+                {/* Dots Indicator */}
+                <div className="flex space-x-2" role="tablist">
+                  {testimonials.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => goToSlide(index)}
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        index === currentIndex 
+                          ? 'bg-brand-primary scale-110' 
+                          : 'bg-neutral-300 hover:bg-neutral-400'
+                      }`}
+                      aria-label={`Ir para depoimento ${index + 1}`}
+                      role="tab"
+                      aria-selected={index === currentIndex}
+                    />
+                  ))}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={goToNext}
+                  className="p-2 h-10 w-10 rounded-full border-neutral-300 hover:border-brand-primary hover:bg-brand-primary hover:text-white transition-all"
+                  aria-label="Próximo depoimento"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
               </div>
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={goToNext}
-                className="p-2 h-10 w-10 rounded-full border-neutral-300 hover:border-brand-primary hover:bg-brand-primary hover:text-white transition-all"
-                aria-label="Próximo depoimento"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+              {/* Play/Pause Control */}
+              {autoRotate && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={togglePlayPause}
+                  className="text-muted-foreground hover:text-brand-primary transition-colors"
+                  aria-label={isPlaying ? "Pausar rotação automática" : "Iniciar rotação automática"}
+                >
+                  {isPlaying ? (
+                    <><Pause className="h-4 w-4 mr-2" /> Pausar</>
+                  ) : (
+                    <><Play className="h-4 w-4 mr-2" /> Reproduzir</>
+                  )}
+                </Button>
+              )}
             </div>
           )}
 
           {/* Progress Bar */}
-          {autoRotate && testimonials.length > 1 && (
-            <div className="mt-6 w-full max-w-xs mx-auto bg-neutral-200 rounded-full h-1">
-              <div className="h-full bg-brand-primary rounded-full animate-pulse" />
+          {isPlaying && !isPaused && testimonials.length > 1 && (
+            <div className="mt-4 w-full max-w-xs mx-auto bg-neutral-200 rounded-full h-1 overflow-hidden">
+              <div 
+                ref={progressRef}
+                className="h-full bg-brand-primary rounded-full transition-all duration-200"
+                style={{
+                  animation: `progressBar ${rotateInterval}ms linear infinite`
+                }}
+              />
             </div>
           )}
         </div>

@@ -20,22 +20,32 @@ export function CTAStickyMobile({
   const [isVisible, setIsVisible] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Hide/show based on scroll position
+  // Hide/show based on scroll position with throttling
   useEffect(() => {
     let lastScrollY = window.scrollY;
+    let ticking = false;
     
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Show when scrolling up, hide when scrolling down
-      if (currentScrollY < lastScrollY || currentScrollY < 100) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-        setIsExpanded(false);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          
+          // Show when scrolling up, hide when scrolling down (with threshold)
+          if (Math.abs(currentScrollY - lastScrollY) > 10) {
+            if (currentScrollY < lastScrollY || currentScrollY < 100) {
+              setIsVisible(true);
+            } else {
+              setIsVisible(false);
+              setIsExpanded(false);
+            }
+            lastScrollY = currentScrollY;
+          }
+          
+          ticking = false;
+        });
+        
+        ticking = true;
       }
-      
-      lastScrollY = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -65,7 +75,7 @@ export function CTAStickyMobile({
     `}>
       {/* Expanded State */}
       {isExpanded && (
-        <div className="mb-3 bg-white dark:bg-neutral-800 rounded-2xl shadow-large border border-neutral-200 dark:border-neutral-700 p-4 min-w-[280px] animate-scale-in">
+        <div className="mb-3 bg-background border border-border rounded-2xl shadow-large p-4 min-w-[280px] animate-scale-in">
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
@@ -122,24 +132,20 @@ export function CTAStickyMobile({
       <div className="relative">
         <Button
           onClick={toggleExpanded}
-          className="h-14 w-14 rounded-full shadow-large bg-brand-primary hover:bg-brand-primary/90 text-white border-0 p-0 hover:scale-105 transition-all duration-200"
+          className="h-14 w-14 rounded-full shadow-large bg-brand-primary hover:bg-brand-primary/90 text-white border-0 p-0 hover:scale-105 transition-all duration-300"
           aria-label={isExpanded ? "Fechar menu de contato" : "Abrir menu de contato"}
         >
           {isExpanded ? (
             <X className="h-6 w-6" />
           ) : (
-            <>
-              <MessageCircle className="h-6 w-6" />
-              {/* Pulse Animation */}
-              <div className="absolute inset-0 rounded-full bg-brand-primary animate-ping opacity-75"></div>
-            </>
+            <MessageCircle className="h-6 w-6" />
           )}
         </Button>
 
         {/* Notification Badge */}
         {!isExpanded && (
           <div className="absolute -top-1 -right-1 w-5 h-5 bg-success rounded-full flex items-center justify-center">
-            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+            <div className="w-2 h-2 bg-white rounded-full"></div>
           </div>
         )}
       </div>
