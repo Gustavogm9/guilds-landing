@@ -8,7 +8,7 @@ import { Section, HeroSection, ContentSection, FeatureSection } from "@/componen
 import { Grid, ServiceGrid, FeatureGrid, MetricGrid, CaseGrid } from "@/components/ui/grid";
 import { HeroImage } from "@/components/ui/image";
 import { Card } from "@/components/ui/card";
-import { Search, FileText, Code, BarChart3, Rocket, Clock, Unlink, Users, Brain, Globe, Zap, Shield, ArrowRight, Star, CheckCircle, Play, ChevronRight, MessageSquare, Target, TrendingUp, Award, Lightbulb, Settings, Puzzle, Database, Smartphone, Bot, Activity, BookOpen, Hammer, RefreshCw, Map, Edit } from 'lucide-react';
+import { Search, FileText, Code, BarChart3, Rocket, Clock, Unlink, Users, Brain, Globe, Zap, Shield, ArrowRight, Star, CheckCircle, Play, ChevronRight, MessageSquare, Target, TrendingUp, Award, Lightbulb, Settings, Puzzle, Database, Smartphone, Bot, Activity, BookOpen, Hammer, RefreshCw } from 'lucide-react';
 import { GuildShield, GuildHammer, GuildCrest } from "@/components/icons";
 import heroImage from "@/assets/hero-image.jpg";
 import teamImage from "@/assets/team-collaboration.jpg";
@@ -267,20 +267,15 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 6. G-FORGE Methodology */}
+      {/* 6. Como trabalhamos - 5 passos */}
       <section className="py-20 bg-muted/30">
         <div className="container">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-3 mb-4">
-              <GuildHammer className="w-8 h-8 text-primary" variant="forge" />
-              <h2 className="text-3xl md:text-4xl font-bold">
-                <span className="text-gradient">G-FORGE</span>
-              </h2>
-              <GuildHammer className="w-8 h-8 text-primary" variant="forge" />
-            </div>
-            <p className="text-lg text-primary font-semibold mb-2">Framework for Organizational Rapid Growth & Excellence</p>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Nossa metodologia proprietária que transforma organizações através de soluções digitais estratégicas
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Como <span className="text-gradient">trabalhamos</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Nossa metodologia comprovada em 5 etapas para garantir resultados
             </p>
           </div>
 
@@ -288,34 +283,27 @@ const Home = () => {
             {/* Timeline line - hidden on mobile */}
             <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-border -translate-y-1/2"></div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
               {workflowSteps.map((step, index) => {
               const icons = {
-                map: Map,
                 search: Search,
-                edit: Edit,
+                blueprint: FileText,
                 code: Code,
-                users: Users,
-                chart: BarChart3
+                chart: BarChart3,
+                rocket: Rocket
               };
               const Icon = icons[step.icon as keyof typeof icons];
-              return <div key={index} className="text-center space-y-4 relative group">
-                    <div className="w-16 h-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center mx-auto relative z-10 group-hover:scale-110 transition-transform duration-300">
+              return <div key={index} className="text-center space-y-4 relative">
+                    <div className="w-16 h-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center mx-auto relative z-10">
                       <Icon className="h-8 w-8" />
                     </div>
-                    <div className="bg-background rounded-lg p-4 shadow-sm border border-border group-hover:shadow-md transition-shadow duration-300">
-                      <div className="text-xs font-semibold text-primary mb-1 tracking-wider">FASE {step.number}</div>
-                      <h3 className="font-bold mb-2 tracking-wide text-sm">{step.title}</h3>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{step.description}</p>
+                    <div className="bg-background rounded-lg p-4 shadow-sm border border-border">
+                      <div className="text-sm font-medium text-primary mb-1">{step.number}</div>
+                      <h3 className="font-semibold mb-2">{step.title}</h3>
+                      <p className="text-sm text-muted-foreground">{step.description}</p>
                     </div>
                   </div>;
             })}
-            </div>
-            
-            <div className="text-center mt-12">
-              <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-                Cada fase do G-FORGE é projetada para construir sobre a anterior, garantindo um crescimento organizacional sustentável e resultados excepcionais.
-              </p>
             </div>
           </div>
         </div>
@@ -416,7 +404,7 @@ const Home = () => {
             </div>
 
             <div>
-              <h3 className="text-xl font-bold mb-6">Exemplos Práticos</h3>
+              
               <div className="space-y-4">
                 {evaluationFramework.examples.map((example, index) => <div key={index} className="bg-background/30 rounded-lg p-4 border border-border/30">
                     <div className="flex items-start gap-3">
