@@ -270,20 +270,36 @@ const Home = () => {
       {/* 6. Como trabalhamos - 5 passos */}
       <section className="py-20 bg-muted/30">
         <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Como <span className="text-gradient">trabalhamos</span>
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center gap-3 bg-primary/10 px-6 py-3 rounded-full mb-6">
+              <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
+                <Hammer className="w-4 h-4 text-primary" />
+              </div>
+              <span className="text-sm font-semibold text-primary">Metodologia Proprietária</span>
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <span className="text-gradient bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                G-FORGE
+              </span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Nossa metodologia comprovada em 5 etapas para garantir resultados
+            
+            <p className="text-xl font-medium text-muted-foreground mb-4 max-w-4xl mx-auto">
+              Framework for Organizational Rapid Growth & Excellence
+            </p>
+            
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Nossa metodologia exclusiva que combina diagnóstico estratégico, design thinking e implementação ágil 
+              para acelerar o crescimento organizacional de forma sustentável e mensurável.
             </p>
           </div>
 
           <div className="relative">
-            {/* Timeline line - hidden on mobile */}
-            <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-border -translate-y-1/2"></div>
+            {/* Enhanced Timeline with gradient */}
+            <div className="hidden lg:block absolute top-1/2 left-8 right-8 h-1 bg-gradient-to-r from-primary/20 via-accent/40 to-primary/20 rounded-full -translate-y-1/2"></div>
+            <div className="hidden lg:block absolute top-1/2 left-8 right-8 h-0.5 bg-gradient-to-r from-primary via-accent to-primary rounded-full -translate-y-1/2"></div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-8">
               {workflowSteps.map((step, index) => {
               const icons = {
                 map: Map,
@@ -294,17 +310,74 @@ const Home = () => {
                 chart: BarChart3
               };
               const Icon = icons[step.icon as keyof typeof icons] || Search;
-              return <div key={index} className="text-center space-y-4 relative">
-                    <div className="w-16 h-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center mx-auto relative z-10">
-                      <Icon className="h-8 w-8" />
+              
+              // Color progression through the steps
+              const stepColors = [
+                'from-blue-500/20 to-blue-600/10 border-blue-200/50',
+                'from-purple-500/20 to-purple-600/10 border-purple-200/50', 
+                'from-green-500/20 to-green-600/10 border-green-200/50',
+                'from-orange-500/20 to-orange-600/10 border-orange-200/50',
+                'from-red-500/20 to-red-600/10 border-red-200/50',
+                'from-cyan-500/20 to-cyan-600/10 border-cyan-200/50'
+              ];
+              
+              return <div key={index} className="text-center space-y-6 relative group animate-fade-in" style={{animationDelay: `${index * 0.1}s`}}>
+                    {/* Step Number Badge */}
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20">
+                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
+                        {step.number}
+                      </div>
                     </div>
-                    <div className="bg-background rounded-lg p-4 shadow-sm border border-border">
-                      <div className="text-sm font-medium text-primary mb-1">{step.number}</div>
-                      <h3 className="font-semibold mb-2">{step.title}</h3>
-                      <p className="text-sm text-muted-foreground">{step.description}</p>
+                    
+                    {/* Icon Container with enhanced styling */}
+                    <div className="relative">
+                      <div className={`w-20 h-20 bg-gradient-to-br ${stepColors[index]} rounded-3xl flex items-center justify-center mx-auto relative z-10 group-hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl`}>
+                        <Icon className="h-10 w-10 text-primary group-hover:text-accent transition-colors duration-300" />
+                      </div>
+                      
+                      {/* Floating particles effect */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    </div>
+                    
+                    {/* Step Content */}
+                    <div className="bg-background/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-border/50 group-hover:shadow-xl group-hover:border-primary/20 transition-all duration-300 min-h-[200px] flex flex-col justify-between">
+                      <div>
+                        <h3 className="text-xl font-bold mb-3 text-primary group-hover:text-accent transition-colors">
+                          {step.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {step.description}
+                        </p>
+                      </div>
+                      
+                      {/* Step benefit indicator */}
+                      <div className="mt-4 pt-4 border-t border-border/30">
+                        <div className="flex items-center justify-center gap-2 text-xs font-medium text-primary/70">
+                          <CheckCircle className="w-4 h-4" />
+                          <span>Entrega {index === 0 ? 'Estratégica' : index === 1 ? 'Analítica' : index === 2 ? 'Criativa' : index === 3 ? 'Técnica' : index === 4 ? 'Operacional' : 'Evolutiva'}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>;
             })}
+            </div>
+            
+            {/* Methodology CTA */}
+            <div className="text-center mt-16">
+              <div className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-3xl p-8 border border-primary/20">
+                <h3 className="text-2xl font-bold mb-4">
+                  Pronto para acelerar seu crescimento?
+                </h3>
+                <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                  Descubra como nossa metodologia G-FORGE pode transformar seus desafios em oportunidades de crescimento exponencial.
+                </p>
+                <Button asChild variant="hero" size="lg" className="group">
+                  <Link to="/contato">
+                    Iniciar Diagnóstico G-FORGE
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
