@@ -3,40 +3,37 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
   ArrowRight,
-  Code,
-  Zap,
-  Gamepad2,
-  Users,
   Shield,
   Sparkles,
   Target,
   Trophy
 } from "lucide-react";
+import { GuildShield, GuildHammer, GuildCrest } from "@/components/icons";
 import heroImage from "@/assets/hero-image.jpg";
 
 const services = [
   {
-    icon: Code,
+    icon: GuildHammer,
     title: "Software & Apps",
-    description: "Desenvolvimento completo de soluções digitais escaláveis",
+    description: "Desenvolvemos soluções digitais sob medida para sua empresa",
     href: "/servicos/software-apps"
   },
   {
-    icon: Zap,
+    icon: GuildCrest,
     title: "Automação & IA",
-    description: "Inteligência artificial para otimizar seus processos",
+    description: "Forjamos sistemas inteligentes para otimizar seus processos",
     href: "/servicos/automacao-ia"
   },
   {
-    icon: Gamepad2,
+    icon: GuildShield,
     title: "Jogos & Gamificação",
-    description: "Engajamento através de experiências interativas",
+    description: "Criamos experiências que engajam e transformam equipes",
     href: "/servicos/jogos-gamificacao"
   },
   {
-    icon: Users,
+    icon: GuildCrest,
     title: "Consultoria",
-    description: "Estratégia e descoberta de oportunidades de negócio",
+    description: "Estratégia e descoberta de oportunidades digitais",
     href: "/servicos/consultoria"
   }
 ];
@@ -75,35 +72,37 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-guild-hero py-24 lg:py-32">
+      <section className="relative overflow-hidden bg-gradient-forge py-24 lg:py-32">
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Content */}
             <div className="space-y-8">
               <div className="space-y-4">
-                <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">
-                  🚀 Construindo o futuro digital
+                <Badge className="bg-guild-gold/10 text-guild-gold border-guild-gold/20 animate-glow">
+                  ⚡ Forjando o futuro digital
                 </Badge>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-sora font-bold leading-tight">
-                  Tecnologia de{" "}
-                  <span className="text-gradient">elite</span>{" "}
-                  para sua empresa
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-sora font-bold leading-tight text-white">
+                  Sistemas{" "}
+                  <span className="text-gradient bg-gradient-to-r from-guild-gold to-guild-silver bg-clip-text text-transparent">inteligentes</span>{", "}
+                  resultados reais
                 </h1>
-                <p className="text-lg text-muted-foreground max-w-lg">
-                  Unimos a sabedoria das guildas ancestrais com tecnologia de ponta 
-                  para criar soluções digitais que transformam negócios.
+                <p className="text-lg text-neutral-300 max-w-lg">
+                  Como uma guilda medieval, unimos maestria artesanal com tecnologia de ponta 
+                  para forjar soluções digitais que transformam negócios.
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild className="btn-hero">
+                <Button asChild className="btn-forge shadow-guild hover:shadow-forge">
                   <Link to="/contato">
-                    Iniciar Projeto
+                    <GuildHammer className="mr-2 h-4 w-4" variant="forge" />
+                    Forjar Meu Projeto
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" className="btn-glass">
+                <Button asChild className="btn-shield hover:btn-heraldic">
                   <Link to="/cases">
+                    <GuildShield className="mr-2 h-4 w-4" variant="outline" />
                     Ver Cases
                   </Link>
                 </Button>
@@ -112,11 +111,11 @@ const Home = () => {
               {/* Quick Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8">
                 {stats.map((stat, index) => (
-                  <div key={index} className="text-center">
-                    <div className="text-2xl font-bold text-brand-primary">
+                  <div key={index} className="text-center card-shield p-4 animate-float">
+                    <div className="text-2xl font-bold text-guild-gold animate-glow">
                       {stat.number}
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-sm text-neutral-400">
                       {stat.label}
                     </div>
                   </div>
@@ -126,11 +125,11 @@ const Home = () => {
 
             {/* Hero Image */}
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/20 to-brand-accent/20 rounded-3xl blur-3xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-guild-gold/20 to-guild-silver/20 rounded-3xl blur-3xl animate-shield-pulse"></div>
               <img
                 src={heroImage}
-                alt="Guilds - Tecnologia do futuro"
-                className="relative rounded-3xl shadow-2xl animate-float"
+                alt="Guilds - Forjando o futuro digital"
+                className="relative rounded-3xl shadow-forge animate-float"
               />
             </div>
           </div>
@@ -138,14 +137,15 @@ const Home = () => {
       </section>
 
       {/* Services Section */}
-      <section className="py-24 bg-background">
-        <div className="container">
+      <section className="py-24 bg-background relative">
+        <div className="absolute inset-0 guild-border opacity-20"></div>
+        <div className="container relative">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-sora font-bold mb-4">
-              Nossos Serviços
+              Arsenal de <span className="text-gradient bg-gradient-to-r from-guild-gold to-brand-primary bg-clip-text text-transparent">Serviços</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Soluções completas para levar sua empresa ao próximo nível tecnológico
+              Cada solução é forjada com precisão medieval e tecnologia de ponta
             </p>
           </div>
 
@@ -156,21 +156,22 @@ const Home = () => {
                 <Link
                   key={index}
                   to={service.href}
-                  className="group card-elevated p-8 hover:scale-105 transition-all duration-300"
+                  className="group card-heraldic p-8 hover:card-shield transition-all duration-300 animate-fade-in"
+                  style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div className="mb-6">
-                    <div className="w-14 h-14 bg-brand-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-brand-primary group-hover:text-white transition-all duration-300">
-                      <Icon className="h-7 w-7 text-brand-primary group-hover:text-white" />
+                    <div className="w-14 h-14 bg-guild-gold/10 rounded-2xl flex items-center justify-center group-hover:bg-guild-gold group-hover:text-black transition-all duration-300 animate-glow">
+                      <Icon className="h-7 w-7 text-guild-gold group-hover:text-black" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 group-hover:text-brand-primary transition-colors">
+                  <h3 className="text-xl font-semibold mb-3 group-hover:text-guild-gold transition-colors">
                     {service.title}
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
                     {service.description}
                   </p>
-                  <div className="flex items-center mt-4 text-brand-primary group-hover:translate-x-2 transition-transform">
-                    <span className="text-sm font-medium">Saiba mais</span>
+                  <div className="flex items-center mt-4 text-guild-gold group-hover:translate-x-2 transition-transform">
+                    <span className="text-sm font-medium">Descobrir</span>
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </div>
                 </Link>
@@ -250,26 +251,29 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-neutral-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-guild-primary opacity-10"></div>
+      <section className="py-24 bg-gradient-forge text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-guild-primary opacity-10 animate-shield-pulse"></div>
         <div className="container relative">
           <div className="text-center max-w-3xl mx-auto">
+            <GuildCrest className="h-16 w-16 mx-auto mb-6 text-guild-gold animate-glow" variant="crown" />
             <h2 className="text-3xl md:text-4xl font-sora font-bold mb-6">
-              Pronto para transformar seu negócio?
+              Pronto para forjar seu <span className="text-guild-gold">futuro digital</span>?
             </h2>
             <p className="text-lg text-neutral-300 mb-8">
-              Junte-se a mais de 50 empresas que já transformaram 
-              seus negócios com nossas soluções tecnológicas.
+              Junte-se às mais de 50 empresas que já transformaram 
+              seus negócios com nossa maestria tecnológica.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild className="btn-hero">
+              <Button asChild className="btn-forge shadow-guild hover:shadow-forge">
                 <Link to="/contato">
-                  Começar Agora
+                  <GuildHammer className="mr-2 h-4 w-4" variant="forge" />
+                  Iniciar Forja
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="btn-glass border-white/20 text-white hover:bg-white/10">
+              <Button asChild className="btn-shield border-guild-silver/20 text-white hover:bg-guild-silver/10">
                 <Link to="/lab">
+                  <GuildShield className="mr-2 h-4 w-4" variant="outline" />
                   Explorar Guilds Lab
                 </Link>
               </Button>

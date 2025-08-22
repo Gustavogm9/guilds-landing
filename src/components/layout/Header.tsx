@@ -26,6 +26,8 @@ import {
 import { cn } from "@/lib/utils";
 
 import { GuildShield } from "@/components/icons";
+import guildsLogoFull from "@/assets/guilds-logo-full.png";
+import guildsLogoShield from "@/assets/guilds-logo-shield.png";
 
 const services = [
   {
@@ -75,22 +77,12 @@ const Header = () => {
         <div className="container">
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-3 group">
-              <div className="relative">
-                <GuildShield 
-                  className="h-10 w-10 text-brand-primary group-hover:text-brand-accent transition-colors duration-200" 
-                  variant="filled"
-                />
-                <div className="absolute inset-0 bg-guild-gold rounded-full blur-sm opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-bold font-sora text-neutral-900 dark:text-white">
-                  Guilds
-                </span>
-                <span className="text-xs text-brand-primary font-medium -mt-1">
-                  Digital Forge
-                </span>
-              </div>
+            <Link to="/" className="flex items-center group">
+              <img 
+                src={guildsLogoFull} 
+                alt="Guilds - Sistemas inteligentes, resultados reais" 
+                className="h-8 md:h-10 w-auto transition-transform duration-200 group-hover:scale-105"
+              />
             </Link>
 
             {/* Desktop Navigation */}
@@ -155,13 +147,13 @@ const Header = () => {
             {/* CTA Button */}
             <div className="hidden md:block">
               <Button 
-                className="btn-hero group relative overflow-hidden shadow-guild hover:shadow-forge"
+                className="btn-forge group relative overflow-hidden shadow-guild hover:shadow-forge"
                 asChild
               >
                 <Link to="/contato">
                   <span className="relative z-10 flex items-center gap-2">
                     <GuildShield className="h-4 w-4" />
-                    Falar com a Guilds
+                    Forjar Projeto
                   </span>
                 </Link>
               </Button>
@@ -180,12 +172,12 @@ const Header = () => {
                 <div className="flex flex-col h-full">
                   {/* Mobile Logo */}
                   <div className="flex items-center justify-between pb-4 border-b">
-                    <Link to="/" className="flex items-center space-x-2" onClick={() => setIsOpen(false)}>
-                      <GuildShield className="h-8 w-8 text-brand-primary" variant="filled" />
-                      <div className="flex flex-col">
-                        <span className="font-sora font-bold text-lg">Guilds</span>
-                        <span className="text-xs text-brand-primary font-medium -mt-1">Digital Forge</span>
-                      </div>
+                    <Link to="/" className="flex items-center" onClick={() => setIsOpen(false)}>
+                      <img 
+                        src={guildsLogoShield} 
+                        alt="Guilds" 
+                        className="h-8 w-auto"
+                      />
                     </Link>
                   </div>
 
@@ -232,9 +224,9 @@ const Header = () => {
 
                   {/* Mobile CTA */}
                   <div className="pt-4 border-t">
-                    <Button asChild className="w-full btn-hero">
+                    <Button asChild className="w-full btn-forge">
                       <Link to="/contato" onClick={() => setIsOpen(false)}>
-                        Falar com a Guilds
+                        Forjar Projeto
                       </Link>
                     </Button>
                   </div>
@@ -246,8 +238,8 @@ const Header = () => {
       </header>
 
       {/* Mobile Persistent CTA */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-gradient-to-t from-white via-white/95 to-transparent dark:from-neutral-900 dark:via-neutral-900/95 p-4">
-        <Button asChild className="w-full btn-hero shadow-forge group">
+      <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-gradient-forge p-4">
+        <Button asChild className="w-full btn-forge shadow-forge group animate-glow">
           <Link to="/contato">
             <span className="flex items-center justify-center gap-2">
               <GuildShield className="h-5 w-5" />
