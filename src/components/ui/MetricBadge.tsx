@@ -20,6 +20,11 @@ export function MetricBadge({
   size = 'md',
   className = "" 
 }: MetricBadgeProps) {
+  // Safety check for icon
+  if (!Icon) {
+    console.warn('MetricBadge: No icon provided');
+    return null;
+  }
   const sizeClasses = {
     sm: {
       container: 'p-4',

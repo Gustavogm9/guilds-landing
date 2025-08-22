@@ -56,6 +56,11 @@ export function TestimonialCarousel({
   if (!testimonials.length) return null;
 
   const currentTestimonial = testimonials[currentIndex];
+  
+  // Safety check for currentTestimonial
+  if (!currentTestimonial || !currentTestimonial.author || !currentTestimonial.author.name) {
+    return null;
+  }
 
   return (
     <section className={`section ${className}`} aria-label="Depoimentos de clientes">
@@ -82,7 +87,7 @@ export function TestimonialCarousel({
                   alt={`Foto de ${currentTestimonial.author.name}`}
                 />
                 <AvatarFallback className="bg-brand-primary/10 text-brand-primary font-semibold">
-                  {currentTestimonial.author.name.split(' ').map(n => n[0]).join('')}
+                  {currentTestimonial.author.name?.split(' ').map(n => n[0]).join('') || 'XX'}
                 </AvatarFallback>
               </Avatar>
               
