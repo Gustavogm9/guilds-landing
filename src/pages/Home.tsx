@@ -291,7 +291,7 @@ const Home = () => {
                 edit: Edit,
                 code: Code,
                 users: Users,
-                "bar-chart-3": BarChart3
+                chart: BarChart3
               };
               const Icon = icons[step.icon as keyof typeof icons];
               return <div key={index} className="text-center space-y-4 relative">
