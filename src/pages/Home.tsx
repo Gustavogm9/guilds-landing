@@ -8,7 +8,7 @@ import { Section, HeroSection, ContentSection, FeatureSection } from "@/componen
 import { Grid, ServiceGrid, FeatureGrid, MetricGrid, CaseGrid } from "@/components/ui/grid";
 import { HeroImage } from "@/components/ui/image";
 import { Card } from "@/components/ui/card";
-import { Search, FileText, Code, BarChart3, Rocket, Clock, Unlink, Users, Brain, Globe, Zap, Shield, ArrowRight, Star, CheckCircle, Play, ChevronRight, MessageSquare, Target, TrendingUp, Award, Lightbulb, Settings, Puzzle, Database, Smartphone, Bot, Activity, BookOpen, Hammer, RefreshCw } from 'lucide-react';
+import { Search, FileText, Code, BarChart3, Rocket, Clock, Unlink, Users, Brain, Globe, Zap, Shield, ArrowRight, Star, CheckCircle, Play, ChevronRight, MessageSquare, Target, TrendingUp, Award, Lightbulb, Settings, Puzzle, Database, Smartphone, Bot, Activity, BookOpen, Hammer, RefreshCw, Map, Edit } from 'lucide-react';
 import { GuildShield, GuildHammer, GuildCrest } from "@/components/icons";
 import heroImage from "@/assets/hero-image.jpg";
 import teamImage from "@/assets/team-collaboration.jpg";
@@ -286,11 +286,12 @@ const Home = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
               {workflowSteps.map((step, index) => {
               const icons = {
+                map: Map,
                 search: Search,
-                blueprint: FileText,
+                edit: Edit,
                 code: Code,
-                chart: BarChart3,
-                rocket: Rocket
+                users: Users,
+                "bar-chart-3": BarChart3
               };
               const Icon = icons[step.icon as keyof typeof icons];
               return <div key={index} className="text-center space-y-4 relative">
