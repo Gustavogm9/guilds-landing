@@ -54,22 +54,22 @@ export function MetricBadge({
       label: 'text-muted-foreground'
     },
     primary: {
-      container: 'bg-brand-primary/10 border border-brand-primary/20',
-      icon: 'text-brand-primary',
-      value: 'text-brand-primary',
-      label: 'text-brand-primary/80'
+      container: 'bg-primary/10 border border-primary/20',
+      icon: 'text-primary',
+      value: 'text-primary',
+      label: 'text-primary/80'
     },
     accent: {
-      container: 'bg-brand-accent/10 border border-brand-accent/20',
-      icon: 'text-brand-accent',
-      value: 'text-brand-accent',
-      label: 'text-brand-accent/80'
+      container: 'bg-accent/10 border border-accent/20',
+      icon: 'text-accent',
+      value: 'text-accent',
+      label: 'text-accent/80'
     },
     success: {
-      container: 'bg-success/10 border border-success/20',
-      icon: 'text-success',
-      value: 'text-success',
-      label: 'text-success/80'
+      container: 'bg-green-500/10 border border-green-500/20',
+      icon: 'text-green-600',
+      value: 'text-green-600',
+      label: 'text-green-600/80'
     }
   };
 

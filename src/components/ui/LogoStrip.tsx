@@ -47,7 +47,7 @@ export function LogoStrip({ title = "Confiam na Guilds", logos, className = "" }
         </div>
         
         {/* Animated background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-brand-primary/5 to-transparent opacity-50 blur-3xl animate-pulse pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-50 blur-3xl animate-pulse pointer-events-none" />
       </div>
     </section>
   );
