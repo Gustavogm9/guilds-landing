@@ -305,7 +305,7 @@ const Home = () => {
                         <Icon className="w-6 h-6" />
                         <h3 className="font-bold text-lg">{quadrant.title}</h3>
                       </div>
-                      <div className="space-y-2">
+                      <div className="grid grid-cols-2 gap-2">
                         {quadrant.tools.map((tool, toolIndex) => (
                           <div key={toolIndex} className="text-sm font-medium bg-background/50 rounded-lg px-3 py-2">
                             {tool}
