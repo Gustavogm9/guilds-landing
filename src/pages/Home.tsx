@@ -346,7 +346,7 @@ const Home = () => {
           </div>
 
           {/* Critérios de Decisão */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+          <div className="space-y-12 mb-16">
             <div>
               <h3 className="text-xl font-bold mb-6">Critérios de Decisão</h3>
               <div className="space-y-3">
