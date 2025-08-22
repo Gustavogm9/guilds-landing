@@ -8,7 +8,7 @@ import { Section, HeroSection, ContentSection, FeatureSection } from "@/componen
 import { Grid, ServiceGrid, FeatureGrid, MetricGrid, CaseGrid } from "@/components/ui/grid";
 import { HeroImage } from "@/components/ui/image";
 import { Card } from "@/components/ui/card";
-import { Search, FileText, Code, BarChart3, Rocket, Clock, Unlink, Users, Brain, Globe, Zap, Shield, ArrowRight, Star, CheckCircle, Play, ChevronRight, MessageSquare, Target, TrendingUp, Award, Lightbulb, Settings, Puzzle, Database, Smartphone, Bot, Activity, GraduationCap, Hammer } from 'lucide-react';
+import { Search, FileText, Code, BarChart3, Rocket, Clock, Unlink, Users, Brain, Globe, Zap, Shield, ArrowRight, Star, CheckCircle, Play, ChevronRight, MessageSquare, Target, TrendingUp, Award, Lightbulb, Settings, Puzzle, Database, Smartphone, Bot, Activity, BookOpen, Hammer } from 'lucide-react';
 import { GuildShield, GuildHammer, GuildCrest } from "@/components/icons";
 import heroImage from "@/assets/hero-image.jpg";
 import teamImage from "@/assets/team-collaboration.jpg";
@@ -118,7 +118,7 @@ const Home = () => {
               <div className="mb-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
-                    <GraduationCap className="h-6 w-6 text-accent" />
+                    <BookOpen className="h-6 w-6 text-accent" />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold group-hover:text-accent transition-colors">
@@ -531,7 +531,7 @@ const Home = () => {
           <Card variant="elevated" className="p-8">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
-                <GraduationCap className="h-6 w-6 text-accent" />
+                <BookOpen className="h-6 w-6 text-accent" />
               </div>
               <div>
                 <h3 className="text-xl font-semibold">Guilds Lab</h3>
