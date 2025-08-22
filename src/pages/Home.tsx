@@ -26,7 +26,8 @@ import {
   Shield,
   Trophy
 } from "lucide-react";
-import { GuildShield, GuildHammer, GuildCrest } from "@/components/icons";
+import { GuildShield, GuildHammer, GuildCrest, TechKnight } from "@/components/icons";
+import FloatingBadges from "@/components/ui/FloatingBadges";
 import heroImage from "@/assets/hero-image.jpg";
 import teamImage from "@/assets/team-collaboration.jpg";
 import { 
@@ -44,48 +45,55 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* 1. Hero Section */}
-      <HeroSection className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/50 to-background opacity-80"></div>
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        <div className="relative">
-          <Grid cols={2} gap="xl" align="center">
-            {/* Content */}
-            <div className="space-y-8">
-              <div className="space-y-6">
-                <Badge className="bg-primary/10 text-primary border-primary/20">
-                  ⚡ Inovação e resultados
-                </Badge>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                  Sistemas{" "}
-                  <span className="text-gradient bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                    inteligentes
-                  </span>
-                  , resultados reais.
-                </h1>
-                <p className="text-lg text-muted-foreground max-w-lg">
-                  Software, apps, automação, IA e gamificação feitos sob medida para o seu objetivo.
-                </p>
+      <HeroSection className="flex items-center justify-center relative">
+        <FloatingBadges className="hidden md:block" />
+        
+        <div className="w-full max-w-7xl mx-auto relative z-10">
+          <div className="text-center relative">
+            {/* Main Headlines */}
+            <div className="space-y-4 md:space-y-6 mb-8">
+              <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-none">
+                <span className="block text-foreground hero-text-shadow">
+                  SISTEMAS
+                </span>
+                <span className="block text-primary hero-outline md:text-stroke">
+                  INTELIGENTES
+                </span>
+              </h1>
+              
+              {/* Tech Knight positioned over text */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <TechKnight 
+                  className="w-64 h-80 md:w-80 md:h-96 lg:w-96 lg:h-[28rem] opacity-90 hover:opacity-100 transition-opacity duration-500" 
+                />
               </div>
+            </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild variant="hero" size="lg">
+            {/* Subtitle and CTA */}
+            <div className="relative z-20 bg-background/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 mx-auto max-w-4xl border border-primary/10">
+              <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground mb-6">
+                Desenvolvemos software sob medida, automações com IA e jogos corporativos 
+                que transformam processos e engajam equipes.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+                <Button asChild size="lg" className="text-lg px-8 py-4">
                   <Link to="/contato">
-                    Falar com a Guilds
+                    Falar com Especialista
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button asChild variant="glass" size="lg">
+                <Button asChild variant="outline" size="lg" className="text-lg px-8 py-4">
                   <Link to="/cases">
-                    Ver cases
+                    Ver Portfólio
                   </Link>
                 </Button>
               </div>
-
-              {/* Prova Social */}
-              <div className="flex items-center gap-4 pt-4">
+              
+              <div className="flex items-center gap-8 justify-center">
                 <MetricBadge
                   icon={Shield}
-                  value="100"
+                  value="150"
                   suffix="+"
                   label="Projetos Entregues"
                   variant="success"
@@ -99,17 +107,7 @@ const Home = () => {
                 />
               </div>
             </div>
-
-            {/* Hero Image */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-3xl"></div>
-              <HeroImage
-                src={heroImage}
-                alt="Guilds - Sistemas inteligentes, resultados reais"
-                className="relative"
-              />
-            </div>
-          </Grid>
+          </div>
         </div>
       </HeroSection>
 
