@@ -444,3 +444,294 @@ export const softwareFAQ = [
     answer: "Claro! Nossa metodologia ágil permite ajustes durante o projeto. Realizamos demos semanais para coleta de feedback e refinamento. Mudanças maiores podem impactar prazo e orçamento."
   }
 ];
+
+// Automation & IA Specific Data
+export const automationUseCases = [
+  {
+    title: "Workflows n8n",
+    description: "Automação visual de processos complexos com interface drag-and-drop.",
+    category: "Automação",
+    icon: "workflow",
+    benefits: [
+      "Conecta qualquer API",
+      "Interface visual intuitiva",
+      "Execução em tempo real",
+      "Monitoramento completo"
+    ]
+  },
+  {
+    title: "RPA - Automação Robótica",
+    description: "Bots que executam tarefas repetitivas com precisão e velocidade.",
+    category: "RPA",
+    icon: "bot",
+    benefits: [
+      "Reduz erros humanos",
+      "Trabalha 24/7",
+      "Escalável rapidamente",
+      "ROI em semanas"
+    ]
+  },
+  {
+    title: "Agentes de IA",
+    description: "Assistentes inteligentes para atendimento e processos complexos.",
+    category: "IA",
+    icon: "brain",
+    benefits: [
+      "Entende linguagem natural",
+      "Aprende continuamente",
+      "Resposta instantânea",
+      "Integração WhatsApp"
+    ]
+  },
+  {
+    title: "Análise de Conversas",
+    description: "IA extrai insights de calls, chats e e-mails automaticamente.",
+    category: "Analytics",
+    icon: "message",
+    benefits: [
+      "Sentimento dos clientes",
+      "Palavras-chave automáticas",
+      "Relatórios inteligentes",
+      "Melhoria contínua"
+    ]
+  },
+  {
+    title: "Previsões e Analytics",
+    description: "Machine learning para prever vendas, demanda e comportamentos.",
+    category: "ML",
+    icon: "analytics",
+    benefits: [
+      "Previsões precisas",
+      "Dados em tempo real",
+      "Alertas automáticos",
+      "Dashboards inteligentes"
+    ]
+  },
+  {
+    title: "Automação de Relatórios",
+    description: "Geração automática de KPIs, relatórios e dashboards executivos.",
+    category: "BI",
+    icon: "chart",
+    benefits: [
+      "Atualizações automáticas",
+      "Múltiplas fontes",
+      "Formatos personalizados",
+      "Distribuição automática"
+    ]
+  }
+];
+
+export const automationIntegrations = [
+  {
+    name: "CRM & Vendas",
+    description: "Automações para pipeline de vendas, follow-ups e nutrição de leads.",
+    icon: "users",
+    tools: ["Kommo", "HubSpot", "Pipedrive", "Salesforce"],
+    useCases: ["Lead scoring", "Follow-ups automáticos", "Relatórios de vendas"]
+  },
+  {
+    name: "WhatsApp Business",
+    description: "Chatbots inteligentes e automação de atendimento via WhatsApp.",
+    icon: "message", 
+    tools: ["WhatsApp API", "Twilio", "Chatwoot", "Typebot"],
+    useCases: ["Atendimento 24/7", "Qualificação de leads", "Suporte técnico"]
+  },
+  {
+    name: "ERPs & Sistemas",
+    description: "Sincronização de dados entre sistemas legados e modernos.",
+    icon: "database",
+    tools: ["SAP", "Protheus", "Senior", "Omie"],
+    useCases: ["Sincronização de dados", "Relatórios consolidados", "Alertas de estoque"]
+  },
+  {
+    name: "Google Workspace",
+    description: "Automação de documentos, planilhas e fluxos colaborativos.",
+    icon: "workflow",
+    tools: ["Google Sheets", "Gmail", "Drive", "Calendar"],
+    useCases: ["Relatórios automáticos", "Agendamentos", "Backup de dados"]
+  },
+  {
+    name: "APIs & Conectores",
+    description: "Integrações personalizadas com qualquer sistema via API REST.",
+    icon: "zap",
+    tools: ["REST APIs", "GraphQL", "Webhooks", "SDK Custom"],
+    useCases: ["Sincronização personalizada", "Eventos em tempo real", "Microserviços"]
+  },
+  {
+    name: "Ferramentas de BI",
+    description: "Automação de dashboards e relatórios executivos.",
+    icon: "chart",
+    tools: ["Power BI", "Tableau", "Looker", "Metabase"],
+    useCases: ["Dashboards automáticos", "Alertas de KPI", "Relatórios executivos"]
+  }
+];
+
+export const automationDeliverables = [
+  {
+    title: "Pipelines de Automação",
+    description: "Workflows visuais completos, prontos para produção.",
+    icon: "workflow",
+    features: [
+      "Fluxos n8n documentados",
+      "Tratamento de erros",
+      "Logs detalhados",
+      "Monitoramento 24/7"
+    ]
+  },
+  {
+    title: "Chatbots & Agentes",
+    description: "Assistentes inteligentes para atendimento multicanal.",
+    icon: "bot",
+    features: [
+      "Treinamento personalizado",
+      "Integração WhatsApp/Web",
+      "Base de conhecimento",
+      "Analytics de conversas"
+    ]
+  },
+  {
+    title: "Modelos de IA",
+    description: "Algoritmos treinados para suas necessidades específicas.",
+    icon: "brain",
+    features: [
+      "Classificação automática",
+      "Previsões precisas",
+      "API para integração",
+      "Retreinamento contínuo"
+    ]
+  },
+  {
+    title: "Dashboards Inteligentes",
+    description: "Painéis com atualizações automáticas e alertas.",
+    icon: "chart",
+    features: [
+      "Métricas em tempo real",
+      "Alertas personalizados",
+      "Exportação automática",
+      "Acesso mobile/web"
+    ]
+  }
+];
+
+export const automationCases = [
+  {
+    title: "Automação Administrativa",
+    company: "Consultoria RH",
+    problem: "Time gastava 15h/semana em tarefas manuais de relatórios e follow-ups.",
+    solution: "Implementamos workflows n8n para automatizar criação de relatórios, envio de e-mails e atualização de planilhas.",
+    metric: "70%",
+    metricLabel: "redução tempo administrativo",
+    testimonial: "Liberamos nossa equipe para focar no que realmente importa: atender nossos clientes."
+  },
+  {
+    title: "Otimização de Custos",
+    company: "E-commerce B2B",
+    problem: "Processos manuais geravam custos operacionais altos e erros frequentes.",
+    solution: "Desenvolvemos RPA para automatizar entrada de pedidos, atualização de estoque e geração de faturas.",
+    metric: "40%",
+    metricLabel: "economia em operações",
+    testimonial: "O ROI foi alcançado em apenas 3 meses. Não conseguimos mais imaginar trabalhar sem automação."
+  },
+  {
+    title: "Qualidade e Precisão",
+    company: "Fintech",
+    problem: "Erros manuais em processos críticos causavam retrabalho e insatisfação.",
+    solution: "Criamos agentes de IA para validação automática de dados e chatbot para suporte aos clientes.",
+    metric: "85%",
+    metricLabel: "redução de erros",
+    testimonial: "A qualidade dos nossos processos melhorou drasticamente. Nossos clientes notaram a diferença."
+  }
+];
+
+export const automationSecurity = [
+  {
+    title: "Dados Seguros",
+    description: "Criptografia end-to-end e compliance total com LGPD.",
+    icon: "shield",
+    features: [
+      "Criptografia AES-256",
+      "Compliance LGPD/GDPR",
+      "Auditoria completa",
+      "Backup automático"
+    ]
+  },
+  {
+    title: "IA Ética",
+    description: "Transparência e auditabilidade em todos os modelos de IA.",
+    icon: "eye",
+    features: [
+      "Explicabilidade de decisões",
+      "Bias detection",
+      "Versionamento de modelos",
+      "Métricas de fairness"
+    ]
+  },
+  {
+    title: "Integração Segura",
+    description: "APIs protegidas com autenticação robusta e monitoramento.",
+    icon: "lock",
+    features: [
+      "OAuth 2.0/JWT",
+      "Rate limiting",
+      "Logs de segurança",
+      "Penetration testing"
+    ]
+  },
+  {
+    title: "Backup & Recovery",
+    description: "Continuidade garantida com backup e recuperação automática.",
+    icon: "refresh",
+    features: [
+      "Backup incremental",
+      "RTO < 4 horas",
+      "Disaster recovery",
+      "Testes regulares"
+    ]
+  }
+];
+
+export const automationFAQ = [
+  {
+    question: "Quanto custa implementar automação na minha empresa?",
+    answer: "Os custos variam conforme a complexidade e escopo. Projetos simples de automação começam em R$ 15.000, enquanto soluções completas com IA podem variar de R$ 50.000 a R$ 200.000. Oferecemos um diagnóstico gratuito para estimar o investimento e ROI específico para sua empresa."
+  },
+  {
+    question: "Como vocês garantem a segurança dos dados na automação?",
+    answer: "Seguimos rigorosamente as normas LGPD/GDPR com criptografia AES-256, autenticação robusta, logs de auditoria completos e backups automáticos. Todos os fluxos passam por testes de segurança e penetration testing antes de entrarem em produção."
+  },
+  {
+    question: "A automação vai substituir meus funcionários?",
+    answer: "Não, a automação elimina tarefas repetitivas e libera sua equipe para atividades estratégicas e criativas. Nossos clientes relatam que os funcionários ficam mais motivados ao focar em trabalho de maior valor agregado, resultando em crescimento da empresa e novas oportunidades."
+  },
+  {
+    question: "Qual o ROI típico de projetos de automação?",
+    answer: "Nossos clientes veem ROI entre 200% e 500% no primeiro ano. Em média, a economia de tempo administrativo é de 60-80%, redução de erros de 70-90%, e economia de custos operacionais de 30-50%. O payback típico ocorre entre 3-8 meses."
+  },
+  {
+    question: "Quanto tempo leva para ver os primeiros resultados?",
+    answer: "Automações simples podem estar funcionando em 2-4 semanas. Projetos mais complexos com IA levam 6-12 semanas. Implementamos sempre em fases, então você começa a ver benefícios parciais já nas primeiras semanas, com melhorias contínuas ao longo do projeto."
+  }
+];
+
+export {
+  clientLogos,
+  stackLogos,
+  testimonials,
+  featuredCases,
+  workflowSteps,
+  painPoints,
+  services,
+  valuePillars,
+  softwareProblems,
+  softwareDeliverables,
+  softwareProcess,
+  softwareQuality,
+  softwareCases,
+  softwareFAQ,
+  automationUseCases,
+  automationIntegrations,
+  automationDeliverables,
+  automationCases,
+  automationSecurity,
+  automationFAQ
+};

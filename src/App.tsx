@@ -9,6 +9,7 @@ import Services from "./pages/Services";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import SoftwareApps from "./pages/SoftwareApps";
+import AutomacaoIA from "./pages/AutomacaoIA";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,7 +25,7 @@ const App = () => (
             <Route path="/" element={<Home />} />
             <Route path="/servicos" element={<Services />} />
             <Route path="/servicos/software-apps" element={<SoftwareApps />} />
-            <Route path="/servicos/automacao-ia" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Automação & IA</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
+            <Route path="/servicos/automacao-ia" element={<AutomacaoIA />} />
             <Route path="/servicos/jogos-gamificacao" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Jogos & Gamificação</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
             <Route path="/servicos/consultoria" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Consultoria</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
             <Route path="/cases" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Cases</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
