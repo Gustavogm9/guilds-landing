@@ -259,6 +259,11 @@
   .bg-guild-forge { background: var(--gradient-forge); }
   .bg-guild-shield { background: var(--gradient-shield); }
   .bg-guild-gold { background: var(--gradient-guild); }
+  
+  /* Background Utilities */
+  .bg-size-200 { background-size: 200% 100%; }
+  .bg-pos-0 { background-position: 0% 50%; }
+  .bg-pos-100 { background-position: 100% 50%; }
 }
 
 /* Medieval Forge Keyframes */

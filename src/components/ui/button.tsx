@@ -10,19 +10,21 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        hero: "bg-gradient-to-r from-brand-primary to-brand-accent text-white shadow-lg hover:shadow-guild-glow transform hover:-translate-y-1 transition-all duration-200",
+        accent: "bg-brand-accent text-white hover:bg-brand-accent/90",
+        glass: "bg-background/50 backdrop-blur-sm border border-border/50 hover:bg-background/80",
+        premium: "bg-gradient-to-r from-brand-primary via-brand-accent to-brand-primary bg-size-200 bg-pos-0 hover:bg-pos-100 text-white shadow-guild transition-all duration-500",
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
+        xl: "h-12 rounded-lg px-10 text-base",
         icon: "h-10 w-10",
       },
     },

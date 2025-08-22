@@ -4,6 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { LogoStrip } from "@/components/ui/LogoStrip";
 import { MetricBadge } from "@/components/ui/MetricBadge";
 import { TestimonialCarousel } from "@/components/ui/TestimonialCarousel";
+import { Section, HeroSection, ContentSection, FeatureSection } from "@/components/ui/section";
+import { Grid, ServiceGrid, FeatureGrid, MetricGrid, CaseGrid } from "@/components/ui/grid";
+import { HeroImage } from "@/components/ui/image";
+import { Card } from "@/components/ui/card";
 import { 
   ArrowRight,
   Clock,
@@ -40,10 +44,11 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* 1. Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-background via-muted/50 to-background py-20 lg:py-32">
+      <HeroSection className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/50 to-background opacity-80"></div>
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        <div className="container relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="relative">
+          <Grid cols={2} gap="xl" align="center">
             {/* Content */}
             <div className="space-y-8">
               <div className="space-y-6">
@@ -63,13 +68,13 @@ const Home = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+                <Button asChild variant="hero" size="lg">
                   <Link to="/contato">
                     Falar com a Guilds
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg">
+                <Button asChild variant="glass" size="lg">
                   <Link to="/cases">
                     Ver cases
                   </Link>
@@ -98,103 +103,99 @@ const Home = () => {
             {/* Hero Image */}
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-3xl"></div>
-              <img
+              <HeroImage
                 src={heroImage}
                 alt="Guilds - Sistemas inteligentes, resultados reais"
-                className="relative rounded-3xl shadow-xl"
+                className="relative"
               />
             </div>
-          </div>
+          </Grid>
         </div>
-      </section>
+      </HeroSection>
 
       {/* 2. Barra de Valor - 4 Pilares */}
-      <section className="py-12 bg-muted/30">
-        <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {valuePillars.map((pillar, index) => (
-              <div key={index} className="text-center space-y-2">
-                <h3 className="font-semibold text-foreground">{pillar.title}</h3>
-                <p className="text-sm text-muted-foreground">{pillar.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FeatureSection spacing="sm">
+        <FeatureGrid>
+          {valuePillars.map((pillar, index) => (
+            <div key={index} className="text-center space-y-2">
+              <h3 className="font-semibold text-foreground">{pillar.title}</h3>
+              <p className="text-sm text-muted-foreground">{pillar.description}</p>
+            </div>
+          ))}
+        </FeatureGrid>
+      </FeatureSection>
 
       {/* 3. Guilds Lab & Guilds Craft - Seção Dedicada */}
-      <section className="py-20 bg-background">
-        <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Nossos <span className="text-gradient bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Produtos</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Três frentes complementares para atender todas as suas necessidades digitais
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            {/* Guilds Lab */}
-            <div className="bg-card border border-border rounded-2xl p-8 hover:shadow-lg transition-shadow">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
-                  <GraduationCap className="h-6 w-6 text-accent" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold">Guilds Lab</h3>
-                  <p className="text-accent font-medium">Pessoas no centro. Habilidades que escalam.</p>
-                </div>
-              </div>
-              <p className="text-muted-foreground mb-6">
-                Workshops práticos em tecnologia, desenvolvimento de jogos e aplicativos, 
-                focados nas habilidades que o mercado pede.
-              </p>
-              <div className="flex flex-wrap gap-2 mb-6">
-                <Badge variant="secondary">Workshops</Badge>
-                <Badge variant="secondary">Educação Tech</Badge>
-                <Badge variant="secondary">Soft Skills</Badge>
-                <Badge variant="secondary">Certificação</Badge>
-              </div>
-              <Button asChild variant="outline" className="w-full">
-                <Link to="/lab">
-                  Explorar Guilds Lab
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-
-            {/* Guilds Craft */}
-            <div className="bg-card border border-border rounded-2xl p-8 hover:shadow-lg transition-shadow">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <Lightbulb className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold">Guilds Craft</h3>
-                  <p className="text-primary font-medium">Da ideia ao impacto.</p>
-                </div>
-              </div>
-              <p className="text-muted-foreground mb-6">
-                Parcerias e P&D para testar, construir e lançar soluções com potencial real. 
-                Transformamos ideias em produtos de impacto.
-              </p>
-              <div className="flex flex-wrap gap-2 mb-6">
-                <Badge variant="secondary">Parcerias</Badge>
-                <Badge variant="secondary">P&D</Badge>
-                <Badge variant="secondary">Validação</Badge>
-                <Badge variant="secondary">Lançamento</Badge>
-              </div>
-              <Button asChild variant="outline" className="w-full">
-                <Link to="/craft">
-                  Explorar Guilds Craft
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </div>
+      <ContentSection>
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Nossos <span className="text-gradient bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Produtos</span>
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Três frentes complementares para atender todas as suas necessidades digitais
+          </p>
         </div>
-      </section>
+
+        <ServiceGrid className="mb-12">
+          {/* Guilds Lab */}
+          <Card variant="elevated" className="p-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                <GraduationCap className="h-6 w-6 text-accent" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold">Guilds Lab</h3>
+                <p className="text-accent font-medium">Pessoas no centro. Habilidades que escalam.</p>
+              </div>
+            </div>
+            <p className="text-muted-foreground mb-6">
+              Workshops práticos em tecnologia, desenvolvimento de jogos e aplicativos, 
+              focados nas habilidades que o mercado pede.
+            </p>
+            <div className="flex flex-wrap gap-2 mb-6">
+              <Badge variant="secondary">Workshops</Badge>
+              <Badge variant="secondary">Educação Tech</Badge>
+              <Badge variant="secondary">Soft Skills</Badge>
+              <Badge variant="secondary">Certificação</Badge>
+            </div>
+            <Button asChild variant="accent" className="w-full">
+              <Link to="/lab">
+                Explorar Guilds Lab
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </Card>
+
+          {/* Guilds Craft */}
+          <Card variant="premium" className="p-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                <Lightbulb className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold">Guilds Craft</h3>
+                <p className="text-primary font-medium">Da ideia ao impacto.</p>
+              </div>
+            </div>
+            <p className="text-muted-foreground mb-6">
+              Parcerias e P&D para testar, construir e lançar soluções com potencial real. 
+              Transformamos ideias em produtos de impacto.
+            </p>
+            <div className="flex flex-wrap gap-2 mb-6">
+              <Badge variant="secondary">Parcerias</Badge>
+              <Badge variant="secondary">P&D</Badge>
+              <Badge variant="secondary">Validação</Badge>
+              <Badge variant="secondary">Lançamento</Badge>
+            </div>
+            <Button asChild variant="premium" className="w-full">
+              <Link to="/craft">
+                Explorar Guilds Craft
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </Card>
+        </ServiceGrid>
+      </ContentSection>
 
       {/* 4. O que fazemos - Grid 2x2 */}
       <section className="py-20 bg-muted/30">
