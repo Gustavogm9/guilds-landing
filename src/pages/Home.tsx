@@ -8,7 +8,7 @@ import { Section, HeroSection, ContentSection, FeatureSection } from "@/componen
 import { Grid, ServiceGrid, FeatureGrid, MetricGrid, CaseGrid } from "@/components/ui/grid";
 import { HeroImage } from "@/components/ui/image";
 import { Card } from "@/components/ui/card";
-import { Search, FileText, Code, BarChart3, Rocket, Clock, Unlink, Users, Brain, Globe, Zap, Shield, ArrowRight, Star, CheckCircle, Play, ChevronRight, MessageSquare, Target, TrendingUp, Award, Lightbulb, Settings, Puzzle, Database, Smartphone, Bot, Activity, BookOpen, Hammer, RefreshCw, Map, Edit } from 'lucide-react';
+import { Search, FileText, Code, BarChart3, Rocket, Clock, Unlink, Users, Brain, Globe, Zap, Shield, ArrowRight, Star, CheckCircle, Play, ChevronRight, MessageSquare, Target, TrendingUp, Award, Lightbulb, Settings, Puzzle, Database, Smartphone, Bot, Activity, BookOpen, Hammer, RefreshCw } from 'lucide-react';
 import { GuildShield, GuildHammer, GuildCrest } from "@/components/icons";
 import heroImage from "@/assets/hero-image.jpg";
 import teamImage from "@/assets/team-collaboration.jpg";
@@ -16,7 +16,7 @@ import { workflowSteps, painPoints, services, valuePillars, testimonials, featur
 const Home = () => {
   return <div className="min-h-screen">
       {/* 1. Hero Section */}
-      <HeroSection className="relative overflow-hidden pb-16 md:pb-20">
+      <HeroSection className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/50 to-background opacity-80"></div>
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
         <div className="relative">
@@ -67,9 +67,9 @@ const Home = () => {
       </HeroSection>
 
       {/* 2. Diferenciais Competitivos */}
-      <section className="py-16 md:py-20 bg-gradient-to-br from-background via-muted/30 to-background">
+      <section className="py-20 bg-gradient-to-br from-background via-muted/30 to-background">
         <div className="container">
-          <div className="text-center mb-12 md:mb-16">
+          <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Nossos <span className="text-gradient bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Diferenciais Competitivos</span>
             </h2>
@@ -86,7 +86,7 @@ const Home = () => {
               "trending-up": TrendingUp,
               "refresh-cw": RefreshCw
             };
-            const Icon = icons[pillar.icon as keyof typeof icons] || Zap;
+            const Icon = icons[pillar.icon as keyof typeof icons];
             return <div key={index} className="group relative">
                   {/* Card Container */}
                   <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl p-8 h-full hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover-scale relative overflow-hidden">
@@ -132,9 +132,9 @@ const Home = () => {
 
 
       {/* 4. O que fazemos - Grid 2x2 */}
-      <section className="py-16 md:py-20 bg-muted/30">
+      <section className="py-20 bg-muted/30">
         <div className="container">
-          <div className="text-center mb-12 md:mb-16">
+          <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               O que <span className="text-gradient">fazemos</span>
             </h2>
@@ -233,9 +233,9 @@ const Home = () => {
       </section>
 
       {/* 5. Dores que resolvemos */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-20 bg-background">
         <div className="container">
-          <div className="text-center mb-12 md:mb-16">
+          <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Dores que <span className="text-gradient">resolvemos</span>
             </h2>
@@ -252,7 +252,7 @@ const Home = () => {
               users: Users,
               brain: Brain
             };
-            const Icon = icons[pain.icon as keyof typeof icons] || Clock;
+            const Icon = icons[pain.icon as keyof typeof icons];
             return <div key={index} className="text-center space-y-4">
                   <div className="w-16 h-16 bg-destructive/10 rounded-2xl flex items-center justify-center mx-auto">
                     <Icon className="h-8 w-8 text-destructive" />
@@ -268,125 +268,51 @@ const Home = () => {
       </section>
 
       {/* 6. Como trabalhamos - 5 passos */}
-      <section className="py-16 md:py-20 bg-muted/30">
+      <section className="py-20 bg-muted/30">
         <div className="container">
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-3 bg-primary/10 px-6 py-3 rounded-full mb-6">
-              <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
-                <Hammer className="w-4 h-4 text-primary" />
-              </div>
-              <span className="text-sm font-semibold text-primary">Metodologia Proprietária</span>
-            </div>
-            
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              <span className="text-gradient bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-                G-FORGE
-              </span>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Como <span className="text-gradient">trabalhamos</span>
             </h2>
-            
-            <p className="text-xl font-medium text-muted-foreground mb-4 max-w-4xl mx-auto">
-              Framework for Organizational Rapid Growth & Excellence
-            </p>
-            
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Nossa metodologia exclusiva que combina diagnóstico estratégico, design thinking e implementação ágil 
-              para acelerar o crescimento organizacional de forma sustentável e mensurável.
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Nossa metodologia comprovada em 5 etapas para garantir resultados
             </p>
           </div>
 
           <div className="relative">
-            {/* Enhanced Timeline with gradient */}
-            <div className="hidden lg:block absolute top-1/2 left-8 right-8 h-1 bg-gradient-to-r from-primary/20 via-accent/40 to-primary/20 rounded-full -translate-y-1/2"></div>
-            <div className="hidden lg:block absolute top-1/2 left-8 right-8 h-0.5 bg-gradient-to-r from-primary via-accent to-primary rounded-full -translate-y-1/2"></div>
+            {/* Timeline line - hidden on mobile */}
+            <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-border -translate-y-1/2"></div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
               {workflowSteps.map((step, index) => {
               const icons = {
-                map: Map,
                 search: Search,
-                edit: Edit,
+                blueprint: FileText,
                 code: Code,
-                users: Users,
-                chart: BarChart3
+                chart: BarChart3,
+                rocket: Rocket
               };
-              const Icon = icons[step.icon as keyof typeof icons] || Search;
-              
-              // Color progression through the steps
-              const stepColors = [
-                'from-blue-500/20 to-blue-600/10 border-blue-200/50',
-                'from-purple-500/20 to-purple-600/10 border-purple-200/50', 
-                'from-green-500/20 to-green-600/10 border-green-200/50',
-                'from-orange-500/20 to-orange-600/10 border-orange-200/50',
-                'from-red-500/20 to-red-600/10 border-red-200/50',
-                'from-cyan-500/20 to-cyan-600/10 border-cyan-200/50'
-              ];
-              
-              return <div key={index} className="text-center space-y-6 relative group animate-fade-in" style={{animationDelay: `${index * 0.1}s`}}>
-                    {/* Step Number Badge */}
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20">
-                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
-                        {step.number}
-                      </div>
+              const Icon = icons[step.icon as keyof typeof icons];
+              return <div key={index} className="text-center space-y-4 relative">
+                    <div className="w-16 h-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center mx-auto relative z-10">
+                      <Icon className="h-8 w-8" />
                     </div>
-                    
-                    {/* Icon Container with enhanced styling */}
-                    <div className="relative">
-                      <div className={`w-20 h-20 bg-gradient-to-br ${stepColors[index]} rounded-3xl flex items-center justify-center mx-auto relative z-10 group-hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl`}>
-                        <Icon className="h-10 w-10 text-primary group-hover:text-accent transition-colors duration-300" />
-                      </div>
-                      
-                      {/* Floating particles effect */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    </div>
-                    
-                    {/* Step Content */}
-                    <div className="bg-background/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-border/50 group-hover:shadow-xl group-hover:border-primary/20 transition-all duration-300 min-h-[200px] flex flex-col justify-between">
-                      <div>
-                        <h3 className="text-xl font-bold mb-3 text-primary group-hover:text-accent transition-colors">
-                          {step.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                          {step.description}
-                        </p>
-                      </div>
-                      
-                      {/* Step benefit indicator */}
-                      <div className="mt-4 pt-4 border-t border-border/30">
-                        <div className="flex items-center justify-center gap-2 text-xs font-medium text-primary/70">
-                          <CheckCircle className="w-4 h-4" />
-                          <span>Entrega {index === 0 ? 'Estratégica' : index === 1 ? 'Analítica' : index === 2 ? 'Criativa' : index === 3 ? 'Técnica' : index === 4 ? 'Operacional' : 'Evolutiva'}</span>
-                        </div>
-                      </div>
+                    <div className="bg-background rounded-lg p-4 shadow-sm border border-border">
+                      <div className="text-sm font-medium text-primary mb-1">{step.number}</div>
+                      <h3 className="font-semibold mb-2">{step.title}</h3>
+                      <p className="text-sm text-muted-foreground">{step.description}</p>
                     </div>
                   </div>;
             })}
-            </div>
-            
-            {/* Methodology CTA */}
-            <div className="text-center mt-16">
-              <div className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-3xl p-8 border border-primary/20">
-                <h3 className="text-2xl font-bold mb-4">
-                  Pronto para acelerar seu crescimento?
-                </h3>
-                <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                  Descubra como nossa metodologia G-FORGE pode transformar seus desafios em oportunidades de crescimento exponencial.
-                </p>
-                <Button asChild variant="hero" size="lg" className="group">
-                  <Link to="/contato">
-                    Iniciar Diagnóstico G-FORGE
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </Button>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* 7. Como Resolvemos - Framework de Avaliação */}
-      <section className="py-16 md:py-20 bg-gradient-to-br from-background via-muted/20 to-accent/10">
+      <section className="py-20 bg-gradient-to-br from-background via-muted/20 to-accent/10">
         <div className="container">
-          <div className="text-center mb-12 md:mb-16">
+          <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Como <span className="text-gradient">Resolvemos</span>
             </h2>
@@ -425,7 +351,7 @@ const Home = () => {
                   "Database": Database,
                   "Frontend": Smartphone
                 };
-                const Icon = icons[quadrant.title as keyof typeof icons] || Bot;
+                const Icon = icons[quadrant.title as keyof typeof icons];
                 return <div key={index} className={`bg-gradient-to-br ${colors[quadrant.color as keyof typeof colors]} border rounded-2xl p-6 relative`}>
                       <div className="flex items-center gap-3 mb-4">
                         <Icon className="w-6 h-6" />
@@ -453,7 +379,7 @@ const Home = () => {
                 puzzle: Puzzle,
                 check: CheckCircle
               };
-              const Icon = icons[step.icon as keyof typeof icons] || Target;
+              const Icon = icons[step.icon as keyof typeof icons];
               return <div key={index} className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 text-center hover-scale">
                     <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
                       <Icon className="w-6 h-6 text-primary" />
@@ -518,9 +444,9 @@ const Home = () => {
       
 
       {/* 9. Stack & Integrações */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-20 bg-background">
         <div className="container">
-          <div className="text-center mb-12 md:mb-16">
+          <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Por que nossos <span className="text-gradient">sistemas são confiáveis</span>
             </h2>
@@ -632,8 +558,8 @@ const Home = () => {
       </section>
 
       {/* 9. Guilds Lab & Guilds Craft - Seção Dedicada */}
-      <ContentSection className="py-16 md:py-20">
-          <div className="text-center mb-12 md:mb-16">
+      <ContentSection>
+        <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Nossos <span className="text-gradient bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Produtos</span>
           </h2>
@@ -704,34 +630,9 @@ const Home = () => {
       </ContentSection>
 
       {/* 10. CTA Final */}
-      <section className="py-16 md:py-20 bg-gradient-to-br from-primary to-accent text-primary-foreground relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-br from-primary to-accent text-primary-foreground relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
-        <div className="container relative">
-          <div className="text-center max-w-3xl mx-auto">
-            <GuildCrest className="h-16 w-16 mx-auto mb-6 text-white opacity-90" />
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Pronto para transformar seu negócio?
-            </h2>
-            <p className="text-lg opacity-90 mb-8">
-              Junte-se a mais de 100 empresas que já transformaram seus processos com nossas soluções digitais. 
-              Vamos descobrir como podemos ajudar você.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90">
-                <Link to="/contato">
-                  <Hammer className="mr-2 h-4 w-4" />
-                  Agendar conversa
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10">
-                <Link to="/cases">
-                  Baixar one-pager PDF
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
+        
       </section>
     </div>;
 };
