@@ -132,7 +132,7 @@
   
   /* Button Variants */
   .btn-hero {
-    @apply bg-gradient-to-r from-brand-primary to-brand-primary-dark text-white font-semibold px-8 py-4 rounded-2xl shadow-lg hover:shadow-glow transform hover:-translate-y-1 transition-all duration-200;
+    @apply bg-gradient-to-r from-brand-primary to-brand-primary-dark text-white font-semibold px-8 py-4 rounded-2xl shadow-lg hover:shadow-guild-glow transform hover:-translate-y-1 transition-all duration-200;
   }
   
   .btn-accent {
