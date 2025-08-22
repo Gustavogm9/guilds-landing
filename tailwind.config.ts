@@ -26,41 +26,36 @@ export default {
 			},
 			colors: {
 				// Brand Colors
-				'brand-primary': {
+				brand: {
 					DEFAULT: 'hsl(var(--brand-primary))',
-					dark: 'hsl(var(--brand-primary-dark))',
-				},
-				'brand-accent': {
-					DEFAULT: 'hsl(var(--brand-accent))',
-					dark: 'hsl(var(--brand-accent-dark))',
+					primary: 'hsl(var(--brand-primary))',
+					accent: 'hsl(var(--brand-accent))',
 				},
 				
-				// Medieval Colors
-				'guild-gold': 'hsl(var(--guild-gold))',
-				'guild-silver': 'hsl(var(--guild-silver))',
-				'guild-bronze': 'hsl(var(--guild-bronze))',
-				
-				// Heraldic colors
-				'heraldic-red': 'hsl(var(--heraldic-red))',
-				'heraldic-blue': 'hsl(var(--heraldic-blue))',
-				'heraldic-green': 'hsl(var(--heraldic-green))',
+				// Accent Colors  
+				accent: {
+					DEFAULT: 'hsl(var(--accent))',
+					foreground: 'hsl(var(--accent-foreground))'
+				},
 				
 				// Neutral Scale
-				'neutral-900': 'hsl(var(--neutral-900))',
-				'neutral-800': 'hsl(var(--neutral-800))',
-				'neutral-700': 'hsl(var(--neutral-700))',
-				'neutral-600': 'hsl(var(--neutral-600))',
-				'neutral-500': 'hsl(var(--neutral-500))',
-				'neutral-400': 'hsl(var(--neutral-400))',
-				'neutral-300': 'hsl(var(--neutral-300))',
-				'neutral-200': 'hsl(var(--neutral-200))',
-				'neutral-100': 'hsl(var(--neutral-100))',
-				'neutral-50': 'hsl(var(--neutral-50))',
+				neutral: {
+					50: 'hsl(var(--neutral-50))',
+					100: 'hsl(var(--neutral-100))',
+					200: 'hsl(var(--neutral-200))',
+					300: 'hsl(var(--neutral-300))',
+					400: 'hsl(var(--neutral-400))',
+					500: 'hsl(var(--neutral-500))',
+					600: 'hsl(var(--neutral-600))',
+					700: 'hsl(var(--neutral-700))',
+					800: 'hsl(var(--neutral-800))',
+					900: 'hsl(var(--neutral-900))',
+				},
 				
 				// Semantic Colors
-				'success': 'hsl(var(--success))',
-				'warning': 'hsl(var(--warning))',
-				'danger': 'hsl(var(--danger))',
+				success: 'hsl(var(--success))',
+				warning: 'hsl(var(--warning))',
+				danger: 'hsl(var(--danger))',
 				
 				// System Colors
 				border: 'hsl(var(--border))',
@@ -83,10 +78,6 @@ export default {
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
 					foreground: 'hsl(var(--muted-foreground))'
-				},
-				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
@@ -146,7 +137,7 @@ export default {
 					},
 					'50%': { 
 						transform: 'scale(1.05) rotate(1deg)',
-						boxShadow: '0 0 30px hsl(var(--brand-accent) / 0.6), 0 0 50px hsl(var(--guild-gold) / 0.2)'
+						boxShadow: '0 0 30px hsl(var(--brand-accent) / 0.6), 0 0 50px hsl(var(--brand-primary) / 0.2)'
 					},
 					'100%': { 
 						transform: 'scale(1) rotate(0deg)',

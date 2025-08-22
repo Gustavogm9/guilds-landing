@@ -4,39 +4,27 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Guilds Design System - Medieval meets Future Tech */
+/* Guilds Design System - Modern Design Tokens */
 @layer base {
   :root {
-    /* Brand Colors - Medieval meets Future Tech */
-    --brand-primary: 240 85% 55%; /* Deep Royal Blue - shield strength */
-    --brand-primary-dark: 240 90% 40%; /* Darker royal - forged steel */
-    --brand-accent: 165 85% 45%; /* Teal forge fire */
-    --brand-accent-dark: 165 90% 35%; /* Deep forge flame */
+    /* Brand Colors */
+    --brand-primary: 240 85% 55%;
+    --brand-accent: 165 85% 45%;
     
-    /* Medieval-inspired accent colors */
-    --guild-gold: 45 95% 55%; /* Heraldic gold */
-    --guild-silver: 210 15% 75%; /* Polished silver */
-    --guild-bronze: 25 85% 45%; /* Crafted bronze */
-    
-    /* Neutral Scale - Forged metals */
-    --neutral-900: 240 20% 8%; /* Obsidian black */
-    --neutral-800: 240 15% 14%; /* Wrought iron */
-    --neutral-700: 240 12% 22%; /* Dark steel */
-    --neutral-600: 240 8% 32%; /* Weathered metal */
-    --neutral-500: 240 5% 48%; /* Aged silver */
-    --neutral-400: 240 4% 64%; /* Polished pewter */
-    --neutral-300: 240 6% 76%; /* Light silver */
-    --neutral-200: 240 8% 88%; /* Bright silver */
-    --neutral-100: 240 15% 94%; /* Pearl white */
-    --neutral-50: 240 25% 97%; /* Pure silver */
-    
-    /* Heraldic accent colors */
-    --heraldic-red: 0 85% 50%;
-    --heraldic-blue: 220 100% 45%;
-    --heraldic-green: 140 85% 40%;
+    /* Neutral Scale */
+    --neutral-50: 210 20% 98%;
+    --neutral-100: 210 20% 95%;
+    --neutral-200: 214 15% 91%;
+    --neutral-300: 213 15% 85%;
+    --neutral-400: 215 14% 71%;
+    --neutral-500: 215 16% 47%;
+    --neutral-600: 215 19% 35%;
+    --neutral-700: 215 25% 27%;
+    --neutral-800: 217 33% 17%;
+    --neutral-900: 220 39% 11%;
     
     /* Semantic Colors */
-    --success: 142 76% 36%;
+    --success: 142 71% 45%;
     --warning: 38 92% 50%;
     --danger: 0 84% 60%;
     
@@ -61,25 +49,25 @@
     --input: var(--neutral-200);
     --ring: var(--brand-primary);
     
-    /* Gradients - Forged metal effects */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--brand-primary)), hsl(var(--brand-primary-dark)));
-    --gradient-accent: linear-gradient(135deg, hsl(var(--brand-accent)), hsl(var(--brand-accent-dark)));
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--brand-primary)), hsl(var(--brand-primary) / 0.8));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--brand-accent)), hsl(var(--brand-accent) / 0.8));
     --gradient-hero: linear-gradient(135deg, hsl(var(--brand-primary) / 0.1), hsl(var(--brand-accent) / 0.1));
     --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.1), hsl(0 0% 100% / 0.05));
-    --gradient-guild: linear-gradient(135deg, hsl(var(--guild-gold)), hsl(var(--guild-bronze)));
-    --gradient-shield: linear-gradient(145deg, hsl(var(--guild-silver)), hsl(var(--neutral-300)));
-    --gradient-forge: radial-gradient(circle, hsl(var(--brand-accent)) 0%, hsl(var(--brand-primary-dark)) 100%);
+    --gradient-guild: linear-gradient(135deg, hsl(var(--brand-primary)), hsl(var(--brand-accent)));
+    --gradient-shield: linear-gradient(145deg, hsl(var(--neutral-200)), hsl(var(--neutral-300)));
+    --gradient-forge: radial-gradient(circle, hsl(var(--brand-accent)) 0%, hsl(var(--brand-primary)) 100%);
     
-    /* Shadows - Medieval inspired */
+    /* Shadows */
     --shadow-sm: 0 1px 2px hsl(var(--neutral-900) / 0.05);
     --shadow-md: 0 4px 6px hsl(var(--neutral-900) / 0.1);
     --shadow-lg: 0 10px 15px hsl(var(--neutral-900) / 0.1);
     --shadow-xl: 0 20px 25px hsl(var(--neutral-900) / 0.1);
     --shadow-glow: 0 0 40px hsl(var(--brand-primary) / 0.3);
-    --shadow-guild: 0 8px 32px hsl(var(--brand-primary) / 0.12), 0 0 0 1px hsl(var(--guild-silver) / 0.05);
+    --shadow-guild: 0 8px 32px hsl(var(--brand-primary) / 0.12), 0 0 0 1px hsl(var(--neutral-200) / 0.05);
     --shadow-forge: 0 0 30px hsl(var(--brand-accent) / 0.4), 0 0 60px hsl(var(--brand-primary) / 0.2);
     
-    /* Animations - Smooth like forged steel */
+    /* Animations */
     --transition-base: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-smooth: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-forge: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
@@ -117,7 +105,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-inter leading-relaxed;
+    @apply bg-background text-foreground font-inter;
     font-size: 16px;
     line-height: 1.6;
   }
@@ -146,9 +134,9 @@
     @apply grid grid-cols-1 md:grid-cols-12 gap-6;
   }
   
-  /* Button Variants - Forged with medieval strength */
+  /* Button Variants */
   .btn-hero {
-    @apply bg-gradient-to-r from-brand-primary to-brand-primary-dark text-white font-semibold px-8 py-4 rounded-2xl shadow-lg hover:shadow-guild-glow transform hover:-translate-y-1 transition-all duration-200 relative overflow-hidden;
+    @apply bg-gradient-to-r from-brand-primary to-brand-accent text-white font-semibold px-8 py-4 rounded-2xl shadow-lg hover:shadow-guild-glow transform hover:-translate-y-1 transition-all duration-200 relative overflow-hidden;
   }
   
   .btn-hero::before {
@@ -160,7 +148,7 @@
   }
   
   .btn-accent {
-    @apply bg-brand-accent text-neutral-900 font-semibold px-6 py-3 rounded-xl hover:bg-brand-accent-dark transition-colors duration-150;
+    @apply bg-brand-accent text-white font-semibold px-6 py-3 rounded-xl hover:bg-brand-accent/90 transition-colors duration-150;
   }
   
   .btn-glass {
@@ -168,10 +156,10 @@
   }
   
   .btn-forge {
-    @apply bg-gradient-to-br from-guild-gold to-guild-bronze text-neutral-900 font-bold px-6 py-3 rounded-xl shadow-guild hover:shadow-forge transform hover:scale-105 transition-all duration-300;
+    @apply bg-gradient-to-br from-brand-primary to-brand-accent text-white font-bold px-6 py-3 rounded-xl shadow-guild hover:shadow-forge transform hover:scale-105 transition-all duration-300;
   }
   
-  /* Card Variants - Shield-inspired designs */
+  /* Card Variants */
   .card-glass {
     @apply bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg;
   }
@@ -181,7 +169,7 @@
   }
   
   .card-shield {
-    @apply bg-gradient-to-br from-white to-neutral-50 border-2 border-guild-silver/30 rounded-3xl p-8 shadow-guild hover:shadow-forge transform hover:-translate-y-2 transition-all duration-300 relative overflow-hidden;
+    @apply bg-gradient-to-br from-white to-neutral-50 border-2 border-neutral-200/50 rounded-3xl p-8 shadow-guild hover:shadow-forge transform hover:-translate-y-2 transition-all duration-300 relative overflow-hidden;
   }
   
   .card-shield::before {
@@ -195,7 +183,7 @@
   }
   
   .card-heraldic {
-    @apply bg-gradient-to-br from-neutral-900 to-neutral-800 border border-guild-silver/20 rounded-2xl p-6 text-white shadow-xl hover:border-brand-accent/50 transition-all duration-300;
+    @apply bg-gradient-to-br from-neutral-900 to-neutral-800 border border-neutral-700/50 rounded-2xl p-6 text-white shadow-xl hover:border-brand-accent/50 transition-all duration-300;
   }
   
   /* Text Effects */
@@ -235,6 +223,19 @@
 }
 
 @layer utilities {
+  /* Layout Utilities */
+  .section {
+    @apply py-16 md:py-24;
+  }
+  
+  .section-sm {
+    @apply py-12 md:py-16;
+  }
+  
+  .section-lg {
+    @apply py-20 md:py-32;
+  }
+  
   /* Spacing Utilities */
   .space-guild-sm { @apply space-y-4; }
   .space-guild-md { @apply space-y-8; }
@@ -243,6 +244,9 @@
   .space-guild-2xl { @apply space-y-24; }
   
   /* Custom Shadows */
+  .shadow-soft { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+  .shadow-medium { box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+  .shadow-large { box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
   .shadow-guild { box-shadow: var(--shadow-guild); }
   .shadow-guild-glow { box-shadow: var(--shadow-glow); }
   .shadow-forge { box-shadow: var(--shadow-forge); }
@@ -275,7 +279,7 @@
   }
   50% { 
     transform: scale(1.05) rotate(1deg);
-    box-shadow: 0 0 30px hsl(var(--brand-accent) / 0.6), 0 0 50px hsl(var(--guild-gold) / 0.2);
+    box-shadow: 0 0 30px hsl(var(--brand-accent) / 0.6), 0 0 50px hsl(var(--brand-primary) / 0.2);
   }
   100% { 
     transform: scale(1) rotate(0deg);
