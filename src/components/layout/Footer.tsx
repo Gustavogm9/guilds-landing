@@ -4,6 +4,7 @@ import { Mail, Phone, MapPin, Linkedin, Instagram, Youtube } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import guildsLogoShield from '@/assets/guilds-logo-shield.png';
 
 export function Footer() {
   return (
@@ -14,7 +15,7 @@ export function Footer() {
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <img 
-                src="/src/assets/guilds-logo-shield.png" 
+                src={guildsLogoShield} 
                 alt="Guilds" 
                 className="h-8 w-auto invert"
               />
