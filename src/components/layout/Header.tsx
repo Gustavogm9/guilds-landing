@@ -60,7 +60,7 @@ const navigation = [
   { name: "Cases", href: "/cases" },
   { name: "Guilds Lab", href: "/lab" },
   { name: "Guilds Craft", href: "/craft" },
-  { name: "Conteúdo", href: "/conteudo" },
+  { name: "Conteúdo", href: "https://blog.guilds.com.br", external: true },
   { name: "Sobre", href: "/sobre" },
   { name: "Contato", href: "/contato" }
 ];
@@ -128,20 +128,32 @@ const Header = () => {
               </NavigationMenu>
 
               {/* Regular Navigation Links */}
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={cn(
-                    "text-sm font-medium transition-colors hover:text-brand-primary",
-                    isActive(item.href) 
-                      ? "text-brand-primary" 
-                      : "text-foreground"
-                  )}
-                >
-                  {item.name}
-                </Link>
-              ))}
+              {navigation.map((item) => 
+                item.external ? (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-medium transition-colors hover:text-brand-primary text-foreground"
+                  >
+                    {item.name}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={cn(
+                      "text-sm font-medium transition-colors hover:text-brand-primary",
+                      isActive(item.href) 
+                        ? "text-brand-primary" 
+                        : "text-foreground"
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                )
+              )}
             </nav>
 
             {/* CTA Button */}
@@ -206,19 +218,32 @@ const Header = () => {
 
                     {/* Other Navigation */}
                     <div className="space-y-2">
-                      {navigation.map((item) => (
-                        <Link
-                          key={item.name}
-                          to={item.href}
-                          onClick={() => setIsOpen(false)}
-                          className={cn(
-                            "block py-2 text-sm font-medium transition-colors hover:text-brand-primary",
-                            isActive(item.href) ? "text-brand-primary" : "text-foreground"
-                          )}
-                        >
-                          {item.name}
-                        </Link>
-                      ))}
+                      {navigation.map((item) => 
+                        item.external ? (
+                          <a
+                            key={item.name}
+                            href={item.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => setIsOpen(false)}
+                            className="block py-2 text-sm font-medium transition-colors hover:text-brand-primary text-foreground"
+                          >
+                            {item.name}
+                          </a>
+                        ) : (
+                          <Link
+                            key={item.name}
+                            to={item.href}
+                            onClick={() => setIsOpen(false)}
+                            className={cn(
+                              "block py-2 text-sm font-medium transition-colors hover:text-brand-primary",
+                              isActive(item.href) ? "text-brand-primary" : "text-foreground"
+                            )}
+                          >
+                            {item.name}
+                          </Link>
+                        )
+                      )}
                     </div>
                   </nav>
 
