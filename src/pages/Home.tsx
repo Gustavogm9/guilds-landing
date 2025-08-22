@@ -583,21 +583,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-
-          {/* Parceiros tecnológicos */}
-          <div className="mt-16 text-center">
-            <p className="text-sm text-muted-foreground mb-8">
-              Parceiros tecnológicos confiáveis
-            </p>
-            <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
-              <span className="text-sm font-medium">React</span>
-              <span className="text-sm font-medium">OpenAI</span>
-              <span className="text-sm font-medium">Node.js</span>
-              <span className="text-sm font-medium">Supabase</span>
-              <span className="text-sm font-medium">Vercel</span>
-              <span className="text-sm font-medium">WhatsApp Business</span>
-            </div>
-          </div>
         </div>
       </section>
 
