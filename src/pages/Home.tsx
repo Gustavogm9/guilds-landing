@@ -286,11 +286,12 @@ const Home = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
               {workflowSteps.map((step, index) => {
               const icons = {
+                map: Search,
                 search: Search,
-                blueprint: FileText,
+                edit: FileText,
                 code: Code,
-                chart: BarChart3,
-                rocket: Rocket
+                users: Users,
+                chart: BarChart3
               };
               const Icon = icons[step.icon as keyof typeof icons];
               return <div key={index} className="text-center space-y-4 relative">
