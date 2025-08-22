@@ -44,29 +44,40 @@ import {
 const Home = () => {
   return (
     <div className="min-h-screen">
-      {/* 1. Hero Section */}
-      <HeroSection className="flex items-center justify-center relative">
-        <FloatingBadges className="hidden md:block" />
+      {/* 1. Hero Section - Text Breakthrough */}
+      <HeroSection className="flex items-center justify-center relative overflow-hidden">
+        <FloatingBadges className="hidden lg:block" />
         
-        <div className="w-full max-w-7xl mx-auto relative z-10">
+        <div className="w-full relative z-10">
           <div className="text-center relative">
-            {/* Main Headlines */}
-            <div className="space-y-4 md:space-y-6 mb-8">
-              <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-none">
-                <span className="block text-foreground hero-text-shadow">
+            {/* Main Headlines - Breakthrough Layout */}
+            <div className="relative mb-8">
+              <h1 className="font-black leading-[0.8] tracking-tighter select-none">
+                {/* SISTEMAS - Solid text */}
+                <span className="block text-foreground text-[8rem] sm:text-[10rem] md:text-[12rem] lg:text-[14rem] xl:text-[16rem] hero-text-shadow">
                   SISTEMAS
                 </span>
-                <span className="block text-primary hero-outline md:text-stroke">
-                  INTELIGENTES
-                </span>
+                
+                {/* INTELIGENTES - Split by knight */}
+                <div className="relative -mt-4 md:-mt-6 lg:-mt-8">
+                  <span className="block hero-outline text-[8rem] sm:text-[10rem] md:text-[12rem] lg:text-[14rem] xl:text-[16rem] opacity-90">
+                    INTELI
+                    <span className="invisible">G</span>
+                    ENTES
+                  </span>
+                  
+                  {/* Tech Knight breaking through the "G" */}
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="relative transform rotate-3 scale-110 animate-float">
+                      <TechKnight 
+                        className="w-48 h-64 sm:w-56 sm:h-72 md:w-64 md:h-80 lg:w-80 lg:h-96 xl:w-96 xl:h-[28rem] 
+                                   drop-shadow-2xl hover:scale-105 transition-all duration-700 ease-out
+                                   filter brightness-110 contrast-110" 
+                      />
+                    </div>
+                  </div>
+                </div>
               </h1>
-              
-              {/* Tech Knight positioned over text */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <TechKnight 
-                  className="w-64 h-80 md:w-80 md:h-96 lg:w-96 lg:h-[28rem] opacity-90 hover:opacity-100 transition-opacity duration-500" 
-                />
-              </div>
             </div>
 
             {/* Subtitle and CTA */}

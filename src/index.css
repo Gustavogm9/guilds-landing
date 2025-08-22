@@ -216,6 +216,14 @@
     -webkit-text-stroke: 3px hsl(var(--primary));
     text-stroke: 3px hsl(var(--primary));
     color: transparent;
+    filter: drop-shadow(0 0 25px hsl(var(--primary) / 0.4));
+  }
+
+  .text-stroke-heavy {
+    -webkit-text-stroke: 3px hsl(var(--primary));
+    text-stroke: 3px hsl(var(--primary));
+    color: transparent;
+    filter: drop-shadow(0 0 20px hsl(var(--primary) / 0.3));
   }
   
   /* Animations */

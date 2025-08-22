@@ -6,12 +6,11 @@ interface FloatingBadgesProps {
 
 const FloatingBadges = ({ className = '' }: FloatingBadgesProps) => {
   const badges = [
-    { text: "REACT", position: "top-20 left-1/4", delay: "0s" },
-    { text: "IA", position: "top-32 right-1/3", delay: "0.3s" },
-    { text: "AUTOMAÇÃO", position: "top-1/2 left-1/6", delay: "0.6s" },
-    { text: "UX/UI", position: "bottom-1/3 right-1/4", delay: "0.9s" },
-    { text: "TYPESCRIPT", position: "bottom-20 left-1/3", delay: "1.2s" },
-    { text: "API", position: "top-40 right-1/6", delay: "1.5s" },
+    { text: "REACT", position: "top-1/4 left-[15%]", delay: "0s" },
+    { text: "IA", position: "top-1/3 right-[20%]", delay: "0.4s" },
+    { text: "AUTOMAÇÃO", position: "top-1/2 left-[8%]", delay: "0.8s" },
+    { text: "TYPESCRIPT", position: "bottom-1/3 right-[15%]", delay: "1.2s" },
+    { text: "UX/UI", position: "bottom-1/4 left-[25%]", delay: "1.6s" },
   ];
 
   return (
@@ -27,10 +26,12 @@ const FloatingBadges = ({ className = '' }: FloatingBadgesProps) => {
         >
           <Badge
             variant="outline"
-            className="text-xs px-2 py-1 bg-background/10 backdrop-blur-sm border-primary/20 text-primary hover:bg-primary/10 transition-all duration-300 animate-bounce"
+            className="text-xs px-3 py-1.5 bg-background/20 backdrop-blur-md border-primary/30 text-primary 
+                       hover:bg-primary/20 hover:border-primary/50 hover:scale-105 
+                       transition-all duration-500 animate-bounce font-medium tracking-wider"
             style={{
-              animationDelay: `calc(${badge.delay} + 2s)`,
-              animationDuration: '3s',
+              animationDelay: `calc(${badge.delay} + 3s)`,
+              animationDuration: '4s',
               animationIterationCount: 'infinite',
             }}
           >
