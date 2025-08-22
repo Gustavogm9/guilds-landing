@@ -1,242 +1,128 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { MetricBadge } from "@/components/ui/MetricBadge";
 import { 
   ArrowRight,
   Code,
   Zap,
   Gamepad2,
+  Search,
+  TrendingUp,
+  Target,
   Users,
-  Smartphone,
-  Brain,
-  Rocket,
-  Settings
+  Clock
 } from "lucide-react";
 
 const services = [
   {
     icon: Code,
     title: "Desenvolvimento de Software & Apps",
-    description: "Criamos soluções digitais completas, desde aplicações web até apps mobile nativos, sempre com foco na experiência do usuário e performance.",
-    features: [
-      "Aplicações Web Responsivas",
-      "Apps Mobile (iOS/Android)",
-      "Sistemas Corporativos",
-      "APIs e Integrações",
-      "E-commerce Avançado"
-    ],
-    technologies: ["React", "React Native", "Node.js", "Python", "PostgreSQL"],
-    href: "/servicos/software-apps",
-    gradient: "from-blue-500 to-purple-600"
+    description: "Produtos digitais sob medida, do zero ao lançamento.",
+    metric: { icon: TrendingUp, value: "85%", label: "redução no time-to-market" },
+    benefitBullet: "Desenvolvimento ágil com entregas iterativas e feedback contínuo",
+    href: "/servicos/software-apps"
   },
   {
     icon: Zap,
-    title: "Automação & IA",
-    description: "Implementamos inteligência artificial e automação para otimizar processos, reduzir custos e aumentar a eficiência operacional da sua empresa.",
-    features: [
-      "Chatbots Inteligentes",
-      "Análise Preditiva",
-      "Automação de Processos",
-      "Machine Learning",
-      "Visão Computacional"
-    ],
-    technologies: ["Python", "TensorFlow", "OpenAI", "AWS", "Azure"],
-    href: "/servicos/automacao-ia",
-    gradient: "from-emerald-500 to-teal-600"
+    title: "Automação & IA", 
+    description: "Automatize fluxos. Decida melhor com IA.",
+    metric: { icon: Target, value: "60%", label: "redução em tarefas manuais" },
+    benefitBullet: "Integração com seus sistemas existentes (CRM, ERP, WhatsApp)",
+    href: "/servicos/automacao-ia"
   },
   {
     icon: Gamepad2,
     title: "Jogos Corporativos & Gamificação",
-    description: "Desenvolvemos jogos corporativos e estratégias de gamificação para aumentar engajamento, treinamento e produtividade das equipes.",
-    features: [
-      "Jogos de Treinamento",
-      "Plataformas Gamificadas",
-      "Simuladores Corporativos",
-      "Realidade Virtual/AR",
-      "Sistemas de Pontuação"
-    ],
-    technologies: ["Unity", "Unreal Engine", "WebGL", "AR/VR", "Blockchain"],
-    href: "/servicos/jogos-gamificacao",
-    gradient: "from-orange-500 to-red-600"
+    description: "Aprendizado que engaja. Cultura que fica.",
+    metric: { icon: Users, value: "90%", label: "aumento no engajamento" },
+    benefitBullet: "Treinamentos corporativos com alta retenção e aplicação prática",
+    href: "/servicos/jogos-gamificacao"
   },
   {
-    icon: Users,
-    title: "Consultoria & Discovery",
-    description: "Oferecemos consultoria estratégica para identificar oportunidades de digitalização e descobrir as melhores soluções para seu negócio.",
-    features: [
-      "Auditoria Tecnológica",
-      "Estratégia Digital",
-      "Design Thinking",
-      "Prototipagem Rápida",
-      "Roadmap de Inovação"
-    ],
-    technologies: ["Metodologias Ágeis", "Design Sprint", "Lean Startup", "OKRs"],
-    href: "/servicos/consultoria",
-    gradient: "from-purple-500 to-pink-600"
+    icon: Search,
+    title: "Consultoria & Discovery", 
+    description: "Mapeamento de oportunidades, arquitetura e roadmaps estratégicos.",
+    metric: { icon: Clock, value: "30%", label: "aceleração na execução" },
+    benefitBullet: "Diagnóstico completo com plano de ação priorizado por impacto",
+    href: "/servicos/consultoria"
   }
 ];
 
-const additionalServices = [
-  {
-    icon: Smartphone,
-    title: "UX/UI Design",
-    description: "Design centrado no usuário para criar experiências memoráveis"
-  },
-  {
-    icon: Brain,
-    title: "Data Science",
-    description: "Análise de dados para insights estratégicos de negócio"
-  },
-  {
-    icon: Rocket,
-    title: "DevOps",
-    description: "Infraestrutura e deploy automatizado para máxima performance"
-  },
-  {
-    icon: Settings,
-    title: "Integração",
-    description: "Conectamos seus sistemas existentes de forma eficiente"
-  }
-];
 
 const Services = () => {
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-guild-hero py-24">
+      {/* Hero Section - Intro Curta */}
+      <section className="py-20 lg:py-32">
         <div className="container">
-          <div className="text-center max-w-4xl mx-auto">
-            <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20 mb-6">
+          <div className="text-center max-w-3xl mx-auto">
+            <Badge className="bg-primary/10 text-primary border-primary/20 mb-6">
               🛠️ Nossos Serviços
             </Badge>
-            <h1 className="text-4xl md:text-5xl font-sora font-bold mb-6">
-              Soluções <span className="text-gradient">completas</span> para 
-              seu negócio digital
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-sora font-bold mb-6">
+              Sistemas inteligentes, <span className="text-gradient">resultados reais</span>
             </h1>
-            <p className="text-lg text-muted-foreground mb-8">
-              Oferecemos um portfólio abrangente de serviços tecnológicos, 
-              desde desenvolvimento até consultoria estratégica, sempre com 
-              foco na excelência e inovação.
+            <p className="text-lg text-muted-foreground">
+              Oferecemos soluções digitais sob medida - software, apps, automação, IA e gamificação - sempre com foco no seu objetivo e ROI.
             </p>
-            <Button asChild className="btn-hero">
-              <Link to="/contato">
-                Solicitar Orçamento
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
           </div>
         </div>
       </section>
 
-      {/* Main Services */}
-      <section className="py-24">
+      {/* Grid dos 4 Serviços */}
+      <section className="py-16">
         <div className="container">
-          <div className="space-y-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {services.map((service, index) => {
               const Icon = service.icon;
-              const isEven = index % 2 === 0;
+              const MetricIcon = service.metric.icon;
               
               return (
-                <div key={index} className={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-center ${!isEven ? 'lg:grid-flow-col-dense' : ''}`}>
-                  {/* Content */}
-                  <div className={!isEven ? 'lg:col-start-2' : ''}>
-                    <div className="space-y-6">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-16 h-16 bg-gradient-to-r ${service.gradient} rounded-2xl flex items-center justify-center`}>
-                          <Icon className="h-8 w-8 text-white" />
-                        </div>
-                        <div>
-                          <h2 className="text-2xl md:text-3xl font-sora font-bold">
-                            {service.title}
-                          </h2>
-                        </div>
-                      </div>
-
-                      <p className="text-lg text-muted-foreground leading-relaxed">
+                <div key={index} className="card-elevated p-8 h-full flex flex-col">
+                  {/* Header com ícone e título */}
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="p-3 bg-primary/10 rounded-xl">
+                      <Icon className="h-8 w-8 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-sora font-bold mb-2">
+                        {service.title}
+                      </h3>
+                      <p className="text-muted-foreground text-sm">
                         {service.description}
                       </p>
-
-                      <div>
-                        <h3 className="font-semibold mb-4 text-brand-primary">
-                          O que incluímos:
-                        </h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                          {service.features.map((feature, featureIndex) => (
-                            <div key={featureIndex} className="flex items-center gap-2">
-                              <div className="w-2 h-2 bg-brand-accent rounded-full"></div>
-                              <span className="text-sm">{feature}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <h3 className="font-semibold mb-3 text-brand-primary">
-                          Tecnologias:
-                        </h3>
-                        <div className="flex flex-wrap gap-2">
-                          {service.technologies.map((tech, techIndex) => (
-                            <Badge key={techIndex} variant="secondary" className="text-xs">
-                              {tech}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      <Button asChild className="btn-hero">
-                        <Link to={service.href}>
-                          Saiba Mais
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                      </Button>
                     </div>
                   </div>
-
-                  {/* Visual */}
-                  <div className={!isEven ? 'lg:col-start-1' : ''}>
-                    <div className={`relative p-8 bg-gradient-to-br ${service.gradient} rounded-3xl`}>
-                      <div className="absolute inset-0 bg-black/20 rounded-3xl"></div>
-                      <div className="relative text-white">
-                        <Icon className="h-24 w-24 mb-6 opacity-80" />
-                        <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
-                        <p className="text-white/90 leading-relaxed">
-                          {service.description}
-                        </p>
-                      </div>
+                  
+                  {/* Mini-métrica */}
+                  <div className="mb-6">
+                    <MetricBadge
+                      icon={MetricIcon}
+                      value={service.metric.value}
+                      label={service.metric.label}
+                      variant="primary"
+                      size="sm"
+                    />
+                  </div>
+                  
+                  {/* Bullet de benefício */}
+                  <div className="mb-8 flex-1">
+                    <div className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-brand-accent rounded-full mt-2 flex-shrink-0"></div>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {service.benefitBullet}
+                      </p>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Additional Services */}
-      <section className="py-24 bg-muted/30">
-        <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-sora font-bold mb-4">
-              Serviços Complementares
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Oferecemos também serviços especializados para complementar 
-              sua estratégia digital
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {additionalServices.map((service, index) => {
-              const Icon = service.icon;
-              return (
-                <div key={index} className="card-elevated p-8 text-center">
-                  <div className="w-16 h-16 bg-brand-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <Icon className="h-8 w-8 text-brand-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {service.description}
-                  </p>
+                  
+                  {/* CTA */}
+                  <Button asChild className="w-full">
+                    <Link to={service.href}>
+                      Saiba Mais
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
                 </div>
               );
             })}
@@ -245,26 +131,25 @@ const Services = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-neutral-900 text-white">
+      <section className="py-20 bg-muted/30">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-sora font-bold mb-6">
-              Vamos construir algo incrível juntos?
+              Pronto para transformar seu negócio?
             </h2>
-            <p className="text-lg text-neutral-300 mb-8">
-              Entre em contato conosco e descubra como podemos 
-              transformar suas ideias em realidade digital.
+            <p className="text-lg text-muted-foreground mb-8">
+              Agende uma conversa e descubra como nossas soluções podem gerar resultados reais para sua empresa.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild className="btn-hero">
+              <Button asChild size="lg">
                 <Link to="/contato">
-                  Iniciar Conversa
+                  Falar com a Guilds
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="btn-glass border-white/20 text-white hover:bg-white/10">
+              <Button asChild variant="outline" size="lg">
                 <Link to="/cases">
-                  Ver Nossos Cases
+                  Ver Cases
                 </Link>
               </Button>
             </div>
