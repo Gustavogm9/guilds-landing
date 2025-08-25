@@ -10,6 +10,8 @@ import { SEOHead } from "./components/seo/SEOHead";
 import { SitemapGenerator } from "./components/seo/SitemapGenerator";
 import { QualificationProvider } from "./components/forms/QualificationProvider";
 import { QualificationTrigger } from "./components/forms/QualificationTrigger";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
@@ -21,42 +23,53 @@ import Consultoria from "./pages/Consultoria";
 import ThankYou from "./pages/ThankYou";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
+import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <QualificationProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <SEOHead />
-          <SitemapGenerator />
-          <ScrollToTop />
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/servicos" element={<Services />} />
-              <Route path="/servicos/software-apps" element={<SoftwareApps />} />
-              <Route path="/servicos/automacao-ia" element={<AutomacaoIA />} />
-              <Route path="/servicos/jogos-gamificacao" element={<JogosGamificacao />} />
-              <Route path="/servicos/consultoria" element={<Consultoria />} />
-              <Route path="/cases" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Cases</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
-              <Route path="/lab" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Guilds Lab</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
-              <Route path="/craft" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Guilds Craft</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
-              <Route path="/conteudo" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Conteúdo</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
-              <Route path="/sobre" element={<About />} />
-              <Route path="/contato" element={<Contact />} />
-              <Route path="/obrigado" element={<ThankYou />} />
-              <Route path="/admin" element={<Admin />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <QualificationTrigger />
-          </Layout>
-        </BrowserRouter>
-      </QualificationProvider>
+      <AuthProvider>
+        <QualificationProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <SEOHead />
+            <SitemapGenerator />
+            <ScrollToTop />
+            <Layout>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/servicos" element={<Services />} />
+                <Route path="/servicos/software-apps" element={<SoftwareApps />} />
+                <Route path="/servicos/automacao-ia" element={<AutomacaoIA />} />
+                <Route path="/servicos/jogos-gamificacao" element={<JogosGamificacao />} />
+                <Route path="/servicos/consultoria" element={<Consultoria />} />
+                <Route path="/cases" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Cases</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
+                <Route path="/lab" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Guilds Lab</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
+                <Route path="/craft" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Guilds Craft</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
+                <Route path="/conteudo" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Conteúdo</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
+                <Route path="/sobre" element={<About />} />
+                <Route path="/contato" element={<Contact />} />
+                <Route path="/obrigado" element={<ThankYou />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route 
+                  path="/admin" 
+                  element={
+                    <ProtectedRoute>
+                      <Admin />
+                    </ProtectedRoute>
+                  } 
+                />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <QualificationTrigger />
+            </Layout>
+          </BrowserRouter>
+        </QualificationProvider>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

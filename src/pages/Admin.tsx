@@ -5,6 +5,7 @@ import { SEOAdmin } from '@/components/seo/SEOAdmin';
 import { QualificationAdmin } from '@/components/admin/QualificationAdmin';
 import { ContactAdmin } from '@/components/admin/ContactAdmin';
 import { NewsletterAdmin } from '@/components/admin/NewsletterAdmin';
+import { AdminHeader } from '@/components/auth/AdminHeader';
 import { useLogos } from '@/hooks/useLogos';
 import { LogoService } from '@/lib/logoService';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -46,14 +47,13 @@ export default function Admin() {
   };
 
   return (
-    <div className="container max-w-6xl py-8">
-      <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Admin Panel</h1>
-          <p className="text-muted-foreground mt-2">
-            Gerencie logos, SEO e configurações do site
-          </p>
-        </div>
+    <div className="min-h-screen bg-background">
+      <AdminHeader />
+      <div className="container max-w-6xl py-8">
+        <div className="space-y-8">
+          <div>
+            {/* Header content now handled by AdminHeader */}
+          </div>
 
         <Tabs defaultValue="logos" className="w-full">
           <TabsList className="grid w-full grid-cols-5">
@@ -193,9 +193,9 @@ export default function Admin() {
                                     </AlertDialogFooter>
                                   </AlertDialogContent>
                                 </AlertDialog>
-                              </div>
-                            </div>
-                          </div>
+        </div>
+      </div>
+    </div>
                           
                           {logo.usage_context && (
                             <>
@@ -236,6 +236,7 @@ export default function Admin() {
             <ContactAdmin />
           </TabsContent>
         </Tabs>
+        </div>
       </div>
       
       <EditLogoDialog 
