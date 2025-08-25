@@ -4,7 +4,7 @@ import { Mail, Phone, MapPin, Linkedin, Instagram, Youtube } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import guildsLogoShield from '@/assets/guilds-logo-shield.svg';
+import { DynamicLogo } from '@/components/ui/DynamicLogo';
 
 export function Footer() {
   return (
@@ -14,10 +14,17 @@ export function Footer() {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <img 
-                src={guildsLogoShield} 
-                alt="Guilds" 
-                className="h-8 w-auto invert"
+              <DynamicLogo 
+                usageContext="Footers e rodapés"
+                type="symbol"
+                variant="light"
+                className="h-8 w-auto"
+                alt="Guilds"
+                fallback={
+                  <div className="w-8 h-8 bg-brand-accent rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">G</span>
+                  </div>
+                }
               />
               <span className="font-sora font-bold text-xl">Guilds</span>
             </div>
