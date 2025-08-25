@@ -7,10 +7,11 @@ export function useDynamicFavicon() {
   useEffect(() => {
     if (loading) return;
 
-    // Try to get a logo for favicon usage
-    const faviconLogo = getLogoByContext('Ícones e favicons', 'symbol') || 
-                       getLogoByContext('Ícones e favicons') ||
+    // Try to get a logo for favicon usage - more flexible search
+    const faviconLogo = getLogoByContext('Ícones e favicons') || 
                        getLogoByContext('Headers e navegação', 'symbol');
+
+    console.log('Favicon logo found:', faviconLogo);
 
     if (faviconLogo?.public_url) {
       // Remove existing favicon links

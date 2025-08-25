@@ -34,6 +34,12 @@ export function DynamicLogo({
       ? getLogoByContext(usageContext, type, variant)
       : getLogoByType(type, variant);
 
+  // Add debug logging for DynamicLogo
+  if (usageContext) {
+    console.log(`DynamicLogo searching for: context="${usageContext}", type="${type}", variant="${variant}"`);
+    console.log('Logo found:', logo);
+  }
+
   // Show loading state
   if (loading) {
     return (

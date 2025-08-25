@@ -79,17 +79,54 @@ export function useLogos() {
   };
 
   const getLogoByContext = (usageContext: string, type?: Logo['type'], variant?: Logo['variant']) => {
+    // Clean the search context
+    const cleanContext = usageContext.trim();
+    
+    console.log(`Searching logos for context: "${cleanContext}"`);
+    console.log('Available logos:', logos.map(l => ({ 
+      name: l.name, 
+      context: l.usage_context, 
+      type: l.type, 
+      variant: l.variant 
+    })));
+    
     // First try to find logo with specific context
-    const contextLogo = logos.find(logo => 
-      logo.usage_context?.includes(usageContext) && 
-      (type ? logo.type === type : true) && 
-      (variant ? logo.variant === variant : true)
-    );
+    const contextLogo = logos.find(logo => {
+      if (!logo.usage_context) return false;
+      
+      // Clean and split the usage contexts (handle commas and trim)
+      const contexts = logo.usage_context.split(',').map(ctx => ctx.trim()).filter(ctx => ctx.length > 0);
+      const hasContext = contexts.some(ctx => ctx.includes(cleanContext) || cleanContext.includes(ctx));
+      
+      const typeMatch = type ? logo.type === type : true;
+      const variantMatch = variant ? logo.variant === variant : true;
+      
+      return hasContext && typeMatch && variantMatch;
+    });
+    
+    console.log('Found logo with context:', contextLogo);
     
     if (contextLogo) return contextLogo;
     
-    // Fallback to type/variant search if no context match
+    // If no exact context match but we have type/variant, try more flexible search
     if (type || variant) {
+      // First try context match without strict variant
+      if (variant) {
+        const flexibleContextLogo = logos.find(logo => {
+          if (!logo.usage_context) return false;
+          const contexts = logo.usage_context.split(',').map(ctx => ctx.trim()).filter(ctx => ctx.length > 0);
+          const hasContext = contexts.some(ctx => ctx.includes(cleanContext) || cleanContext.includes(ctx));
+          const typeMatch = type ? logo.type === type : true;
+          return hasContext && typeMatch;
+        });
+        
+        if (flexibleContextLogo) {
+          console.log('Found flexible context logo:', flexibleContextLogo);
+          return flexibleContextLogo;
+        }
+      }
+      
+      // Fallback to type/variant search
       return getLogoByType(type!, variant);
     }
     
