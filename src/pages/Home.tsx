@@ -8,6 +8,7 @@ import { Section, HeroSection, ContentSection, FeatureSection } from "@/componen
 import { Grid, ServiceGrid, FeatureGrid, MetricGrid, CaseGrid } from "@/components/ui/grid";
 import { HeroImage } from "@/components/ui/image";
 import { Card } from "@/components/ui/card";
+import { DynamicLogo } from "@/components/ui/DynamicLogo";
 import { Search, FileText, Code, BarChart3, Rocket, Clock, Unlink, Users, Brain, Globe, Zap, Shield, ArrowRight, Star, CheckCircle, Play, ChevronRight, MessageSquare, Target, TrendingUp, Award, Lightbulb, Settings, Puzzle, Database, Smartphone, Bot, Activity, BookOpen, Hammer, RefreshCw, Map, Edit } from 'lucide-react';
 import { GuildShield, GuildHammer, GuildCrest } from "@/components/icons";
 import heroImage from "@/assets/hero-image.jpg";
@@ -592,7 +593,14 @@ const Home = () => {
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="container relative">
           <div className="text-center max-w-3xl mx-auto">
-            <GuildCrest className="h-16 w-16 mx-auto mb-6 text-white opacity-90" />
+            <DynamicLogo 
+              usageContext="CTA e chamadas para ação"
+              type="symbol"
+              variant="light"
+              className="h-16 w-16 mx-auto mb-6"
+              alt="Guilds"
+              fallback={<GuildCrest className="h-16 w-16 mx-auto mb-6 text-white opacity-90" />}
+            />
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
               Pronto para transformar seu negócio?
             </h2>
