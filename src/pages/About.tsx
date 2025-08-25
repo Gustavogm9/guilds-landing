@@ -1,84 +1,68 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  ArrowRight,
-  Shield,
-  Users,
-  Target,
-  Award,
-  Heart,
-  Lightbulb,
-  Zap,
-  Code
-} from "lucide-react";
-
-const values = [
-  {
-    icon: Shield,
-    title: "Excelência",
-    description: "Comprometimento com a mais alta qualidade em cada projeto que desenvolvemos."
-  },
-  {
-    icon: Users,
-    title: "Colaboração",
-    description: "Trabalhamos como uma guilda unida, compartilhando conhecimento e experiências."
-  },
-  {
-    icon: Lightbulb,
-    title: "Inovação",
-    description: "Sempre buscamos as tecnologias mais avançadas e soluções criativas."
-  },
-  {
-    icon: Heart,
-    title: "Paixão",
-    description: "Amamos o que fazemos e isso transparece em cada linha de código."
-  }
-];
-
-const stats = [
-  { number: "100+", label: "Projetos Concluídos", description: "Soluções entregues com sucesso" },
-  { number: "50+", label: "Clientes Satisfeitos", description: "Empresas que confiam em nós" },
-  { number: "5+", label: "Anos de Experiência", description: "Construindo o futuro digital" },
-  { number: "98%", label: "Taxa de Satisfação", description: "Clientes que recomendam nosso trabalho" }
-];
-
-const timeline = [
-  {
-    year: "2019",
-    title: "Fundação da Guilds",
-    description: "Iniciamos nossa jornada com o sonho de unir tradição e inovação tecnológica."
-  },
-  {
-    year: "2020",
-    title: "Primeiros Grandes Clientes",
-    description: "Conquistamos a confiança de empresas de médio e grande porte."
-  },
-  {
-    year: "2021",
-    title: "Expansão dos Serviços",
-    description: "Adicionamos IA e automação ao nosso portfólio de soluções."
-  },
-  {
-    year: "2022",
-    title: "Guilds Lab",
-    description: "Lançamos nossa divisão de pesquisa e desenvolvimento de workshops."
-  },
-  {
-    year: "2023",
-    title: "Guilds Craft",
-    description: "Criamos nossa linha de produtos e soluções proprietárias."
-  },
-  {
-    year: "2024",
-    title: "Nova Era",
-    description: "Consolidação como referência em tecnologia empresarial no Brasil."
-  }
-];
-
+import { ArrowRight, Shield, Users, Target, Award, Heart, Lightbulb, Zap, Code } from "lucide-react";
+const values = [{
+  icon: Shield,
+  title: "Excelência",
+  description: "Comprometimento com a mais alta qualidade em cada projeto que desenvolvemos."
+}, {
+  icon: Users,
+  title: "Colaboração",
+  description: "Trabalhamos como uma guilda unida, compartilhando conhecimento e experiências."
+}, {
+  icon: Lightbulb,
+  title: "Inovação",
+  description: "Sempre buscamos as tecnologias mais avançadas e soluções criativas."
+}, {
+  icon: Heart,
+  title: "Paixão",
+  description: "Amamos o que fazemos e isso transparece em cada linha de código."
+}];
+const stats = [{
+  number: "100+",
+  label: "Projetos Concluídos",
+  description: "Soluções entregues com sucesso"
+}, {
+  number: "50+",
+  label: "Clientes Satisfeitos",
+  description: "Empresas que confiam em nós"
+}, {
+  number: "5+",
+  label: "Anos de Experiência",
+  description: "Construindo o futuro digital"
+}, {
+  number: "98%",
+  label: "Taxa de Satisfação",
+  description: "Clientes que recomendam nosso trabalho"
+}];
+const timeline = [{
+  year: "2019",
+  title: "Fundação da Guilds",
+  description: "Iniciamos nossa jornada com o sonho de unir tradição e inovação tecnológica."
+}, {
+  year: "2020",
+  title: "Primeiros Grandes Clientes",
+  description: "Conquistamos a confiança de empresas de médio e grande porte."
+}, {
+  year: "2021",
+  title: "Expansão dos Serviços",
+  description: "Adicionamos IA e automação ao nosso portfólio de soluções."
+}, {
+  year: "2022",
+  title: "Guilds Lab",
+  description: "Lançamos nossa divisão de pesquisa e desenvolvimento de workshops."
+}, {
+  year: "2023",
+  title: "Guilds Craft",
+  description: "Criamos nossa linha de produtos e soluções proprietárias."
+}, {
+  year: "2024",
+  title: "Nova Era",
+  description: "Consolidação como referência em tecnologia empresarial no Brasil."
+}];
 const About = () => {
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       {/* Hero Section */}
       <section className="bg-guild-hero py-16 md:py-20">
         <div className="container">
@@ -146,9 +130,8 @@ const About = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => {
-              const Icon = value.icon;
-              return (
-                <div key={index} className="card-elevated p-8 text-center">
+            const Icon = value.icon;
+            return <div key={index} className="card-elevated p-8 text-center">
                   <div className="w-16 h-16 bg-brand-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                     <Icon className="h-8 w-8 text-brand-primary" />
                   </div>
@@ -156,9 +139,8 @@ const About = () => {
                   <p className="text-muted-foreground leading-relaxed">
                     {value.description}
                   </p>
-                </div>
-              );
-            })}
+                </div>;
+          })}
           </div>
         </div>
       </section>
@@ -176,8 +158,7 @@ const About = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
+            {stats.map((stat, index) => <div key={index} className="text-center">
                 <div className="mb-4">
                   <div className="text-4xl md:text-5xl font-bold text-gradient mb-2">
                     {stat.number}
@@ -185,8 +166,7 @@ const About = () => {
                   <h3 className="text-lg font-semibold">{stat.label}</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">{stat.description}</p>
-              </div>
-            ))}
+              </div>)}
           </div>
         </div>
       </section>
@@ -208,8 +188,7 @@ const About = () => {
             <div className="absolute left-1/2 transform -translate-x-px h-full w-0.5 bg-gradient-to-b from-brand-primary to-brand-accent"></div>
 
             <div className="space-y-16">
-              {timeline.map((item, index) => (
-                <div key={index} className={`flex items-center ${index % 2 === 0 ? '' : 'flex-row-reverse'}`}>
+              {timeline.map((item, index) => <div key={index} className={`flex items-center ${index % 2 === 0 ? '' : 'flex-row-reverse'}`}>
                   <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
                     <div className="card-elevated p-6">
                       <div className="text-2xl font-bold text-brand-primary mb-2">
@@ -225,8 +204,7 @@ const About = () => {
                   <div className="w-4 h-4 bg-brand-primary rounded-full border-4 border-background relative z-10"></div>
                   
                   <div className="w-1/2"></div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </div>
@@ -251,16 +229,12 @@ const About = () => {
                 </Link>
               </Button>
               <Button asChild variant="outline" className="btn-glass border-white/20 text-white hover:bg-white/10">
-                <Link to="/equipe">
-                  Conheça Nossa Equipe
-                </Link>
+                
               </Button>
             </div>
           </div>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default About;
