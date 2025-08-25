@@ -9,6 +9,7 @@ import { Grid, ServiceGrid, FeatureGrid, MetricGrid, CaseGrid } from "@/componen
 import { HeroImage } from "@/components/ui/image";
 import { Card } from "@/components/ui/card";
 import { DynamicLogo } from "@/components/ui/DynamicLogo";
+import { QualificationButton } from "@/components/forms/QualificationButton";
 import { Search, FileText, Code, BarChart3, Rocket, Clock, Unlink, Users, Brain, Globe, Zap, Shield, ArrowRight, Star, CheckCircle, Play, ChevronRight, MessageSquare, Target, TrendingUp, Award, Lightbulb, Settings, Puzzle, Database, Smartphone, Bot, Activity, BookOpen, Hammer, RefreshCw, Map, Edit } from 'lucide-react';
 import { GuildShield, GuildHammer, GuildCrest } from "@/components/icons";
 import heroImage from "@/assets/hero-image.jpg";
@@ -41,12 +42,10 @@ const Home = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild variant="hero" size="lg">
-                  <Link to="/contato">
-                    Falar com a Guilds
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
+                <QualificationButton variant="hero" size="lg">
+                  Falar com a Guilds
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </QualificationButton>
                 <Button asChild variant="glass" size="lg">
                   <Link to="/cases">
                     Ver cases

@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      company_settings: {
+        Row: {
+          brand_accent_color: string
+          brand_primary_color: string
+          company_name: string
+          created_at: string
+          id: string
+          support_email: string
+          updated_at: string
+          whatsapp_number: string
+        }
+        Insert: {
+          brand_accent_color?: string
+          brand_primary_color?: string
+          company_name?: string
+          created_at?: string
+          id?: string
+          support_email?: string
+          updated_at?: string
+          whatsapp_number?: string
+        }
+        Update: {
+          brand_accent_color?: string
+          brand_primary_color?: string
+          company_name?: string
+          created_at?: string
+          id?: string
+          support_email?: string
+          updated_at?: string
+          whatsapp_number?: string
+        }
+        Relationships: []
+      }
       custom_tags: {
         Row: {
           content: string
@@ -49,6 +82,56 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      form_fields: {
+        Row: {
+          created_at: string
+          field_label: string
+          field_name: string
+          field_order: number
+          field_type: string
+          form_id: string
+          id: string
+          is_required: boolean
+          options: string[] | null
+          placeholder_text: string | null
+          validation_rules: Json | null
+        }
+        Insert: {
+          created_at?: string
+          field_label: string
+          field_name: string
+          field_order?: number
+          field_type?: string
+          form_id: string
+          id?: string
+          is_required?: boolean
+          options?: string[] | null
+          placeholder_text?: string | null
+          validation_rules?: Json | null
+        }
+        Update: {
+          created_at?: string
+          field_label?: string
+          field_name?: string
+          field_order?: number
+          field_type?: string
+          form_id?: string
+          id?: string
+          is_required?: boolean
+          options?: string[] | null
+          placeholder_text?: string | null
+          validation_rules?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "form_fields_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "qualification_forms"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       logos: {
         Row: {
@@ -154,6 +237,104 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      qualification_forms: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          is_active: boolean
+          name: string
+          page_paths: string[] | null
+          redirect_delay: number
+          redirect_to_whatsapp: boolean
+          thank_you_message: string
+          thank_you_title: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          page_paths?: string[] | null
+          redirect_delay?: number
+          redirect_to_whatsapp?: boolean
+          thank_you_message?: string
+          thank_you_title?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          page_paths?: string[] | null
+          redirect_delay?: number
+          redirect_to_whatsapp?: boolean
+          thank_you_message?: string
+          thank_you_title?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      qualification_submissions: {
+        Row: {
+          created_at: string
+          form_data: Json
+          form_id: string
+          id: string
+          ip_address: unknown | null
+          source_page: string | null
+          status: string
+          updated_at: string
+          user_agent: string | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          created_at?: string
+          form_data: Json
+          form_id: string
+          id?: string
+          ip_address?: unknown | null
+          source_page?: string | null
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          created_at?: string
+          form_data?: Json
+          form_id?: string
+          id?: string
+          ip_address?: unknown | null
+          source_page?: string | null
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qualification_submissions_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "qualification_forms"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       seo_settings: {
         Row: {

@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 
 import { GuildShield } from "@/components/icons";
 import { DynamicLogo } from "@/components/ui/DynamicLogo";
+import { QualificationButton } from "@/components/forms/QualificationButton";
 import guildsLogoFull from "@/assets/guilds-logo-full.svg";
 import guildsLogoShield from "@/assets/guilds-logo-shield.svg";
 
@@ -168,17 +169,14 @@ const Header = () => {
 
             {/* CTA Button */}
             <div className="hidden md:block">
-              <Button 
+              <QualificationButton 
                 className="btn-forge group relative overflow-hidden shadow-guild hover:shadow-forge"
-                asChild
               >
-                <Link to="/contato">
-                  <span className="relative z-10 flex items-center gap-2">
-                    <GuildShield className="h-4 w-4" />
-                    Forjar Projeto
-                  </span>
-                </Link>
-              </Button>
+                <span className="relative z-10 flex items-center gap-2">
+                  <GuildShield className="h-4 w-4" />
+                  Forjar Projeto
+                </span>
+              </QualificationButton>
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -268,11 +266,9 @@ const Header = () => {
 
                   {/* Mobile CTA */}
                   <div className="pt-4 border-t">
-                    <Button asChild className="w-full btn-forge">
-                      <Link to="/contato" onClick={() => setIsOpen(false)}>
-                        Forjar Projeto
-                      </Link>
-                    </Button>
+                    <QualificationButton className="w-full btn-forge">
+                      Forjar Projeto
+                    </QualificationButton>
                   </div>
                 </div>
               </SheetContent>
@@ -283,14 +279,12 @@ const Header = () => {
 
       {/* Mobile Persistent CTA */}
       <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-gradient-forge p-4">
-        <Button asChild className="w-full btn-forge shadow-forge group animate-glow">
-          <Link to="/contato">
-            <span className="flex items-center justify-center gap-2">
-              <GuildShield className="h-5 w-5" />
-              Forjar Soluções Digitais
-            </span>
-          </Link>
-        </Button>
+        <QualificationButton className="w-full btn-forge shadow-forge group animate-glow">
+          <span className="flex items-center justify-center gap-2">
+            <GuildShield className="h-5 w-5" />
+            Forjar Soluções Digitais
+          </span>
+        </QualificationButton>
       </div>
     </>
   );

@@ -2,6 +2,7 @@ import React from 'react';
 import { LogoUploader } from '@/components/admin/LogoUploader';
 import { EditLogoDialog } from '@/components/admin/EditLogoDialog';
 import { SEOAdmin } from '@/components/seo/SEOAdmin';
+import { QualificationAdmin } from '@/components/admin/QualificationAdmin';
 import { useLogos } from '@/hooks/useLogos';
 import { LogoService } from '@/lib/logoService';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -53,7 +54,7 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="logos" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="logos" className="flex items-center gap-2">
               <ImageIcon className="h-4 w-4" />
               Logos
@@ -61,6 +62,10 @@ export default function Admin() {
             <TabsTrigger value="seo" className="flex items-center gap-2">
               <Search className="h-4 w-4" />
               SEO
+            </TabsTrigger>
+            <TabsTrigger value="forms" className="flex items-center gap-2">
+              <Database className="h-4 w-4" />
+              Formulários
             </TabsTrigger>
           </TabsList>
 
@@ -207,6 +212,10 @@ export default function Admin() {
 
           <TabsContent value="seo" className="space-y-8">
             <SEOAdmin />
+          </TabsContent>
+
+          <TabsContent value="forms" className="space-y-8">
+            <QualificationAdmin />
           </TabsContent>
         </Tabs>
       </div>
