@@ -35,7 +35,7 @@ export function Footer() {
               </div>
               <div className="flex items-center space-x-2 text-sm">
                 <MapPin className="h-4 w-4 text-brand-accent" />
-                <span>São Paulo, SP</span>
+                <span>São José do Rio Preto, SP</span>
               </div>
             </div>
           </div>
