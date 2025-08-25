@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 
 interface Logo {
   id: string;
@@ -21,6 +22,29 @@ export function useLogos() {
 
   useEffect(() => {
     fetchLogos();
+    
+    // Set up real-time subscription
+    const channel: RealtimeChannel = supabase
+      .channel('logos-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+          schema: 'public',
+          table: 'logos'
+        },
+        (payload) => {
+          console.log('Logo change detected:', payload);
+          // Refetch logos when any change occurs
+          fetchLogos();
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription on unmount
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchLogos = async () => {
