@@ -1,42 +1,41 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useLogos } from './useLogos';
 
 export function useDynamicFavicon() {
-  const { getLogoByContext, loading } = useLogos();
-  const currentFaviconRef = useRef<HTMLLinkElement | null>(null);
+  const { logos, loading } = useLogos();
+
+  // Memoize the favicon logo to prevent unnecessary effects
+  const faviconLogo = useMemo(() => {
+    if (loading || !logos.length) return null;
+    
+    // Try to get a logo for favicon usage - flexible search
+    return logos.find(logo => {
+      if (!logo.usage_context) return false;
+      const contexts = logo.usage_context.split(',').map(ctx => ctx.trim()).filter(ctx => ctx.length > 0);
+      return contexts.some(ctx => ctx.includes('Ícones e favicons'));
+    }) || logos.find(logo => {
+      if (!logo.usage_context) return false;
+      const contexts = logo.usage_context.split(',').map(ctx => ctx.trim()).filter(ctx => ctx.length > 0);
+      return contexts.some(ctx => ctx.includes('Headers e navegação')) && logo.type === 'symbol';
+    });
+  }, [logos, loading]);
 
   useEffect(() => {
-    if (loading) return;
+    if (!faviconLogo?.public_url) return;
 
-    // Try to get a logo for favicon usage - more flexible search
-    const faviconLogo = getLogoByContext('Ícones e favicons') || 
-                       getLogoByContext('Headers e navegação', 'symbol');
+    console.log('Updating favicon to:', faviconLogo.public_url);
 
-    console.log('Favicon logo found:', faviconLogo);
-
-    if (faviconLogo?.public_url) {
-      // Only remove our previously added favicon to avoid conflicts
-      if (currentFaviconRef.current && currentFaviconRef.current.parentNode) {
-        currentFaviconRef.current.parentNode.removeChild(currentFaviconRef.current);
-      }
-
-      // Add new favicon
-      const faviconLink = document.createElement('link');
-      faviconLink.rel = 'icon';
-      faviconLink.type = 'image/png';
-      faviconLink.href = faviconLogo.public_url;
-      document.head.appendChild(faviconLink);
-      
-      // Store reference for cleanup
-      currentFaviconRef.current = faviconLink;
+    // Simple favicon update without complex DOM manipulation
+    const existingFavicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
+    
+    if (existingFavicon) {
+      existingFavicon.href = faviconLogo.public_url;
+    } else {
+      const newFavicon = document.createElement('link');
+      newFavicon.rel = 'icon';
+      newFavicon.type = 'image/png';
+      newFavicon.href = faviconLogo.public_url;
+      document.head.appendChild(newFavicon);
     }
-
-    // Cleanup function
-    return () => {
-      if (currentFaviconRef.current && currentFaviconRef.current.parentNode) {
-        currentFaviconRef.current.parentNode.removeChild(currentFaviconRef.current);
-        currentFaviconRef.current = null;
-      }
-    };
-  }, [loading, getLogoByContext]);
+  }, [faviconLogo]);
 }

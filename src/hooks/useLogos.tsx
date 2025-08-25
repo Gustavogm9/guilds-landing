@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 
@@ -68,17 +68,17 @@ export function useLogos() {
     }
   };
 
-  const getLogoByType = (type: Logo['type'], variant?: Logo['variant']) => {
+  const getLogoByType = useCallback((type: Logo['type'], variant?: Logo['variant']) => {
     return logos.find(logo => 
       logo.type === type && (variant ? logo.variant === variant : true)
     );
-  };
+  }, [logos]);
 
-  const getLogoByName = (name: string) => {
+  const getLogoByName = useCallback((name: string) => {
     return logos.find(logo => logo.name === name);
-  };
+  }, [logos]);
 
-  const getLogoByContext = (usageContext: string, type?: Logo['type'], variant?: Logo['variant']) => {
+  const getLogoByContext = useCallback((usageContext: string, type?: Logo['type'], variant?: Logo['variant']) => {
     // Clean the search context
     const cleanContext = usageContext.trim();
     
@@ -131,7 +131,7 @@ export function useLogos() {
     }
     
     return null;
-  };
+  }, [logos, getLogoByType]);
 
   return {
     logos,
