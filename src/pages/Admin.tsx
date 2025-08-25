@@ -3,6 +3,7 @@ import { LogoUploader } from '@/components/admin/LogoUploader';
 import { EditLogoDialog } from '@/components/admin/EditLogoDialog';
 import { SEOAdmin } from '@/components/seo/SEOAdmin';
 import { QualificationAdmin } from '@/components/admin/QualificationAdmin';
+import { ContactAdmin } from '@/components/admin/ContactAdmin';
 import { useLogos } from '@/hooks/useLogos';
 import { LogoService } from '@/lib/logoService';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -54,7 +55,7 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="logos" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="logos" className="flex items-center gap-2">
               <ImageIcon className="h-4 w-4" />
               Logos
@@ -66,6 +67,10 @@ export default function Admin() {
             <TabsTrigger value="forms" className="flex items-center gap-2">
               <Database className="h-4 w-4" />
               Formulários
+            </TabsTrigger>
+            <TabsTrigger value="contacts" className="flex items-center gap-2">
+              <Database className="h-4 w-4" />
+              Contatos
             </TabsTrigger>
           </TabsList>
 
@@ -216,6 +221,10 @@ export default function Admin() {
 
           <TabsContent value="forms" className="space-y-8">
             <QualificationAdmin />
+          </TabsContent>
+          
+          <TabsContent value="contacts" className="space-y-8">
+            <ContactAdmin />
           </TabsContent>
         </Tabs>
       </div>

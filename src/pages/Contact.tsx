@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useContactInfo } from '@/hooks/useContactInfo';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,6 +19,12 @@ import {
 } from "lucide-react";
 
 const Contact = () => {
+  const { getPrimaryEmail, getPrimaryPhone, getPrimaryAddress, getBusinessHours } = useContactInfo();
+  
+  const email = getPrimaryEmail();
+  const phone = getPrimaryPhone();
+  const address = getPrimaryAddress();
+  const businessHours = getBusinessHours();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -41,6 +49,12 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead 
+        title="Contato - Fale Conosco"
+        description="Entre em contato com a Guilds para transformar suas ideias em soluções digitais inovadoras. Sistemas inteligentes, resultados reais."
+        keywords={["contato", "guilds", "fale conosco", "orçamento", "proposta"]}
+      />
+      
       {/* Hero Section */}
       <section className="bg-guild-hero py-16 md:py-20">
         <div className="container">
@@ -195,8 +209,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h4 className="font-medium mb-1">Email</h4>
-                      <p className="text-muted-foreground">contato@guilds.com.br</p>
-                      <p className="text-muted-foreground">comercial@guilds.com.br</p>
+                      <p className="text-muted-foreground">{email}</p>
                     </div>
                   </div>
 
@@ -206,8 +219,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h4 className="font-medium mb-1">Telefone</h4>
-                      <p className="text-muted-foreground">+55 (11) 9999-9999</p>
-                      <p className="text-muted-foreground">+55 (11) 8888-8888</p>
+                      <p className="text-muted-foreground">{phone}</p>
                     </div>
                   </div>
 
@@ -218,9 +230,21 @@ const Contact = () => {
                     <div>
                       <h4 className="font-medium mb-1">Endereço</h4>
                       <p className="text-muted-foreground">
-                        Av. Paulista, 1000<br />
-                        Bela Vista, São Paulo - SP<br />
-                        01310-100, Brasil
+                        {address ? (
+                          <>
+                            {address.street && `${address.street}`}<br />
+                            {address.city && `${address.city}`}
+                            {address.state && ` - ${address.state}`}<br />
+                            {address.zipCode && `${address.zipCode}`}
+                            {address.country && `, ${address.country}`}
+                          </>
+                        ) : (
+                          <>
+                            Av. Paulista, 1000<br />
+                            Bela Vista, São Paulo - SP<br />
+                            01310-100, Brasil
+                          </>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -232,8 +256,19 @@ const Contact = () => {
                     <div>
                       <h4 className="font-medium mb-1">Horário de Atendimento</h4>
                       <p className="text-muted-foreground">
-                        Segunda à Sexta: 9h às 18h<br />
-                        Sábado: 9h às 12h
+                        {businessHours?.monday ? (
+                          <>
+                            Segunda à Sexta: {businessHours.monday.open} às {businessHours.monday.close}<br />
+                            {businessHours.saturday?.isOpen && (
+                              <>Sábado: {businessHours.saturday.open} às {businessHours.saturday.close}</>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            Segunda à Sexta: 9h às 18h<br />
+                            Sábado: 9h às 12h
+                          </>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -243,7 +278,11 @@ const Contact = () => {
               {/* Quick Actions */}
               <div className="space-y-4">
                 <Button asChild className="w-full btn-accent">
-                  <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer">
+                  <a 
+                    href={`https://wa.me/${phone?.replace(/[^\d]/g, '')}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
                     <MessageCircle className="mr-2 h-4 w-4" />
                     WhatsApp Direto
                   </a>

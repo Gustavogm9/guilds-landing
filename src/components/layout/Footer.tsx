@@ -5,8 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { DynamicLogo } from '@/components/ui/DynamicLogo';
+import { useContactInfo } from '@/hooks/useContactInfo';
 
 export function Footer() {
+  const { getPrimaryEmail, getPrimaryPhone, getSocialMediaLinks, getPrimaryAddress } = useContactInfo();
+  
+  const email = getPrimaryEmail();
+  const phone = getPrimaryPhone();
+  const socialLinks = getSocialMediaLinks();
+  const address = getPrimaryAddress();
   return (
     <footer className="bg-neutral-900 text-neutral-100">
       <div className="container section">
@@ -34,15 +41,18 @@ export function Footer() {
             <div className="space-y-2">
               <div className="flex items-center space-x-2 text-sm">
                 <Mail className="h-4 w-4 text-brand-accent" />
-                <span>gustavo.macedo@guilds.com.br</span>
+                <span>{email}</span>
               </div>
               <div className="flex items-center space-x-2 text-sm">
                 <Phone className="h-4 w-4 text-brand-accent" />
-                <span>+55 (17) 99752-0867</span>
+                <span>{phone}</span>
               </div>
               <div className="flex items-center space-x-2 text-sm">
                 <MapPin className="h-4 w-4 text-brand-accent" />
-                <span>São José do Rio Preto, SP</span>
+                <span>
+                  {address?.city ? `${address.city}` : 'São José do Rio Preto'}
+                  {address?.state ? `, ${address.state}` : ', SP'}
+                </span>
               </div>
             </div>
           </div>
@@ -137,9 +147,9 @@ export function Footer() {
             {/* Social Media */}
             <div className="space-y-3">
               <h4 className="font-medium text-sm">Siga-nos</h4>
-              <div className="flex space-x-3">
+               <div className="flex space-x-3">
                 <a
-                  href="https://www.linkedin.com/company/guilds-oficial"
+                  href={socialLinks?.linkedin || "https://www.linkedin.com/company/guilds-oficial"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 bg-neutral-800 rounded-lg hover:bg-brand-accent transition-colors"
@@ -148,7 +158,7 @@ export function Footer() {
                   <Linkedin className="h-4 w-4" />
                 </a>
                 <a
-                  href="https://www.instagram.com/guilds.oficial/"
+                  href={socialLinks?.instagram || "https://www.instagram.com/guilds.oficial/"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 bg-neutral-800 rounded-lg hover:bg-brand-accent transition-colors"
@@ -157,7 +167,7 @@ export function Footer() {
                   <Instagram className="h-4 w-4" />
                 </a>
                 <a
-                  href="https://youtube.com/@guilds"
+                  href={socialLinks?.youtube || "https://youtube.com/@guilds"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 bg-neutral-800 rounded-lg hover:bg-brand-accent transition-colors"

@@ -16,34 +16,94 @@ export type Database = {
     Tables: {
       company_settings: {
         Row: {
+          addresses: Json | null
+          auto_response_message: string | null
           brand_accent_color: string
           brand_primary_color: string
+          business_hours: Json | null
           company_name: string
+          contact_emails: Json | null
+          contact_phones: Json | null
           created_at: string
           id: string
+          response_time_hours: number | null
+          social_media: Json | null
           support_email: string
           updated_at: string
           whatsapp_number: string
         }
         Insert: {
+          addresses?: Json | null
+          auto_response_message?: string | null
           brand_accent_color?: string
           brand_primary_color?: string
+          business_hours?: Json | null
           company_name?: string
+          contact_emails?: Json | null
+          contact_phones?: Json | null
           created_at?: string
           id?: string
+          response_time_hours?: number | null
+          social_media?: Json | null
           support_email?: string
           updated_at?: string
           whatsapp_number?: string
         }
         Update: {
+          addresses?: Json | null
+          auto_response_message?: string | null
           brand_accent_color?: string
           brand_primary_color?: string
+          business_hours?: Json | null
           company_name?: string
+          contact_emails?: Json | null
+          contact_phones?: Json | null
           created_at?: string
           id?: string
+          response_time_hours?: number | null
+          social_media?: Json | null
           support_email?: string
           updated_at?: string
           whatsapp_number?: string
+        }
+        Relationships: []
+      }
+      contact_info: {
+        Row: {
+          created_at: string
+          display_order: number | null
+          id: string
+          is_active: boolean
+          is_primary: boolean
+          label: string
+          metadata: Json | null
+          type: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          is_primary?: boolean
+          label: string
+          metadata?: Json | null
+          type: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          is_primary?: boolean
+          label?: string
+          metadata?: Json | null
+          type?: string
+          updated_at?: string
+          value?: string
         }
         Relationships: []
       }
