@@ -1,1 +1,8 @@
 project_id = "itvruukwhgttnjpvghzq"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+
+[functions.newsletter-confirm]
+verify_jwt = false

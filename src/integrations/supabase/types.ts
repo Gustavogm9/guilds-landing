@@ -238,6 +238,99 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_campaigns: {
+        Row: {
+          click_count: number | null
+          content: string
+          created_at: string
+          id: string
+          name: string
+          open_count: number | null
+          sent_at: string | null
+          sent_count: number | null
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          click_count?: number | null
+          content: string
+          created_at?: string
+          id?: string
+          name: string
+          open_count?: number | null
+          sent_at?: string | null
+          sent_count?: number | null
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          click_count?: number | null
+          content?: string
+          created_at?: string
+          id?: string
+          name?: string
+          open_count?: number | null
+          sent_at?: string | null
+          sent_count?: number | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      newsletter_subscriptions: {
+        Row: {
+          confirmation_token: string | null
+          confirmed_at: string | null
+          created_at: string
+          email: string
+          id: string
+          ip_address: unknown | null
+          source_page: string | null
+          status: string
+          unsubscribed_at: string | null
+          updated_at: string
+          user_agent: string | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          confirmation_token?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          ip_address?: unknown | null
+          source_page?: string | null
+          status?: string
+          unsubscribed_at?: string | null
+          updated_at?: string
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          confirmation_token?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          ip_address?: unknown | null
+          source_page?: string | null
+          status?: string
+          unsubscribed_at?: string | null
+          updated_at?: string
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: []
+      }
       page_seo: {
         Row: {
           canonical_url: string | null

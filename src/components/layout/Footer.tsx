@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { DynamicLogo } from '@/components/ui/DynamicLogo';
+import { Newsletter } from '@/components/ui/Newsletter';
 import { useContactInfo } from '@/hooks/useContactInfo';
 
 export function Footer() {
@@ -128,21 +129,12 @@ export function Footer() {
 
           {/* Newsletter */}
           <div className="space-y-4">
-            <h3 className="font-sora font-semibold text-lg">Newsletter</h3>
-            <p className="text-neutral-400 text-sm">
-              Receba insights sobre tecnologia e inovação direto no seu e-mail.
-            </p>
-            <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
-              <Input
-                type="email"
-                placeholder="Seu melhor e-mail"
-                className="bg-neutral-800 border-neutral-700 text-white placeholder:text-neutral-500 focus:border-brand-accent"
-                required
-              />
-              <Button type="submit" className="btn-accent w-full">
-                Inscrever-se
-              </Button>
-            </form>
+            <Newsletter 
+              title="Newsletter"
+              description="Receba insights sobre tecnologia e inovação direto no seu e-mail."
+              variant="footer"
+              buttonText="Inscrever-se"
+            />
             
             {/* Social Media */}
             <div className="space-y-3">
