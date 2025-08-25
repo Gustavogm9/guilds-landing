@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      custom_tags: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          page_paths: string[] | null
+          position: string
+          tag_type: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          page_paths?: string[] | null
+          position?: string
+          tag_type: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          page_paths?: string[] | null
+          position?: string
+          tag_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       logos: {
         Row: {
           created_at: string
@@ -56,6 +92,120 @@ export type Database = {
           usage_context?: string | null
           variant?: string
           width?: number | null
+        }
+        Relationships: []
+      }
+      page_seo: {
+        Row: {
+          canonical_url: string | null
+          created_at: string
+          id: string
+          keywords: string[] | null
+          meta_description: string
+          no_follow: boolean
+          no_index: boolean
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
+          page_path: string
+          schema_org_data: Json | null
+          title: string
+          twitter_description: string | null
+          twitter_image: string | null
+          twitter_title: string | null
+          updated_at: string
+        }
+        Insert: {
+          canonical_url?: string | null
+          created_at?: string
+          id?: string
+          keywords?: string[] | null
+          meta_description: string
+          no_follow?: boolean
+          no_index?: boolean
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          page_path: string
+          schema_org_data?: Json | null
+          title: string
+          twitter_description?: string | null
+          twitter_image?: string | null
+          twitter_title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          canonical_url?: string | null
+          created_at?: string
+          id?: string
+          keywords?: string[] | null
+          meta_description?: string
+          no_follow?: boolean
+          no_index?: boolean
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          page_path?: string
+          schema_org_data?: Json | null
+          title?: string
+          twitter_description?: string | null
+          twitter_image?: string | null
+          twitter_title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      seo_settings: {
+        Row: {
+          canonical_base_url: string
+          created_at: string
+          facebook_pixel_id: string | null
+          google_analytics_id: string | null
+          google_tag_manager_id: string | null
+          hotjar_id: string | null
+          id: string
+          meta_description: string
+          og_image: string | null
+          robots_txt_content: string
+          schema_org_organization: Json | null
+          site_name: string
+          title_template: string
+          twitter_handle: string | null
+          updated_at: string
+        }
+        Insert: {
+          canonical_base_url?: string
+          created_at?: string
+          facebook_pixel_id?: string | null
+          google_analytics_id?: string | null
+          google_tag_manager_id?: string | null
+          hotjar_id?: string | null
+          id?: string
+          meta_description?: string
+          og_image?: string | null
+          robots_txt_content?: string
+          schema_org_organization?: Json | null
+          site_name?: string
+          title_template?: string
+          twitter_handle?: string | null
+          updated_at?: string
+        }
+        Update: {
+          canonical_base_url?: string
+          created_at?: string
+          facebook_pixel_id?: string | null
+          google_analytics_id?: string | null
+          google_tag_manager_id?: string | null
+          hotjar_id?: string | null
+          id?: string
+          meta_description?: string
+          og_image?: string | null
+          robots_txt_content?: string
+          schema_org_organization?: Json | null
+          site_name?: string
+          title_template?: string
+          twitter_handle?: string | null
+          updated_at?: string
         }
         Relationships: []
       }

@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import ScrollToTop from "./components/layout/ScrollToTop";
+import { SEOHead } from "./components/seo/SEOHead";
+import { SitemapGenerator } from "./components/seo/SitemapGenerator";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
@@ -25,6 +27,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <SEOHead />
+        <SitemapGenerator />
         <ScrollToTop />
         <Layout>
           <Routes>

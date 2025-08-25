@@ -1,9 +1,11 @@
 import React from 'react';
 import { LogoUploader } from '@/components/admin/LogoUploader';
 import { EditLogoDialog } from '@/components/admin/EditLogoDialog';
+import { SEOAdmin } from '@/components/seo/SEOAdmin';
 import { useLogos } from '@/hooks/useLogos';
 import { LogoService } from '@/lib/logoService';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -18,7 +20,7 @@ import {
   AlertDialogTitle, 
   AlertDialogTrigger 
 } from '@/components/ui/alert-dialog';
-import { Image as ImageIcon, Upload, Database, Edit2, Trash2 } from 'lucide-react';
+import { Image as ImageIcon, Upload, Database, Edit2, Trash2, Search } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Admin() {
@@ -44,20 +46,42 @@ export default function Admin() {
     <div className="container max-w-6xl py-8">
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Admin - Logo Management</h1>
+          <h1 className="text-3xl font-bold text-foreground">Admin Panel</h1>
           <p className="text-muted-foreground mt-2">
-            Gerencie os logos da marca Guilds armazenados no banco de dados
+            Gerencie logos, SEO e configurações do site
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Upload Section */}
-          <div>
-            <LogoUploader />
-          </div>
+        <Tabs defaultValue="logos" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="logos" className="flex items-center gap-2">
+              <ImageIcon className="h-4 w-4" />
+              Logos
+            </TabsTrigger>
+            <TabsTrigger value="seo" className="flex items-center gap-2">
+              <Search className="h-4 w-4" />
+              SEO
+            </TabsTrigger>
+          </TabsList>
 
-          {/* Current Logos */}
-          <div className="space-y-4">
+          <TabsContent value="logos" className="space-y-8">
+            {/* Logo Management Content */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Upload className="h-5 w-5" />
+                  Upload New Logo
+                </CardTitle>
+                <CardDescription>
+                  Upload a new logo to the Guilds brand system
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <LogoUploader />
+              </CardContent>
+            </Card>
+
+            {/* Current Logos */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -179,8 +203,12 @@ export default function Admin() {
                 )}
               </CardContent>
             </Card>
-          </div>
-        </div>
+          </TabsContent>
+
+          <TabsContent value="seo" className="space-y-8">
+            <SEOAdmin />
+          </TabsContent>
+        </Tabs>
       </div>
       
       <EditLogoDialog 
