@@ -6,6 +6,7 @@ interface DynamicLogoProps {
   type?: 'symbol' | 'full' | 'text';
   variant?: 'light' | 'dark' | 'color' | 'transparent';
   name?: string;
+  usageContext?: string;
   className?: string;
   alt?: string;
   fallback?: React.ReactNode;
@@ -17,6 +18,7 @@ export function DynamicLogo({
   type = 'full',
   variant = 'color',
   name,
+  usageContext,
   className,
   alt = 'Guilds Logo',
   fallback,
@@ -24,9 +26,13 @@ export function DynamicLogo({
   height,
   ...props 
 }: DynamicLogoProps & React.ImgHTMLAttributes<HTMLImageElement>) {
-  const { getLogoByType, getLogoByName, loading, error } = useLogos();
+  const { getLogoByType, getLogoByName, getLogoByContext, loading, error } = useLogos();
   
-  const logo = name ? getLogoByName(name) : getLogoByType(type, variant);
+  const logo = name 
+    ? getLogoByName(name) 
+    : usageContext 
+      ? getLogoByContext(usageContext, type, variant)
+      : getLogoByType(type, variant);
 
   // Show loading state
   if (loading) {

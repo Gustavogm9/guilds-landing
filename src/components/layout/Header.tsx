@@ -82,6 +82,7 @@ const Header = () => {
               <DynamicLogo 
                 type="full"
                 variant="color"
+                usageContext="Headers e navegação"
                 alt="Guilds - Sistemas inteligentes, resultados reais" 
                 className="h-8 md:h-10 w-auto transition-transform duration-200 group-hover:scale-105"
                 fallback={
@@ -197,6 +198,7 @@ const Header = () => {
                       <DynamicLogo 
                         type="symbol"
                         variant="color"
+                        usageContext="Headers e navegação"
                         alt="Guilds" 
                         className="h-8 w-auto"
                         fallback={

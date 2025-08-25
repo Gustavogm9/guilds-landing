@@ -78,6 +78,24 @@ export function useLogos() {
     return logos.find(logo => logo.name === name);
   };
 
+  const getLogoByContext = (usageContext: string, type?: Logo['type'], variant?: Logo['variant']) => {
+    // First try to find logo with specific context
+    const contextLogo = logos.find(logo => 
+      logo.usage_context?.includes(usageContext) && 
+      (type ? logo.type === type : true) && 
+      (variant ? logo.variant === variant : true)
+    );
+    
+    if (contextLogo) return contextLogo;
+    
+    // Fallback to type/variant search if no context match
+    if (type || variant) {
+      return getLogoByType(type!, variant);
+    }
+    
+    return null;
+  };
+
   return {
     logos,
     loading,
@@ -85,5 +103,6 @@ export function useLogos() {
     refetch: fetchLogos,
     getLogoByType,
     getLogoByName,
+    getLogoByContext,
   };
 }
