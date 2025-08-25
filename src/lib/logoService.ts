@@ -51,6 +51,51 @@ export class LogoService {
     }
   }
 
+  static async updateLogo(id: string, logoData: Partial<LogoData>) {
+    try {
+      const { data: logoRecord, error: dbError } = await supabase
+        .from('logos')
+        .update(logoData)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (dbError) throw dbError;
+
+      return logoRecord;
+    } catch (error) {
+      console.error('Error updating logo:', error);
+      throw error;
+    }
+  }
+
+  static async deleteLogo(id: string, filePath: string) {
+    try {
+      // Delete from storage
+      const { error: storageError } = await supabase.storage
+        .from('assets')
+        .remove([filePath]);
+
+      if (storageError) {
+        console.warn('Storage delete error:', storageError);
+        // Continue with database deletion even if storage fails
+      }
+
+      // Delete from database
+      const { error: dbError } = await supabase
+        .from('logos')
+        .delete()
+        .eq('id', id);
+
+      if (dbError) throw dbError;
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error deleting logo:', error);
+      throw error;
+    }
+  }
+
   static async seedDefaultLogos() {
     try {
       // Check if logos already exist

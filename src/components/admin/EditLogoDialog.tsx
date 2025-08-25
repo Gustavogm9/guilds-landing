@@ -1,14 +1,33 @@
 import React, { useState } from 'react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LogoService } from '@/lib/logoService';
-import { useLogos } from '@/hooks/useLogos';
-import { Upload, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+
+interface Logo {
+  id: string;
+  name: string;
+  type: 'symbol' | 'full' | 'text';
+  variant: 'light' | 'dark' | 'color' | 'transparent';
+  file_path: string;
+  public_url: string;
+  width?: number;
+  height?: number;
+  usage_context?: string;
+  is_active: boolean;
+}
+
+interface EditLogoDialogProps {
+  logo: Logo | null;
+  open: boolean;
+  onClose: () => void;
+  onSave: () => void;
+}
 
 const USAGE_CONTEXTS = [
   'Headers e navegação',
@@ -23,19 +42,29 @@ const USAGE_CONTEXTS = [
   'Assinatura de email'
 ];
 
-export function LogoUploader() {
-  const [uploading, setUploading] = useState(false);
+export function EditLogoDialog({ logo, open, onClose, onSave }: EditLogoDialogProps) {
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    type: 'full' as const,
-    variant: 'color' as const,
-    selectedContexts: [] as string[],
-    width: '',
-    height: ''
+    name: logo?.name || '',
+    type: logo?.type || 'full',
+    variant: logo?.variant || 'color',
+    width: logo?.width?.toString() || '',
+    height: logo?.height?.toString() || '',
+    selectedContexts: logo?.usage_context?.split(', ') || []
   });
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  
-  const { refetch } = useLogos();
+
+  React.useEffect(() => {
+    if (logo) {
+      setFormData({
+        name: logo.name,
+        type: logo.type,
+        variant: logo.variant,
+        width: logo.width?.toString() || '',
+        height: logo.height?.toString() || '',
+        selectedContexts: logo.usage_context?.split(', ') || []
+      });
+    }
+  }, [logo]);
 
   const handleContextChange = (context: string, checked: boolean) => {
     setFormData(prev => ({
@@ -46,105 +75,58 @@ export function LogoUploader() {
     }));
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      
-      // Auto-generate name from filename
-      const nameWithoutExt = file.name.split('.')[0];
-      setFormData(prev => ({
-        ...prev,
-        name: nameWithoutExt
-      }));
-
-      // Try to get image dimensions
-      const img = new Image();
-      img.onload = () => {
-        setFormData(prev => ({
-          ...prev,
-          width: img.width.toString(),
-          height: img.height.toString()
-        }));
-      };
-      img.src = URL.createObjectURL(file);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedFile) return;
+    if (!logo) return;
 
-    setUploading(true);
+    setSaving(true);
     try {
-      await LogoService.uploadLogo(selectedFile, {
+      await LogoService.updateLogo(logo.id, {
         name: formData.name,
         type: formData.type,
         variant: formData.variant,
-        usage_context: formData.selectedContexts.join(', '),
         width: formData.width ? parseInt(formData.width) : undefined,
         height: formData.height ? parseInt(formData.height) : undefined,
+        usage_context: formData.selectedContexts.join(', ')
       });
 
-      toast.success('Logo uploaded successfully!');
-      
-      // Reset form
-      setFormData({
-        name: '',
-        type: 'full',
-        variant: 'color',
-        selectedContexts: [],
-        width: '',
-        height: ''
-      });
-      setSelectedFile(null);
-      
-      // Refresh logos
-      refetch();
-      
+      toast.success('Logo updated successfully!');
+      onSave();
+      onClose();
     } catch (error) {
-      console.error('Upload error:', error);
-      toast.error('Failed to upload logo');
+      console.error('Update error:', error);
+      toast.error('Failed to update logo');
     } finally {
-      setUploading(false);
+      setSaving(false);
     }
   };
 
+  if (!logo) return null;
+
   return (
-    <Card className="max-w-lg mx-auto">
-      <CardHeader>
-        <CardTitle>Upload Logo</CardTitle>
-        <CardDescription>
-          Add a new logo to the Guilds brand system
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Edit Logo</DialogTitle>
+          <DialogDescription>
+            Update logo information and usage contexts
+          </DialogDescription>
+        </DialogHeader>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="file">Image File</Label>
+            <Label htmlFor="edit-name">Logo Name</Label>
             <Input
-              id="file"
-              type="file"
-              accept="image/*"
-              onChange={handleFileSelect}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="name">Logo Name</Label>
-            <Input
-              id="name"
+              id="edit-name"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="e.g., guilds-shield"
               required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="type">Type</Label>
+              <Label>Type</Label>
               <Select value={formData.type} onValueChange={(value: any) => 
                 setFormData(prev => ({ ...prev, type: value }))
               }>
@@ -160,7 +142,7 @@ export function LogoUploader() {
             </div>
 
             <div>
-              <Label htmlFor="variant">Variant</Label>
+              <Label>Variant</Label>
               <Select value={formData.variant} onValueChange={(value: any) => 
                 setFormData(prev => ({ ...prev, variant: value }))
               }>
@@ -179,24 +161,22 @@ export function LogoUploader() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="width">Width (px)</Label>
+              <Label htmlFor="edit-width">Width (px)</Label>
               <Input
-                id="width"
+                id="edit-width"
                 type="number"
                 value={formData.width}
                 onChange={(e) => setFormData(prev => ({ ...prev, width: e.target.value }))}
-                placeholder="Auto-detected"
               />
             </div>
 
             <div>
-              <Label htmlFor="height">Height (px)</Label>
+              <Label htmlFor="edit-height">Height (px)</Label>
               <Input
-                id="height"
+                id="edit-height"
                 type="number"
                 value={formData.height}
                 onChange={(e) => setFormData(prev => ({ ...prev, height: e.target.value }))}
-                placeholder="Auto-detected"
               />
             </div>
           </div>
@@ -206,16 +186,16 @@ export function LogoUploader() {
             <p className="text-sm text-muted-foreground mb-3">
               Select where this logo can be used
             </p>
-            <div className="grid grid-cols-2 gap-3 max-h-40 overflow-y-auto border rounded-md p-3">
+            <div className="grid grid-cols-2 gap-3">
               {USAGE_CONTEXTS.map((context) => (
                 <div key={context} className="flex items-center space-x-2">
                   <Checkbox
-                    id={`upload-${context}`}
+                    id={context}
                     checked={formData.selectedContexts.includes(context)}
                     onCheckedChange={(checked) => handleContextChange(context, !!checked)}
                   />
                   <Label 
-                    htmlFor={`upload-${context}`}
+                    htmlFor={context}
                     className="text-sm font-normal cursor-pointer"
                   >
                     {context}
@@ -225,25 +205,23 @@ export function LogoUploader() {
             </div>
           </div>
 
-          <Button 
-            type="submit" 
-            className="w-full" 
-            disabled={!selectedFile || uploading}
-          >
-            {uploading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Uploading...
-              </>
-            ) : (
-              <>
-                <Upload className="w-4 h-4 mr-2" />
-                Upload Logo
-              </>
-            )}
-          </Button>
+          <div className="flex gap-3 pt-4">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={saving}>
+              {saving ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Save Changes'
+              )}
+            </Button>
+          </div>
         </form>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   );
 }
