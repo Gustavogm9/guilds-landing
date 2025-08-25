@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useContactInfo } from '@/hooks/useContactInfo';
+import { useContactForm, ContactFormData } from '@/hooks/useContactForm';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,12 +21,13 @@ import {
 
 const Contact = () => {
   const { getPrimaryEmail, getPrimaryPhone, getPrimaryAddress, getBusinessHours } = useContactInfo();
+  const { submitContactForm, isSubmitting } = useContactForm();
   
   const email = getPrimaryEmail();
   const phone = getPrimaryPhone();
   const address = getPrimaryAddress();
   const businessHours = getBusinessHours();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
     company: "",
@@ -34,10 +36,19 @@ const Contact = () => {
     message: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aqui implementaríamos a lógica de envio
-    console.log("Form submitted:", formData);
+    const success = await submitContactForm(formData);
+    if (success) {
+      setFormData({
+        name: "",
+        email: "",
+        company: "",
+        phone: "",
+        service: "",
+        message: ""
+      });
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -189,9 +200,22 @@ const Contact = () => {
                   />
                 </div>
 
-                <Button type="submit" className="w-full btn-hero">
-                  <Send className="mr-2 h-4 w-4" />
-                  Enviar Mensagem
+                <Button 
+                  type="submit" 
+                  className="w-full btn-hero"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      Enviando...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="mr-2 h-4 w-4" />
+                      Enviar Mensagem
+                    </>
+                  )}
                 </Button>
               </form>
             </div>
