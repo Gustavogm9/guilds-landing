@@ -132,7 +132,7 @@ export function Footer() {
               <h4 className="font-medium text-sm">Siga-nos</h4>
               <div className="flex space-x-3">
                 <a
-                  href="https://linkedin.com/company/guilds"
+                  href="https://www.linkedin.com/company/guilds-oficial"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 bg-neutral-800 rounded-lg hover:bg-brand-accent transition-colors"
@@ -141,7 +141,7 @@ export function Footer() {
                   <Linkedin className="h-4 w-4" />
                 </a>
                 <a
-                  href="https://instagram.com/guilds"
+                  href="https://www.instagram.com/guilds.oficial/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 bg-neutral-800 rounded-lg hover:bg-brand-accent transition-colors"
