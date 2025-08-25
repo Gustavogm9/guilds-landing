@@ -71,11 +71,17 @@ export default function Admin() {
                             </div>
                             
                             {logo.public_url && (
-                              <img
-                                src={logo.public_url}
-                                alt={logo.name}
-                                className="w-16 h-16 object-contain border rounded"
-                              />
+                              <div className={`w-16 h-16 border rounded flex items-center justify-center ${
+                                logo.variant === 'light' || logo.variant === 'transparent' 
+                                  ? 'bg-slate-800' 
+                                  : 'bg-slate-100 dark:bg-slate-800'
+                              }`}>
+                                <img
+                                  src={logo.public_url}
+                                  alt={logo.name}
+                                  className="w-full h-full object-contain"
+                                />
+                              </div>
                             )}
                           </div>
                           
