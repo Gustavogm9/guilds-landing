@@ -26,6 +26,7 @@ import {
 import { cn } from "@/lib/utils";
 
 import { GuildShield } from "@/components/icons";
+import { DynamicLogo } from "@/components/ui/DynamicLogo";
 import guildsLogoFull from "@/assets/guilds-logo-full.svg";
 import guildsLogoShield from "@/assets/guilds-logo-shield.svg";
 
@@ -78,10 +79,18 @@ const Header = () => {
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center group">
-              <img 
-                src={guildsLogoFull} 
+              <DynamicLogo 
+                type="full"
+                variant="color"
                 alt="Guilds - Sistemas inteligentes, resultados reais" 
                 className="h-8 md:h-10 w-auto transition-transform duration-200 group-hover:scale-105"
+                fallback={
+                  <img 
+                    src={guildsLogoFull} 
+                    alt="Guilds - Sistemas inteligentes, resultados reais" 
+                    className="h-8 md:h-10 w-auto transition-transform duration-200 group-hover:scale-105"
+                  />
+                }
               />
             </Link>
 
@@ -185,10 +194,18 @@ const Header = () => {
                   {/* Mobile Logo */}
                   <div className="flex items-center justify-between pb-4 border-b">
                     <Link to="/" className="flex items-center" onClick={() => setIsOpen(false)}>
-                      <img 
-                        src={guildsLogoShield} 
+                      <DynamicLogo 
+                        type="symbol"
+                        variant="color"
                         alt="Guilds" 
                         className="h-8 w-auto"
+                        fallback={
+                          <img 
+                            src={guildsLogoShield} 
+                            alt="Guilds" 
+                            className="h-8 w-auto"
+                          />
+                        }
                       />
                     </Link>
                   </div>
