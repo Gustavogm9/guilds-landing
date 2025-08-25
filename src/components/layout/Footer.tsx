@@ -27,7 +27,7 @@ export function Footer() {
             <div className="space-y-2">
               <div className="flex items-center space-x-2 text-sm">
                 <Mail className="h-4 w-4 text-brand-accent" />
-                <span>contato@guilds.com.br</span>
+                <span>gustavo.macedo@guilds.com.br</span>
               </div>
               <div className="flex items-center space-x-2 text-sm">
                 <Phone className="h-4 w-4 text-brand-accent" />
