@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { QualificationButton } from "@/components/forms/QualificationButton";
 import { 
   Mail,
   Phone,
@@ -11,7 +12,8 @@ import {
   Clock,
   Send,
   MessageCircle,
-  Calendar
+  Calendar,
+  Zap
 } from "lucide-react";
 
 const Contact = () => {
@@ -50,10 +52,21 @@ const Contact = () => {
               Vamos <span className="text-gradient">conversar</span> sobre 
               seu projeto
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-muted-foreground mb-6">
               Estamos prontos para transformar suas ideias em soluções digitais 
               inovadoras. Entre em contato e vamos construir algo incrível juntos.
             </p>
+
+            {/* Quick CTA */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <QualificationButton className="btn-forge">
+                <Zap className="mr-2 h-4 w-4" />
+                Solicitar Proposta Rápida
+              </QualificationButton>
+              <Button variant="outline" asChild>
+                <a href="#formulario">Formulário Tradicional</a>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
@@ -63,8 +76,15 @@ const Contact = () => {
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Contact Form */}
-            <div className="card-elevated p-8">
-              <h2 className="text-2xl font-semibold mb-6">Envie sua mensagem</h2>
+            <div id="formulario" className="card-elevated p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-semibold">Envie sua mensagem</h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Ou use nossa <QualificationButton className="text-brand-primary hover:underline p-0 h-auto font-normal" variant="ghost">qualificação rápida</QualificationButton>
+                  </p>
+                </div>
+              </div>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

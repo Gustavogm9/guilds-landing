@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MetricBadge } from "@/components/ui/MetricBadge";
+import { QualificationButton } from "@/components/forms/QualificationButton";
 import { 
   ArrowRight,
   Code,
@@ -11,7 +12,8 @@ import {
   TrendingUp,
   Target,
   Users,
-  Clock
+  Clock,
+  MessageSquare
 } from "lucide-react";
 
 const services = [
@@ -141,16 +143,13 @@ const Services = () => {
               Agende uma conversa e descubra como nossas soluções podem gerar resultados reais para sua empresa.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg">
-                <Link to="/contato">
-                  Falar com a Guilds
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+              <QualificationButton size="lg" className="btn-forge">
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Falar com a Guilds
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </QualificationButton>
               <Button asChild variant="outline" size="lg">
-                <Link to="/cases">
-                  Ver Cases
-                </Link>
+                <Link to="/cases">Ver Cases</Link>
               </Button>
             </div>
           </div>

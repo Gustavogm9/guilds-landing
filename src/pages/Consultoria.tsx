@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MetricBadge } from "@/components/ui/MetricBadge";
 import { FAQ } from "@/components/ui/FAQ";
+import { QualificationButton } from "@/components/forms/QualificationButton";
 import { 
   consultoriaServices, 
   consultoriaDeliverables, 
@@ -52,9 +53,10 @@ export default function Consultoria() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <Button size="lg" className="text-lg px-8">
+              <QualificationButton size="lg" className="text-lg px-8 btn-forge">
+                <Search className="mr-2 h-5 w-5" />
                 Solicitar Diagnóstico
-              </Button>
+              </QualificationButton>
               <Button variant="outline" size="lg" className="text-lg px-8">
                 Ver Metodologia
               </Button>
@@ -327,12 +329,14 @@ export default function Consultoria() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <Button size="lg" variant="secondary" className="text-lg px-8">
+              <QualificationButton size="lg" className="text-lg px-8 bg-gradient-to-r from-white to-white/90 text-primary hover:from-white/90 hover:to-white/80">
+                <Target className="mr-2 h-5 w-5" />
                 Diagnóstico Gratuito
-              </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 bg-white/10 border-white/20 text-white hover:bg-white/20">
+              </QualificationButton>
+              <QualificationButton size="lg" variant="outline" className="text-lg px-8 bg-white/10 border-white/20 text-white hover:bg-white/20">
+                <Users className="mr-2 h-5 w-5" />
                 Agendar Consultoria
-              </Button>
+              </QualificationButton>
             </div>
 
             <div className="flex flex-wrap justify-center gap-8 text-sm opacity-80">

@@ -1,7 +1,5 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { QualificationModal } from './QualificationModal';
-import { useLocation } from 'react-router-dom';
+import { useQualification } from './QualificationProvider';
 import { cn } from '@/lib/utils';
 
 interface QualificationButtonProps {
@@ -20,40 +18,22 @@ export const QualificationButton = ({
   size = "default",
   ...props 
 }: QualificationButtonProps) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const location = useLocation();
+  const { openModal } = useQualification();
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    setIsModalOpen(true);
-    
-    // Track conversion event for analytics
-    if (typeof window !== 'undefined' && 'gtag' in window && typeof (window as any).gtag === 'function') {
-      (window as any).gtag('event', 'qualification_form_opened', {
-        event_category: 'engagement',
-        event_label: location.pathname,
-        value: 1
-      });
-    }
+    openModal();
   };
 
   return (
-    <>
-      <Button
-        {...props}
-        variant={variant}
-        size={size}
-        className={cn(className)}
-        onClick={handleClick}
-      >
-        {children}
-      </Button>
-      
-      <QualificationModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)}
-        sourcePage={location.pathname}
-      />
-    </>
+    <Button
+      {...props}
+      variant={variant}
+      size={size}
+      className={cn(className)}
+      onClick={handleClick}
+    >
+      {children}
+    </Button>
   );
 };

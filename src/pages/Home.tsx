@@ -472,10 +472,11 @@ const Home = () => {
               <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
                 Fazemos uma análise gratuita das suas necessidades e apresentamos a combinação ideal de ferramentas
               </p>
-              <Button size="lg" className="gap-2">
+              <QualificationButton size="lg" className="gap-2 btn-forge">
+                <Rocket className="w-4 h-4" />
                 Solicitar Avaliação Gratuita
                 <ArrowRight className="w-4 h-4" />
-              </Button>
+              </QualificationButton>
             </div>
           </div>
         </div>
@@ -608,13 +609,11 @@ const Home = () => {
               Vamos descobrir como podemos ajudar você.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90">
-                <Link to="/contato">
-                  <Hammer className="mr-2 h-4 w-4" />
-                  Agendar conversa
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+              <QualificationButton size="lg" className="bg-white text-primary hover:bg-white/90">
+                <Hammer className="mr-2 h-4 w-4" />
+                Agendar conversa
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </QualificationButton>
               <Button asChild variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10">
                 <Link to="/cases">
                   Baixar one-pager PDF
