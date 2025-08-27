@@ -7,33 +7,26 @@ import { Separator } from '@/components/ui/separator';
 import { DynamicLogo } from '@/components/ui/DynamicLogo';
 import { Newsletter } from '@/components/ui/Newsletter';
 import { useContactInfo } from '@/hooks/useContactInfo';
-
 export function Footer() {
-  const { getPrimaryEmail, getPrimaryPhone, getSocialMediaLinks, getPrimaryAddress } = useContactInfo();
-  
+  const {
+    getPrimaryEmail,
+    getPrimaryPhone,
+    getSocialMediaLinks,
+    getPrimaryAddress
+  } = useContactInfo();
   const email = getPrimaryEmail();
   const phone = getPrimaryPhone();
   const socialLinks = getSocialMediaLinks();
   const address = getPrimaryAddress();
-  return (
-    <footer className="bg-neutral-900 text-neutral-100">
+  return <footer className="bg-neutral-900 text-neutral-100">
       <div className="container section">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <DynamicLogo 
-                usageContext="Footers e rodapés"
-                type="symbol"
-                variant="light"
-                className="h-8 w-auto"
-                alt="Guilds"
-                fallback={
-                  <div className="w-8 h-8 bg-brand-accent rounded-full flex items-center justify-center">
+              <DynamicLogo usageContext="Footers e rodapés" type="symbol" variant="light" className="h-8 w-auto" alt="Guilds" fallback={<div className="w-8 h-8 bg-brand-accent rounded-full flex items-center justify-center">
                     <span className="text-white font-bold text-sm">G</span>
-                  </div>
-                }
-              />
+                  </div>} />
               <span className="font-sora font-bold text-xl">Guilds</span>
             </div>
             <p className="text-neutral-400 text-sm leading-relaxed">
@@ -129,42 +122,19 @@ export function Footer() {
 
           {/* Newsletter */}
           <div className="space-y-4">
-            <Newsletter 
-              title="Newsletter"
-              description="Receba insights sobre tecnologia e inovação direto no seu e-mail."
-              variant="footer"
-              buttonText="Inscrever-se"
-            />
+            <Newsletter title="Newsletter" description="Receba insights sobre tecnologia e inovação direto no seu e-mail." variant="footer" buttonText="Inscrever-se" />
             
             {/* Social Media */}
             <div className="space-y-3">
               <h4 className="font-medium text-sm">Siga-nos</h4>
                <div className="flex space-x-3">
-                <a
-                  href={socialLinks?.linkedin || "https://www.linkedin.com/company/guilds-oficial"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 bg-neutral-800 rounded-lg hover:bg-brand-accent transition-colors"
-                  aria-label="LinkedIn da Guilds"
-                >
+                <a href={socialLinks?.linkedin || "https://www.linkedin.com/company/guilds-oficial"} target="_blank" rel="noopener noreferrer" className="p-2 bg-neutral-800 rounded-lg hover:bg-brand-accent transition-colors" aria-label="LinkedIn da Guilds">
                   <Linkedin className="h-4 w-4" />
                 </a>
-                <a
-                  href={socialLinks?.instagram || "https://www.instagram.com/guilds.oficial/"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 bg-neutral-800 rounded-lg hover:bg-brand-accent transition-colors"
-                  aria-label="Instagram da Guilds"
-                >
+                <a href={socialLinks?.instagram || "https://www.instagram.com/guilds.oficial/"} target="_blank" rel="noopener noreferrer" className="p-2 bg-neutral-800 rounded-lg hover:bg-brand-accent transition-colors" aria-label="Instagram da Guilds">
                   <Instagram className="h-4 w-4" />
                 </a>
-                <a
-                  href={socialLinks?.youtube || "https://youtube.com/@guilds"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 bg-neutral-800 rounded-lg hover:bg-brand-accent transition-colors"
-                  aria-label="YouTube da Guilds"
-                >
+                <a href={socialLinks?.youtube || "https://youtube.com/@guilds"} target="_blank" rel="noopener noreferrer" className="p-2 bg-neutral-800 rounded-lg hover:bg-brand-accent transition-colors" aria-label="YouTube da Guilds">
                   <Youtube className="h-4 w-4" />
                 </a>
               </div>
@@ -177,7 +147,7 @@ export function Footer() {
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 text-sm text-neutral-400">
-            <span>© 2024 Guilds. Todos os direitos reservados.</span>
+            <span>© 2025 Guilds. Todos os direitos reservados.</span>
             <div className="flex space-x-4">
               <Link to="/privacidade" className="hover:text-white transition-colors">
                 Política de Privacidade
@@ -192,6 +162,5 @@ export function Footer() {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 }
