@@ -90,6 +90,9 @@ export function TopNav() {
           <Link to="/sobre" className="font-medium text-foreground hover:text-brand-primary transition-colors">
             Sobre
           </Link>
+          <Link to="/lab" className="font-medium text-foreground hover:text-brand-primary transition-colors">
+            Lab
+          </Link>
           <Link to="/cases" className="font-medium text-foreground hover:text-brand-primary transition-colors">
             Cases
           </Link>
@@ -150,6 +153,13 @@ export function TopNav() {
                   onClick={() => setIsOpen(false)}
                 >
                   Sobre
+                </Link>
+                <Link 
+                  to="/lab" 
+                  className="block font-medium text-foreground hover:text-brand-primary transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Lab
                 </Link>
                 <Link 
                   to="/cases" 

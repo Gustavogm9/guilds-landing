@@ -24,6 +24,8 @@ import ThankYou from "./pages/ThankYou";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
+import Lab from "./pages/Lab";
+import LabWorkshop from "./pages/LabWorkshop";
 
 const queryClient = new QueryClient();
 
@@ -47,7 +49,8 @@ const App = () => (
                 <Route path="/servicos/jogos-gamificacao" element={<JogosGamificacao />} />
                 <Route path="/servicos/consultoria" element={<Consultoria />} />
                 <Route path="/cases" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Cases</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
-                <Route path="/lab" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Guilds Lab</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
+                <Route path="/lab" element={<Lab />} />
+                <Route path="/lab/workshops/:slug" element={<LabWorkshop />} />
                 <Route path="/craft" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Guilds Craft</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
                 <Route path="/conteudo" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Conteúdo</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
                 <Route path="/sobre" element={<About />} />

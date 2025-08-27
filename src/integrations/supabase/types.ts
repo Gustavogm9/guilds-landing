@@ -543,6 +543,327 @@ export type Database = {
         }
         Relationships: []
       }
+      workshop_categories: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          display_order: number | null
+          icon_name: string | null
+          id: string
+          is_active: boolean
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      workshop_enrollments: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          expectations: string | null
+          experience_level: string | null
+          id: string
+          ip_address: unknown | null
+          name: string
+          phone: string | null
+          preferred_modality: string | null
+          source_page: string | null
+          status: string
+          updated_at: string
+          user_agent: string | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          workshop_id: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          expectations?: string | null
+          experience_level?: string | null
+          id?: string
+          ip_address?: unknown | null
+          name: string
+          phone?: string | null
+          preferred_modality?: string | null
+          source_page?: string | null
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          workshop_id: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          expectations?: string | null
+          experience_level?: string | null
+          id?: string
+          ip_address?: unknown | null
+          name?: string
+          phone?: string | null
+          preferred_modality?: string | null
+          source_page?: string | null
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          workshop_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workshop_enrollments_workshop_id_fkey"
+            columns: ["workshop_id"]
+            isOneToOne: false
+            referencedRelation: "workshops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workshop_instructor_assignments: {
+        Row: {
+          created_at: string
+          id: string
+          instructor_id: string
+          role: string
+          workshop_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          instructor_id: string
+          role?: string
+          workshop_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          instructor_id?: string
+          role?: string
+          workshop_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workshop_instructor_assignments_instructor_id_fkey"
+            columns: ["instructor_id"]
+            isOneToOne: false
+            referencedRelation: "workshop_instructors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workshop_instructor_assignments_workshop_id_fkey"
+            columns: ["workshop_id"]
+            isOneToOne: false
+            referencedRelation: "workshops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workshop_instructors: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          github_url: string | null
+          id: string
+          is_active: boolean
+          linkedin_url: string | null
+          name: string
+          portfolio_url: string | null
+          slug: string
+          specialties: string[] | null
+          updated_at: string
+          years_experience: number | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          github_url?: string | null
+          id?: string
+          is_active?: boolean
+          linkedin_url?: string | null
+          name: string
+          portfolio_url?: string | null
+          slug: string
+          specialties?: string[] | null
+          updated_at?: string
+          years_experience?: number | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          github_url?: string | null
+          id?: string
+          is_active?: boolean
+          linkedin_url?: string | null
+          name?: string
+          portfolio_url?: string | null
+          slug?: string
+          specialties?: string[] | null
+          updated_at?: string
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
+      workshop_modules: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_hours: number | null
+          id: string
+          module_order: number
+          title: string
+          topics: string[] | null
+          workshop_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_hours?: number | null
+          id?: string
+          module_order: number
+          title: string
+          topics?: string[] | null
+          workshop_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_hours?: number | null
+          id?: string
+          module_order?: number
+          title?: string
+          topics?: string[] | null
+          workshop_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workshop_modules_workshop_id_fkey"
+            columns: ["workshop_id"]
+            isOneToOne: false
+            referencedRelation: "workshops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workshops: {
+        Row: {
+          category_id: string | null
+          certificate_included: boolean
+          created_at: string
+          description: string
+          difficulty_level: string
+          duration_hours: number
+          id: string
+          is_active: boolean
+          is_featured: boolean
+          keywords: string[] | null
+          learning_objectives: string[] | null
+          meta_description: string | null
+          modalities: string[]
+          practical_project: string | null
+          prerequisites: string[] | null
+          price_amount: number | null
+          price_type: string
+          short_description: string | null
+          slug: string
+          target_audience: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          certificate_included?: boolean
+          created_at?: string
+          description: string
+          difficulty_level?: string
+          duration_hours: number
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          keywords?: string[] | null
+          learning_objectives?: string[] | null
+          meta_description?: string | null
+          modalities?: string[]
+          practical_project?: string | null
+          prerequisites?: string[] | null
+          price_amount?: number | null
+          price_type?: string
+          short_description?: string | null
+          slug: string
+          target_audience?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          certificate_included?: boolean
+          created_at?: string
+          description?: string
+          difficulty_level?: string
+          duration_hours?: number
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          keywords?: string[] | null
+          learning_objectives?: string[] | null
+          meta_description?: string | null
+          modalities?: string[]
+          practical_project?: string | null
+          prerequisites?: string[] | null
+          price_amount?: number | null
+          price_type?: string
+          short_description?: string | null
+          slug?: string
+          target_audience?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workshops_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "workshop_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
