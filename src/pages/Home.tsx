@@ -310,18 +310,12 @@ const Home = () => {
                 chart: BarChart3
               };
               const Icon = icons[step.icon as keyof typeof icons] || Search;
-              
+
               // Color progression through the steps
-              const stepColors = [
-                'from-blue-500/20 to-blue-600/10 border-blue-200/50',
-                'from-purple-500/20 to-purple-600/10 border-purple-200/50', 
-                'from-green-500/20 to-green-600/10 border-green-200/50',
-                'from-orange-500/20 to-orange-600/10 border-orange-200/50',
-                'from-red-500/20 to-red-600/10 border-red-200/50',
-                'from-cyan-500/20 to-cyan-600/10 border-cyan-200/50'
-              ];
-              
-              return <div key={index} className="text-center space-y-6 relative group animate-fade-in" style={{animationDelay: `${index * 0.1}s`}}>
+              const stepColors = ['from-blue-500/20 to-blue-600/10 border-blue-200/50', 'from-purple-500/20 to-purple-600/10 border-purple-200/50', 'from-green-500/20 to-green-600/10 border-green-200/50', 'from-orange-500/20 to-orange-600/10 border-orange-200/50', 'from-red-500/20 to-red-600/10 border-red-200/50', 'from-cyan-500/20 to-cyan-600/10 border-cyan-200/50'];
+              return <div key={index} className="text-center space-y-6 relative group animate-fade-in" style={{
+                animationDelay: `${index * 0.1}s`
+              }}>
                     {/* Step Number Badge */}
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20">
                       <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
@@ -593,14 +587,7 @@ const Home = () => {
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="container relative">
           <div className="text-center max-w-3xl mx-auto">
-            <DynamicLogo 
-              usageContext="CTA e chamadas para ação"
-              type="symbol"
-              variant="light"
-              className="h-16 w-16 mx-auto mb-6"
-              alt="Guilds"
-              fallback={<GuildCrest className="h-16 w-16 mx-auto mb-6 text-white opacity-90" />}
-            />
+            <DynamicLogo usageContext="CTA e chamadas para ação" type="symbol" variant="light" className="h-16 w-16 mx-auto mb-6" alt="Guilds" fallback={<GuildCrest className="h-16 w-16 mx-auto mb-6 text-white opacity-90" />} />
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
               Pronto para transformar seu negócio?
             </h2>
@@ -615,9 +602,7 @@ const Home = () => {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </QualificationButton>
               <Button asChild variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10">
-                <Link to="/cases">
-                  Baixar one-pager PDF
-                </Link>
+                
               </Button>
             </div>
           </div>
