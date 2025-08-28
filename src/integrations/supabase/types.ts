@@ -107,6 +107,217 @@ export type Database = {
         }
         Relationships: []
       }
+      craft_ideas: {
+        Row: {
+          business_model: string | null
+          created_at: string
+          current_stage: string | null
+          development_roadmap: string | null
+          estimated_investment: string | null
+          estimated_timeline: string | null
+          id: string
+          ideal_partners: string[] | null
+          image_url: string | null
+          is_active: boolean
+          is_featured: boolean
+          keywords: string[] | null
+          meta_description: string | null
+          mvp_description: string | null
+          next_steps: string | null
+          pain_points: string[] | null
+          problem_thesis: string
+          proposed_solution: string
+          required_skills: string[] | null
+          revenue_streams: string[] | null
+          risk_assessment: string | null
+          slug: string
+          status: string
+          target_persona: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          business_model?: string | null
+          created_at?: string
+          current_stage?: string | null
+          development_roadmap?: string | null
+          estimated_investment?: string | null
+          estimated_timeline?: string | null
+          id?: string
+          ideal_partners?: string[] | null
+          image_url?: string | null
+          is_active?: boolean
+          is_featured?: boolean
+          keywords?: string[] | null
+          meta_description?: string | null
+          mvp_description?: string | null
+          next_steps?: string | null
+          pain_points?: string[] | null
+          problem_thesis: string
+          proposed_solution: string
+          required_skills?: string[] | null
+          revenue_streams?: string[] | null
+          risk_assessment?: string | null
+          slug: string
+          status?: string
+          target_persona: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          business_model?: string | null
+          created_at?: string
+          current_stage?: string | null
+          development_roadmap?: string | null
+          estimated_investment?: string | null
+          estimated_timeline?: string | null
+          id?: string
+          ideal_partners?: string[] | null
+          image_url?: string | null
+          is_active?: boolean
+          is_featured?: boolean
+          keywords?: string[] | null
+          meta_description?: string | null
+          mvp_description?: string | null
+          next_steps?: string | null
+          pain_points?: string[] | null
+          problem_thesis?: string
+          proposed_solution?: string
+          required_skills?: string[] | null
+          revenue_streams?: string[] | null
+          risk_assessment?: string | null
+          slug?: string
+          status?: string
+          target_persona?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "craft_ideas_current_stage_fkey"
+            columns: ["current_stage"]
+            isOneToOne: false
+            referencedRelation: "craft_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      craft_partnership_inquiries: {
+        Row: {
+          company: string | null
+          contact_info: Json | null
+          created_at: string
+          id: string
+          idea_id: string | null
+          investment_capacity: string | null
+          ip_address: unknown | null
+          message: string
+          partner_email: string
+          partner_name: string
+          partner_type: string
+          portfolio_url: string | null
+          skills_offered: string[] | null
+          source_page: string | null
+          status: string
+          updated_at: string
+          user_agent: string | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          company?: string | null
+          contact_info?: Json | null
+          created_at?: string
+          id?: string
+          idea_id?: string | null
+          investment_capacity?: string | null
+          ip_address?: unknown | null
+          message: string
+          partner_email: string
+          partner_name: string
+          partner_type?: string
+          portfolio_url?: string | null
+          skills_offered?: string[] | null
+          source_page?: string | null
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          company?: string | null
+          contact_info?: Json | null
+          created_at?: string
+          id?: string
+          idea_id?: string | null
+          investment_capacity?: string | null
+          ip_address?: unknown | null
+          message?: string
+          partner_email?: string
+          partner_name?: string
+          partner_type?: string
+          portfolio_url?: string | null
+          skills_offered?: string[] | null
+          source_page?: string | null
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "craft_partnership_inquiries_idea_id_fkey"
+            columns: ["idea_id"]
+            isOneToOne: false
+            referencedRelation: "craft_ideas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      craft_stages: {
+        Row: {
+          color: string
+          created_at: string
+          description: string | null
+          display_order: number
+          icon_name: string | null
+          id: string
+          is_active: boolean
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       custom_tags: {
         Row: {
           content: string

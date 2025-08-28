@@ -93,6 +93,9 @@ export function TopNav() {
           <Link to="/lab" className="font-medium text-foreground hover:text-brand-primary transition-colors">
             Lab
           </Link>
+          <Link to="/craft" className="font-medium text-foreground hover:text-brand-primary transition-colors">
+            Craft
+          </Link>
           <Link to="/cases" className="font-medium text-foreground hover:text-brand-primary transition-colors">
             Cases
           </Link>

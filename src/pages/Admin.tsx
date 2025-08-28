@@ -77,6 +77,10 @@ export default function Admin() {
               <Database className="h-4 w-4" />
               Contatos
             </TabsTrigger>
+            <TabsTrigger value="craft" className="flex items-center gap-2">
+              <Database className="h-4 w-4" />
+              Craft
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="logos" className="space-y-8">
