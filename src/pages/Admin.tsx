@@ -5,6 +5,8 @@ import { SEOAdmin } from '@/components/seo/SEOAdmin';
 import { QualificationAdmin } from '@/components/admin/QualificationAdmin';
 import { ContactAdmin } from '@/components/admin/ContactAdmin';
 import { NewsletterAdmin } from '@/components/admin/NewsletterAdmin';
+import { CraftAdmin } from '@/components/admin/CraftAdmin';
+import { LabAdmin } from '@/components/admin/LabAdmin';
 import { AdminHeader } from '@/components/auth/AdminHeader';
 import { useLogos } from '@/hooks/useLogos';
 import { LogoService } from '@/lib/logoService';
@@ -56,7 +58,7 @@ export default function Admin() {
           </div>
 
         <Tabs defaultValue="logos" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="logos" className="flex items-center gap-2">
               <ImageIcon className="h-4 w-4" />
               Logos
@@ -76,6 +78,10 @@ export default function Admin() {
             <TabsTrigger value="contacts" className="flex items-center gap-2">
               <Database className="h-4 w-4" />
               Contatos
+            </TabsTrigger>
+            <TabsTrigger value="lab" className="flex items-center gap-2">
+              <Database className="h-4 w-4" />
+              Lab
             </TabsTrigger>
             <TabsTrigger value="craft" className="flex items-center gap-2">
               <Database className="h-4 w-4" />
@@ -238,6 +244,14 @@ export default function Admin() {
           
           <TabsContent value="contacts" className="space-y-8">
             <ContactAdmin />
+          </TabsContent>
+          
+          <TabsContent value="lab" className="space-y-8">
+            <LabAdmin />
+          </TabsContent>
+          
+          <TabsContent value="craft" className="space-y-8">
+            <CraftAdmin />
           </TabsContent>
         </Tabs>
         </div>
