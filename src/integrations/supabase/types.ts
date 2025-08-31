@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      company_culture: {
+        Row: {
+          application_info: string | null
+          benefits: Json | null
+          created_at: string
+          culture_description: string | null
+          id: string
+          selection_process: Json | null
+          updated_at: string
+        }
+        Insert: {
+          application_info?: string | null
+          benefits?: Json | null
+          created_at?: string
+          culture_description?: string | null
+          id?: string
+          selection_process?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          application_info?: string | null
+          benefits?: Json | null
+          created_at?: string
+          culture_description?: string | null
+          id?: string
+          selection_process?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      company_manifesto: {
+        Row: {
+          created_at: string
+          dna_content: string
+          dna_title: string
+          history_content: string
+          history_title: string
+          id: string
+          manifesto_content: string
+          manifesto_title: string
+          principles: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dna_content?: string
+          dna_title?: string
+          history_content?: string
+          history_title?: string
+          id?: string
+          manifesto_content?: string
+          manifesto_title?: string
+          principles?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dna_content?: string
+          dna_title?: string
+          history_content?: string
+          history_title?: string
+          id?: string
+          manifesto_content?: string
+          manifesto_title?: string
+          principles?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       company_settings: {
         Row: {
           addresses: Json | null
@@ -404,6 +473,48 @@ export type Database = {
           },
         ]
       }
+      job_positions: {
+        Row: {
+          created_at: string
+          description: string
+          differentials: Json | null
+          id: string
+          location: string | null
+          modality: string | null
+          requirements: Json | null
+          salary_range: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          differentials?: Json | null
+          id?: string
+          location?: string | null
+          modality?: string | null
+          requirements?: Json | null
+          salary_range?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          differentials?: Json | null
+          id?: string
+          location?: string | null
+          modality?: string | null
+          requirements?: Json | null
+          salary_range?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       logos: {
         Row: {
           created_at: string
@@ -750,6 +861,48 @@ export type Database = {
           site_name?: string
           title_template?: string
           twitter_handle?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_order: number | null
+          expertise: Json | null
+          id: string
+          is_active: boolean
+          name: string
+          position: string
+          social_links: Json | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_order?: number | null
+          expertise?: Json | null
+          id?: string
+          is_active?: boolean
+          name: string
+          position: string
+          social_links?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_order?: number | null
+          expertise?: Json | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          position?: string
+          social_links?: Json | null
           updated_at?: string
         }
         Relationships: []

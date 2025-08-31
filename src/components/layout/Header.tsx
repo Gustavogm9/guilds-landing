@@ -64,6 +64,8 @@ const navigation = [
   { name: "Guilds Craft", href: "/craft" },
   { name: "Conteúdo", href: "https://blog.guilds.com.br", external: true },
   { name: "Sobre", href: "/sobre" },
+  { name: "Equipe", href: "/equipe" },
+  { name: "Carreiras", href: "/carreiras" },
   { name: "Contato", href: "/contato" }
 ];
 

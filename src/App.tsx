@@ -16,6 +16,9 @@ import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
+import NewAbout from "./pages/NewAbout";
+import Team from "./pages/Team";
+import Careers from "./pages/Careers";
 import SoftwareApps from "./pages/SoftwareApps";
 import AutomacaoIA from "./pages/AutomacaoIA";
 import JogosGamificacao from "./pages/JogosGamificacao";
@@ -58,7 +61,9 @@ const App = () => (
                 <Route path="/craft/ideias/:slug" element={<CraftIdea />} />
                 <Route path="/craft/portfolio" element={<CraftPortfolio />} />
                 <Route path="/conteudo" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Conteúdo</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
-                <Route path="/sobre" element={<About />} />
+                <Route path="/sobre" element={<NewAbout />} />
+                <Route path="/equipe" element={<Team />} />
+                <Route path="/carreiras" element={<Careers />} />
                 <Route path="/contato" element={<Contact />} />
                 <Route path="/obrigado" element={<ThankYou />} />
                 <Route path="/auth" element={<Auth />} />
