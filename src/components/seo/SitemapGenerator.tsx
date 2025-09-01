@@ -10,13 +10,17 @@ interface SitemapRoute {
 
 const defaultRoutes: SitemapRoute[] = [
   { path: '/', changefreq: 'weekly', priority: 1.0 },
-  { path: '/about', changefreq: 'monthly', priority: 0.8 },
-  { path: '/services', changefreq: 'weekly', priority: 0.9 },
-  { path: '/software-apps', changefreq: 'monthly', priority: 0.8 },
-  { path: '/automacao-ia', changefreq: 'monthly', priority: 0.8 },
-  { path: '/jogos-gamificacao', changefreq: 'monthly', priority: 0.8 },
-  { path: '/consultoria', changefreq: 'monthly', priority: 0.8 },
-  { path: '/contact', changefreq: 'monthly', priority: 0.7 }
+  { path: '/sobre', changefreq: 'monthly', priority: 0.8 },
+  { path: '/equipe', changefreq: 'monthly', priority: 0.7 },
+  { path: '/carreiras', changefreq: 'weekly', priority: 0.7 },
+  { path: '/servicos', changefreq: 'weekly', priority: 0.9 },
+  { path: '/servicos/software-apps', changefreq: 'monthly', priority: 0.8 },
+  { path: '/servicos/automacao-ia', changefreq: 'monthly', priority: 0.8 },
+  { path: '/servicos/jogos-gamificacao', changefreq: 'monthly', priority: 0.8 },
+  { path: '/servicos/consultoria', changefreq: 'monthly', priority: 0.8 },
+  { path: '/lab', changefreq: 'weekly', priority: 0.8 },
+  { path: '/craft', changefreq: 'monthly', priority: 0.8 },
+  { path: '/contato', changefreq: 'monthly', priority: 0.7 }
 ];
 
 export function generateSitemap(baseUrl: string, routes: SitemapRoute[] = defaultRoutes): string {

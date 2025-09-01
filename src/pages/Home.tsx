@@ -14,9 +14,14 @@ import { Search, FileText, Code, BarChart3, Rocket, Clock, Unlink, Users, Brain,
 import { GuildShield, GuildHammer, GuildCrest } from "@/components/icons";
 import heroImage from "@/assets/hero-image.jpg";
 import teamImage from "@/assets/team-collaboration.jpg";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { workflowSteps, painPoints, services, valuePillars, testimonials, featuredCases, evaluationFramework } from '../data/mockData';
+
 const Home = () => {
-  return <div className="min-h-screen">
+  return (
+    <>
+      <SEOHead />
+      <div className="min-h-screen">
       {/* 1. Hero Section */}
       <HeroSection className="relative overflow-hidden pb-16 md:pb-20">
         <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/50 to-background opacity-80"></div>
@@ -608,6 +613,9 @@ const Home = () => {
           </div>
         </div>
       </section>
-    </div>;
+    </div>
+    </>
+  );
 };
+
 export default Home;

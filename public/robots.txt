@@ -10,5 +10,33 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
+User-agent: LinkedInBot
 Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+# Block admin and private areas
+User-agent: *
+Disallow: /admin
+Disallow: /api
+Disallow: /_*
+Disallow: /private
+Disallow: /test
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /search
+Allow: /
+
+# Crawl delay for aggressive bots
+User-agent: MJ12bot
+Crawl-delay: 10
+
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+# Sitemap
+Sitemap: https://guilds.com.br/sitemap.xml

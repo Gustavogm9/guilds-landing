@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSEO } from '@/hooks/useSEO';
+import { usePageSEODefaults } from '@/lib/seoHelpers';
+import { generatePageSchema } from '@/lib/schemaHelpers';
+import { getPerformanceHints } from '@/lib/seoHelpers';
 
 interface SEOHeadProps {
   title?: string;
@@ -27,17 +30,18 @@ export function SEOHead({
 }: SEOHeadProps) {
   const location = useLocation();
   const { seoSettings, getPageSEOByPath, getCustomTagsForPage } = useSEO();
+  const pageDefaults = usePageSEODefaults(location.pathname);
 
   const currentPath = location.pathname;
   const pageSEO = getPageSEOByPath(currentPath);
   const customTags = getCustomTagsForPage(currentPath);
 
-  // Determine final values with fallback priority
-  const finalTitle = propTitle || pageSEO?.title || 'Home';
-  const finalDescription = propDescription || pageSEO?.meta_description || seoSettings?.meta_description || '';
+  // Determine final values with enhanced fallback priority
+  const finalTitle = propTitle || pageSEO?.title || pageDefaults.title;
+  const finalDescription = propDescription || pageSEO?.meta_description || pageDefaults.description;
   const finalImage = propImage || pageSEO?.og_image || seoSettings?.og_image;
   const finalCanonical = canonicalUrl || pageSEO?.canonical_url || `${seoSettings?.canonical_base_url || ''}${currentPath}`;
-  const finalKeywords = keywords || pageSEO?.keywords || [];
+  const finalKeywords = keywords || pageSEO?.keywords || pageDefaults.keywords || [];
   const shouldNoIndex = noIndex || pageSEO?.no_index || false;
   const shouldNoFollow = noFollow || pageSEO?.no_follow || false;
 
@@ -120,7 +124,7 @@ export function SEOHead({
     // Canonical URL
     updateLinkTag('canonical', finalCanonical);
 
-    // Structured Data (Schema.org)
+    // Structured Data (Schema.org) - Enhanced with new helpers
     const removeExistingSchema = () => {
       const existingSchemas = document.querySelectorAll('script[type="application/ld+json"]');
       existingSchemas.forEach(script => {
@@ -140,61 +144,48 @@ export function SEOHead({
 
     removeExistingSchema();
 
-    // Add Organization schema (always present)
-    if (seoSettings?.schema_org_organization) {
-      addSchemaData(seoSettings.schema_org_organization);
-    }
+    // Generate and add comprehensive schemas using new helpers
+    const schemas = generatePageSchema(currentPath, seoSettings, { 
+      title: finalTitle, 
+      description: finalDescription 
+    });
+    
+    schemas.forEach(schema => {
+      addSchemaData(schema);
+    });
 
-    // Add page-specific schema
-    if (pageSEO?.schema_org_data) {
-      addSchemaData(pageSEO.schema_org_data);
-    }
-
-    // Add custom schema from props
+    // Add custom schema from props (legacy support)
     if (schemaData) {
       addSchemaData(schemaData);
     }
 
-    // Add WebSite schema for search box
-    if (currentPath === '/') {
-      addSchemaData({
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": seoSettings?.site_name || "Guilds",
-        "url": seoSettings?.canonical_base_url || "https://guilds.com.br",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": {
-            "@type": "EntryPoint",
-            "urlTemplate": `${seoSettings?.canonical_base_url || "https://guilds.com.br"}/search?q={search_term_string}`
-          },
-          "query-input": "required name=search_term_string"
+    // Add performance hints
+    const performanceHints = getPerformanceHints(currentPath);
+    
+    // Add preconnect hints
+    performanceHints.preconnect.forEach(url => {
+      let link = document.querySelector(`link[rel="preconnect"][href="${url}"]`) as HTMLLinkElement;
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'preconnect';
+        link.href = url;
+        if (url.includes('fonts.gstatic.com')) {
+          link.crossOrigin = 'anonymous';
         }
-      });
-    }
+        document.head.appendChild(link);
+      }
+    });
 
-    // Add breadcrumb schema for non-home pages
-    if (currentPath !== '/') {
-      const pathSegments = currentPath.split('/').filter(Boolean);
-      const breadcrumbItems = [
-        { name: 'Home', url: '/' },
-        ...pathSegments.map((segment, index) => ({
-          name: segment.charAt(0).toUpperCase() + segment.slice(1),
-          url: '/' + pathSegments.slice(0, index + 1).join('/')
-        }))
-      ];
-
-      addSchemaData({
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": breadcrumbItems.map((item, index) => ({
-          "@type": "ListItem",
-          "position": index + 1,
-          "name": item.name,
-          "item": `${seoSettings?.canonical_base_url || "https://guilds.com.br"}${item.url}`
-        }))
-      });
-    }
+    // Add prefetch hints
+    performanceHints.prefetch.forEach(url => {
+      let link = document.querySelector(`link[rel="prefetch"][href="${url}"]`) as HTMLLinkElement;
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.href = url;
+        document.head.appendChild(link);
+      }
+    });
 
     // Handle custom tags
     customTags.forEach(tag => {
