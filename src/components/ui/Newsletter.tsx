@@ -3,6 +3,7 @@ import { Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useNewsletter } from '@/hooks/useNewsletter';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 interface NewsletterProps {
   title?: string;
@@ -21,13 +22,18 @@ export function Newsletter({
 }: NewsletterProps) {
   const [email, setEmail] = useState('');
   const { subscribe, isLoading } = useNewsletter();
+  const { trackNewsletterSubscribe } = useAnalytics();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email.trim()) return;
+    if (!email.trim()) {
+      trackNewsletterSubscribe(false, variant);
+      return;
+    }
 
     const success = await subscribe(email, window.location.pathname);
+    trackNewsletterSubscribe(success, variant);
     
     if (success) {
       setEmail(''); // Clear form on success

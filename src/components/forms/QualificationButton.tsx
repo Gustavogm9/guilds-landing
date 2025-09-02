@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { useQualification } from './QualificationProvider';
+import { useAnalytics } from '@/hooks/useAnalytics';
 import { cn } from '@/lib/utils';
 
 interface QualificationButtonProps {
@@ -19,9 +20,17 @@ export const QualificationButton = ({
   ...props 
 }: QualificationButtonProps) => {
   const { openModal } = useQualification();
+  const { trackCTAClick } = useAnalytics();
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    
+    // Track CTA click with context
+    trackCTAClick(children?.toString() || 'Qualification CTA', {
+      cta_type: variant as any,
+      section: 'cta_button',
+    });
+    
     openModal();
   };
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MessageCircle, Phone, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 interface CTAStickyMobileProps {
   whatsappNumber?: string;
@@ -19,6 +20,7 @@ export function CTAStickyMobile({
 }: CTAStickyMobileProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
+  const { trackWhatsAppClick, trackCTAClick } = useAnalytics();
 
   // Hide/show based on scroll position with throttling
   useEffect(() => {
@@ -53,12 +55,17 @@ export function CTAStickyMobile({
   }, []);
 
   const handleWhatsAppClick = () => {
+    trackWhatsAppClick('sticky_mobile', whatsappMessage);
     const encodedMessage = encodeURIComponent(whatsappMessage);
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handlePhoneClick = () => {
+    trackCTAClick('Phone Call from Sticky Mobile', {
+      cta_type: 'secondary',
+      section: 'sticky_mobile',
+    });
     window.location.href = phoneNumber;
   };
 

@@ -4,7 +4,7 @@ import { EditLogoDialog } from '@/components/admin/EditLogoDialog';
 import { SEOAdmin } from '@/components/seo/SEOAdmin';
 import { QualificationAdmin } from '@/components/admin/QualificationAdmin';
 import { ContactAdmin } from '@/components/admin/ContactAdmin';
-import { NewsletterAdmin } from '@/components/admin/NewsletterAdmin';
+import { AnalyticsAdmin } from '@/components/admin/AnalyticsAdmin';
 import { CraftAdmin } from '@/components/admin/CraftAdmin';
 import { LabAdmin } from '@/components/admin/LabAdmin';
 import { CompanyAdmin } from '@/components/admin/CompanyAdmin';

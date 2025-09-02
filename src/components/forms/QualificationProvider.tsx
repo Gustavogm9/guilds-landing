@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useQualificationForm } from '@/hooks/useQualificationForm';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 interface QualificationContextType {
   isModalOpen: boolean;
@@ -28,17 +29,16 @@ interface QualificationProviderProps {
 export const QualificationProvider = ({ children }: QualificationProviderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const qualificationData = useQualificationForm();
+  const { trackCTAClick } = useAnalytics();
 
   const openModal = () => {
     setIsModalOpen(true);
     
-    // Track modal open event
-    if (typeof window !== 'undefined' && 'gtag' in window && typeof (window as any).gtag === 'function') {
-      (window as any).gtag('event', 'qualification_modal_opened', {
-        event_category: 'lead_generation',
-        event_label: window.location.pathname,
-      });
-    }
+    // Enhanced analytics tracking
+    trackCTAClick('Open Qualification Modal', {
+      cta_type: 'primary',
+      section: 'qualification_system',
+    });
   };
 
   const closeModal = () => {

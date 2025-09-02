@@ -224,59 +224,147 @@ export function SEOHead({
     customTags
   ]);
 
-  // Handle Google Analytics
+  // Enhanced Analytics and Tag Manager integration
   useEffect(() => {
-    if (seoSettings?.google_analytics_id) {
-      // Load Google Analytics
-      const script1 = document.createElement('script');
-      script1.async = true;
-      script1.src = `https://www.googletagmanager.com/gtag/js?id=${seoSettings.google_analytics_id}`;
-      document.head.appendChild(script1);
+    if (!seoSettings?.google_analytics_id && !seoSettings?.google_tag_manager_id && 
+        !seoSettings?.facebook_pixel_id && !seoSettings?.linkedin_partner_id) return;
 
-      const script2 = document.createElement('script');
-      script2.innerHTML = `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '${seoSettings.google_analytics_id}');
-      `;
-      document.head.appendChild(script2);
-
-      return () => {
-        script1.remove();
-        script2.remove();
-      };
+    // Initialize dataLayer
+    if (typeof window !== 'undefined') {
+      window.dataLayer = window.dataLayer || [];
     }
-  }, [seoSettings?.google_analytics_id]);
 
-  // Handle Google Tag Manager
-  useEffect(() => {
-    if (seoSettings?.google_tag_manager_id) {
-      // GTM Head script
-      const script = document.createElement('script');
-      script.innerHTML = `
+    // Google Tag Manager (Primary - handles GA4, Meta Pixel, LinkedIn via GTM)
+    if (seoSettings.google_tag_manager_id) {
+      const gtmScript = document.createElement('script');
+      gtmScript.innerHTML = `
         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
         j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
         })(window,document,'script','dataLayer','${seoSettings.google_tag_manager_id}');
+        
+        // Enhanced dataLayer with site info
+        window.dataLayer.push({
+          'site_name': 'Guilds',
+          'site_version': '2.0',
+          'page_type': '${getPageType(location.pathname)}',
+          'user_type': 'visitor'
+        });
       `;
-      document.head.appendChild(script);
+      document.head.appendChild(gtmScript);
 
-      // GTM Body noscript
-      const noscript = document.createElement('noscript');
-      noscript.innerHTML = `
+      const gtmNoScript = document.createElement('noscript');
+      gtmNoScript.innerHTML = `
         <iframe src="https://www.googletagmanager.com/ns.html?id=${seoSettings.google_tag_manager_id}"
         height="0" width="0" style="display:none;visibility:hidden"></iframe>
       `;
-      document.body.insertBefore(noscript, document.body.firstChild);
-
-      return () => {
-        script.remove();
-        noscript.remove();
-      };
+      document.body.appendChild(gtmNoScript);
     }
-  }, [seoSettings?.google_tag_manager_id]);
+
+    // Direct GA4 (fallback if no GTM)
+    if (seoSettings.google_analytics_id && !seoSettings.google_tag_manager_id) {
+      const gtagScript = document.createElement('script');
+      gtagScript.async = true;
+      gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${seoSettings.google_analytics_id}`;
+      document.head.appendChild(gtagScript);
+
+      const gtagInlineScript = document.createElement('script');
+      gtagInlineScript.innerHTML = `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '${seoSettings.google_analytics_id}', {
+          page_title: document.title,
+          page_location: window.location.href,
+          send_page_view: true,
+          custom_map: {
+            'custom_parameter_1': 'page_type',
+            'custom_parameter_2': 'user_type'
+          }
+        });
+      `;
+      document.head.appendChild(gtagInlineScript);
+    }
+
+    // Direct Meta Pixel (fallback if no GTM)
+    if (seoSettings.facebook_pixel_id && !seoSettings.google_tag_manager_id) {
+      const fbPixelScript = document.createElement('script');
+      fbPixelScript.innerHTML = `
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '${seoSettings.facebook_pixel_id}');
+        fbq('track', 'PageView');
+      `;
+      document.head.appendChild(fbPixelScript);
+
+      const fbPixelNoScript = document.createElement('noscript');
+      fbPixelNoScript.innerHTML = `
+        <img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=${seoSettings.facebook_pixel_id}&ev=PageView&noscript=1" />
+      `;
+      document.head.appendChild(fbPixelNoScript);
+    }
+
+    // Direct LinkedIn Insight Tag (fallback if no GTM)
+    if (seoSettings.linkedin_partner_id && !seoSettings.google_tag_manager_id) {
+      const linkedinScript = document.createElement('script');
+      linkedinScript.innerHTML = `
+        _linkedin_partner_id = "${seoSettings.linkedin_partner_id}";
+        window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+        window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+      `;
+      document.head.appendChild(linkedinScript);
+
+      const linkedinInsightScript = document.createElement('script');
+      linkedinInsightScript.async = true;
+      linkedinInsightScript.src = 'https://snap.licdn.com/li.lms-analytics/insight.min.js';
+      document.head.appendChild(linkedinInsightScript);
+
+      const linkedinNoScript = document.createElement('noscript');
+      linkedinNoScript.innerHTML = `
+        <img height="1" width="1" style="display:none" alt=""
+        src="https://px.ads.linkedin.com/collect/?pid=${seoSettings.linkedin_partner_id}&fmt=gif" />
+      `;
+      document.head.appendChild(linkedinNoScript);
+    }
+
+    // Cleanup function
+    return () => {
+      const scripts = document.querySelectorAll(
+        'script[src*="googletagmanager"], script[src*="gtag"], script[src*="fbevents"], script[src*="linkedin"]'
+      );
+      scripts.forEach(script => script.remove());
+      
+      const noscripts = document.querySelectorAll('noscript');
+      noscripts.forEach(noscript => {
+        if (noscript.innerHTML.includes('googletagmanager') || 
+            noscript.innerHTML.includes('facebook.com/tr') ||
+            noscript.innerHTML.includes('linkedin.com')) {
+          noscript.remove();
+        }
+      });
+    };
+  }, [seoSettings?.google_analytics_id, seoSettings?.google_tag_manager_id, 
+      seoSettings?.facebook_pixel_id, seoSettings?.linkedin_partner_id, location.pathname]);
+
+  // Helper function to determine page type
+  const getPageType = (pathname: string): string => {
+    if (pathname === '/') return 'home';
+    if (pathname.startsWith('/lab')) return 'workshop';
+    if (pathname.startsWith('/craft')) return 'innovation';
+    if (pathname.includes('software') || pathname.includes('automacao') || pathname.includes('jogos')) return 'service';
+    if (pathname === '/sobre' || pathname === '/equipe') return 'about';
+    if (pathname === '/contato') return 'contact';
+    if (pathname === '/carreiras') return 'careers';
+    return 'other';
+  };
 
   return null; // This component only manages head elements
 }

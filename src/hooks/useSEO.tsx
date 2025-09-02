@@ -12,6 +12,7 @@ export interface SEOSettings {
   google_tag_manager_id?: string;
   facebook_pixel_id?: string;
   hotjar_id?: string;
+  linkedin_partner_id?: string;
   robots_txt_content: string;
   schema_org_organization?: any;
   canonical_base_url: string;
