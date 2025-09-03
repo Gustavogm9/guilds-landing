@@ -2,84 +2,21 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { 
   Users, 
   Mail, 
   FileText, 
-  TrendingUp, 
+  Lightbulb, 
   Globe, 
   Briefcase,
   Calendar,
   Activity,
-  ArrowUpRight
+  ArrowUpRight,
+  RefreshCw
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
-const mockStats = [
-  {
-    title: "Total de Contatos",
-    value: "1,234",
-    change: "+12%",
-    changeType: "positive" as const,
-    icon: Users,
-    href: "/admin/contacts"
-  },
-  {
-    title: "Newsletter Inscritos",
-    value: "856",
-    change: "+8%",
-    changeType: "positive" as const,
-    icon: Mail,
-    href: "/admin/newsletter"
-  },
-  {
-    title: "Formulários Enviados",
-    value: "342", 
-    change: "+23%",
-    changeType: "positive" as const,
-    icon: FileText,
-    href: "/admin/forms"
-  },
-  {
-    title: "Páginas Visitadas",
-    value: "12.5K",
-    change: "+4%",
-    changeType: "positive" as const,
-    icon: TrendingUp,
-    href: "/admin/seo"
-  }
-];
-
-const recentActivities = [
-  {
-    type: "contact",
-    title: "Nova qualificação recebida",
-    description: "João Silva enviou formulário de contato",
-    time: "2 min atrás",
-    icon: Users
-  },
-  {
-    type: "newsletter",
-    title: "Nova inscrição newsletter",
-    description: "maria@exemplo.com se inscreveu",
-    time: "15 min atrás", 
-    icon: Mail
-  },
-  {
-    type: "team",
-    title: "Perfil da equipe atualizado",
-    description: "Pedro Santos atualizou seu currículo",
-    time: "1 hora atrás",
-    icon: Briefcase
-  },
-  {
-    type: "seo",
-    title: "Meta descrição otimizada",
-    description: "Página de serviços foi atualizada",
-    time: "2 horas atrás",
-    icon: Globe
-  }
-];
+import { useDashboardStats } from '@/hooks/useDashboardStats';
 
 const quickActions = [
   {
@@ -87,49 +24,144 @@ const quickActions = [
     description: "Adicionar ou editar membros",
     icon: Users,
     href: "/admin/team",
-    color: "bg-blue-500"
+    color: "bg-primary"
   },
   {
     title: "Configurar SEO",
     description: "Otimizar meta tags",
     icon: Globe,
     href: "/admin/seo", 
-    color: "bg-green-500"
+    color: "bg-accent"
   },
   {
     title: "Ver Contatos",
     description: "Gerenciar leads",
     icon: FileText,
     href: "/admin/contacts",
-    color: "bg-purple-500"
+    color: "bg-secondary"
   },
   {
     title: "Logos & Brand",
     description: "Atualizar assets visuais",
     icon: Briefcase,
     href: "/admin/logos",
-    color: "bg-orange-500"
+    color: "bg-primary/80"
   }
 ];
 
 export function AdminDashboard() {
   const navigate = useNavigate();
+  const { stats, recentActivities, isLoading, error, refetch } = useDashboardStats();
+
+  const formatNumber = (num: number) => {
+    if (num >= 1000) {
+      return `${(num / 1000).toFixed(1)}K`;
+    }
+    return num.toString();
+  };
+
+  const getChangeType = (change: number): "default" | "destructive" => {
+    return change >= 0 ? "default" : "destructive";
+  };
+
+  const formatChange = (change: number) => {
+    const sign = change >= 0 ? "+" : "";
+    return `${sign}${change}%`;
+  };
+
+  const dashboardStats = [
+    {
+      title: "Total de Contatos",
+      value: formatNumber(stats.totalContacts),
+      change: formatChange(stats.contactsChange),
+      changeType: getChangeType(stats.contactsChange),
+      icon: Users,
+      href: "/admin/contacts"
+    },
+    {
+      title: "Newsletter Inscritos",
+      value: formatNumber(stats.newsletterSubscribers),
+      change: formatChange(stats.newsletterChange),
+      changeType: getChangeType(stats.newsletterChange),
+      icon: Mail,
+      href: "/admin/newsletter"
+    },
+    {
+      title: "Formulários (Mês)",
+      value: formatNumber(stats.formSubmissions),
+      change: formatChange(stats.formsChange),
+      changeType: getChangeType(stats.formsChange),
+      icon: FileText,
+      href: "/admin/forms"
+    },
+    {
+      title: "Team Members",
+      value: formatNumber(stats.teamMembers),
+      change: formatChange(stats.teamChange),
+      changeType: getChangeType(stats.teamChange),
+      icon: Briefcase,
+      href: "/admin/team"
+    }
+  ];
+
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case 'contact': return Users;
+      case 'newsletter': return Mail;
+      case 'team': return Briefcase;
+      case 'craft': return Lightbulb;
+      default: return Activity;
+    }
+  };
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <p className="text-muted-foreground">
+            Visão geral do sistema administrativo da Guilds
+          </p>
+          <Button 
+            onClick={refetch} 
+            variant="outline" 
+            size="sm"
+            className="gap-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Tentar Novamente
+          </Button>
+        </div>
+        <Card className="border-destructive/50">
+          <CardContent className="pt-6">
+            <p className="text-destructive text-center">{error}</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-sora font-bold text-foreground">
-          Dashboard
-        </h1>
-        <p className="text-muted-foreground mt-2">
+      <div className="flex items-center justify-between">
+        <p className="text-muted-foreground">
           Visão geral do sistema administrativo da Guilds
         </p>
+        <Button 
+          onClick={refetch} 
+          variant="outline" 
+          size="sm"
+          disabled={isLoading}
+          className="gap-2"
+        >
+          <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+          Atualizar
+        </Button>
       </div>
 
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {mockStats.map((stat) => (
+        {dashboardStats.map((stat) => (
           <Card 
             key={stat.title}
             className="cursor-pointer hover:shadow-md transition-shadow"
@@ -142,16 +174,25 @@ export function AdminDashboard() {
               <stat.icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="flex items-center text-xs text-muted-foreground">
-                <Badge 
-                  variant={stat.changeType === 'positive' ? 'default' : 'destructive'}
-                  className="text-xs mr-1"
-                >
-                  {stat.change}
-                </Badge>
-                <span>em relação ao mês anterior</span>
-              </div>
+              {isLoading ? (
+                <div className="space-y-2">
+                  <Skeleton className="h-8 w-16" />
+                  <Skeleton className="h-4 w-32" />
+                </div>
+              ) : (
+                <>
+                  <div className="text-2xl font-bold">{stat.value}</div>
+                  <div className="flex items-center text-xs text-muted-foreground">
+                    <Badge 
+                      variant={stat.changeType}
+                      className="text-xs mr-1"
+                    >
+                      {stat.change}
+                    </Badge>
+                    <span>em relação ao mês anterior</span>
+                  </div>
+                </>
+              )}
             </CardContent>
           </Card>
         ))}
@@ -170,24 +211,47 @@ export function AdminDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {recentActivities.map((activity, index) => (
-              <div key={index} className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-                  <activity.icon className="h-4 w-4 text-muted-foreground" />
+            {isLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <Skeleton className="w-8 h-8 rounded-full flex-shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">
-                    {activity.title}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {activity.description}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {activity.time}
-                  </p>
-                </div>
+              ))
+            ) : recentActivities.length > 0 ? (
+              recentActivities.map((activity) => {
+                const ActivityIcon = getActivityIcon(activity.type);
+                return (
+                  <div key={activity.id} className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                      <ActivityIcon className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground">
+                        {activity.title}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {activity.description}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {activity.time}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center py-4">
+                <Activity className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground">
+                  Nenhuma atividade recente
+                </p>
               </div>
-            ))}
+            )}
           </CardContent>
         </Card>
 
