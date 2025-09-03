@@ -1284,7 +1284,38 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_all_newsletter_subscriptions: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          confirmed_at: string
+          created_at: string
+          email: string
+          id: string
+          source_page: string
+          status: string
+          unsubscribed_at: string
+          utm_campaign: string
+          utm_medium: string
+          utm_source: string
+        }[]
+      }
+      get_newsletter_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          active_count: number
+          pending_count: number
+          total_count: number
+          unsubscribed_count: number
+        }[]
+      }
+      get_recent_newsletter_subscriptions: {
+        Args: { limit_count?: number }
+        Returns: {
+          created_at: string
+          email: string
+          id: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
