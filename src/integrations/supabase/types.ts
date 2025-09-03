@@ -1034,6 +1034,7 @@ export type Database = {
           email: string
           expectations: string | null
           experience_level: string | null
+          honeypot_field: string | null
           id: string
           ip_address: unknown | null
           name: string
@@ -1054,6 +1055,7 @@ export type Database = {
           email: string
           expectations?: string | null
           experience_level?: string | null
+          honeypot_field?: string | null
           id?: string
           ip_address?: unknown | null
           name: string
@@ -1074,6 +1076,7 @@ export type Database = {
           email?: string
           expectations?: string | null
           experience_level?: string | null
+          honeypot_field?: string | null
           id?: string
           ip_address?: unknown | null
           name?: string
@@ -1327,6 +1330,14 @@ export type Database = {
         Returns: {
           status: string
         }[]
+      }
+      check_workshop_enrollment_limit: {
+        Args: { email_param: string; ip_param: unknown }
+        Returns: boolean
+      }
+      cleanup_old_enrollments: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       get_all_newsletter_subscriptions: {
         Args: Record<PropertyKey, never>
