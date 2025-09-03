@@ -1284,6 +1284,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_subscription_status: {
+        Args: { email_address: string }
+        Returns: {
+          status: string
+        }[]
+      }
       get_all_newsletter_subscriptions: {
         Args: Record<PropertyKey, never>
         Returns: {

@@ -50,7 +50,7 @@ export function useDashboardStats() {
       // Parallel queries for better performance
       const [
         qualificationSubmissionsResult,
-        newsletterSubscriptionsResult,
+        newsletterStatsResult,
         teamMembersResult,
       ] = await Promise.all([
         // Qualification submissions
@@ -58,10 +58,8 @@ export function useDashboardStats() {
           .from('qualification_submissions')
           .select('created_at, status'),
         
-        // Newsletter subscriptions  
-        supabase
-          .from('newsletter_subscriptions')
-          .select('created_at, status'),
+        // Newsletter stats using secure function
+        supabase.rpc('get_newsletter_stats'),
 
         // Team members
         supabase
@@ -70,21 +68,22 @@ export function useDashboardStats() {
       ]);
 
       if (qualificationSubmissionsResult.error) throw qualificationSubmissionsResult.error;
-      if (newsletterSubscriptionsResult.error) throw newsletterSubscriptionsResult.error;
+      if (newsletterStatsResult.error) throw newsletterStatsResult.error;
       if (teamMembersResult.error) throw teamMembersResult.error;
 
       // Calculate stats
       const submissions = qualificationSubmissionsResult.data || [];
-      const newsletters = newsletterSubscriptionsResult.data || [];
+      const newsletterStats = newsletterStatsResult.data?.[0] || { 
+        total_count: 0, 
+        active_count: 0, 
+        pending_count: 0, 
+        unsubscribed_count: 0 
+      };
       const team = teamMembersResult.data || [];
 
       // Current month counts
       const currentSubmissions = submissions.filter(s => 
         new Date(s.created_at) >= currentMonthStart
-      ).length;
-      
-      const currentNewsletters = newsletters.filter(n => 
-        new Date(n.created_at) >= currentMonthStart && n.status === 'active'
       ).length;
 
       const activeTeam = team.filter(t => t.is_active).length;
@@ -93,11 +92,6 @@ export function useDashboardStats() {
       const lastSubmissions = submissions.filter(s => {
         const date = new Date(s.created_at);
         return date >= lastMonthStart && date <= lastMonthEnd;
-      }).length;
-
-      const lastNewsletters = newsletters.filter(n => {
-        const date = new Date(n.created_at);
-        return date >= lastMonthStart && date <= lastMonthEnd && n.status === 'active';
       }).length;
 
       // Calculate percentage changes
@@ -109,8 +103,8 @@ export function useDashboardStats() {
       setStats({
         totalContacts: submissions.length,
         contactsChange: calculateChange(currentSubmissions, lastSubmissions),
-        newsletterSubscribers: newsletters.filter(n => n.status === 'active').length,
-        newsletterChange: calculateChange(currentNewsletters, lastNewsletters),
+        newsletterSubscribers: Number(newsletterStats.active_count) || 0,
+        newsletterChange: 0, // Historical data not available with current setup
         formSubmissions: currentSubmissions,
         formsChange: calculateChange(currentSubmissions, lastSubmissions),
         teamMembers: activeTeam,
@@ -134,13 +128,9 @@ export function useDashboardStats() {
         .order('created_at', { ascending: false })
         .limit(5);
 
-      // Get recent newsletter subscriptions
+      // Get recent newsletter subscriptions using secure function
       const { data: newsletters } = await supabase
-        .from('newsletter_subscriptions')
-        .select('id, created_at, email')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
-        .limit(3);
+        .rpc('get_recent_newsletter_subscriptions', { limit_count: 3 });
 
       // Get recent team updates
       const { data: teamUpdates } = await supabase

@@ -51,12 +51,11 @@ export function useNewsletter(): UseNewsletterReturn {
         return false;
       }
 
-      // Check if already subscribed
-      const { data: existingSubscription, error: checkError } = await supabase
-        .from('newsletter_subscriptions')
-        .select('id, status')
-        .eq('email', email)
-        .maybeSingle();
+      // Check if already subscribed using secure function
+      const { data: statusData, error: checkError } = await supabase
+        .rpc('check_subscription_status', { email_address: email });
+      
+      const existingSubscription = statusData?.[0] ? { status: statusData[0].status } : null;
 
       if (checkError && checkError.code !== 'PGRST116') {
         throw checkError;
@@ -160,14 +159,11 @@ export function useNewsletter(): UseNewsletterReturn {
   const getSubscriptionStatus = async (email: string): Promise<string | null> => {
     try {
       const { data, error } = await supabase
-        .from('newsletter_subscriptions')
-        .select('status')
-        .eq('email', email)
-        .maybeSingle();
+        .rpc('check_subscription_status', { email_address: email });
 
-      if (error && error.code !== 'PGRST116') throw error;
+      if (error) throw error;
       
-      return data?.status || null;
+      return data?.[0]?.status || null;
     } catch (error) {
       console.error('Error getting subscription status:', error);
       return null;
@@ -179,9 +175,7 @@ export function useNewsletter(): UseNewsletterReturn {
     
     try {
       const { data, error } = await supabase
-        .from('newsletter_subscriptions')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .rpc('get_all_newsletter_subscriptions');
 
       if (error) throw error;
       setSubscriptions((data as NewsletterSubscription[]) || []);
@@ -200,18 +194,17 @@ export function useNewsletter(): UseNewsletterReturn {
   const getStats = async () => {
     try {
       const { data, error } = await supabase
-        .from('newsletter_subscriptions')
-        .select('status');
+        .rpc('get_newsletter_stats');
 
       if (error) throw error;
 
-      const stats = {
-        total: data?.length || 0,
-        active: data?.filter(sub => sub.status === 'active').length || 0,
-        pending: data?.filter(sub => sub.status === 'pending').length || 0,
+      const stats = data?.[0] || { total_count: 0, active_count: 0, pending_count: 0, unsubscribed_count: 0 };
+      
+      return {
+        total: Number(stats.total_count) || 0,
+        active: Number(stats.active_count) || 0,
+        pending: Number(stats.pending_count) || 0,
       };
-
-      return stats;
     } catch (error) {
       console.error('Error getting newsletter stats:', error);
       return { total: 0, active: 0, pending: 0 };
