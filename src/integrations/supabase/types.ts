@@ -870,6 +870,9 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           created_at: string
+          curriculum_content: string | null
+          curriculum_is_public: boolean
+          curriculum_slug: string | null
           display_order: number | null
           expertise: Json | null
           id: string
@@ -883,6 +886,9 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          curriculum_content?: string | null
+          curriculum_is_public?: boolean
+          curriculum_slug?: string | null
           display_order?: number | null
           expertise?: Json | null
           id?: string
@@ -896,6 +902,9 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          curriculum_content?: string | null
+          curriculum_is_public?: boolean
+          curriculum_slug?: string | null
           display_order?: number | null
           expertise?: Json | null
           id?: string

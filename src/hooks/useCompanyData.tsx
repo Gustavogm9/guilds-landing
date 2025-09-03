@@ -25,9 +25,14 @@ export interface TeamMember {
   bio?: string;
   avatar_url?: string;
   expertise: string[];
-  social_links: Record<string, string>;
-  display_order: number;
+  social_links?: Record<string, string>;
+  curriculum_slug?: string;
+  curriculum_content?: string;
+  curriculum_is_public?: boolean;
+  display_order?: number;
   is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface JobPosition {

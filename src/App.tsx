@@ -27,6 +27,7 @@ import Contact from "./pages/Contact";
 import About from "./pages/About";
 import NewAbout from "./pages/NewAbout";
 import Team from "./pages/Team";
+import { TeamCurriculum } from "./pages/TeamCurriculum";
 import Careers from "./pages/Careers";
 import SoftwareApps from "./pages/SoftwareApps";
 import AutomacaoIA from "./pages/AutomacaoIA";
@@ -85,6 +86,7 @@ const App = () => {
                         <Route path="/conteudo" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Conteúdo</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
                         <Route path="/sobre" element={<NewAbout />} />
                         <Route path="/equipe" element={<Team />} />
+                        <Route path="/team/:slug/curriculum" element={<TeamCurriculum />} />
                         <Route path="/carreiras" element={<Careers />} />
                         <Route path="/contato" element={<Contact />} />
                         <Route path="/obrigado" element={<ThankYou />} />
@@ -110,6 +112,7 @@ const App = () => {
                         <Route path="/en/content" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Content</h1><p className="mt-4">Under development...</p></div>} />
                         <Route path="/en/about" element={<NewAbout />} />
                         <Route path="/en/team" element={<Team />} />
+                        <Route path="/en/team/:slug/curriculum" element={<TeamCurriculum />} />
                         <Route path="/en/careers" element={<Careers />} />
                         <Route path="/en/contact" element={<Contact />} />
                         <Route path="/en/thank-you" element={<ThankYou />} />
