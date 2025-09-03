@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -62,7 +62,7 @@ const ContactForm = ({
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="type">Tipo</Label>
-          <Select value={formData.type} onValueChange={(value: any) => setFormData(prev => ({ ...prev, type: value }))}>
+          <Select value={formData.type} onValueChange={(value: ContactFormData['type']) => setFormData(prev => ({ ...prev, type: value }))}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -140,10 +140,15 @@ export const ContactAdmin = () => {
     addContact,
     updateContact,
     deleteContact,
+    isAddingContact: addingInProgress,
+    isUpdatingContact: updatingInProgress,
+    isDeletingContact: deletingInProgress,
+    isUpdatingSettings: updatingSettingsInProgress,
   } = useContactInfo();
 
   const [editingContact, setEditingContact] = useState<ContactInfoItem | null>(null);
-  const [isAddingContact, setIsAddingContact] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [settingsForm, setSettingsForm] = useState({
     company_name: '',
     response_time_hours: 2,
@@ -161,22 +166,34 @@ export const ContactAdmin = () => {
     }
   }, [companySettings]);
 
-  const handleSaveContact = (data: ContactFormData) => {
+  const handleSaveContact = useCallback((data: ContactFormData) => {
     if (editingContact) {
       updateContact({ ...editingContact, ...data });
       setEditingContact(null);
+      setIsEditDialogOpen(false);
     } else {
       addContact({
         ...data,
         is_active: true
       });
-      setIsAddingContact(false);
+      setIsAddDialogOpen(false);
     }
-  };
+  }, [editingContact, updateContact, addContact]);
 
-  const handleUpdateSettings = () => {
+  const handleCancelContact = useCallback(() => {
+    setEditingContact(null);
+    setIsAddDialogOpen(false);
+    setIsEditDialogOpen(false);
+  }, []);
+
+  const handleEditContact = useCallback((contact: ContactInfoItem) => {
+    setEditingContact(contact);
+    setIsEditDialogOpen(true);
+  }, []);
+
+  const handleUpdateSettings = useCallback(() => {
     updateSettings(settingsForm);
-  };
+  }, [settingsForm, updateSettings]);
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -210,11 +227,11 @@ export const ContactAdmin = () => {
         <TabsContent value="contacts" className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold">Informações de Contato</h3>
-            <Dialog open={isAddingContact} onOpenChange={setIsAddingContact}>
+            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
-                <Button>
+                <Button disabled={addingInProgress}>
                   <Plus className="h-4 w-4 mr-2" />
-                  Adicionar Contato
+                  {addingInProgress ? 'Adicionando...' : 'Adicionar Contato'}
                 </Button>
               </DialogTrigger>
               <DialogContent>
@@ -223,7 +240,7 @@ export const ContactAdmin = () => {
                 </DialogHeader>
                 <ContactForm
                   onSave={handleSaveContact}
-                  onCancel={() => setIsAddingContact(false)}
+                  onCancel={handleCancelContact}
                 />
               </DialogContent>
             </Dialog>
@@ -258,12 +275,18 @@ export const ContactAdmin = () => {
                           <p className="text-sm text-muted-foreground">{contact.value}</p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Dialog open={editingContact?.id === contact.id} onOpenChange={() => setEditingContact(null)}>
+                          <Dialog open={isEditDialogOpen && editingContact?.id === contact.id} onOpenChange={(open) => {
+                            if (!open) {
+                              setIsEditDialogOpen(false);
+                              setEditingContact(null);
+                            }
+                          }}>
                             <DialogTrigger asChild>
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => setEditingContact(contact)}
+                                onClick={() => handleEditContact(contact)}
+                                disabled={updatingInProgress}
                               >
                                 <Edit2 className="h-4 w-4" />
                               </Button>
@@ -275,7 +298,7 @@ export const ContactAdmin = () => {
                               <ContactForm
                                 contact={editingContact || undefined}
                                 onSave={handleSaveContact}
-                                onCancel={() => setEditingContact(null)}
+                                onCancel={handleCancelContact}
                               />
                             </DialogContent>
                           </Dialog>
@@ -283,6 +306,7 @@ export const ContactAdmin = () => {
                             variant="ghost"
                             size="sm"
                             onClick={() => contact.id && deleteContact(contact.id)}
+                            disabled={deletingInProgress}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -331,8 +355,8 @@ export const ContactAdmin = () => {
                 />
               </div>
 
-              <Button onClick={handleUpdateSettings}>
-                Salvar Configurações
+              <Button onClick={handleUpdateSettings} disabled={updatingSettingsInProgress}>
+                {updatingSettingsInProgress ? 'Salvando...' : 'Salvar Configurações'}
               </Button>
             </CardContent>
           </Card>
