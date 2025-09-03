@@ -40,12 +40,13 @@
     "subtitle": "Clear your doubts about our services and processes."
   },
   "footer": {
-    "description": "We transform ideas into digital solutions that generate real impact for your business.",
+    "description": "Intelligent systems, real results. We develop custom digital solutions to boost your business.",
     "quickLinks": "Quick Links",
     "services": "Services",
     "company": "Company",
     "legal": "Legal",
     "followUs": "Follow Us",
-    "allRightsReserved": "All rights reserved."
+    "allRightsReserved": "All rights reserved.",
+    "madeWithLove": "Made with 💜 by the Guilds team"
   }
 }

@@ -25,7 +25,13 @@
     "save": "Save",
     "edit": "Edit",
     "delete": "Delete",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "talkToGuilds": "Talk to Guilds",
+    "viewCases": "View cases",
+    "explore": "Explore",
+    "sendProposal": "Send Proposal",
+    "sending": "Sending...",
+    "talkOnWhatsApp": "Talk on WhatsApp Now"
   },
   "services": {
     "softwareApps": {

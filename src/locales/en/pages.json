@@ -1,29 +1,44 @@
 {
   "home": {
     "hero": {
+      "badge": "⚡ Innovation and results",
       "title": "Intelligent systems, real results",
-      "subtitle": "We transform ideas into digital solutions that generate real impact for your business. Custom development, intelligent automation, and data-driven strategy.",
-      "cta": "Forge My Project"
+      "subtitle": "Software, apps, automation, AI and gamification tailored to your objective.",
+      "cta": "Talk to Guilds",
+      "secondaryCta": "View cases"
     },
-    "benefits": {
-      "title": "Why choose Guilds?",
-      "subtitle": "We combine technical expertise with strategic vision to deliver solutions that really work.",
-      "customMade": {
-        "title": "Custom Made",
-        "description": "Each solution is unique, developed specifically for your business needs and objectives."
-      },
-      "roiFocus": {
-        "title": "ROI Focused",
-        "description": "We prioritize features that generate real returns and measurable impact for your company."
-      },
-      "seniorTeam": {
-        "title": "Senior Team",
-        "description": "Experienced professionals who understand both technology and business."
-      },
-      "agileDelivery": {
-        "title": "Agile Delivery",
-        "description": "Methodology that ensures transparency, quality, and met deadlines."
-      }
+    "differentials": {
+      "title": "Our Competitive Differentials",
+      "subtitle": "What sets us apart in the market and ensures exceptional results for our clients"
+    },
+    "whatWeDo": {
+      "title": "What we do",
+      "subtitle": "Complete digital solutions to transform your business",
+      "learnMore": "Learn more"
+    },
+    "painPoints": {
+      "title": "Problems we solve",
+      "subtitle": "We identify and solve the main bottlenecks that prevent growth"
+    },
+    "methodology": {
+      "badge": "Proprietary Methodology",
+      "title": "G-FORGE",
+      "subtitle": "Framework for Organizational Rapid Growth & Excellence",
+      "description": "Our exclusive methodology that combines strategic diagnosis, design thinking and agile implementation to accelerate organizational growth in a sustainable and measurable way."
+    },
+    "guildsLab": {
+      "title": "Guilds Lab",
+      "tagline": "People at the center. Skills that scale.",
+      "description": "Practical workshops in technology, game and application development, focused on the skills the market demands.",
+      "cta": "Explore Guilds Lab",
+      "badges": ["Workshops", "Tech Education", "Soft Skills", "Certification"]
+    },
+    "guildsCraft": {
+      "title": "Guilds Craft",
+      "tagline": "From idea to impact.",
+      "description": "Partnerships and R&D to test, build and launch solutions with real potential. We transform ideas into impactful products.",
+      "cta": "Explore Guilds Craft",
+      "badges": ["Partnerships", "R&D", "Validation", "Launch"]
     }
   },
   "about": {

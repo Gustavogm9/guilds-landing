@@ -16,8 +16,13 @@ import heroImage from "@/assets/hero-image.jpg";
 import teamImage from "@/assets/team-collaboration.jpg";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { workflowSteps, painPoints, services, valuePillars, testimonials, featuredCases, evaluationFramework } from '../data/mockData';
+import { useTranslation } from '@/contexts/TranslationContext';
+import { useLocalizedNavigation } from '@/hooks/useLocalizedNavigation';
 
 const Home = () => {
+  const { t } = useTranslation();
+  const { getLocalizedPath } = useLocalizedNavigation();
+
   return (
     <>
       <SEOHead />
@@ -32,28 +37,24 @@ const Home = () => {
             <div className="space-y-8">
               <div className="space-y-6">
                 <Badge className="bg-primary/10 text-primary border-primary/20">
-                  ⚡ Inovação e resultados
+                  {t('pages.home.hero.badge')}
                 </Badge>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                  Sistemas{" "}
-                  <span className="text-gradient bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                    inteligentes
-                  </span>
-                  , resultados reais.
+                  {t('pages.home.hero.title')}
                 </h1>
                 <p className="text-lg text-muted-foreground max-w-lg">
-                  Software, apps, automação, IA e gamificação feitos sob medida para o seu objetivo.
+                  {t('pages.home.hero.subtitle')}
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <QualificationButton variant="hero" size="lg">
-                  Falar com a Guilds
+                  {t('pages.home.hero.cta')}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </QualificationButton>
                 <Button asChild variant="glass" size="lg">
-                  <Link to="/cases">
-                    Ver cases
+                  <Link to={getLocalizedPath('/cases')}>
+                    {t('pages.home.hero.secondaryCta')}
                   </Link>
                 </Button>
               </div>
@@ -76,10 +77,10 @@ const Home = () => {
         <div className="container">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Nossos <span className="text-gradient bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Diferenciais Competitivos</span>
+              {t('pages.home.differentials.title')}
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              O que nos diferencia no mercado e garante resultados excepcionais para nossos clientes
+              {t('pages.home.differentials.subtitle')}
             </p>
           </div>
 
@@ -141,10 +142,10 @@ const Home = () => {
         <div className="container">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              O que <span className="text-gradient">fazemos</span>
+              {t('pages.home.whatWeDo.title')}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Soluções digitais completas para transformar seu negócio
+              {t('pages.home.whatWeDo.subtitle')}
             </p>
           </div>
 
@@ -167,13 +168,13 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="flex items-center text-primary group-hover:translate-x-2 transition-transform">
-                  <span className="text-sm font-medium">Saiba mais</span>
+                  <span className="text-sm font-medium">{t('pages.home.whatWeDo.learnMore')}</span>
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </div>
               </Link>)}
 
             {/* Guilds Lab Card */}
-            <Link to="/lab" className="group bg-card border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover-scale animate-fade-in">
+            <Link to={getLocalizedPath('/lab')} className="group bg-card border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover-scale animate-fade-in">
               <div className="mb-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
@@ -181,30 +182,28 @@ const Home = () => {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold group-hover:text-accent transition-colors">
-                      Guilds Lab
+                      {t('pages.home.guildsLab.title')}
                     </h3>
-                    <p className="text-accent font-medium text-sm">Pessoas no centro. Habilidades que escalam.</p>
+                    <p className="text-accent font-medium text-sm">{t('pages.home.guildsLab.tagline')}</p>
                   </div>
                 </div>
                 <p className="text-muted-foreground mb-4">
-                  Workshops práticos em tecnologia, desenvolvimento de jogos e aplicativos, 
-                  focados nas habilidades que o mercado pede.
+                  {t('pages.home.guildsLab.description')}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary" className="text-xs">Workshops</Badge>
-                  <Badge variant="secondary" className="text-xs">Educação Tech</Badge>
-                  <Badge variant="secondary" className="text-xs">Soft Skills</Badge>
-                  <Badge variant="secondary" className="text-xs">Certificação</Badge>
+                  {['Workshops', 'Educação Tech', 'Soft Skills', 'Certificação'].map((badge: string, idx: number) => (
+                    <Badge key={idx} variant="secondary" className="text-xs">{badge}</Badge>
+                  ))}
                 </div>
               </div>
               <Button className="w-full bg-accent hover:bg-accent/90 text-white">
-                Explorar Guilds Lab
+                {t('pages.home.guildsLab.cta')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
 
             {/* Guilds Craft Card */}
-            <Link to="/craft" className="group bg-card border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover-scale animate-fade-in">
+            <Link to={getLocalizedPath('/craft')} className="group bg-card border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover-scale animate-fade-in">
               <div className="mb-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
@@ -212,24 +211,22 @@ const Home = () => {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">
-                      Guilds Craft
+                      {t('pages.home.guildsCraft.title')}
                     </h3>
-                    <p className="text-primary font-medium text-sm">Da ideia ao impacto.</p>
+                    <p className="text-primary font-medium text-sm">{t('pages.home.guildsCraft.tagline')}</p>
                   </div>
                 </div>
                 <p className="text-muted-foreground mb-4">
-                  Parcerias e P&D para testar, construir e lançar soluções com potencial real. 
-                  Transformamos ideias em produtos de impacto.
+                  {t('pages.home.guildsCraft.description')}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary" className="text-xs">Parcerias</Badge>
-                  <Badge variant="secondary" className="text-xs">P&D</Badge>
-                  <Badge variant="secondary" className="text-xs">Validação</Badge>
-                  <Badge variant="secondary" className="text-xs">Lançamento</Badge>
+                  {['Parcerias', 'P&D', 'Validação', 'Lançamento'].map((badge: string, idx: number) => (
+                    <Badge key={idx} variant="secondary" className="text-xs">{badge}</Badge>
+                  ))}
                 </div>
               </div>
               <Button className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white">
-                Explorar Guilds Craft
+                {t('pages.home.guildsCraft.cta')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
@@ -242,10 +239,10 @@ const Home = () => {
         <div className="container">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Dores que <span className="text-gradient">resolvemos</span>
+              {t('pages.home.painPoints.title')}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Identificamos e solucionamos os principais gargalos que impedem o crescimento
+              {t('pages.home.painPoints.subtitle')}
             </p>
           </div>
 
@@ -280,22 +277,21 @@ const Home = () => {
               <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
                 <Hammer className="w-4 h-4 text-primary" />
               </div>
-              <span className="text-sm font-semibold text-primary">Metodologia Proprietária</span>
+              <span className="text-sm font-semibold text-primary">{t('pages.home.methodology.badge')}</span>
             </div>
             
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               <span className="text-gradient bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-                G-FORGE
+                {t('pages.home.methodology.title')}
               </span>
             </h2>
             
             <p className="text-xl font-medium text-muted-foreground mb-4 max-w-4xl mx-auto">
-              Framework for Organizational Rapid Growth & Excellence
+              {t('pages.home.methodology.subtitle')}
             </p>
             
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Nossa metodologia exclusiva que combina diagnóstico estratégico, design thinking e implementação ágil 
-              para acelerar o crescimento organizacional de forma sustentável e mensurável.
+              {t('pages.home.methodology.description')}
             </p>
           </div>
 

@@ -34,6 +34,8 @@ import { useConfetti } from '@/hooks/useConfetti';
 import { useRecaptcha } from '@/hooks/useRecaptcha';
 import { LGPDNotice } from '@/components/legal/LGPDNotice';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '@/contexts/TranslationContext';
+import { useLocalizedNavigation } from '@/hooks/useLocalizedNavigation';
 
 interface QualificationModalProps {
   isOpen: boolean;
@@ -47,6 +49,8 @@ export const QualificationModal = ({ isOpen, onClose, sourcePage }: Qualificatio
   const { activeForm, formFields, submitForm, companySettings } = useQualificationForm();
   const { celebrateFormSubmission } = useConfetti();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { getLocalizedPath } = useLocalizedNavigation();
 
   // Create dynamic schema based on form fields
   const createFormSchema = () => {
@@ -100,7 +104,7 @@ export const QualificationModal = ({ isOpen, onClose, sourcePage }: Qualificatio
         // Redirect after delay
         setTimeout(() => {
           onClose();
-          navigate('/obrigado');
+          navigate(getLocalizedPath('/obrigado'));
         }, activeForm?.redirect_delay ? activeForm.redirect_delay * 1000 : 3000);
       }
     } catch (error) {
@@ -145,12 +149,14 @@ export const QualificationModal = ({ isOpen, onClose, sourcePage }: Qualificatio
                 <Button 
                   className="btn-forge"
                   onClick={() => {
-                    const message = `Olá! Acabei de preencher o formulário de qualificação no site da ${companySettings.company_name}. Gostaria de conversar sobre meu projeto.`;
+                    const message = t('forms.whatsappMessage', { 
+                      companyName: companySettings.company_name 
+                    }) || `Olá! Acabei de preencher o formulário de qualificação no site da ${companySettings.company_name}. Gostaria de conversar sobre meu projeto.`;
                     const whatsappUrl = `https://wa.me/${companySettings.whatsapp_number.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
                     window.open(whatsappUrl, '_blank');
                   }}
                 >
-                  Falar no WhatsApp Agora
+                  {t('common.buttons.talkOnWhatsApp')}
                 </Button>
               </div>
             )}
@@ -227,7 +233,7 @@ export const QualificationModal = ({ isOpen, onClose, sourcePage }: Qualificatio
                     className="flex-1"
                     disabled={isSubmitting}
                   >
-                    Cancelar
+                    {t('common.buttons.cancel')}
                   </Button>
                   <Button
                     type="submit"
@@ -237,12 +243,12 @@ export const QualificationModal = ({ isOpen, onClose, sourcePage }: Qualificatio
                     {isSubmitting ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Enviando...
+                        {t('common.buttons.sending')}
                       </>
                     ) : (
                       <>
                         <Send className="mr-2 h-4 w-4" />
-                        Enviar Proposta
+                        {t('common.buttons.sendProposal')}
                       </>
                     )}
                   </Button>

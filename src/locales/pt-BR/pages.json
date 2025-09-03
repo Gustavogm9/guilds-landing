@@ -1,29 +1,44 @@
 {
   "home": {
     "hero": {
+      "badge": "⚡ Inovação e resultados",
       "title": "Sistemas inteligentes, resultados reais",
-      "subtitle": "Transformamos ideias em soluções digitais que geram impacto real para seu negócio. Desenvolvimento sob medida, automação inteligente e estratégia orientada por dados.",
-      "cta": "Forjar Meu Projeto"
+      "subtitle": "Software, apps, automação, IA e gamificação feitos sob medida para o seu objetivo.",
+      "cta": "Falar com a Guilds",
+      "secondaryCta": "Ver cases"
     },
-    "benefits": {
-      "title": "Por que escolher a Guilds?",
-      "subtitle": "Combinamos expertise técnica com visão estratégica para entregar soluções que realmente funcionam.",
-      "customMade": {
-        "title": "Sob Medida",
-        "description": "Cada solução é única, desenvolvida especificamente para suas necessidades e objetivos de negócio."
-      },
-      "roiFocus": {
-        "title": "ROI em Foco",
-        "description": "Priorizamos funcionalidades que geram retorno real e impacto mensurável para sua empresa."
-      },
-      "seniorTeam": {
-        "title": "Time Sênior",
-        "description": "Profissionais experientes que entendem tanto de tecnologia quanto de negócios."
-      },
-      "agileDelivery": {
-        "title": "Entrega Ágil",
-        "description": "Metodologia que garante transparência, qualidade e prazos cumpridos."
-      }
+    "differentials": {
+      "title": "Nossos Diferenciais Competitivos",
+      "subtitle": "O que nos diferencia no mercado e garante resultados excepcionais para nossos clientes"
+    },
+    "whatWeDo": {
+      "title": "O que fazemos",
+      "subtitle": "Soluções digitais completas para transformar seu negócio",
+      "learnMore": "Saiba mais"
+    },
+    "painPoints": {
+      "title": "Dores que resolvemos",
+      "subtitle": "Identificamos e solucionamos os principais gargalos que impedem o crescimento"
+    },
+    "methodology": {
+      "badge": "Metodologia Proprietária",
+      "title": "G-FORGE",
+      "subtitle": "Framework for Organizational Rapid Growth & Excellence",
+      "description": "Nossa metodologia exclusiva que combina diagnóstico estratégico, design thinking e implementação ágil para acelerar o crescimento organizacional de forma sustentável e mensurável."
+    },
+    "guildsLab": {
+      "title": "Guilds Lab",
+      "tagline": "Pessoas no centro. Habilidades que escalam.",
+      "description": "Workshops práticos em tecnologia, desenvolvimento de jogos e aplicativos, focados nas habilidades que o mercado pede.",
+      "cta": "Explorar Guilds Lab",
+      "badges": ["Workshops", "Educação Tech", "Soft Skills", "Certificação"]
+    },
+    "guildsCraft": {
+      "title": "Guilds Craft", 
+      "tagline": "Da ideia ao impacto.",
+      "description": "Parcerias e P&D para testar, construir e lançar soluções com potencial real. Transformamos ideias em produtos de impacto.",
+      "cta": "Explorar Guilds Craft",
+      "badges": ["Parcerias", "P&D", "Validação", "Lançamento"]
     }
   },
   "about": {
