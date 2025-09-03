@@ -24,6 +24,10 @@ export const CompanyAdmin: React.FC = () => {
   const [editingPosition, setEditingPosition] = useState<any>(null);
   const [newMember, setNewMember] = useState<any>({});
   const [newPosition, setNewPosition] = useState<any>({});
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isCreatingMember, setIsCreatingMember] = useState(false);
+  const [isUpdatingMember, setIsUpdatingMember] = useState(false);
 
   const handleSaveManifesto = async (formData: FormData) => {
     try {
@@ -45,18 +49,57 @@ export const CompanyAdmin: React.FC = () => {
   };
 
   const handleCreateMember = async () => {
+    if (!newMember.name || !newMember.position) {
+      toast.error('Nome e cargo são obrigatórios');
+      return;
+    }
+
+    setIsCreatingMember(true);
     try {
       await createMember({
         ...newMember,
-        expertise: newMember.expertise?.split(',').map((s: string) => s.trim()) || [],
+        expertise: newMember.expertise?.split(',').map((s: string) => s.trim()).filter(Boolean) || [],
         social_links: {},
         display_order: members.length + 1,
         is_active: true
       });
       setNewMember({});
+      setIsCreateDialogOpen(false);
       toast.success('Membro da equipe adicionado!');
     } catch (error) {
       toast.error('Erro ao adicionar membro');
+    } finally {
+      setIsCreatingMember(false);
+    }
+  };
+
+  const handleEditMember = (member: any) => {
+    setEditingMember({
+      ...member,
+      expertise: member.expertise.join(', ')
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdateMember = async () => {
+    if (!editingMember.name || !editingMember.position) {
+      toast.error('Nome e cargo são obrigatórios');
+      return;
+    }
+
+    setIsUpdatingMember(true);
+    try {
+      await updateMember(editingMember.id, {
+        ...editingMember,
+        expertise: editingMember.expertise?.split(',').map((s: string) => s.trim()).filter(Boolean) || [],
+      });
+      setEditingMember(null);
+      setIsEditDialogOpen(false);
+      toast.success('Membro atualizado com sucesso!');
+    } catch (error) {
+      toast.error('Erro ao atualizar membro');
+    } finally {
+      setIsUpdatingMember(false);
     }
   };
 
@@ -219,7 +262,7 @@ export const CompanyAdmin: React.FC = () => {
                   Gerencie os membros da equipe exibidos na página
                 </CardDescription>
               </div>
-              <Dialog>
+              <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
@@ -232,19 +275,30 @@ export const CompanyAdmin: React.FC = () => {
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="name">Nome</Label>
+                      <Label htmlFor="name">Nome *</Label>
                       <Input
                         id="name"
                         value={newMember.name || ''}
                         onChange={(e) => setNewMember({...newMember, name: e.target.value})}
+                        placeholder="Nome completo do membro"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="position">Cargo</Label>
+                      <Label htmlFor="position">Cargo *</Label>
                       <Input
                         id="position"
                         value={newMember.position || ''}
                         onChange={(e) => setNewMember({...newMember, position: e.target.value})}
+                        placeholder="Cargo ou função"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="avatar_url">URL do Avatar</Label>
+                      <Input
+                        id="avatar_url"
+                        value={newMember.avatar_url || ''}
+                        onChange={(e) => setNewMember({...newMember, avatar_url: e.target.value})}
+                        placeholder="https://..."
                       />
                     </div>
                     <div>
@@ -253,6 +307,7 @@ export const CompanyAdmin: React.FC = () => {
                         id="bio"
                         value={newMember.bio || ''}
                         onChange={(e) => setNewMember({...newMember, bio: e.target.value})}
+                        placeholder="Breve descrição sobre o membro"
                       />
                     </div>
                     <div>
@@ -264,9 +319,24 @@ export const CompanyAdmin: React.FC = () => {
                         placeholder="React, Node.js, TypeScript"
                       />
                     </div>
-                    <Button onClick={handleCreateMember}>
-                      Adicionar Membro
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={handleCreateMember} 
+                        disabled={isCreatingMember}
+                        className="flex-1"
+                      >
+                        {isCreatingMember ? 'Adicionando...' : 'Adicionar Membro'}
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setNewMember({});
+                          setIsCreateDialogOpen(false);
+                        }}
+                      >
+                        Cancelar
+                      </Button>
+                    </div>
                   </div>
                 </DialogContent>
               </Dialog>
@@ -294,7 +364,7 @@ export const CompanyAdmin: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline">
+                    <Button size="sm" variant="outline" onClick={() => handleEditMember(member)}>
                       <Edit2 className="h-3 w-3" />
                     </Button>
                     <AlertDialog>
@@ -327,6 +397,82 @@ export const CompanyAdmin: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Edit Member Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Editar Membro</DialogTitle>
+            </DialogHeader>
+            {editingMember && (
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="edit-name">Nome *</Label>
+                  <Input
+                    id="edit-name"
+                    value={editingMember.name || ''}
+                    onChange={(e) => setEditingMember({...editingMember, name: e.target.value})}
+                    placeholder="Nome completo do membro"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-position">Cargo *</Label>
+                  <Input
+                    id="edit-position"
+                    value={editingMember.position || ''}
+                    onChange={(e) => setEditingMember({...editingMember, position: e.target.value})}
+                    placeholder="Cargo ou função"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-avatar_url">URL do Avatar</Label>
+                  <Input
+                    id="edit-avatar_url"
+                    value={editingMember.avatar_url || ''}
+                    onChange={(e) => setEditingMember({...editingMember, avatar_url: e.target.value})}
+                    placeholder="https://..."
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-bio">Bio</Label>
+                  <Textarea
+                    id="edit-bio"
+                    value={editingMember.bio || ''}
+                    onChange={(e) => setEditingMember({...editingMember, bio: e.target.value})}
+                    placeholder="Breve descrição sobre o membro"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-expertise">Especialidades (separadas por vírgula)</Label>
+                  <Input
+                    id="edit-expertise"
+                    value={editingMember.expertise || ''}
+                    onChange={(e) => setEditingMember({...editingMember, expertise: e.target.value})}
+                    placeholder="React, Node.js, TypeScript"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={handleUpdateMember} 
+                    disabled={isUpdatingMember}
+                    className="flex-1"
+                  >
+                    {isUpdatingMember ? 'Salvando...' : 'Salvar Alterações'}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setEditingMember(null);
+                      setIsEditDialogOpen(false);
+                    }}
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </TabsContent>
 
       <TabsContent value="careers" className="space-y-6">
