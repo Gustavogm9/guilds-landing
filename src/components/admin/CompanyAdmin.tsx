@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useCompanyManifesto, useTeamMembers, useJobPositions, useCompanyCulture } from '@/hooks/useCompanyData';
 import { Building, Users, Briefcase, Heart, Plus, Edit2, Trash2, Save, X } from 'lucide-react';
 import { toast } from 'sonner';
@@ -270,161 +272,192 @@ export const CompanyAdmin: React.FC = () => {
                     Novo Membro
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
+                <DialogContent className="max-w-4xl w-full max-h-[90vh] p-0">
+                  <DialogHeader className="px-6 py-4 border-b">
                     <DialogTitle>Adicionar Novo Membro</DialogTitle>
                   </DialogHeader>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="name">Nome *</Label>
-                      <Input
-                        id="name"
-                        value={newMember.name || ''}
-                        onChange={(e) => setNewMember({...newMember, name: e.target.value})}
-                        placeholder="Nome completo do membro"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="position">Cargo *</Label>
-                      <Input
-                        id="position"
-                        value={newMember.position || ''}
-                        onChange={(e) => setNewMember({...newMember, position: e.target.value})}
-                        placeholder="Cargo ou função"
-                      />
-                    </div>
-                    <AvatarUploader
-                      currentUrl={newMember.avatar_url}
-                      memberName={newMember.name}
-                      onUrlChange={(url) => setNewMember({...newMember, avatar_url: url})}
-                    />
-                    <div>
-                      <Label htmlFor="bio">Bio</Label>
-                      <Textarea
-                        id="bio"
-                        value={newMember.bio || ''}
-                        onChange={(e) => setNewMember({...newMember, bio: e.target.value})}
-                        placeholder="Breve descrição sobre o membro"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="expertise">Especialidades (separadas por vírgula)</Label>
-                      <Input
-                        id="expertise"
-                        value={newMember.expertise || ''}
-                        onChange={(e) => setNewMember({...newMember, expertise: e.target.value})}
-                        placeholder="React, Node.js, TypeScript"
-                      />
-                    </div>
-                    
-                    {/* Social Links */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="linkedin">LinkedIn</Label>
-                        <Input
-                          id="linkedin"
-                          value={newMember.social_links?.linkedin || ''}
-                          onChange={(e) => setNewMember({
-                            ...newMember, 
-                            social_links: {...newMember.social_links, linkedin: e.target.value}
-                          })}
-                          placeholder="https://linkedin.com/in/usuario"
+                  
+                  <ScrollArea className="max-h-[calc(90vh-140px)]">
+                    <div className="px-6 py-4 space-y-6">
+                      {/* Informações Básicas */}
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                          Informações Básicas
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="name">Nome *</Label>
+                            <Input
+                              id="name"
+                              value={newMember.name || ''}
+                              onChange={(e) => setNewMember({...newMember, name: e.target.value})}
+                              placeholder="Nome completo do membro"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="position">Cargo *</Label>
+                            <Input
+                              id="position"
+                              value={newMember.position || ''}
+                              onChange={(e) => setNewMember({...newMember, position: e.target.value})}
+                              placeholder="Cargo ou função"
+                            />
+                          </div>
+                        </div>
+                        
+                        <AvatarUploader
+                          currentUrl={newMember.avatar_url}
+                          memberName={newMember.name}
+                          onUrlChange={(url) => setNewMember({...newMember, avatar_url: url})}
                         />
+                        
+                        <div>
+                          <Label htmlFor="bio">Bio</Label>
+                          <Textarea
+                            id="bio"
+                            value={newMember.bio || ''}
+                            onChange={(e) => setNewMember({...newMember, bio: e.target.value})}
+                            placeholder="Breve descrição sobre o membro"
+                            rows={3}
+                          />
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="expertise">Especialidades (separadas por vírgula)</Label>
+                          <Input
+                            id="expertise"
+                            value={newMember.expertise || ''}
+                            onChange={(e) => setNewMember({...newMember, expertise: e.target.value})}
+                            placeholder="React, Node.js, TypeScript"
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <Label htmlFor="instagram">Instagram</Label>
-                        <Input
-                          id="instagram"
-                          value={newMember.social_links?.instagram || ''}
-                          onChange={(e) => setNewMember({
-                            ...newMember, 
-                            social_links: {...newMember.social_links, instagram: e.target.value}
-                          })}
-                          placeholder="https://instagram.com/usuario"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="github">GitHub</Label>
-                        <Input
-                          id="github"
-                          value={newMember.social_links?.github || ''}
-                          onChange={(e) => setNewMember({
-                            ...newMember, 
-                            social_links: {...newMember.social_links, github: e.target.value}
-                          })}
-                          placeholder="https://github.com/usuario"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="lattes">Lattes</Label>
-                        <Input
-                          id="lattes"
-                          value={newMember.social_links?.lattes || ''}
-                          onChange={(e) => setNewMember({
-                            ...newMember, 
-                            social_links: {...newMember.social_links, lattes: e.target.value}
-                          })}
-                          placeholder="http://lattes.cnpq.br/1234567890"
-                        />
-                      </div>
+
+                      {/* Seções Expansíveis */}
+                      <Accordion type="multiple" className="space-y-4">
+                        {/* Redes Sociais */}
+                        <AccordionItem value="social" className="border rounded-lg px-4">
+                          <AccordionTrigger className="text-sm font-semibold">
+                            Redes Sociais
+                          </AccordionTrigger>
+                          <AccordionContent className="space-y-4 pt-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <Label htmlFor="linkedin">LinkedIn</Label>
+                                <Input
+                                  id="linkedin"
+                                  value={newMember.social_links?.linkedin || ''}
+                                  onChange={(e) => setNewMember({
+                                    ...newMember, 
+                                    social_links: {...newMember.social_links, linkedin: e.target.value}
+                                  })}
+                                  placeholder="https://linkedin.com/in/usuario"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="instagram">Instagram</Label>
+                                <Input
+                                  id="instagram"
+                                  value={newMember.social_links?.instagram || ''}
+                                  onChange={(e) => setNewMember({
+                                    ...newMember, 
+                                    social_links: {...newMember.social_links, instagram: e.target.value}
+                                  })}
+                                  placeholder="https://instagram.com/usuario"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="github">GitHub</Label>
+                                <Input
+                                  id="github"
+                                  value={newMember.social_links?.github || ''}
+                                  onChange={(e) => setNewMember({
+                                    ...newMember, 
+                                    social_links: {...newMember.social_links, github: e.target.value}
+                                  })}
+                                  placeholder="https://github.com/usuario"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="lattes">Lattes</Label>
+                                <Input
+                                  id="lattes"
+                                  value={newMember.social_links?.lattes || ''}
+                                  onChange={(e) => setNewMember({
+                                    ...newMember, 
+                                    social_links: {...newMember.social_links, lattes: e.target.value}
+                                  })}
+                                  placeholder="http://lattes.cnpq.br/1234567890"
+                                />
+                              </div>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+
+                        {/* Currículo Completo */}
+                        <AccordionItem value="curriculum" className="border rounded-lg px-4">
+                          <AccordionTrigger className="text-sm font-semibold">
+                            Currículo Completo
+                          </AccordionTrigger>
+                          <AccordionContent className="space-y-4 pt-4">
+                            <div>
+                              <Label htmlFor="curriculum_slug">URL do Currículo (slug)</Label>
+                              <Input
+                                id="curriculum_slug"
+                                value={newMember.curriculum_slug || ''}
+                                onChange={(e) => setNewMember({...newMember, curriculum_slug: e.target.value})}
+                                placeholder="nome-sobrenome"
+                              />
+                              <p className="text-xs text-muted-foreground mt-1">
+                                URL será: /team/{newMember.curriculum_slug || 'nome-sobrenome'}/curriculum
+                              </p>
+                            </div>
+                            <div>
+                              <Label htmlFor="curriculum_content">Conteúdo do Currículo</Label>
+                              <Textarea
+                                id="curriculum_content"
+                                value={newMember.curriculum_content || ''}
+                                onChange={(e) => setNewMember({...newMember, curriculum_content: e.target.value})}
+                                placeholder="Experiência profissional, educação, projetos, certificações..."
+                                rows={4}
+                              />
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <input
+                                type="checkbox"
+                                id="curriculum_is_public"
+                                checked={newMember.curriculum_is_public || false}
+                                onChange={(e) => setNewMember({...newMember, curriculum_is_public: e.target.checked})}
+                                className="rounded"
+                              />
+                              <Label htmlFor="curriculum_is_public" className="text-sm">
+                                Tornar currículo público
+                              </Label>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
                     </div>
-                    
-                    {/* Curriculum Section */}
-                    <div className="space-y-4 border-t pt-4">
-                      <h4 className="font-semibold">Currículo Completo</h4>
-                      <div>
-                        <Label htmlFor="curriculum_slug">URL do Currículo (slug)</Label>
-                        <Input
-                          id="curriculum_slug"
-                          value={newMember.curriculum_slug || ''}
-                          onChange={(e) => setNewMember({...newMember, curriculum_slug: e.target.value})}
-                          placeholder="nome-sobrenome"
-                        />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          URL será: /team/{newMember.curriculum_slug || 'nome-sobrenome'}/curriculum
-                        </p>
-                      </div>
-                      <div>
-                        <Label htmlFor="curriculum_content">Conteúdo do Currículo</Label>
-                        <Textarea
-                          id="curriculum_content"
-                          value={newMember.curriculum_content || ''}
-                          onChange={(e) => setNewMember({...newMember, curriculum_content: e.target.value})}
-                          placeholder="Experiência profissional, educação, projetos, certificações..."
-                          rows={6}
-                        />
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          id="curriculum_is_public"
-                          checked={newMember.curriculum_is_public || false}
-                          onChange={(e) => setNewMember({...newMember, curriculum_is_public: e.target.checked})}
-                          className="rounded"
-                        />
-                        <Label htmlFor="curriculum_is_public" className="text-sm">
-                          Tornar currículo público
-                        </Label>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button 
-                        onClick={handleCreateMember} 
-                        disabled={isCreatingMember}
-                        className="flex-1"
-                      >
-                        {isCreatingMember ? 'Adicionando...' : 'Adicionar Membro'}
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        onClick={() => {
-                          setNewMember({});
-                          setIsCreateDialogOpen(false);
-                        }}
-                      >
-                        Cancelar
-                      </Button>
-                    </div>
+                  </ScrollArea>
+                  
+                  {/* Botões Fixos */}
+                  <div className="flex gap-2 px-6 py-4 border-t bg-background">
+                    <Button 
+                      onClick={handleCreateMember} 
+                      disabled={isCreatingMember}
+                      className="flex-1"
+                    >
+                      {isCreatingMember ? 'Adicionando...' : 'Adicionar Membro'}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setNewMember({});
+                        setIsCreateDialogOpen(false);
+                      }}
+                    >
+                      Cancelar
+                    </Button>
                   </div>
                 </DialogContent>
               </Dialog>
@@ -488,146 +521,178 @@ export const CompanyAdmin: React.FC = () => {
 
         {/* Edit Member Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
+          <DialogContent className="max-w-4xl w-full max-h-[90vh] p-0">
+            <DialogHeader className="px-6 py-4 border-b">
               <DialogTitle>Editar Membro</DialogTitle>
             </DialogHeader>
             {editingMember && (
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="edit-name">Nome *</Label>
-                  <Input
-                    id="edit-name"
-                    value={editingMember.name || ''}
-                    onChange={(e) => setEditingMember({...editingMember, name: e.target.value})}
-                    placeholder="Nome completo do membro"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="edit-position">Cargo *</Label>
-                  <Input
-                    id="edit-position"
-                    value={editingMember.position || ''}
-                    onChange={(e) => setEditingMember({...editingMember, position: e.target.value})}
-                    placeholder="Cargo ou função"
-                  />
-                </div>
-                <AvatarUploader
-                  currentUrl={editingMember.avatar_url}
-                  memberName={editingMember.name}
-                  memberId={editingMember.id}
-                  onUrlChange={(url) => setEditingMember({...editingMember, avatar_url: url})}
-                />
-                <div>
-                  <Label htmlFor="edit-bio">Bio</Label>
-                  <Textarea
-                    id="edit-bio"
-                    value={editingMember.bio || ''}
-                    onChange={(e) => setEditingMember({...editingMember, bio: e.target.value})}
-                    placeholder="Breve descrição sobre o membro"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="edit-expertise">Especialidades (separadas por vírgula)</Label>
-                  <Input
-                    id="edit-expertise"
-                    value={editingMember.expertise || ''}
-                    onChange={(e) => setEditingMember({...editingMember, expertise: e.target.value})}
-                    placeholder="React, Node.js, TypeScript"
-                  />
-                </div>
+              <>
+                <ScrollArea className="max-h-[calc(90vh-140px)]">
+                  <div className="px-6 py-4 space-y-6">
+                    {/* Informações Básicas */}
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                        Informações Básicas
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="edit-name">Nome *</Label>
+                          <Input
+                            id="edit-name"
+                            value={editingMember.name || ''}
+                            onChange={(e) => setEditingMember({...editingMember, name: e.target.value})}
+                            placeholder="Nome completo do membro"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="edit-position">Cargo *</Label>
+                          <Input
+                            id="edit-position"
+                            value={editingMember.position || ''}
+                            onChange={(e) => setEditingMember({...editingMember, position: e.target.value})}
+                            placeholder="Cargo ou função"
+                          />
+                        </div>
+                      </div>
+                      
+                      <AvatarUploader
+                        currentUrl={editingMember.avatar_url}
+                        memberName={editingMember.name}
+                        memberId={editingMember.id}
+                        onUrlChange={(url) => setEditingMember({...editingMember, avatar_url: url})}
+                      />
+                      
+                      <div>
+                        <Label htmlFor="edit-bio">Bio</Label>
+                        <Textarea
+                          id="edit-bio"
+                          value={editingMember.bio || ''}
+                          onChange={(e) => setEditingMember({...editingMember, bio: e.target.value})}
+                          placeholder="Breve descrição sobre o membro"
+                          rows={3}
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="edit-expertise">Especialidades (separadas por vírgula)</Label>
+                        <Input
+                          id="edit-expertise"
+                          value={editingMember.expertise || ''}
+                          onChange={(e) => setEditingMember({...editingMember, expertise: e.target.value})}
+                          placeholder="React, Node.js, TypeScript"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Seções Expansíveis */}
+                    <Accordion type="multiple" className="space-y-4">
+                      {/* Redes Sociais */}
+                      <AccordionItem value="social" className="border rounded-lg px-4">
+                        <AccordionTrigger className="text-sm font-semibold">
+                          Redes Sociais
+                        </AccordionTrigger>
+                        <AccordionContent className="space-y-4 pt-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="edit-linkedin">LinkedIn</Label>
+                              <Input
+                                id="edit-linkedin"
+                                value={editingMember.social_links?.linkedin || ''}
+                                onChange={(e) => setEditingMember({
+                                  ...editingMember, 
+                                  social_links: {...editingMember.social_links, linkedin: e.target.value}
+                                })}
+                                placeholder="https://linkedin.com/in/usuario"
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="edit-instagram">Instagram</Label>
+                              <Input
+                                id="edit-instagram"
+                                value={editingMember.social_links?.instagram || ''}
+                                onChange={(e) => setEditingMember({
+                                  ...editingMember, 
+                                  social_links: {...editingMember.social_links, instagram: e.target.value}
+                                })}
+                                placeholder="https://instagram.com/usuario"
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="edit-github">GitHub</Label>
+                              <Input
+                                id="edit-github"
+                                value={editingMember.social_links?.github || ''}
+                                onChange={(e) => setEditingMember({
+                                  ...editingMember, 
+                                  social_links: {...editingMember.social_links, github: e.target.value}
+                                })}
+                                placeholder="https://github.com/usuario"
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="edit-lattes">Lattes</Label>
+                              <Input
+                                id="edit-lattes"
+                                value={editingMember.social_links?.lattes || ''}
+                                onChange={(e) => setEditingMember({
+                                  ...editingMember, 
+                                  social_links: {...editingMember.social_links, lattes: e.target.value}
+                                })}
+                                placeholder="http://lattes.cnpq.br/1234567890"
+                              />
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+
+                      {/* Currículo Completo */}
+                      <AccordionItem value="curriculum" className="border rounded-lg px-4">
+                        <AccordionTrigger className="text-sm font-semibold">
+                          Currículo Completo
+                        </AccordionTrigger>
+                        <AccordionContent className="space-y-4 pt-4">
+                          <div>
+                            <Label htmlFor="edit-curriculum_slug">URL do Currículo (slug)</Label>
+                            <Input
+                              id="edit-curriculum_slug"
+                              value={editingMember.curriculum_slug || ''}
+                              onChange={(e) => setEditingMember({...editingMember, curriculum_slug: e.target.value})}
+                              placeholder="nome-sobrenome"
+                            />
+                            <p className="text-xs text-muted-foreground mt-1">
+                              URL será: /team/{editingMember.curriculum_slug || 'nome-sobrenome'}/curriculum
+                            </p>
+                          </div>
+                          <div>
+                            <Label htmlFor="edit-curriculum_content">Conteúdo do Currículo</Label>
+                            <Textarea
+                              id="edit-curriculum_content"
+                              value={editingMember.curriculum_content || ''}
+                              onChange={(e) => setEditingMember({...editingMember, curriculum_content: e.target.value})}
+                              placeholder="Experiência profissional, educação, projetos, certificações..."
+                              rows={4}
+                            />
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id="edit-curriculum_is_public"
+                              checked={editingMember.curriculum_is_public || false}
+                              onChange={(e) => setEditingMember({...editingMember, curriculum_is_public: e.target.checked})}
+                              className="rounded"
+                            />
+                            <Label htmlFor="edit-curriculum_is_public" className="text-sm">
+                              Tornar currículo público
+                            </Label>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </div>
+                </ScrollArea>
                 
-                {/* Social Links */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="edit-linkedin">LinkedIn</Label>
-                    <Input
-                      id="edit-linkedin"
-                      value={editingMember.social_links?.linkedin || ''}
-                      onChange={(e) => setEditingMember({
-                        ...editingMember, 
-                        social_links: {...editingMember.social_links, linkedin: e.target.value}
-                      })}
-                      placeholder="https://linkedin.com/in/usuario"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="edit-instagram">Instagram</Label>
-                    <Input
-                      id="edit-instagram"
-                      value={editingMember.social_links?.instagram || ''}
-                      onChange={(e) => setEditingMember({
-                        ...editingMember, 
-                        social_links: {...editingMember.social_links, instagram: e.target.value}
-                      })}
-                      placeholder="https://instagram.com/usuario"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="edit-github">GitHub</Label>
-                    <Input
-                      id="edit-github"
-                      value={editingMember.social_links?.github || ''}
-                      onChange={(e) => setEditingMember({
-                        ...editingMember, 
-                        social_links: {...editingMember.social_links, github: e.target.value}
-                      })}
-                      placeholder="https://github.com/usuario"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="edit-lattes">Lattes</Label>
-                    <Input
-                      id="edit-lattes"
-                      value={editingMember.social_links?.lattes || ''}
-                      onChange={(e) => setEditingMember({
-                        ...editingMember, 
-                        social_links: {...editingMember.social_links, lattes: e.target.value}
-                      })}
-                      placeholder="http://lattes.cnpq.br/1234567890"
-                    />
-                  </div>
-                </div>
-                
-                {/* Curriculum Section */}
-                <div className="space-y-4 border-t pt-4">
-                  <h4 className="font-semibold">Currículo Completo</h4>
-                  <div>
-                    <Label htmlFor="edit-curriculum_slug">URL do Currículo (slug)</Label>
-                    <Input
-                      id="edit-curriculum_slug"
-                      value={editingMember.curriculum_slug || ''}
-                      onChange={(e) => setEditingMember({...editingMember, curriculum_slug: e.target.value})}
-                      placeholder="nome-sobrenome"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      URL será: /team/{editingMember.curriculum_slug || 'nome-sobrenome'}/curriculum
-                    </p>
-                  </div>
-                  <div>
-                    <Label htmlFor="edit-curriculum_content">Conteúdo do Currículo</Label>
-                    <Textarea
-                      id="edit-curriculum_content"
-                      value={editingMember.curriculum_content || ''}
-                      onChange={(e) => setEditingMember({...editingMember, curriculum_content: e.target.value})}
-                      placeholder="Experiência profissional, educação, projetos, certificações..."
-                      rows={6}
-                    />
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="edit-curriculum_is_public"
-                      checked={editingMember.curriculum_is_public || false}
-                      onChange={(e) => setEditingMember({...editingMember, curriculum_is_public: e.target.checked})}
-                      className="rounded"
-                    />
-                    <Label htmlFor="edit-curriculum_is_public" className="text-sm">
-                      Tornar currículo público
-                    </Label>
-                  </div>
-                </div>
-                <div className="flex gap-2">
+                {/* Botões Fixos */}
+                <div className="flex gap-2 px-6 py-4 border-t bg-background">
                   <Button 
                     onClick={handleUpdateMember} 
                     disabled={isUpdatingMember}
@@ -645,7 +710,7 @@ export const CompanyAdmin: React.FC = () => {
                     Cancelar
                   </Button>
                 </div>
-              </div>
+              </>
             )}
           </DialogContent>
         </Dialog>
