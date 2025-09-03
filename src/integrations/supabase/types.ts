@@ -724,6 +724,8 @@ export type Database = {
           company_name: string
           created_at: string
           id: string
+          public_support_email: string | null
+          public_whatsapp_number: string | null
           social_media: Json | null
           updated_at: string
         }
@@ -734,6 +736,8 @@ export type Database = {
           company_name?: string
           created_at?: string
           id?: string
+          public_support_email?: string | null
+          public_whatsapp_number?: string | null
           social_media?: Json | null
           updated_at?: string
         }
@@ -744,6 +748,8 @@ export type Database = {
           company_name?: string
           created_at?: string
           id?: string
+          public_support_email?: string | null
+          public_whatsapp_number?: string | null
           social_media?: Json | null
           updated_at?: string
         }

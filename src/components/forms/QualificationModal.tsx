@@ -35,6 +35,7 @@ import { useRecaptcha } from '@/hooks/useRecaptcha';
 import { LGPDNotice } from '@/components/legal/LGPDNotice';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '@/contexts/TranslationContext';
+import { usePublicCompanySettings } from '@/hooks/usePublicCompanySettings';
 import { useLocalizedNavigation } from '@/hooks/useLocalizedNavigation';
 
 interface QualificationModalProps {
@@ -46,7 +47,8 @@ interface QualificationModalProps {
 export const QualificationModal = ({ isOpen, onClose, sourcePage }: QualificationModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { activeForm, formFields, submitForm, companySettings } = useQualificationForm();
+  const { activeForm, formFields, submitForm } = useQualificationForm();
+  const { publicSettings } = usePublicCompanySettings();
   const { celebrateFormSubmission } = useConfetti();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -144,15 +146,15 @@ export const QualificationModal = ({ isOpen, onClose, sourcePage }: Qualificatio
               </DialogDescription>
             </DialogHeader>
             
-            {activeForm.redirect_to_whatsapp && companySettings && (
+            {activeForm.redirect_to_whatsapp && publicSettings?.public_whatsapp_number && (
               <div className="mt-6">
                 <Button 
                   className="btn-forge"
                   onClick={() => {
                     const message = t('forms.whatsappMessage', { 
-                      companyName: companySettings.company_name 
-                    }) || `Olá! Acabei de preencher o formulário de qualificação no site da ${companySettings.company_name}. Gostaria de conversar sobre meu projeto.`;
-                    const whatsappUrl = `https://wa.me/${companySettings.whatsapp_number.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+                      companyName: publicSettings.company_name 
+                    }) || `Olá! Acabei de preencher o formulário de qualificação no site da ${publicSettings.company_name}. Gostaria de conversar sobre meu projeto.`;
+                    const whatsappUrl = `https://wa.me/${publicSettings.public_whatsapp_number.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
                     window.open(whatsappUrl, '_blank');
                   }}
                 >

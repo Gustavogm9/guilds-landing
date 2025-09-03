@@ -8,6 +8,8 @@ export interface PublicCompanySettings {
   brand_accent_color: string;
   business_hours: any;
   social_media: any;
+  public_whatsapp_number?: string;
+  public_support_email?: string;
 }
 
 export const usePublicCompanySettings = () => {
@@ -45,6 +47,14 @@ export const usePublicCompanySettings = () => {
     return publicSettings?.social_media || {};
   };
 
+  const getPublicWhatsApp = () => {
+    return publicSettings?.public_whatsapp_number || null;
+  };
+
+  const getPublicSupportEmail = () => {
+    return publicSettings?.public_support_email || null;
+  };
+
   return {
     publicSettings,
     isLoading,
@@ -52,5 +62,7 @@ export const usePublicCompanySettings = () => {
     getBrandColors,
     getBusinessHours,
     getSocialMediaLinks,
+    getPublicWhatsApp,
+    getPublicSupportEmail,
   };
 };

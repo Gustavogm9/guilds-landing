@@ -12,12 +12,14 @@ import {
   Clock
 } from 'lucide-react';
 import { useQualificationForm } from '@/hooks/useQualificationForm';
+import { usePublicCompanySettings } from '@/hooks/usePublicCompanySettings';
 import { useConfetti } from '@/hooks/useConfetti';
 import { Link } from 'react-router-dom';
 import { SEOHead } from '@/components/seo/SEOHead';
 
 const ThankYou = () => {
-  const { activeForm, companySettings } = useQualificationForm();
+  const { activeForm } = useQualificationForm();
+  const { publicSettings } = usePublicCompanySettings();
   const { celebrateSuccess } = useConfetti();
   const [countdown, setCountdown] = useState(10);
   const [showRedirect, setShowRedirect] = useState(false);
@@ -46,12 +48,12 @@ const ThankYou = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const whatsappMessage = companySettings 
-    ? `Olá! Acabei de preencher o formulário de qualificação no site da ${companySettings.company_name}. Gostaria de conversar sobre meu projeto.`
+  const whatsappMessage = publicSettings 
+    ? `Olá! Acabei de preencher o formulário de qualificação no site da ${publicSettings.company_name}. Gostaria de conversar sobre meu projeto.`
     : "Olá! Acabei de preencher o formulário de qualificação no site. Gostaria de conversar sobre meu projeto.";
 
-  const whatsappUrl = companySettings
-    ? `https://wa.me/${companySettings.whatsapp_number.replace(/\D/g, '')}?text=${encodeURIComponent(whatsappMessage)}`
+  const whatsappUrl = publicSettings?.public_whatsapp_number
+    ? `https://wa.me/${publicSettings.public_whatsapp_number.replace(/\D/g, '')}?text=${encodeURIComponent(whatsappMessage)}`
     : "#";
 
   return (
@@ -85,7 +87,7 @@ const ThankYou = () => {
             </p>
 
             {/* Main CTA */}
-            {companySettings && (
+            {publicSettings?.public_whatsapp_number && (
               <div className="animate-fade-in">
                 <Button 
                   asChild
@@ -181,10 +183,10 @@ const ThankYou = () => {
               </div>
               <h3 className="font-semibold mb-2">E-mail</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                {companySettings?.support_email || 'contato@guilds.com.br'}
+                {publicSettings?.public_support_email || 'contato@guilds.com.br'}
               </p>
               <Button variant="outline" size="sm" asChild>
-                <a href={`mailto:${companySettings?.support_email || 'contato@guilds.com.br'}`}>
+                <a href={`mailto:${publicSettings?.public_support_email || 'contato@guilds.com.br'}`}>
                   Enviar E-mail
                 </a>
               </Button>
@@ -196,10 +198,10 @@ const ThankYou = () => {
               </div>
               <h3 className="font-semibold mb-2">Telefone</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                {companySettings?.whatsapp_number || '+55 (11) 99999-9999'}
+                {publicSettings?.public_whatsapp_number || '+55 (11) 99999-9999'}
               </p>
               <Button variant="outline" size="sm" asChild>
-                <a href={`tel:${companySettings?.whatsapp_number || '+5511999999999'}`}>
+                <a href={`tel:${publicSettings?.public_whatsapp_number || '+5511999999999'}`}>
                   Ligar Agora
                 </a>
               </Button>
