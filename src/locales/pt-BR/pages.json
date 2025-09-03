@@ -1,0 +1,50 @@
+{
+  "home": {
+    "hero": {
+      "title": "Sistemas inteligentes, resultados reais",
+      "subtitle": "Transformamos ideias em soluções digitais que geram impacto real para seu negócio. Desenvolvimento sob medida, automação inteligente e estratégia orientada por dados.",
+      "cta": "Forjar Meu Projeto"
+    },
+    "benefits": {
+      "title": "Por que escolher a Guilds?",
+      "subtitle": "Combinamos expertise técnica com visão estratégica para entregar soluções que realmente funcionam.",
+      "customMade": {
+        "title": "Sob Medida",
+        "description": "Cada solução é única, desenvolvida especificamente para suas necessidades e objetivos de negócio."
+      },
+      "roiFocus": {
+        "title": "ROI em Foco",
+        "description": "Priorizamos funcionalidades que geram retorno real e impacto mensurável para sua empresa."
+      },
+      "seniorTeam": {
+        "title": "Time Sênior",
+        "description": "Profissionais experientes que entendem tanto de tecnologia quanto de negócios."
+      },
+      "agileDelivery": {
+        "title": "Entrega Ágil",
+        "description": "Metodologia que garante transparência, qualidade e prazos cumpridos."
+      }
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "Forjamos tecnologia que transforma negócios",
+      "subtitle": "Somos uma software house que combina expertise técnica com visão estratégica, criando soluções digitais que geram impacto real e duradouro.",
+      "cta": "Conheça nossa história"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Vamos forjar algo incrível juntos",
+      "subtitle": "Conte-nos sobre seu projeto e descubra como podemos transformar sua ideia em realidade digital.",
+      "cta": "Iniciar conversa"
+    }
+  },
+  "services": {
+    "hero": {
+      "title": "Soluções digitais completas",
+      "subtitle": "Do conceito à implementação, criamos tecnologia que impulsiona seu negócio para o futuro.",
+      "cta": "Explorar serviços"
+    }
+  }
+}

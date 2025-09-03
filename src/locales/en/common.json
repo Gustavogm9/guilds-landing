@@ -1,0 +1,82 @@
+{
+  "navigation": {
+    "services": "Services",
+    "cases": "Cases",
+    "lab": "Guilds Lab",
+    "craft": "Guilds Craft",
+    "content": "Content",
+    "about": "About",
+    "team": "Team",
+    "careers": "Careers",
+    "contact": "Contact"
+  },
+  "buttons": {
+    "forgeProject": "Forge Project",
+    "forgeDigitalSolutions": "Forge Digital Solutions",
+    "learnMore": "Learn More",
+    "getStarted": "Get Started",
+    "contact": "Get in Touch",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm"
+  },
+  "services": {
+    "softwareApps": {
+      "title": "Software & App Development",
+      "description": "Complete digital solutions for your business"
+    },
+    "automationAi": {
+      "title": "Automation & AI",
+      "description": "Artificial intelligence and process automation"
+    },
+    "gamesGamification": {
+      "title": "Corporate Games & Gamification",
+      "description": "Engagement through playful experiences"
+    },
+    "consulting": {
+      "title": "Consulting & Discovery",
+      "description": "Strategy and opportunity discovery"
+    }
+  },
+  "taglines": {
+    "main": "Intelligent systems, real results.",
+    "lab": "People at the center. Skills that scale.",
+    "craft": "From idea to impact."
+  },
+  "meta": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information"
+  },
+  "forms": {
+    "required": "Required field",
+    "invalidEmail": "Invalid email",
+    "invalidPhone": "Invalid phone",
+    "minLength": "Minimum {{count}} characters",
+    "maxLength": "Maximum {{count}} characters",
+    "selectOption": "Select an option",
+    "thankYou": "Thank you! We'll get in touch soon."
+  },
+  "legal": {
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "cookiePolicy": "Cookie Policy",
+    "acceptCookies": "Accept Cookies",
+    "manageCookies": "Manage Cookies",
+    "lgpdConsent": "By continuing, you agree to our Privacy Policy and personal data processing in accordance with GDPR."
+  },
+  "language": {
+    "portuguese": "Português",
+    "english": "English",
+    "switchLanguage": "Switch language"
+  }
+}

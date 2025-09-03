@@ -1,0 +1,82 @@
+{
+  "navigation": {
+    "services": "Serviços",
+    "cases": "Cases",
+    "lab": "Guilds Lab",
+    "craft": "Guilds Craft",
+    "content": "Conteúdo",
+    "about": "Sobre",
+    "team": "Equipe",
+    "careers": "Carreiras",
+    "contact": "Contato"
+  },
+  "buttons": {
+    "forgeProject": "Forjar Projeto",
+    "forgeDigitalSolutions": "Forjar Soluções Digitais",
+    "learnMore": "Saiba Mais",
+    "getStarted": "Começar Agora",
+    "contact": "Entrar em Contato",
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "save": "Salvar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "confirm": "Confirmar"
+  },
+  "services": {
+    "softwareApps": {
+      "title": "Desenvolvimento de Software & Apps",
+      "description": "Soluções digitais completas para sua empresa"
+    },
+    "automationAi": {
+      "title": "Automação & IA",
+      "description": "Inteligência artificial e automação de processos"
+    },
+    "gamesGamification": {
+      "title": "Jogos Corporativos & Gamificação",
+      "description": "Engajamento através de experiências lúdicas"
+    },
+    "consulting": {
+      "title": "Consultoria & Discovery",
+      "description": "Estratégia e descoberta de oportunidades"
+    }
+  },
+  "taglines": {
+    "main": "Sistemas inteligentes, resultados reais.",
+    "lab": "Pessoas no centro. Habilidades que escalam.",
+    "craft": "Da ideia ao impacto."
+  },
+  "meta": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "warning": "Atenção",
+    "info": "Informação"
+  },
+  "forms": {
+    "required": "Campo obrigatório",
+    "invalidEmail": "E-mail inválido",
+    "invalidPhone": "Telefone inválido",
+    "minLength": "Mínimo de {{count}} caracteres",
+    "maxLength": "Máximo de {{count}} caracteres",
+    "selectOption": "Selecione uma opção",
+    "thankYou": "Obrigado! Entraremos em contato em breve."
+  },
+  "legal": {
+    "privacyPolicy": "Política de Privacidade",
+    "termsOfService": "Termos de Uso",
+    "cookiePolicy": "Política de Cookies",
+    "acceptCookies": "Aceitar Cookies",
+    "manageCookies": "Gerenciar Cookies",
+    "lgpdConsent": "Ao continuar, você concorda com nossa Política de Privacidade e o tratamento de dados pessoais conforme a LGPD."
+  },
+  "language": {
+    "portuguese": "Português",
+    "english": "English",
+    "switchLanguage": "Mudar idioma"
+  }
+}

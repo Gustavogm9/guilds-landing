@@ -1,0 +1,51 @@
+{
+  "forms": {
+    "qualification": {
+      "title": "Let's talk about your project",
+      "subtitle": "Fill out the form below and we'll get in touch to better understand your needs.",
+      "fields": {
+        "name": "Full name",
+        "email": "Email",
+        "company": "Company",
+        "phone": "Phone",
+        "projectType": "Project type",
+        "budget": "Estimated budget",
+        "timeline": "Desired timeline",
+        "description": "Describe your project",
+        "howDidYouFind": "How did you find us?"
+      },
+      "placeholders": {
+        "name": "Your full name",
+        "email": "your@email.com",
+        "company": "Your company name",
+        "phone": "+1 (555) 123-4567",
+        "description": "Tell us more about your project, objectives, and challenges..."
+      }
+    },
+    "newsletter": {
+      "title": "Get exclusive insights",
+      "subtitle": "Subscribe to our newsletter and receive content about technology, business, and innovation.",
+      "placeholder": "Your best email",
+      "button": "Subscribe",
+      "success": "Successfully subscribed!",
+      "error": "Subscription error. Please try again."
+    }
+  },
+  "testimonials": {
+    "title": "What our clients say",
+    "subtitle": "Real stories of digital transformation and achieved results."
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Clear your doubts about our services and processes."
+  },
+  "footer": {
+    "description": "We transform ideas into digital solutions that generate real impact for your business.",
+    "quickLinks": "Quick Links",
+    "services": "Services",
+    "company": "Company",
+    "legal": "Legal",
+    "followUs": "Follow Us",
+    "allRightsReserved": "All rights reserved."
+  }
+}

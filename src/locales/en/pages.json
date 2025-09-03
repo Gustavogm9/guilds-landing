@@ -1,0 +1,50 @@
+{
+  "home": {
+    "hero": {
+      "title": "Intelligent systems, real results",
+      "subtitle": "We transform ideas into digital solutions that generate real impact for your business. Custom development, intelligent automation, and data-driven strategy.",
+      "cta": "Forge My Project"
+    },
+    "benefits": {
+      "title": "Why choose Guilds?",
+      "subtitle": "We combine technical expertise with strategic vision to deliver solutions that really work.",
+      "customMade": {
+        "title": "Custom Made",
+        "description": "Each solution is unique, developed specifically for your business needs and objectives."
+      },
+      "roiFocus": {
+        "title": "ROI Focused",
+        "description": "We prioritize features that generate real returns and measurable impact for your company."
+      },
+      "seniorTeam": {
+        "title": "Senior Team",
+        "description": "Experienced professionals who understand both technology and business."
+      },
+      "agileDelivery": {
+        "title": "Agile Delivery",
+        "description": "Methodology that ensures transparency, quality, and met deadlines."
+      }
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "We forge technology that transforms businesses",
+      "subtitle": "We're a software house that combines technical expertise with strategic vision, creating digital solutions that generate real and lasting impact.",
+      "cta": "Learn our story"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Let's forge something incredible together",
+      "subtitle": "Tell us about your project and discover how we can transform your idea into digital reality.",
+      "cta": "Start conversation"
+    }
+  },
+  "services": {
+    "hero": {
+      "title": "Complete digital solutions",
+      "subtitle": "From concept to implementation, we create technology that propels your business into the future.",
+      "cta": "Explore services"
+    }
+  }
+}

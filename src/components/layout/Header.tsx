@@ -28,50 +28,57 @@ import { cn } from "@/lib/utils";
 import { GuildShield } from "@/components/icons";
 import { DynamicLogo } from "@/components/ui/DynamicLogo";
 import { QualificationButton } from "@/components/forms/QualificationButton";
+import { LanguageSelector } from "@/components/ui/LanguageSelector";
+import { useTranslation } from "@/contexts/TranslationContext";
+import { useLocalizedNavigation } from "@/hooks/useLocalizedNavigation";
 import guildsLogoFull from "@/assets/guilds-logo-full.svg";
 import guildsLogoShield from "@/assets/guilds-logo-shield.svg";
-
-const services = [
-  {
-    title: "Desenvolvimento de Software & Apps",
-    href: "/servicos/software-apps",
-    description: "Soluções digitais completas para sua empresa",
-    icon: Code
-  },
-  {
-    title: "Automação & IA",
-    href: "/servicos/automacao-ia", 
-    description: "Inteligência artificial e automação de processos",
-    icon: Zap
-  },
-  {
-    title: "Jogos Corporativos & Gamificação",
-    href: "/servicos/jogos-gamificacao",
-    description: "Engajamento através de experiências lúdicas",
-    icon: Gamepad2
-  },
-  {
-    title: "Consultoria & Discovery",
-    href: "/servicos/consultoria",
-    description: "Estratégia e descoberta de oportunidades",
-    icon: Users
-  }
-];
-
-const navigation = [
-  { name: "Cases", href: "/cases" },
-  { name: "Guilds Lab", href: "/lab" },
-  { name: "Guilds Craft", href: "/craft" },
-  { name: "Conteúdo", href: "https://blog.guilds.com.br", external: true },
-  { name: "Sobre", href: "/sobre" },
-  { name: "Equipe", href: "/equipe" },
-  { name: "Carreiras", href: "/carreiras" },
-  { name: "Contato", href: "/contato" }
-];
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { t } = useTranslation();
+  const { getLocalizedPath } = useLocalizedNavigation();
+
+  // Generate services with localized paths and translations
+  const services = [
+    {
+      title: t('common.services.softwareApps.title'),
+      href: getLocalizedPath('/servicos/software-apps'),
+      description: t('common.services.softwareApps.description'),
+      icon: Code
+    },
+    {
+      title: t('common.services.automationAi.title'),
+      href: getLocalizedPath('/servicos/automacao-ia'), 
+      description: t('common.services.automationAi.description'),
+      icon: Zap
+    },
+    {
+      title: t('common.services.gamesGamification.title'),
+      href: getLocalizedPath('/servicos/jogos-gamificacao'),
+      description: t('common.services.gamesGamification.description'),
+      icon: Gamepad2
+    },
+    {
+      title: t('common.services.consulting.title'),
+      href: getLocalizedPath('/servicos/consultoria'),
+      description: t('common.services.consulting.description'),
+      icon: Users
+    }
+  ];
+
+  // Generate navigation with localized paths and translations
+  const navigation = [
+    { name: t('common.navigation.cases'), href: getLocalizedPath('/cases') },
+    { name: t('common.navigation.lab'), href: getLocalizedPath('/lab') },
+    { name: t('common.navigation.craft'), href: getLocalizedPath('/craft') },
+    { name: t('common.navigation.content'), href: "https://blog.guilds.com.br", external: true },
+    { name: t('common.navigation.about'), href: getLocalizedPath('/sobre') },
+    { name: t('common.navigation.team'), href: getLocalizedPath('/equipe') },
+    { name: t('common.navigation.careers'), href: getLocalizedPath('/carreiras') },
+    { name: t('common.navigation.contact'), href: getLocalizedPath('/contato') }
+  ];
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -81,7 +88,7 @@ const Header = () => {
         <div className="container">
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
-            <Link to="/" className="flex items-center group">
+            <Link to={getLocalizedPath('/')} className="flex items-center group">
               <DynamicLogo 
                 type="full"
                 variant="color"
@@ -99,13 +106,13 @@ const Header = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden md:flex items-center space-x-6">
               {/* Services Mega Menu */}
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
                     <NavigationMenuTrigger className="bg-transparent">
-                      Serviços
+                      {t('common.navigation.services')}
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
                       <div className="grid w-[600px] gap-3 p-4 md:grid-cols-2">
@@ -167,6 +174,9 @@ const Header = () => {
                   </Link>
                 )
               )}
+
+              {/* Language Selector */}
+              <LanguageSelector />
             </nav>
 
             {/* CTA Button */}
@@ -176,7 +186,7 @@ const Header = () => {
               >
                 <span className="relative z-10 flex items-center gap-2">
                   <GuildShield className="h-4 w-4" />
-                  Forjar Projeto
+                  {t('common.buttons.forgeProject')}
                 </span>
               </QualificationButton>
             </div>
@@ -194,7 +204,7 @@ const Header = () => {
                 <div className="flex flex-col h-full">
                   {/* Mobile Logo */}
                   <div className="flex items-center justify-between pb-4 border-b">
-                    <Link to="/" className="flex items-center" onClick={() => setIsOpen(false)}>
+                    <Link to={getLocalizedPath('/')} className="flex items-center" onClick={() => setIsOpen(false)}>
                       <DynamicLogo 
                         type="symbol"
                         variant="color"
@@ -216,7 +226,7 @@ const Header = () => {
                   <nav className="flex flex-col py-6 space-y-4 flex-1">
                     {/* Services */}
                     <div>
-                      <h3 className="font-semibold text-brand-primary mb-3">Serviços</h3>
+                      <h3 className="font-semibold text-brand-primary mb-3">{t('common.navigation.services')}</h3>
                       <div className="space-y-2 pl-4">
                         {services.map((service) => {
                           const Icon = service.icon;
@@ -264,12 +274,17 @@ const Header = () => {
                         )
                       )}
                     </div>
+
+                    {/* Language Selector */}
+                    <div className="pt-4 border-t">
+                      <LanguageSelector variant="mobile" />
+                    </div>
                   </nav>
 
                   {/* Mobile CTA */}
                   <div className="pt-4 border-t">
                     <QualificationButton className="w-full btn-forge">
-                      Forjar Projeto
+                      {t('common.buttons.forgeProject')}
                     </QualificationButton>
                   </div>
                 </div>
@@ -284,7 +299,7 @@ const Header = () => {
         <QualificationButton className="w-full btn-forge shadow-forge group animate-glow">
           <span className="flex items-center justify-center gap-2">
             <GuildShield className="h-5 w-5" />
-            Forjar Soluções Digitais
+            {t('common.buttons.forgeDigitalSolutions')}
           </span>
         </QualificationButton>
       </div>

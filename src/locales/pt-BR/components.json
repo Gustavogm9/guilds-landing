@@ -1,0 +1,51 @@
+{
+  "forms": {
+    "qualification": {
+      "title": "Vamos conversar sobre seu projeto",
+      "subtitle": "Preencha os dados abaixo e entraremos em contato para entender melhor suas necessidades.",
+      "fields": {
+        "name": "Nome completo",
+        "email": "E-mail",
+        "company": "Empresa",
+        "phone": "Telefone",
+        "projectType": "Tipo de projeto",
+        "budget": "Orçamento estimado",
+        "timeline": "Prazo desejado",
+        "description": "Descreva seu projeto",
+        "howDidYouFind": "Como nos conheceu?"
+      },
+      "placeholders": {
+        "name": "Seu nome completo",
+        "email": "seu@email.com",
+        "company": "Nome da sua empresa",
+        "phone": "(11) 99999-9999",
+        "description": "Conte-nos mais sobre seu projeto, objetivos e desafios..."
+      }
+    },
+    "newsletter": {
+      "title": "Receba insights exclusivos",
+      "subtitle": "Inscreva-se em nossa newsletter e receba conteúdo sobre tecnologia, negócios e inovação.",
+      "placeholder": "Seu melhor e-mail",
+      "button": "Inscrever-se",
+      "success": "Inscrição realizada com sucesso!",
+      "error": "Erro ao realizar inscrição. Tente novamente."
+    }
+  },
+  "testimonials": {
+    "title": "O que nossos clientes dizem",
+    "subtitle": "Histórias reais de transformação digital e resultados conquistados."
+  },
+  "faq": {
+    "title": "Perguntas Frequentes",
+    "subtitle": "Tire suas dúvidas sobre nossos serviços e processos."
+  },
+  "footer": {
+    "description": "Transformamos ideias em soluções digitais que geram impacto real para seu negócio.",
+    "quickLinks": "Links Rápidos",
+    "services": "Serviços",
+    "company": "Empresa",
+    "legal": "Legal",
+    "followUs": "Siga-nos",
+    "allRightsReserved": "Todos os direitos reservados."
+  }
+}

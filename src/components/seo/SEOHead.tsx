@@ -4,6 +4,8 @@ import { useSEO } from '@/hooks/useSEO';
 import { usePageSEODefaults } from '@/lib/seoHelpers';
 import { generatePageSchema } from '@/lib/schemaHelpers';
 import { getPerformanceHints } from '@/lib/seoHelpers';
+import { useTranslation } from '@/contexts/TranslationContext';
+import { useLocalizedNavigation } from '@/hooks/useLocalizedNavigation';
 
 interface SEOHeadProps {
   title?: string;
@@ -31,16 +33,26 @@ export function SEOHead({
   const location = useLocation();
   const { seoSettings, getPageSEOByPath, getCustomTagsForPage } = useSEO();
   const pageDefaults = usePageSEODefaults(location.pathname);
+  const { locale } = useTranslation();
+  const { getCurrentPath, getFullAlternateUrl } = useLocalizedNavigation();
 
   const currentPath = location.pathname;
+  const cleanPath = getCurrentPath(); // Path without locale prefix
   const pageSEO = getPageSEOByPath(currentPath);
   const customTags = getCustomTagsForPage(currentPath);
 
-  // Determine final values with enhanced fallback priority
+  // Determine final values with enhanced fallback priority and i18n support
   const finalTitle = propTitle || pageSEO?.title || pageDefaults.title;
   const finalDescription = propDescription || pageSEO?.meta_description || pageDefaults.description;
   const finalImage = propImage || pageSEO?.og_image || seoSettings?.og_image;
-  const finalCanonical = canonicalUrl || pageSEO?.canonical_url || `${seoSettings?.canonical_base_url || ''}${currentPath}`;
+  
+  // Generate canonical URL with language context
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  const defaultCanonicalUrl = locale === 'pt-BR' 
+    ? `${baseUrl}${cleanPath}`
+    : `${baseUrl}/en${cleanPath === '/' ? '' : cleanPath}`;
+  const finalCanonical = canonicalUrl || pageSEO?.canonical_url || defaultCanonicalUrl;
+  
   const finalKeywords = keywords || pageSEO?.keywords || pageDefaults.keywords || [];
   const shouldNoIndex = noIndex || pageSEO?.no_index || false;
   const shouldNoFollow = noFollow || pageSEO?.no_follow || false;
@@ -97,11 +109,17 @@ export function SEOHead({
       updateMetaTag('robots', robotsContent);
     }
 
-    // Open Graph
+    // Open Graph with i18n support
     updateMetaTag('og:title', pageSEO?.og_title || finalTitle, true);
     updateMetaTag('og:description', pageSEO?.og_description || finalDescription, true);
     updateMetaTag('og:type', type, true);
     updateMetaTag('og:url', finalCanonical, true);
+    updateMetaTag('og:locale', locale, true);
+    
+    // Add alternate locale for OpenGraph
+    const alternateLocale = locale === 'pt-BR' ? 'en' : 'pt-BR';
+    updateMetaTag('og:locale:alternate', alternateLocale, true);
+    
     if (finalImage) {
       updateMetaTag('og:image', finalImage, true);
     }
@@ -123,6 +141,36 @@ export function SEOHead({
 
     // Canonical URL
     updateLinkTag('canonical', finalCanonical);
+
+    // Add hreflang links for internationalization
+    const addHrefLangLinks = () => {
+      // Remove existing hreflang links
+      const existingHreflangs = document.querySelectorAll('link[hreflang]');
+      existingHreflangs.forEach(link => link.remove());
+
+      // Add hreflang for Portuguese (default)
+      const ptHreflangLink = document.createElement('link');
+      ptHreflangLink.rel = 'alternate';
+      ptHreflangLink.hreflang = 'pt-BR';
+      ptHreflangLink.href = `${baseUrl}${cleanPath}`;
+      document.head.appendChild(ptHreflangLink);
+
+      // Add hreflang for English
+      const enHreflangLink = document.createElement('link');
+      enHreflangLink.rel = 'alternate';
+      enHreflangLink.hreflang = 'en';
+      enHreflangLink.href = `${baseUrl}/en${cleanPath === '/' ? '' : cleanPath}`;
+      document.head.appendChild(enHreflangLink);
+
+      // Add x-default hreflang (defaults to Portuguese)
+      const xDefaultLink = document.createElement('link');
+      xDefaultLink.rel = 'alternate';
+      xDefaultLink.hreflang = 'x-default';
+      xDefaultLink.href = `${baseUrl}${cleanPath}`;
+      document.head.appendChild(xDefaultLink);
+    };
+
+    addHrefLangLinks();
 
     // Structured Data (Schema.org) - Enhanced with new helpers
     const removeExistingSchema = () => {
@@ -244,13 +292,16 @@ export function SEOHead({
         'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
         })(window,document,'script','dataLayer','${seoSettings.google_tag_manager_id}');
         
-        // Enhanced dataLayer with site info
-        window.dataLayer.push({
-          'site_name': 'Guilds',
-          'site_version': '2.0',
-          'page_type': '${getPageType(location.pathname)}',
-          'user_type': 'visitor'
-        });
+         // Enhanced dataLayer with site info and i18n
+         window.dataLayer.push({
+           'site_name': 'Guilds',
+           'site_version': '2.0',
+           'page_type': '${getPageType(location.pathname)}',
+           'user_type': 'visitor',
+           'page_language': '${locale}',
+           'content_group1': '${locale}',
+           'content_group2': '${getPageType(location.pathname)}'
+         });
       `;
       document.head.appendChild(gtmScript);
 
@@ -274,15 +325,19 @@ export function SEOHead({
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', '${seoSettings.google_analytics_id}', {
-          page_title: document.title,
-          page_location: window.location.href,
-          send_page_view: true,
-          custom_map: {
-            'custom_parameter_1': 'page_type',
-            'custom_parameter_2': 'user_type'
-          }
-        });
+         gtag('config', '${seoSettings.google_analytics_id}', {
+           page_title: document.title,
+           page_location: window.location.href,
+           send_page_view: true,
+           language: '${locale}',
+           content_group1: '${locale}',
+           content_group2: '${getPageType(location.pathname)}',
+           custom_map: {
+             'custom_parameter_1': 'page_type',
+             'custom_parameter_2': 'user_type',
+             'custom_parameter_3': 'page_language'
+           }
+         });
       `;
       document.head.appendChild(gtagInlineScript);
     }
@@ -352,7 +407,7 @@ export function SEOHead({
       });
     };
   }, [seoSettings?.google_analytics_id, seoSettings?.google_tag_manager_id, 
-      seoSettings?.facebook_pixel_id, seoSettings?.linkedin_partner_id, location.pathname]);
+      seoSettings?.facebook_pixel_id, seoSettings?.linkedin_partner_id, location.pathname, locale]);
 
   // Helper function to determine page type
   const getPageType = (pathname: string): string => {
