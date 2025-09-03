@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +15,8 @@ import { ConsentBanner } from "./components/legal/ConsentBanner";
 import { AuthProvider } from "./contexts/AuthContext";
 import { TranslationProvider } from "./contexts/TranslationContext";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import { SkipLinks } from "./components/a11y/SkipLink";
+import { initPerformanceMonitoring } from "./lib/performanceMonitor";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Privacy from "./pages/Privacy";
@@ -41,20 +43,27 @@ import CraftPortfolio from "./pages/CraftPortfolio";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <ConsentProvider>
-        <AuthProvider>
-          <TranslationProvider>
-            <QualificationProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <SEOHead />
-            <SitemapGenerator />
-            <ScrollToTop />
-            <Layout>
+const App = () => {
+  // Initialize performance monitoring
+  useEffect(() => {
+    initPerformanceMonitoring();
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <ConsentProvider>
+          <AuthProvider>
+            <TranslationProvider>
+              <QualificationProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <SkipLinks />
+                  <SEOHead />
+                  <SitemapGenerator />
+                  <ScrollToTop />
+                  <Layout>
               <Routes>
                 {/* Portuguese Routes (Default - no prefix) */}
                 <Route path="/" element={<Home />} />
@@ -118,14 +127,15 @@ const App = () => (
               </Routes>
               <QualificationTrigger />
               <ConsentBanner />
-            </Layout>
-          </BrowserRouter>
-            </QualificationProvider>
-          </TranslationProvider>
-        </AuthProvider>
-      </ConsentProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+                  </Layout>
+                </BrowserRouter>
+              </QualificationProvider>
+            </TranslationProvider>
+          </AuthProvider>
+        </ConsentProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

@@ -84,5 +84,14 @@
     "portuguese": "Português",
     "english": "English",
     "switchLanguage": "Mudar idioma"
+  },
+  "accessibility": {
+    "skipToMain": "Pular para o conteúdo principal",
+    "skipToNav": "Pular para a navegação",
+    "openMenu": "Abrir menu",
+    "closeMenu": "Fechar menu",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso"
   }
 }

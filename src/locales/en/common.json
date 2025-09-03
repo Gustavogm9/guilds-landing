@@ -84,5 +84,14 @@
     "portuguese": "Português",
     "english": "English",
     "switchLanguage": "Switch language"
+  },
+  "accessibility": {
+    "skipToMain": "Skip to main content",
+    "skipToNav": "Skip to navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
   }
 }

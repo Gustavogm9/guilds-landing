@@ -4,7 +4,8 @@ import {
   ImageOptimizationOptions, 
   createOptimizedImageProps, 
   generateBlurDataURL, 
-  optimizeForCLS 
+  optimizeForCLS,
+  createLazyLoadObserver
 } from '@/lib/imageOptimization';
 
 interface OptimizedImageProps extends Omit<ImageOptimizationOptions, 'src'> {
@@ -33,6 +34,7 @@ export function OptimizedImage({
 }: OptimizedImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [inView, setInView] = useState(priority); // Load immediately if priority
   const imgRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -47,6 +49,30 @@ export function OptimizedImage({
     loading,
     sizes
   });
+
+  // Intersection Observer for lazy loading
+  useEffect(() => {
+    if (priority || inView) return;
+
+    const observer = createLazyLoadObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer?.unobserve(entry.target);
+        }
+      });
+    });
+
+    if (observer && containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (observer && containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, [priority, inView]);
 
   useEffect(() => {
     if (imgRef.current) {
@@ -92,20 +118,25 @@ export function OptimizedImage({
         />
       )}
       
-      {/* Main image */}
-      <img
-        ref={imgRef}
-        {...imageProps}
-        className={cn(
-          'transition-opacity duration-300',
-          isLoaded ? 'opacity-100' : 'opacity-0',
-          aspectRatio ? 'absolute inset-0 w-full h-full object-cover' : 'w-full h-auto',
-          hasError && 'hidden'
-        )}
-        style={aspectRatio ? imageStyles : {}}
-        onLoad={handleLoad}
-        onError={handleError}
-      />
+      {/* Main image - only render when in view or priority */}
+      {(inView || priority) && (
+        <img
+          ref={imgRef}
+          {...imageProps}
+          className={cn(
+            'transition-opacity duration-300',
+            isLoaded ? 'opacity-100' : 'opacity-0',
+            aspectRatio ? 'absolute inset-0 w-full h-full object-cover' : 'w-full h-auto',
+            hasError && 'hidden'
+          )}
+          style={aspectRatio ? imageStyles : {}}
+          onLoad={handleLoad}
+          onError={handleError}
+          // Accessibility improvements
+          {...(!alt && { 'aria-hidden': 'true', role: 'presentation' })}
+          {...(alt && { role: 'img' })}
+        />
+      )}
       
       {/* Error fallback */}
       {hasError && (
@@ -136,13 +167,15 @@ export function OptimizedImage({
       )}
       
       {/* Loading skeleton */}
-      {!isLoaded && !hasError && (
+      {!isLoaded && !hasError && inView && (
         <div 
           className={cn(
             'animate-pulse bg-neutral-200 dark:bg-neutral-700',
             aspectRatio ? 'absolute inset-0' : 'w-full h-40'
           )}
           style={aspectRatio ? imageStyles : {}}
+          aria-label="Carregando imagem..."
+          role="status"
         />
       )}
     </div>
