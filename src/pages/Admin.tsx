@@ -8,6 +8,7 @@ import { AnalyticsAdmin } from '@/components/admin/AnalyticsAdmin';
 import { CraftAdmin } from '@/components/admin/CraftAdmin';
 import { LabAdmin } from '@/components/admin/LabAdmin';
 import { CompanyAdmin } from '@/components/admin/CompanyAdmin';
+import { NewsletterAdmin } from '@/components/admin/NewsletterAdmin';
 import { AdminHeader } from '@/components/auth/AdminHeader';
 import { useLogos } from '@/hooks/useLogos';
 import { LogoService } from '@/lib/logoService';
