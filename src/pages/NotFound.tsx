@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { QuickSearch } from "@/components/search/QuickSearch";
 import { 
   Home as HomeIcon,
   ArrowLeft,
@@ -53,6 +54,14 @@ const NotFound = () => {
             <div className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-4">
               <strong>Rota tentativa:</strong> <code className="font-mono text-brand-primary">{location.pathname}</code>
             </div>
+          </div>
+
+          {/* Quick Search */}
+          <div className="max-w-md mx-auto mb-8">
+            <QuickSearch 
+              placeholder="Busque por conteúdo..."
+              className="mb-4"
+            />
           </div>
 
           {/* Actions */}

@@ -1,0 +1,28 @@
+{
+  "500": {
+    "title": "Error 500 - Guilds",
+    "description": "Internal server error. Our team has been notified and is working to resolve it.",
+    "heading": "Oops! Something went wrong",
+    "message": "Our blacksmiths are working to resolve this issue. Please try again in a few moments or contact us.",
+    "technical": "Technical error",
+    "retry": "Try Again",
+    "home": "Back to Home",
+    "contact": {
+      "title": "Need help? Get in touch:",
+      "email": "Report Error",
+      "whatsapp": "WhatsApp",
+      "phone": "Phone"
+    },
+    "help": {
+      "title": "Meanwhile, you can:",
+      "services": "View Our Services",
+      "about": "Learn About Guilds",
+      "lab": "Guilds Lab",
+      "contact": "Contact Us"
+    }
+  },
+  "404": {
+    "title": "Page not found - Guilds", 
+    "description": "The page you're looking for was not found. Explore our services or return to home."
+  }
+}

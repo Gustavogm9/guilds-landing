@@ -1,0 +1,73 @@
+{
+  "page": {
+    "title": "Search - Guilds",
+    "description": "Quickly find what you're looking for on our site. Search for services, content, workshops and more.",
+    "heading": "Search Site",
+    "subtitle": "Quickly find what you need in our content"
+  },
+  "results": {
+    "title": "Results for",
+    "description": "We found {count} results for your search.",
+    "heading": "Search Results",
+    "subtitle": "We found {count} results for \"{query}\"",
+    "showing": "Showing {start}-{end} of {total} results",
+    "page": "Page {current} of {total}",
+    "count": "{count} results found"
+  },
+  "bar": {
+    "placeholder": "Type your search here..."
+  },
+  "filters": {
+    "title": "Filters",
+    "results": "{count} results",
+    "active": "Active filters",
+    "clear": "Clear all",
+    "category": "Category",
+    "type": "Content type",
+    "categories": {
+      "services": "Services",
+      "workshops": "Workshops",
+      "cases": "Cases", 
+      "about": "About",
+      "content": "Content"
+    },
+    "date": {
+      "title": "Date",
+      "week": "Last week",
+      "month": "Last month",
+      "year": "Last year", 
+      "all": "Any date"
+    }
+  },
+  "types": {
+    "page": "Page",
+    "service": "Service",
+    "workshop": "Workshop",
+    "case": "Case",
+    "content": "Content"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "noResults": {
+    "title": "No results found",
+    "message": "We couldn't find anything for \"{query}\". Try different terms or use the suggestions below.",
+    "didYouMean": "Did you mean:",
+    "contact": "Contact Us",
+    "services": "View Services",
+    "suggestions": {
+      "title": "Search suggestions"
+    },
+    "tips": {
+      "title": "Search tips",
+      "spelling": "Check the spelling of your words",
+      "keywords": "Use more general keywords",
+      "synonyms": "Try synonyms or related terms",
+      "specific": "Be more specific or more general in your search"
+    }
+  },
+  "popular": {
+    "title": "Popular searches"
+  }
+}

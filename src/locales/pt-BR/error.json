@@ -1,0 +1,28 @@
+{
+  "500": {
+    "title": "Erro 500 - Guilds",
+    "description": "Erro interno do servidor. Nossa equipe foi notificada e está trabalhando para resolver.",
+    "heading": "Ops! Algo deu errado",
+    "message": "Nossos ferreiros estão trabalhando para resolver este problema. Tente novamente em alguns momentos ou entre em contato conosco.",
+    "technical": "Erro técnico",
+    "retry": "Tentar Novamente",
+    "home": "Voltar ao Início",
+    "contact": {
+      "title": "Precisa de ajuda? Entre em contato:",
+      "email": "Reportar Erro",
+      "whatsapp": "WhatsApp",
+      "phone": "Telefone"
+    },
+    "help": {
+      "title": "Enquanto isso, você pode:",
+      "services": "Ver Nossos Serviços",
+      "about": "Conhecer a Guilds",
+      "lab": "Guilds Lab",
+      "contact": "Falar Conosco"
+    }
+  },
+  "404": {
+    "title": "Página não encontrada - Guilds",
+    "description": "A página que você procura não foi encontrada. Explore nossos serviços ou volte ao início."
+  }
+}

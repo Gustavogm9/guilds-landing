@@ -1,0 +1,73 @@
+{
+  "page": {
+    "title": "Busca - Guilds",
+    "description": "Encontre rapidamente o que procura em nosso site. Busque por serviços, conteúdo, workshops e mais.",
+    "heading": "Buscar no Site",
+    "subtitle": "Encontre rapidamente o que precisa em nosso conteúdo"
+  },
+  "results": {
+    "title": "Resultados para",
+    "description": "Encontramos {count} resultados para sua busca.",
+    "heading": "Resultados da Busca",
+    "subtitle": "Encontramos {count} resultados para \"{query}\"",
+    "showing": "Mostrando {start}-{end} de {total} resultados",
+    "page": "Página {current} de {total}",
+    "count": "{count} resultados encontrados"
+  },
+  "bar": {
+    "placeholder": "Digite sua busca aqui..."
+  },
+  "filters": {
+    "title": "Filtros",
+    "results": "{count} resultados",
+    "active": "Filtros ativos",
+    "clear": "Limpar todos",
+    "category": "Categoria",
+    "type": "Tipo de conteúdo",
+    "categories": {
+      "services": "Serviços",
+      "workshops": "Workshops", 
+      "cases": "Cases",
+      "about": "Sobre",
+      "content": "Conteúdo"
+    },
+    "date": {
+      "title": "Data",
+      "week": "Última semana",
+      "month": "Último mês", 
+      "year": "Último ano",
+      "all": "Qualquer data"
+    }
+  },
+  "types": {
+    "page": "Página",
+    "service": "Serviço",
+    "workshop": "Workshop",
+    "case": "Case",
+    "content": "Conteúdo"
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Próximo"
+  },
+  "noResults": {
+    "title": "Nenhum resultado encontrado",
+    "message": "Não encontramos nada para \"{query}\". Tente termos diferentes ou use as sugestões abaixo.",
+    "didYouMean": "Você quis dizer:",
+    "contact": "Falar Conosco",
+    "services": "Ver Serviços",
+    "suggestions": {
+      "title": "Sugestões de busca"
+    },
+    "tips": {
+      "title": "Dicas de busca",
+      "spelling": "Verifique a ortografia das palavras",
+      "keywords": "Use palavras-chave mais gerais",
+      "synonyms": "Tente sinônimos ou termos relacionados",
+      "specific": "Seja mais específico ou mais geral na busca"
+    }
+  },
+  "popular": {
+    "title": "Buscas populares"
+  }
+}
