@@ -144,6 +144,7 @@ export type Database = {
           id: string
           is_active: boolean
           is_primary: boolean
+          is_public: boolean
           label: string
           metadata: Json | null
           type: string
@@ -156,6 +157,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           is_primary?: boolean
+          is_public?: boolean
           label: string
           metadata?: Json | null
           type: string
@@ -168,6 +170,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           is_primary?: boolean
+          is_public?: boolean
           label?: string
           metadata?: Json | null
           type?: string

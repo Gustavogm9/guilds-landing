@@ -30,6 +30,7 @@ interface ContactFormData {
   label: string;
   value: string;
   is_primary: boolean;
+  is_public: boolean;
   display_order: number;
   metadata?: any;
 }
@@ -48,6 +49,7 @@ const ContactForm = ({
     label: contact?.label || '',
     value: contact?.value || '',
     is_primary: contact?.is_primary || false,
+    is_public: contact?.is_public || false,
     display_order: contact?.display_order || 0,
     metadata: contact?.metadata || {}
   });
@@ -99,13 +101,23 @@ const ContactForm = ({
         />
       </div>
 
-      <div className="flex items-center space-x-2">
-        <Switch
-          id="is_primary"
-          checked={formData.is_primary}
-          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_primary: checked }))}
-        />
-        <Label htmlFor="is_primary">Contato principal</Label>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="is_primary"
+            checked={formData.is_primary}
+            onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_primary: checked }))}
+          />
+          <Label htmlFor="is_primary">Contato principal</Label>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="is_public"
+            checked={formData.is_public}
+            onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_public: checked }))}
+          />
+          <Label htmlFor="is_public">Público</Label>
+        </div>
       </div>
 
       <div className="space-y-2">
@@ -263,12 +275,21 @@ export const ContactAdmin = () => {
                     {contacts.map((contact) => (
                       <div key={contact.id} className="flex items-center justify-between p-3 border rounded-lg">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-medium">{contact.label}</span>
                             {contact.is_primary && (
                               <Badge variant="secondary" className="text-xs">
                                 <Star className="h-3 w-3 mr-1" />
                                 Principal
+                              </Badge>
+                            )}
+                            {contact.is_public ? (
+                              <Badge variant="outline" className="text-xs text-green-600 border-green-200">
+                                Público
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="text-xs text-orange-600 border-orange-200">
+                                Privado
                               </Badge>
                             )}
                           </div>

@@ -10,6 +10,7 @@ export interface ContactInfoItem {
   value: string;
   is_primary: boolean;
   is_active: boolean;
+  is_public: boolean;
   metadata?: any;
   display_order: number;
 }
