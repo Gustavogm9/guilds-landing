@@ -11,7 +11,7 @@ export interface SecurityEvent {
 export const useSecurityLogger = () => {
   const logSecurityEvent = async (event: SecurityEvent) => {
     try {
-      const { error } = await supabase.rpc('log_security_event' as any, {
+      const { error } = await supabase.rpc('log_security_event', {
         event_type: event.event_type,
         user_id: event.user_id || null,
         ip_address: event.ip_address || null,

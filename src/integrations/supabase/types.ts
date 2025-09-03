@@ -1360,6 +1360,16 @@ export type Database = {
           id: string
         }[]
       }
+      log_security_event: {
+        Args: {
+          details?: Json
+          event_type: string
+          ip_address?: unknown
+          user_agent?: string
+          user_id?: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
