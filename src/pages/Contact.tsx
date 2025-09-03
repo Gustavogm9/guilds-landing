@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useContactInfo } from '@/hooks/useContactInfo';
+import { usePublicContactInfo } from '@/hooks/usePublicContactInfo';
+import { usePublicCompanySettings } from '@/hooks/usePublicCompanySettings';
 import { useContactForm, ContactFormData } from '@/hooks/useContactForm';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Button } from "@/components/ui/button";
@@ -20,12 +21,13 @@ import {
 } from "lucide-react";
 
 const Contact = () => {
-  const { getPrimaryEmail, getPrimaryPhone, getPrimaryAddress, getBusinessHours } = useContactInfo();
+  const { getPublicEmail, getPublicPhone, getPublicAddress } = usePublicContactInfo();
+  const { getBusinessHours } = usePublicCompanySettings();
   const { submitContactForm, isSubmitting } = useContactForm();
   
-  const email = getPrimaryEmail();
-  const phone = getPrimaryPhone();
-  const address = getPrimaryAddress();
+  const email = getPublicEmail() || 'contato@guilds.com.br';
+  const phone = getPublicPhone() || '+5511999999999';
+  const address = getPublicAddress();
   const businessHours = getBusinessHours();
   const [formData, setFormData] = useState<ContactFormData>({
     name: "",

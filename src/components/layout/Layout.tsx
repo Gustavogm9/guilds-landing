@@ -3,12 +3,17 @@ import { ReactNode } from "react";
 import Header from "./Header";
 import { Footer } from "./Footer";
 import { CTAStickyMobile } from "@/components/ui/CTAStickyMobile";
+import { usePublicContactInfo } from "@/hooks/usePublicContactInfo";
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
+  const { getPublicPhone } = usePublicContactInfo();
+  const phone = getPublicPhone() || '+5511999999999';
+  const cleanPhone = phone.replace(/[^\d]/g, '');
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -17,8 +22,8 @@ const Layout = ({ children }: LayoutProps) => {
       </main>
       <Footer />
       <CTAStickyMobile 
-        whatsappNumber="5511999999999"
-        phoneNumber="5511999999999"
+        whatsappNumber={cleanPhone}
+        phoneNumber={phone}
         whatsappMessage="Olá! Gostaria de saber mais sobre os serviços da Guilds."
         showOnDesktop={false}
       />
