@@ -31,6 +31,8 @@ import {
 import { Loader2, Send, CheckCircle } from 'lucide-react';
 import { useQualificationForm } from '@/hooks/useQualificationForm';
 import { useConfetti } from '@/hooks/useConfetti';
+import { useRecaptcha } from '@/hooks/useRecaptcha';
+import { LGPDNotice } from '@/components/legal/LGPDNotice';
 import { useNavigate } from 'react-router-dom';
 
 interface QualificationModalProps {

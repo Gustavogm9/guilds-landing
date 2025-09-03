@@ -10,10 +10,15 @@ import { SEOHead } from "./components/seo/SEOHead";
 import { SitemapGenerator } from "./components/seo/SitemapGenerator";
 import { QualificationProvider } from "./components/forms/QualificationProvider";
 import { QualificationTrigger } from "./components/forms/QualificationTrigger";
+import { ConsentProvider } from "./hooks/useConsent";
+import { ConsentBanner } from "./components/legal/ConsentBanner";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import CookiePolicy from "./pages/CookiePolicy";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import NewAbout from "./pages/NewAbout";
@@ -38,8 +43,9 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AuthProvider>
-        <QualificationProvider>
+      <ConsentProvider>
+        <AuthProvider>
+          <QualificationProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
@@ -66,6 +72,9 @@ const App = () => (
                 <Route path="/carreiras" element={<Careers />} />
                 <Route path="/contato" element={<Contact />} />
                 <Route path="/obrigado" element={<ThankYou />} />
+                <Route path="/privacidade" element={<Privacy />} />
+                <Route path="/termos" element={<Terms />} />
+                <Route path="/cookies" element={<CookiePolicy />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route 
                   path="/admin" 
@@ -79,10 +88,12 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <QualificationTrigger />
+              <ConsentBanner />
             </Layout>
           </BrowserRouter>
         </QualificationProvider>
       </AuthProvider>
+      </ConsentProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
