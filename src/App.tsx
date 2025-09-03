@@ -68,75 +68,83 @@ const App = () => {
                     <SEOHead />
                     <SitemapGenerator />
                     <ScrollToTop />
-                    <Layout>
-                      <Routes>
-                        {/* Portuguese Routes (Default - no prefix) */}
-                        <Route path="/" element={<Home />} />
-                        <Route path="/servicos" element={<Services />} />
-                        <Route path="/servicos/software-apps" element={<SoftwareApps />} />
-                        <Route path="/servicos/automacao-ia" element={<AutomacaoIA />} />
-                        <Route path="/servicos/jogos-gamificacao" element={<JogosGamificacao />} />
-                        <Route path="/servicos/consultoria" element={<Consultoria />} />
-                        <Route path="/cases" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Cases</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
-                        <Route path="/lab" element={<Lab />} />
-                        <Route path="/lab/workshops/:slug" element={<LabWorkshop />} />
-                        <Route path="/craft" element={<Craft />} />
-                        <Route path="/craft/ideias/:slug" element={<CraftIdea />} />
-                        <Route path="/craft/portfolio" element={<CraftPortfolio />} />
-                        <Route path="/conteudo" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Conteúdo</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
-                        <Route path="/sobre" element={<NewAbout />} />
-                        <Route path="/equipe" element={<Team />} />
-                        <Route path="/team/:slug/curriculum" element={<TeamCurriculum />} />
-                        <Route path="/carreiras" element={<Careers />} />
-                        <Route path="/contato" element={<Contact />} />
-                        <Route path="/obrigado" element={<ThankYou />} />
-                        <Route path="/busca" element={<Search />} />
-                        <Route path="/erro-500" element={<ServerError />} />
-                        <Route path="/privacidade" element={<Privacy />} />
-                        <Route path="/termos" element={<Terms />} />
-                        <Route path="/cookies" element={<CookiePolicy />} />
-                        
-                        {/* English Routes (with /en prefix) */}
-                        <Route path="/en" element={<Home />} />
-                        <Route path="/en/services" element={<Services />} />
-                        <Route path="/en/services/software-apps" element={<SoftwareApps />} />
-                        <Route path="/en/services/automation-ai" element={<AutomacaoIA />} />
-                        <Route path="/en/services/games-gamification" element={<JogosGamificacao />} />
-                        <Route path="/en/services/consulting" element={<Consultoria />} />
-                        <Route path="/en/cases" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Cases</h1><p className="mt-4">Under development...</p></div>} />
-                        <Route path="/en/lab" element={<Lab />} />
-                        <Route path="/en/lab/workshops/:slug" element={<LabWorkshop />} />
-                        <Route path="/en/craft" element={<Craft />} />
-                        <Route path="/en/craft/ideas/:slug" element={<CraftIdea />} />
-                        <Route path="/en/craft/portfolio" element={<CraftPortfolio />} />
-                        <Route path="/en/content" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Content</h1><p className="mt-4">Under development...</p></div>} />
-                        <Route path="/en/about" element={<NewAbout />} />
-                        <Route path="/en/team" element={<Team />} />
-                        <Route path="/en/team/:slug/curriculum" element={<TeamCurriculum />} />
-                        <Route path="/en/careers" element={<Careers />} />
-                        <Route path="/en/contact" element={<Contact />} />
-                        <Route path="/en/thank-you" element={<ThankYou />} />
-                        <Route path="/en/search" element={<Search />} />
-                        <Route path="/en/server-error" element={<ServerError />} />
-                        <Route path="/en/privacy" element={<Privacy />} />
-                        <Route path="/en/terms" element={<Terms />} />
-                        <Route path="/en/cookies" element={<CookiePolicy />} />
-                        
-                        {/* Admin and Auth Routes */}
-                        <Route path="/auth" element={<Auth />} />
-                        <Route 
-                          path="/admin" 
-                          element={
-                            <ProtectedRoute>
-                              <Admin />
-                            </ProtectedRoute>
-                          } 
-                        />
-                        
-                        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </Layout>
+                    
+                    <Routes>
+                      {/* Admin Routes - WITHOUT site layout */}
+                      <Route 
+                        path="/admin/*" 
+                        element={
+                          <ProtectedRoute>
+                            <Admin />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      
+                      {/* Auth Routes - WITHOUT site layout */}
+                      <Route path="/auth" element={<Auth />} />
+                      
+                      {/* Public Routes - WITH site layout */}
+                      <Route path="/*" element={
+                        <Layout>
+                          <Routes>
+                            {/* Portuguese Routes (Default - no prefix) */}
+                            <Route path="/" element={<Home />} />
+                            <Route path="/servicos" element={<Services />} />
+                            <Route path="/servicos/software-apps" element={<SoftwareApps />} />
+                            <Route path="/servicos/automacao-ia" element={<AutomacaoIA />} />
+                            <Route path="/servicos/jogos-gamificacao" element={<JogosGamificacao />} />
+                            <Route path="/servicos/consultoria" element={<Consultoria />} />
+                            <Route path="/cases" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Cases</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
+                            <Route path="/lab" element={<Lab />} />
+                            <Route path="/lab/workshops/:slug" element={<LabWorkshop />} />
+                            <Route path="/craft" element={<Craft />} />
+                            <Route path="/craft/ideias/:slug" element={<CraftIdea />} />
+                            <Route path="/craft/portfolio" element={<CraftPortfolio />} />
+                            <Route path="/conteudo" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Conteúdo</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
+                            <Route path="/sobre" element={<NewAbout />} />
+                            <Route path="/equipe" element={<Team />} />
+                            <Route path="/team/:slug/curriculum" element={<TeamCurriculum />} />
+                            <Route path="/carreiras" element={<Careers />} />
+                            <Route path="/contato" element={<Contact />} />
+                            <Route path="/obrigado" element={<ThankYou />} />
+                            <Route path="/busca" element={<Search />} />
+                            <Route path="/erro-500" element={<ServerError />} />
+                            <Route path="/privacidade" element={<Privacy />} />
+                            <Route path="/termos" element={<Terms />} />
+                            <Route path="/cookies" element={<CookiePolicy />} />
+                            
+                            {/* English Routes (with /en prefix) */}
+                            <Route path="/en" element={<Home />} />
+                            <Route path="/en/services" element={<Services />} />
+                            <Route path="/en/services/software-apps" element={<SoftwareApps />} />
+                            <Route path="/en/services/automation-ai" element={<AutomacaoIA />} />
+                            <Route path="/en/services/games-gamification" element={<JogosGamificacao />} />
+                            <Route path="/en/services/consulting" element={<Consultoria />} />
+                            <Route path="/en/cases" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Cases</h1><p className="mt-4">Under development...</p></div>} />
+                            <Route path="/en/lab" element={<Lab />} />
+                            <Route path="/en/lab/workshops/:slug" element={<LabWorkshop />} />
+                            <Route path="/en/craft" element={<Craft />} />
+                            <Route path="/en/craft/ideas/:slug" element={<CraftIdea />} />
+                            <Route path="/en/craft/portfolio" element={<CraftPortfolio />} />
+                            <Route path="/en/content" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Content</h1><p className="mt-4">Under development...</p></div>} />
+                            <Route path="/en/about" element={<NewAbout />} />
+                            <Route path="/en/team" element={<Team />} />
+                            <Route path="/en/team/:slug/curriculum" element={<TeamCurriculum />} />
+                            <Route path="/en/careers" element={<Careers />} />
+                            <Route path="/en/contact" element={<Contact />} />
+                            <Route path="/en/thank-you" element={<ThankYou />} />
+                            <Route path="/en/search" element={<Search />} />
+                            <Route path="/en/server-error" element={<ServerError />} />
+                            <Route path="/en/privacy" element={<Privacy />} />
+                            <Route path="/en/terms" element={<Terms />} />
+                            <Route path="/en/cookies" element={<CookiePolicy />} />
+                            
+                            {/* Catch-all for 404 */}
+                            <Route path="*" element={<NotFound />} />
+                          </Routes>
+                        </Layout>
+                      } />
+                    </Routes>
                     <QualificationTrigger />
                     <ConsentBanner />
                   </BrowserRouter>
