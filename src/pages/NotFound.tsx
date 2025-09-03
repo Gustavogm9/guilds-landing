@@ -65,9 +65,9 @@ const NotFound = () => {
             </Button>
             
             <Button asChild variant="outline" className="btn-glass">
-              <Link to="/servicos">
+              <Link to="/busca">
                 <Search className="mr-2 h-4 w-4" />
-                Explorar Serviços
+                Buscar no Site
               </Link>
             </Button>
           </div>
