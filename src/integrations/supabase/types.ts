@@ -853,6 +853,36 @@ export type Database = {
           },
         ]
       }
+      security_events: {
+        Row: {
+          created_at: string | null
+          details: Json | null
+          event_type: string
+          id: string
+          ip_address: unknown | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          details?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          details?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       seo_settings: {
         Row: {
           canonical_base_url: string
@@ -1284,6 +1314,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_rate_limit: {
+        Args: {
+          identifier: string
+          max_requests?: number
+          time_window?: unknown
+        }
+        Returns: boolean
+      }
       check_subscription_status: {
         Args: { email_address: string }
         Returns: {

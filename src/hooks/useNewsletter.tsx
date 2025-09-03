@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useConfetti } from '@/hooks/useConfetti';
+import { useRateLimit } from './useRateLimit';
+import { useSecurityLogger } from './useSecurityLogger';
 
 interface NewsletterSubscription {
   id: string;
@@ -35,14 +37,31 @@ export function useNewsletter(): UseNewsletterReturn {
   const [subscriptions, setSubscriptions] = useState<NewsletterSubscription[]>([]);
   const { toast } = useToast();
   const { celebrateFormSubmission } = useConfetti();
+  const { checkRateLimit } = useRateLimit();
+  const { logFormSubmission, logSuspiciousActivity } = useSecurityLogger();
 
   const subscribe = async (email: string, sourcePage?: string): Promise<boolean> => {
     setIsLoading(true);
     
     try {
+      // Rate limiting check - more restrictive for newsletter
+      const isAllowed = await checkRateLimit(3, '10 minutes');
+      if (!isAllowed) {
+        toast({
+          title: "Muitas tentativas",
+          description: "Por favor, aguarde alguns minutos antes de tentar novamente.",
+          variant: "destructive",
+        });
+        return false;
+      }
+
       // Validate email format
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
+        await logSuspiciousActivity('invalid_email_submission', { 
+          email: email.substring(0, 3) + '***', // Log partial email for privacy
+          source_page: sourcePage 
+        });
         toast({
           title: "E-mail inválido",
           description: "Por favor, insira um e-mail válido.",
@@ -99,7 +118,21 @@ export function useNewsletter(): UseNewsletterReturn {
           onConflict: 'email',
         });
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        await logSuspiciousActivity('newsletter_subscription_error', { 
+          error: insertError.message,
+          email_domain: email.split('@')[1],
+          source_page: sourcePage
+        });
+        throw insertError;
+      }
+
+      // Log successful submission
+      await logFormSubmission('newsletter_subscription', { 
+        source_page: sourcePage || currentPath,
+        email_domain: email.split('@')[1],
+        has_utm: !!(urlParams.get('utm_source') || urlParams.get('utm_medium'))
+      });
 
       // Trigger confetti celebration
       celebrateFormSubmission();

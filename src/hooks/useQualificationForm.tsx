@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useRateLimit } from './useRateLimit';
+import { useSecurityLogger } from './useSecurityLogger';
 
 export interface FormField {
   id: string;
@@ -42,6 +44,8 @@ export const useQualificationForm = () => {
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const [companySettings, setCompanySettings] = useState<CompanySettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { checkRateLimit } = useRateLimit();
+  const { logFormSubmission, logSuspiciousActivity } = useSecurityLogger();
   const { toast } = useToast();
 
   // Fetch qualification forms
@@ -115,9 +119,27 @@ export const useQualificationForm = () => {
     }
   };
 
-  // Submit form data
-  const submitForm = async (formData: Record<string, any>, sourcePage?: string) => {
-    if (!activeForm) return false;
+  // Submit form data with enhanced security
+  const submitForm = async (formData: Record<string, any>, sourcePage?: string): Promise<boolean> => {
+    if (!activeForm) {
+      toast({
+        title: "Erro",
+        description: "Nenhum formulário ativo encontrado.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    // Rate limiting check - strict for qualification forms
+    const isAllowed = await checkRateLimit(2, '5 minutes');
+    if (!isAllowed) {
+      toast({
+        title: "Muitas tentativas",
+        description: "Por favor, aguarde alguns minutos before de enviar novamente.",
+        variant: "destructive",
+      });
+      return false;
+    }
 
     try {
       // Get UTM parameters from URL
@@ -141,7 +163,25 @@ export const useQualificationForm = () => {
         .from('qualification_submissions')
         .insert([submissionData]);
 
-      if (error) throw error;
+      if (error) {
+        await logSuspiciousActivity('qualification_form_error', {
+          form_id: activeForm.id,
+          form_name: activeForm.name,
+          error: error.message,
+          field_count: Object.keys(formData).length,
+          source_page: sourcePage
+        });
+        throw error;
+      }
+
+      // Log successful form submission
+      await logFormSubmission('qualification_form', {
+        form_id: activeForm.id,
+        form_name: activeForm.name,
+        source_page: sourcePage || window.location.pathname,
+        field_count: Object.keys(formData).length,
+        has_utm: !!(utmSource || utmMedium || utmCampaign)
+      });
 
       toast({
         title: "Sucesso!",
