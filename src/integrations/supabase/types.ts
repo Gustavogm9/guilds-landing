@@ -716,6 +716,39 @@ export type Database = {
         }
         Relationships: []
       }
+      public_company_settings: {
+        Row: {
+          brand_accent_color: string
+          brand_primary_color: string
+          business_hours: Json | null
+          company_name: string
+          created_at: string
+          id: string
+          social_media: Json | null
+          updated_at: string
+        }
+        Insert: {
+          brand_accent_color?: string
+          brand_primary_color?: string
+          business_hours?: Json | null
+          company_name?: string
+          created_at?: string
+          id?: string
+          social_media?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          brand_accent_color?: string
+          brand_primary_color?: string
+          business_hours?: Json | null
+          company_name?: string
+          created_at?: string
+          id?: string
+          social_media?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       qualification_forms: {
         Row: {
           created_at: string
@@ -1242,42 +1275,10 @@ export type Database = {
       }
     }
     Views: {
-      public_company_info: {
-        Row: {
-          brand_accent_color: string | null
-          brand_primary_color: string | null
-          business_hours: Json | null
-          company_name: string | null
-          social_media: Json | null
-        }
-        Insert: {
-          brand_accent_color?: string | null
-          brand_primary_color?: string | null
-          business_hours?: Json | null
-          company_name?: string | null
-          social_media?: Json | null
-        }
-        Update: {
-          brand_accent_color?: string | null
-          brand_primary_color?: string | null
-          business_hours?: Json | null
-          company_name?: string | null
-          social_media?: Json | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
-      get_public_company_info: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          brand_accent_color: string
-          brand_primary_color: string
-          business_hours: Json
-          company_name: string
-          social_media: Json
-        }[]
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
