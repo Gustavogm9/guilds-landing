@@ -6,23 +6,20 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { DynamicLogo } from '@/components/ui/DynamicLogo';
 import { Newsletter } from '@/components/ui/Newsletter';
-import { useContactInfo } from '@/hooks/useContactInfo';
+import { usePublicContactInfo } from '@/hooks/usePublicContactInfo';
+import { usePublicCompanySettings } from '@/hooks/usePublicCompanySettings';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { useLocalizedNavigation } from '@/hooks/useLocalizedNavigation';
 export function Footer() {
-  const {
-    getPrimaryEmail,
-    getPrimaryPhone,
-    getSocialMediaLinks,
-    getPrimaryAddress
-  } = useContactInfo();
+  const { getPublicEmail, getPublicPhone, getPublicAddress } = usePublicContactInfo();
+  const { getCompanyName, getSocialMediaLinks } = usePublicCompanySettings();
   const { t } = useTranslation();
   const { getLocalizedPath } = useLocalizedNavigation();
   
-  const email = getPrimaryEmail();
-  const phone = getPrimaryPhone();
+  const email = getPublicEmail() || 'contato@guilds.com.br';
+  const phone = getPublicPhone() || '+55 (17) 99999-9999';
   const socialLinks = getSocialMediaLinks();
-  const address = getPrimaryAddress();
+  const address = getPublicAddress();
   return <footer className="bg-neutral-900 text-neutral-100">
       <div className="container section">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -32,7 +29,7 @@ export function Footer() {
               <DynamicLogo usageContext="Footers e rodapés" type="symbol" variant="light" className="h-8 w-auto" alt="Guilds" fallback={<div className="w-8 h-8 bg-brand-accent rounded-full flex items-center justify-center">
                     <span className="text-white font-bold text-sm">G</span>
                   </div>} />
-              <span className="font-sora font-bold text-xl">Guilds</span>
+              <span className="font-sora font-bold text-xl">{getCompanyName()}</span>
             </div>
             <p className="text-neutral-400 text-sm leading-relaxed">
               {t('components.footer.description')}
@@ -128,10 +125,10 @@ export function Footer() {
           {/* Newsletter */}
           <div className="space-y-4">
             <Newsletter 
-              title={t('components.newsletter.title')} 
-              description={t('components.newsletter.subtitle')} 
+              title={t('forms.newsletter.title')} 
+              description={t('forms.newsletter.subtitle')} 
               variant="footer" 
-              buttonText={t('components.newsletter.button')} 
+              buttonText={t('forms.newsletter.button')} 
             />
             
             {/* Social Media */}
@@ -157,7 +154,7 @@ export function Footer() {
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 text-sm text-neutral-400">
-            <span>© 2025 Guilds. {t('components.footer.allRightsReserved')}</span>
+            <span>© 2025 {getCompanyName()}. {t('components.footer.allRightsReserved')}</span>
             <div className="flex space-x-4">
               <Link to={getLocalizedPath('/privacidade')} className="hover:text-white transition-colors">
                 {t('common.legal.privacyPolicy')}
