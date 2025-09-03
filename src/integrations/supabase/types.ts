@@ -1242,10 +1242,42 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_company_info: {
+        Row: {
+          brand_accent_color: string | null
+          brand_primary_color: string | null
+          business_hours: Json | null
+          company_name: string | null
+          social_media: Json | null
+        }
+        Insert: {
+          brand_accent_color?: string | null
+          brand_primary_color?: string | null
+          business_hours?: Json | null
+          company_name?: string | null
+          social_media?: Json | null
+        }
+        Update: {
+          brand_accent_color?: string | null
+          brand_primary_color?: string | null
+          business_hours?: Json | null
+          company_name?: string | null
+          social_media?: Json | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      get_public_company_info: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          brand_accent_color: string
+          brand_primary_color: string
+          business_hours: Json
+          company_name: string
+          social_media: Json
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
