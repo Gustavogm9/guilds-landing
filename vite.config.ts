@@ -112,8 +112,10 @@ export default defineConfig(({ mode }) => ({
         'lucide-react'
       ]
     },
-    // CSS optimization for render blocking
-    cssCodeSplit: false, // Inline critical CSS to reduce render blocking
+    // CSS optimization for unused CSS removal
+    cssCodeSplit: true, // Re-enable code splitting for better unused CSS removal
+    // CSS minification and optimization
+    cssMinify: true,
     // Enable minification
     minify: 'terser',
     terserOptions: {

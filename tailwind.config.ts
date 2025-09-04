@@ -3,10 +3,31 @@ import type { Config } from "tailwindcss";
 export default {
 	darkMode: ["class"],
 	content: [
-		"./pages/**/*.{ts,tsx}",
-		"./components/**/*.{ts,tsx}",
-		"./app/**/*.{ts,tsx}",
-		"./src/**/*.{ts,tsx}",
+		"./index.html",
+		"./src/**/*.{js,ts,jsx,tsx}",
+		"./src/components/**/*.{js,ts,jsx,tsx}",
+		"./src/pages/**/*.{js,ts,jsx,tsx}",
+		"./src/hooks/**/*.{js,ts,jsx,tsx}",
+		"./src/lib/**/*.{js,ts,jsx,tsx}",
+	],
+	// Safelist patterns for classes that might be used dynamically
+	safelist: [
+		// Animation and transition classes
+		{ pattern: /^animate-/ },
+		{ pattern: /^transition-/ },
+		// State classes that might be toggled dynamically
+		{ pattern: /^(opacity|scale|translate)-(0|100|x-0|y-0|x-full|y-full)$/ },
+		// Brand and theme classes
+		{ pattern: /^(brand|guild)-/ },
+		// Common utility classes for dynamic content
+		'sr-only',
+		'not-sr-only',
+		'invisible',
+		'visible',
+		// Loading and skeleton states
+		{ pattern: /^(loading|skeleton)/ },
+		// Form validation states
+		{ pattern: /^(error|success|warning)/ },
 	],
 	prefix: "",
 	theme: {
