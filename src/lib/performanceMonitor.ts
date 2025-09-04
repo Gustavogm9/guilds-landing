@@ -153,15 +153,15 @@ export const bundleAnalyzer = {
     });
   },
 
-  // Check if bundle sizes exceed thresholds
+  // Check if bundle sizes exceed thresholds - STRICTER BUDGETS FOR MOBILE
   checkBudgets(analysis: BundleAnalysis): {
     js: { passes: boolean; actual: string; budget: string };
     css: { passes: boolean; actual: string; budget: string };
     total: { passes: boolean; actual: string; budget: string };
   } {
-    const JS_BUDGET = 180 * 1024; // 180KB
-    const CSS_BUDGET = 120 * 1024; // 120KB
-    const TOTAL_BUDGET = 300 * 1024; // 300KB
+    const JS_BUDGET = 120 * 1024; // 120KB (reduced from 180KB)
+    const CSS_BUDGET = 80 * 1024; // 80KB (reduced from 120KB)
+    const TOTAL_BUDGET = 200 * 1024; // 200KB (reduced from 300KB)
 
     return {
       js: {

@@ -4,6 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import mobile optimizations */
+@import './styles/mobile-optimizations.css';
+
 /* Guilds Design System - Modern Design Tokens */
 @layer base {
   :root {

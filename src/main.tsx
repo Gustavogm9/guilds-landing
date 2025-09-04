@@ -4,6 +4,7 @@ import App from './App.tsx'
 import './index.css'
 import './lib/initLogos.ts' // Initialize logos system
 import { useDynamicFavicon } from './hooks/useDynamicFavicon'
+import { initializePerformanceOptimizations } from '@/lib/serviceWorker'
 import heroImage from './assets/hero-image.jpg'
 
 // Preload critical LCP image immediately in main thread
@@ -19,6 +20,9 @@ function AppWithFavicon() {
   useDynamicFavicon();
   return <App />;
 }
+
+// Initialize performance optimizations
+initializePerformanceOptimizations();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

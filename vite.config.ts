@@ -26,8 +26,8 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    // Performance budgets
-    chunkSizeWarningLimit: 180, // 180KB chunks
+    // Stricter performance budgets for mobile optimization
+    chunkSizeWarningLimit: 120, // 120KB chunks (reduced from 180KB)
     rollupOptions: {
       output: {
         // Asset naming for long-term caching

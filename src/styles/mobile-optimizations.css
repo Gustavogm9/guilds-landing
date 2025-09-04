@@ -1,0 +1,113 @@
+/* Mobile Performance Optimizations */
+
+/* Reduce animations on mobile for better performance */
+.mobile-optimized * {
+  /* Use transform and opacity only for better GPU acceleration */
+  transition-property: transform, opacity !important;
+  transition-duration: var(--transition-duration, 0.15s) !important;
+  
+  /* Disable expensive properties on mobile */
+  backdrop-filter: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+}
+
+/* Keep essential hover effects but simplify them */
+.mobile-optimized .hover-scale:hover {
+  transform: scale(1.02) !important; /* Reduced from 1.05 */
+}
+
+/* Optimize blur effects for mobile */
+.mobile-optimized .backdrop-blur-sm,
+.mobile-optimized .backdrop-blur-md {
+  backdrop-filter: none !important;
+  background: rgba(var(--background-rgb), 0.9) !important;
+}
+
+/* Simplify gradients on mobile */
+.mobile-optimized .bg-gradient-to-br,
+.mobile-optimized .bg-gradient-to-r {
+  background: hsl(var(--background)) !important;
+}
+
+/* Reduce animation keyframes complexity */
+@media (max-width: 768px) {
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes scale-in {
+    from { transform: scale(0.98); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  
+  /* Simplified accordion animations */
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+  
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
+}
+
+/* Optimize text rendering on mobile */
+.mobile-optimized {
+  text-rendering: optimizeSpeed !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Reduce reflows and repaints */
+.mobile-optimized img {
+  will-change: auto !important;
+}
+
+.mobile-optimized .animate-pulse {
+  animation: none !important;
+  opacity: 0.7 !important;
+}
+
+/* Touch optimization */
+@media (pointer: coarse) {
+  .mobile-optimized button,
+  .mobile-optimized [role="button"],
+  .mobile-optimized a {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-optimized *,
+  .mobile-optimized *::before,
+  .mobile-optimized *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Critical CSS for above-the-fold content */
+.hero-critical {
+  contain: layout style paint;
+  will-change: auto;
+}
+
+/* Optimize for Core Web Vitals */
+.layout-stable {
+  contain: layout;
+}
+
+.paint-optimized {
+  contain: paint;
+}
+
+.style-contained {
+  contain: style;
+}
