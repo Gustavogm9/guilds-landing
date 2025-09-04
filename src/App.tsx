@@ -60,7 +60,23 @@ const PageLoader = () => (
   </div>
 );
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Implement aggressive caching to prevent duplicate requests
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (replaces cacheTime in newer versions)
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      // Deduplicate identical requests
+      refetchInterval: false,
+      retry: 1,
+      // Optimize network performance
+      refetchIntervalInBackground: false,
+    },
+  },
+});
 
 const App = () => {
   // Initialize performance monitoring
