@@ -7,9 +7,9 @@
 /* Guilds Design System - Modern Design Tokens */
 @layer base {
   :root {
-    /* Brand Colors */
-    --brand-primary: 240 85% 55%;
-    --brand-accent: 165 85% 45%;
+    /* Brand Colors - Updated for better contrast */
+    --brand-primary: 240 85% 48%;
+    --brand-accent: 165 65% 35%;
     
     /* Neutral Scale */
     --neutral-50: 210 20% 98%;
@@ -23,10 +23,10 @@
     --neutral-800: 217 33% 17%;
     --neutral-900: 220 39% 11%;
     
-    /* Semantic Colors */
-    --success: 142 71% 45%;
-    --warning: 38 92% 50%;
-    --danger: 0 84% 60%;
+    /* Semantic Colors - Updated for better contrast */
+    --success: 142 71% 35%;
+    --warning: 38 92% 40%;
+    --danger: 0 84% 50%;
     
     /* System Colors - Light Mode */
     --background: 0 0% 100%;
@@ -40,9 +40,9 @@
     --secondary: var(--neutral-100);
     --secondary-foreground: var(--neutral-900);
     --muted: var(--neutral-100);
-    --muted-foreground: var(--neutral-500);
+    --muted-foreground: var(--neutral-600);
     --accent: var(--brand-accent);
-    --accent-foreground: var(--neutral-900);
+    --accent-foreground: 0 0% 100%;
     --destructive: var(--danger);
     --destructive-foreground: 0 0% 100%;
     --border: var(--neutral-200);
@@ -88,9 +88,9 @@
     --secondary: var(--neutral-800);
     --secondary-foreground: var(--neutral-50);
     --muted: var(--neutral-800);
-    --muted-foreground: var(--neutral-400);
+    --muted-foreground: var(--neutral-300);
     --accent: var(--brand-accent);
-    --accent-foreground: var(--neutral-900);
+    --accent-foreground: 0 0% 100%;
     --destructive: var(--danger);
     --destructive-foreground: 0 0% 100%;
     --border: var(--neutral-700);
