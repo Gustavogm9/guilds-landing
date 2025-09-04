@@ -24,8 +24,6 @@ import { SEOHead } from "@/components/seo/SEOHead";
 import { workflowSteps, painPoints, services, valuePillars, testimonials, featuredCases, evaluationFramework } from '../data/mockData';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { useLocalizedNavigation } from '@/hooks/useLocalizedNavigation';
-import { MobileOptimizations } from '@/components/performance/MobileOptimizations';
-import { LazySection } from '@/components/performance/LazySection';
 
 const Home = () => {
   const { t } = useTranslation();
@@ -34,8 +32,7 @@ const Home = () => {
   return (
     <>
       <SEOHead />
-      <MobileOptimizations>
-        <div className="min-h-screen">
+      <div className="min-h-screen">
       {/* 1. Hero Section */}
       <HeroSection className="relative overflow-hidden pb-16 md:pb-20">
         <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/50 to-background opacity-80"></div>
@@ -625,8 +622,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-        </div>
-      </MobileOptimizations>
+      </div>
     </>
   );
 };
