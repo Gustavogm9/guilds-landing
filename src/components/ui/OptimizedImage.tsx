@@ -109,9 +109,17 @@ export function OptimizedImage({
       className={cn(
         'relative overflow-hidden',
         aspectRatio && 'bg-neutral-200 dark:bg-neutral-800',
+        // Prevent layout shift with explicit container sizing
+        !aspectRatio && width && height && 'inline-block',
         className
       )}
-      style={containerStyles}
+      style={{
+        ...containerStyles,
+        ...(width && height && !aspectRatio && {
+          width: `${width}px`,
+          height: `${height}px`
+        })
+      }}
     >
       {/* Blur placeholder for better loading experience */}
       {!isLoaded && !hasError && (

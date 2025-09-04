@@ -95,11 +95,15 @@ const Header = () => {
                 usageContext="Headers e navegação"
                 alt="Guilds - Sistemas inteligentes, resultados reais" 
                 className="h-8 md:h-10 w-auto transition-transform duration-200 group-hover:scale-105"
+                width={120}
+                height={32}
                 fallback={
                   <img 
                     src={guildsLogoFull} 
                     alt="Guilds - Sistemas inteligentes, resultados reais" 
                     className="h-8 md:h-10 w-auto transition-transform duration-200 group-hover:scale-105"
+                    width="120"
+                    height="32"
                   />
                 }
               />
@@ -211,11 +215,15 @@ const Header = () => {
                         usageContext="Headers e navegação"
                         alt="Guilds" 
                         className="h-8 w-auto"
+                        width={32}
+                        height={32}
                         fallback={
                           <img 
                             src={guildsLogoShield} 
                             alt="Guilds" 
                             className="h-8 w-auto"
+                            width="32"
+                            height="32"
                           />
                         }
                       />
