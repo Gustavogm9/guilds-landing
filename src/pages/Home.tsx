@@ -70,9 +70,9 @@ const Home = () => {
                 src={heroImage} 
                 alt="Guilds - Sistemas inteligentes, resultados reais" 
                 className="relative rounded-3xl"
-                width={600}
-                height={400}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                width={588}
+                height={331}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 60vw, 588px"
               />
             </div>
           </Grid>

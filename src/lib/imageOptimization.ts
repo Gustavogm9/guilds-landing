@@ -51,19 +51,32 @@ export const generateSizes = (breakpoints: Record<string, string>): string => {
     .join(', ');
 };
 
-// Create optimized image props
+// Generate responsive srcset for different image sizes
+export const generateResponsiveSrcset = (src: string, sizes: number[] = [320, 640, 960, 1280, 1920]): string => {
+  // For production, this would integrate with an image CDN or server-side resizing
+  // For now, we'll use the original image but specify different sizes in srcset
+  return sizes
+    .map(size => `${src} ${size}w`)
+    .join(', ');
+};
+
+// Create optimized image props with responsive sizing
 export const createOptimizedImageProps = (options: ImageOptimizationOptions) => {
-  const { src, alt, width, height, priority = false, loading = 'lazy' } = options;
+  const { src, alt, width, height, priority = false, loading = 'lazy', sizes } = options;
   const sources = generateImageSources(options);
+  
+  // Generate srcset for responsive images
+  const srcset = generateResponsiveSrcset(src);
   
   return {
     src: sources.fallback,
+    srcSet: srcset,
     alt,
     width,
     height,
     loading: priority ? 'eager' : loading,
     decoding: 'async' as const,
-    ...(options.sizes && { sizes: options.sizes })
+    ...(sizes && { sizes })
   };
 };
 

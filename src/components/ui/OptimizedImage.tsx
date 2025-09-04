@@ -135,30 +135,34 @@ export function OptimizedImage({
           aspectRatio ? 'absolute inset-0 w-full h-full' : 'w-full h-auto',
           hasError && 'hidden'
         )}>
-          {/* Modern formats for better compression */}
+          {/* Modern formats with responsive sizing */}
           {sources.avif && (
             <source
-              srcSet={sources.avif}
+              srcSet={sources.avif.replace(/\.(jpg|jpeg|png)$/i, '.avif')}
               type="image/avif"
               sizes={sizes}
             />
           )}
           {sources.webp && (
             <source
-              srcSet={sources.webp}
+              srcSet={sources.webp.replace(/\.(jpg|jpeg|png)$/i, '.webp')}
               type="image/webp"
               sizes={sizes}
             />
           )}
           
-          {/* Fallback image */}
+          {/* Fallback image with responsive sizing */}
           <img
             ref={imgRef}
             {...imageProps}
             className={cn(
               aspectRatio ? 'absolute inset-0 w-full h-full object-cover' : 'w-full h-auto'
             )}
-            style={aspectRatio ? imageStyles : {}}
+            style={{
+              ...aspectRatio ? imageStyles : {},
+              maxWidth: width ? `${width}px` : '100%',
+              height: 'auto'
+            }}
             onLoad={handleLoad}
             onError={handleError}
             // Accessibility improvements
