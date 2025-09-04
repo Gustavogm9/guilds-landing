@@ -94,13 +94,29 @@ export const generateImagePreloads = (images: ImageOptimizationOptions[]): strin
     });
 };
 
-// Lazy loading intersection observer utility
+// Optimized lazy loading intersection observer utility with debouncing
 export const createLazyLoadObserver = (callback: (entries: IntersectionObserverEntry[]) => void) => {
   if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
     return null;
   }
   
-  return new IntersectionObserver(callback, {
+  // Debounce and batch callbacks using RAF to prevent forced reflows
+  let rafId: number | null = null;
+  let pendingEntries: IntersectionObserverEntry[] = [];
+  
+  const debouncedCallback = (entries: IntersectionObserverEntry[]) => {
+    pendingEntries.push(...entries);
+    
+    if (rafId) return; // Already scheduled
+    
+    rafId = requestAnimationFrame(() => {
+      callback(pendingEntries);
+      pendingEntries = [];
+      rafId = null;
+    });
+  };
+  
+  return new IntersectionObserver(debouncedCallback, {
     rootMargin: '50px 0px',
     threshold: 0.1
   });

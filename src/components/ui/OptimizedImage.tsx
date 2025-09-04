@@ -83,11 +83,12 @@ export function OptimizedImage({
     };
   }, [priority, inView]);
 
+  // Optimize CLS only once when component mounts, not on every prop change
   useEffect(() => {
-    if (imgRef.current) {
+    if (imgRef.current && width && height) {
       optimizeForCLS.ensureDimensions(imgRef.current);
     }
-  }, [src, width, height]);
+  }, []); // Empty dependency array - only run once
 
   const handleLoad = () => {
     setIsLoaded(true);
