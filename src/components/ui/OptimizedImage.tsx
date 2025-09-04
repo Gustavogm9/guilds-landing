@@ -231,6 +231,7 @@ export function HeroImage(props: Omit<OptimizedImageProps, 'priority'>) {
       {...props}
       priority={true}
       sizes={props.sizes || "100vw"}
+      loading="eager"
       className={cn('w-full h-full object-cover', props.className)}
     />
   );
