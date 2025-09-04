@@ -1,24 +1,76 @@
-# Cache control for static assets
+# Cache control for static assets with hashes (1 year - immutable)
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
-# Cache control for images
+# Cache control for images (including hashed versions)
 /assets/images/*
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
-# Cache control for CSS and JS files
-/assets/css/*
+# Cache control for hashed assets (JS, CSS with build hashes)
+/assets/*-*.js
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
-/assets/*.js
+/assets/*-*.css
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
-/assets/*.css
+/assets/css/*-*.css
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
-# Cache control for fonts
+# Images with hashes
+/assets/*-*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
+/assets/*-*.png
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
+/assets/*-*.svg
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
+# Direct asset files (hero-image.jpg, logos)
+/assets/hero-image.jpg
+  Cache-Control: public, max-age=2592000
+  Expires: Fri, 28 Feb 2025 23:59:59 GMT
+
+/assets/guilds-logo-full.svg
+  Cache-Control: public, max-age=2592000
+  Expires: Fri, 28 Feb 2025 23:59:59 GMT
+
+# Cache control for fonts (1 year)
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
 /assets/fonts/*
   Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
+# Font files by extension
+*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
+*.woff
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
+# CSS and JS files without hashes (shorter cache)
+/assets/*.js
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/assets/*.css
+  Cache-Control: public, max-age=86400, must-revalidate
+
+# Third-party scripts (flock.js)
+/~flock.js
+  Cache-Control: public, max-age=86400, must-revalidate
 
 # Cache control for main HTML (shorter cache for updates)
 /*
