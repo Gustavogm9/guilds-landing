@@ -60,7 +60,7 @@ export const generateResponsiveSrcset = (src: string, sizes: number[] = [320, 64
     .join(', ');
 };
 
-// Create optimized image props with responsive sizing
+// Create optimized image props with responsive sizing and priority hints
 export const createOptimizedImageProps = (options: ImageOptimizationOptions) => {
   const { src, alt, width, height, priority = false, loading = 'lazy', sizes } = options;
   const sources = generateImageSources(options);
@@ -76,6 +76,8 @@ export const createOptimizedImageProps = (options: ImageOptimizationOptions) => 
     height,
     loading: priority ? 'eager' : loading,
     decoding: 'async' as const,
+    // Add fetchpriority for critical images (LCP optimization)
+    ...(priority && { fetchPriority: 'high' as const }),
     ...(sizes && { sizes })
   };
 };
