@@ -73,7 +73,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           variant="ghost" 
           size="sm" 
           className={`h-8 px-2 text-foreground hover:text-brand-primary ${className}`}
-          aria-label={t('common.language.switchLanguage')}
+          aria-label={`${t('common.language.switchLanguage')} - ${currentLanguage?.flag} ${locale.toUpperCase()}`}
         >
           <Languages className="h-4 w-4 mr-1" />
           <span className="text-sm font-medium">
