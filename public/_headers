@@ -1,15 +1,12 @@
-# Cache control for static assets with hashes (1 year - immutable)
-/assets/*
-  Cache-Control: public, max-age=31536000, immutable
-  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+# More specific patterns first (order matters!)
 
-# Cache control for images (including hashed versions)
-/assets/images/*
-  Cache-Control: public, max-age=31536000, immutable
-  Expires: Thu, 31 Dec 2025 23:59:59 GMT
-
-# Cache control for hashed assets (JS, CSS with build hashes)
+# Hashed JavaScript files (1 year - immutable)
 /assets/*-*.js
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
+# Hashed CSS files (1 year - immutable) 
+/assets/css/*-*.css
   Cache-Control: public, max-age=31536000, immutable
   Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
@@ -17,12 +14,16 @@
   Cache-Control: public, max-age=31536000, immutable
   Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
-/assets/css/*-*.css
+# Hashed images (1 year - immutable)
+/assets/images/*-*.jpg
   Cache-Control: public, max-age=31536000, immutable
   Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
-# Images with hashes
 /assets/*-*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
+/assets/images/*-*.png
   Cache-Control: public, max-age=31536000, immutable
   Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
@@ -30,29 +31,31 @@
   Cache-Control: public, max-age=31536000, immutable
   Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
+/assets/images/*-*.svg
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
 /assets/*-*.svg
   Cache-Control: public, max-age=31536000, immutable
   Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
-# Direct asset files (hero-image.jpg, logos)
-/assets/hero-image.jpg
-  Cache-Control: public, max-age=2592000
-  Expires: Fri, 28 Feb 2025 23:59:59 GMT
-
-/assets/guilds-logo-full.svg
-  Cache-Control: public, max-age=2592000
-  Expires: Fri, 28 Feb 2025 23:59:59 GMT
-
-# Cache control for fonts (1 year)
-/fonts/*
+# Font files (1 year - immutable)
+/fonts/*.woff2
   Cache-Control: public, max-age=31536000, immutable
   Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
-/assets/fonts/*
+/fonts/*.woff
   Cache-Control: public, max-age=31536000, immutable
   Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
-# Font files by extension
+/assets/fonts/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
+/assets/fonts/*.woff
+  Cache-Control: public, max-age=31536000, immutable
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
 *.woff2
   Cache-Control: public, max-age=31536000, immutable
   Expires: Thu, 31 Dec 2025 23:59:59 GMT
@@ -61,24 +64,44 @@
   Cache-Control: public, max-age=31536000, immutable
   Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
-# CSS and JS files without hashes (shorter cache)
+# Direct asset files (30 days)
+/assets/hero-image.jpg
+  Cache-Control: public, max-age=2592000
+  Expires: Fri, 28 Feb 2025 23:59:59 GMT
+
+/assets/guilds-logo-full.svg
+  Cache-Control: public, max-age=2592000
+  Expires: Fri, 28 Feb 2025 23:59:59 GMT
+
+# General patterns (after specific ones)
+/assets/images/*
+  Cache-Control: public, max-age=31536000
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
 /assets/*.js
-  Cache-Control: public, max-age=86400, must-revalidate
+  Cache-Control: public, max-age=2592000
+  Expires: Fri, 28 Feb 2025 23:59:59 GMT
 
 /assets/*.css
-  Cache-Control: public, max-age=86400, must-revalidate
+  Cache-Control: public, max-age=2592000
+  Expires: Fri, 28 Feb 2025 23:59:59 GMT
 
-# Third-party scripts (flock.js)
+/assets/*
+  Cache-Control: public, max-age=31536000
+  Expires: Thu, 31 Dec 2025 23:59:59 GMT
+
+# Third-party scripts
 /~flock.js
-  Cache-Control: public, max-age=86400, must-revalidate
+  Cache-Control: public, max-age=2592000
+  Expires: Fri, 28 Feb 2025 23:59:59 GMT
 
-# Cache control for main HTML (shorter cache for updates)
-/*
-  Cache-Control: public, max-age=0, must-revalidate
-
-# Cache control for service worker and manifest
+# Service worker and manifest (no cache for updates)
 /sw.js
   Cache-Control: public, max-age=0, must-revalidate
 
 /manifest.json
   Cache-Control: public, max-age=86400
+
+# HTML pages (no cache for updates)
+/*
+  Cache-Control: public, max-age=0, must-revalidate
