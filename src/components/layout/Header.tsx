@@ -104,6 +104,7 @@ const Header = () => {
                     className="h-8 md:h-10 w-auto transition-transform duration-200 group-hover:scale-105"
                     width="120"
                     height="32"
+                    style={{ width: 'auto', height: '32px' }}
                   />
                 }
               />
@@ -224,6 +225,7 @@ const Header = () => {
                             className="h-8 w-auto"
                             width="32"
                             height="32"
+                            style={{ width: 'auto', height: '32px' }}
                           />
                         }
                       />

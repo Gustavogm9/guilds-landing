@@ -67,8 +67,9 @@ export function DynamicLogo({
           src="/src/assets/guilds-logo-shield.svg"
           alt={alt}
           className={className}
-          width={width}
-          height={height}
+          width={width || 32}
+          height={height || 32}
+          style={{ width: width ? `${width}px` : 'auto', height: height ? `${height}px` : '32px' }}
           {...props}
         />
       );
@@ -79,8 +80,9 @@ export function DynamicLogo({
         src="/src/assets/guilds-logo-full.svg"
         alt={alt}
         className={className}
-        width={width}
-        height={height}
+        width={width || 120}
+        height={height || 32}
+        style={{ width: width ? `${width}px` : 'auto', height: height ? `${height}px` : '32px' }}
         {...props}
       />
     );
@@ -93,6 +95,10 @@ export function DynamicLogo({
       className={className}
       width={width || logo.width}
       height={height || logo.height}
+      style={{ 
+        width: width ? `${width}px` : 'auto', 
+        height: height ? `${height}px` : (logo.height ? `${logo.height}px` : '32px') 
+      }}
       {...props}
     />
   );
