@@ -30,6 +30,25 @@ export default defineConfig(({ mode }) => ({
     chunkSizeWarningLimit: 180, // 180KB chunks
     rollupOptions: {
       output: {
+        // Asset naming for long-term caching
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name?.split('.') || [];
+          const ext = info[info.length - 1];
+          
+          // Organize assets by type for better caching
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+            return `assets/images/[name]-[hash].[ext]`;
+          }
+          if (/css/i.test(ext)) {
+            return `assets/css/[name]-[hash].[ext]`;
+          }
+          if (/woff2?|eot|ttf|otf/i.test(ext)) {
+            return `assets/fonts/[name]-[hash].[ext]`;
+          }
+          return `assets/[name]-[hash].[ext]`;
+        },
         manualChunks: {
           // Separate vendor chunks
           vendor: ['react', 'react-dom'],

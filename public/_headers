@@ -1,0 +1,32 @@
+# Cache control for static assets
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache control for images
+/assets/images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache control for CSS and JS files
+/assets/css/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache control for fonts
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache control for main HTML (shorter cache for updates)
+/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Cache control for service worker and manifest
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/manifest.json
+  Cache-Control: public, max-age=86400
