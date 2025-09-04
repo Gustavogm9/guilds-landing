@@ -98,23 +98,73 @@ export const useQualificationForm = () => {
     }
   };
 
-  // Fetch company settings
+  // Fetch company settings with fallback to public settings
   const fetchCompanySettings = async () => {
     try {
-      const { data, error } = await supabase
-        .from('company_settings')
+      // Check if user is authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        // Try to get full company settings for authenticated users
+        const { data, error } = await supabase
+          .from('company_settings')
+          .select('*')
+          .maybeSingle();
+        
+        if (data && !error) {
+          setCompanySettings(data);
+          return;
+        }
+      }
+      
+      // Fallback to public company settings for unauthenticated users or if private settings fail
+      const { data: publicData, error: publicError } = await supabase
+        .from('public_company_settings')
         .select('*')
-        .limit(1)
-        .single();
-
-      if (error) throw error;
-      setCompanySettings(data);
+        .maybeSingle();
+      
+      if (publicData && !publicError) {
+        // Map public settings to expected format
+        setCompanySettings({
+          id: publicData.id,
+          whatsapp_number: publicData.public_whatsapp_number || '+5511999999999',
+          company_name: publicData.company_name,
+          support_email: publicData.public_support_email || 'contato@guilds.com.br',
+          brand_primary_color: publicData.brand_primary_color,
+          brand_accent_color: publicData.brand_accent_color
+        });
+      } else {
+        // Final fallback with default values
+        setCompanySettings({
+          id: 'default',
+          whatsapp_number: '+5511999999999',
+          company_name: 'Guilds',
+          support_email: 'contato@guilds.com.br',
+          brand_primary_color: 'hsl(240, 85%, 55%)',
+          brand_accent_color: 'hsl(165, 85%, 45%)'
+        });
+      }
     } catch (error) {
       console.error('Error fetching company settings:', error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível carregar as configurações da empresa.",
-        variant: "destructive"
+      
+      // Only show error toast for authenticated users
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        toast({
+          title: "Erro",
+          description: "Não foi possível carregar as configurações da empresa.",
+          variant: "destructive"
+        });
+      }
+      
+      // Always provide fallback settings
+      setCompanySettings({
+        id: 'default',
+        whatsapp_number: '+5511999999999',
+        company_name: 'Guilds',
+        support_email: 'contato@guilds.com.br',
+        brand_primary_color: 'hsl(240, 85%, 55%)',
+        brand_accent_color: 'hsl(165, 85%, 45%)'
       });
     }
   };
