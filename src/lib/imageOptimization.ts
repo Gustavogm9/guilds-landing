@@ -18,28 +18,13 @@ export const generateImageSources = (options: ImageOptimizationOptions): {
   avif?: string;
   fallback: string;
 } => {
-  const { src, quality = 80, format = 'auto' } = options;
+  const { src } = options;
   
-  // For now, return the original src as fallback
-  // In a production app, you'd integrate with a service like Cloudinary or implement server-side optimization
-  const sources: {
-    webp?: string;
-    avif?: string;
-    fallback: string;
-  } = {
+  // Return only the original source to avoid trying to load non-existent formats
+  // In production, you'd have a build process or CDN that generates these formats
+  return {
     fallback: src
   };
-  
-  // Add modern format support when available
-  if (format === 'auto' || format === 'webp') {
-    sources.webp = src.replace(/\.(jpg|jpeg|png)$/i, '.webp');
-  }
-  
-  if (format === 'auto' || format === 'avif') {
-    sources.avif = src.replace(/\.(jpg|jpeg|png)$/i, '.avif');
-  }
-  
-  return sources;
 };
 
 // Generate responsive sizes attribute
@@ -53,11 +38,9 @@ export const generateSizes = (breakpoints: Record<string, string>): string => {
 
 // Generate responsive srcset for different image sizes
 export const generateResponsiveSrcset = (src: string, sizes: number[] = [320, 640, 960, 1280, 1920]): string => {
-  // For production, this would integrate with an image CDN or server-side resizing
-  // For now, we'll use the original image but specify different sizes in srcset
-  return sizes
-    .map(size => `${src} ${size}w`)
-    .join(', ');
+  // Return just the original source to avoid creating non-existent sized versions
+  // In production, you'd have responsive image generation via build process or CDN
+  return src;
 };
 
 // Create optimized image props with responsive sizing and priority hints

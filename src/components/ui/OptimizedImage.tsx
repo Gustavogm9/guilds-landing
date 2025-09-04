@@ -51,7 +51,7 @@ export function OptimizedImage({
     sizes
   });
 
-  // Generate multiple format sources for better compression
+  // Generate sources (simplified to just return the original image)
   const sources = generateImageSources({
     src,
     alt,
@@ -136,49 +136,33 @@ export function OptimizedImage({
         />
       )}
       
-      {/* Main image with modern format support - only render when in view or priority */}
+      {/* Main image - only render when in view or priority */}
       {(inView || priority) && (
-        <picture className={cn(
-          'transition-opacity duration-300',
-          isLoaded ? 'opacity-100' : 'opacity-0',
-          aspectRatio ? 'absolute inset-0 w-full h-full' : 'w-full h-auto',
-          hasError && 'hidden'
-        )}>
-          {/* Modern formats with responsive sizing */}
-          {sources.avif && (
-            <source
-              srcSet={sources.avif.replace(/\.(jpg|jpeg|png)$/i, '.avif')}
-              type="image/avif"
-              sizes={sizes}
-            />
+        <img
+          ref={imgRef}
+          src={src}
+          alt={alt}
+          className={cn(
+            'transition-opacity duration-300 w-full h-auto object-cover',
+            isLoaded ? 'opacity-100' : 'opacity-0',
+            aspectRatio ? 'absolute inset-0 w-full h-full' : 'w-full h-auto',
+            hasError && 'hidden'
           )}
-          {sources.webp && (
-            <source
-              srcSet={sources.webp.replace(/\.(jpg|jpeg|png)$/i, '.webp')}
-              type="image/webp"
-              sizes={sizes}
-            />
-          )}
-          
-          {/* Fallback image with responsive sizing */}
-          <img
-            ref={imgRef}
-            {...imageProps}
-            className={cn(
-              aspectRatio ? 'absolute inset-0 w-full h-full object-cover' : 'w-full h-auto'
-            )}
-            style={{
-              ...aspectRatio ? imageStyles : {},
-              maxWidth: width ? `${width}px` : '100%',
-              height: 'auto'
-            }}
-            onLoad={handleLoad}
-            onError={handleError}
-            // Accessibility improvements
-            {...(!alt && { 'aria-hidden': 'true', role: 'presentation' })}
-            {...(alt && { role: 'img' })}
-          />
-        </picture>
+          style={{
+            ...aspectRatio ? imageStyles : {},
+            maxWidth: width ? `${width}px` : '100%',
+            height: 'auto'
+          }}
+          width={width}
+          height={height}
+          loading={priority ? 'eager' : 'lazy'}
+          sizes={sizes}
+          onLoad={handleLoad}
+          onError={handleError}
+          // Accessibility improvements
+          {...(!alt && { 'aria-hidden': 'true', role: 'presentation' })}
+          {...(alt && { role: 'img' })}
+        />
       )}
       
       {/* Error fallback */}
