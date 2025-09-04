@@ -79,7 +79,7 @@ export const useCriticalResourcePreloader = () => {
   }, []);
 };
 
-// Network-aware optimizations
+// Network-aware optimizations with batched DOM updates
 export const useNetworkOptimization = () => {
   const { isMobile } = useMobilePerformance();
 
@@ -89,30 +89,36 @@ export const useNetworkOptimization = () => {
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
 
     if (connection) {
+      // Batch DOM updates to prevent forced reflows
+      let rafId: number | null = null;
+      let pendingUpdates = false;
+
       const adaptToConnection = () => {
-        const { effectiveType, downlink, saveData } = connection;
+        if (pendingUpdates) return; // Already scheduled
         
-        // Adjust image quality based on connection
-        const isSlowConnection = effectiveType === 'slow-2g' || effectiveType === '2g' || downlink < 1.5;
-        const shouldOptimizeForData = saveData || isSlowConnection;
+        pendingUpdates = true;
+        rafId = requestAnimationFrame(() => {
+          const { effectiveType, downlink, saveData } = connection;
+          
+          // Adjust image quality based on connection
+          const isSlowConnection = effectiveType === 'slow-2g' || effectiveType === '2g' || downlink < 1.5;
+          const shouldOptimizeForData = saveData || isSlowConnection;
 
-        // Set CSS custom properties for adaptive loading
-        document.documentElement.style.setProperty(
-          '--image-quality', 
-          shouldOptimizeForData ? 'low' : 'high'
-        );
-        
-        document.documentElement.style.setProperty(
-          '--animation-enabled', 
-          shouldOptimizeForData ? '0' : '1'
-        );
+          // Batch all CSS property updates together
+          const docStyle = document.documentElement.style;
+          docStyle.setProperty('--image-quality', shouldOptimizeForData ? 'low' : 'high');
+          docStyle.setProperty('--animation-enabled', shouldOptimizeForData ? '0' : '1');
 
-        // Reduce animations on slow connections
-        if (shouldOptimizeForData) {
-          document.documentElement.classList.add('reduced-bandwidth');
-        } else {
-          document.documentElement.classList.remove('reduced-bandwidth');
-        }
+          // Update class in the same frame
+          if (shouldOptimizeForData) {
+            document.documentElement.classList.add('reduced-bandwidth');
+          } else {
+            document.documentElement.classList.remove('reduced-bandwidth');
+          }
+
+          pendingUpdates = false;
+          rafId = null;
+        });
       };
 
       adaptToConnection();
@@ -120,44 +126,74 @@ export const useNetworkOptimization = () => {
 
       return () => {
         connection.removeEventListener('change', adaptToConnection);
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+        }
       };
     }
   }, [isMobile]);
 };
 
-// Intersection Observer for performance monitoring
+// Intersection Observer for performance monitoring with RAF batching
 export const usePerformanceIntersectionObserver = () => {
   const observeElementPerformance = useCallback((element: Element) => {
     if (!('IntersectionObserver' in window)) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
+    // RAF batching to prevent forced reflows
+    let rafId: number | null = null;
+    let pendingEntries: IntersectionObserverEntry[] = [];
+
+    const batchedCallback = (entries: IntersectionObserverEntry[]) => {
+      pendingEntries.push(...entries);
+      
+      if (rafId) return; // Already scheduled
+      
+      rafId = requestAnimationFrame(() => {
+        const entriesToProcess = [...pendingEntries];
+        pendingEntries = [];
+        
+        entriesToProcess.forEach(entry => {
           if (entry.isIntersecting) {
-            // Mark element as visible for analytics
+            // Mark element as visible for analytics (defer to avoid reflow)
             const elementId = entry.target.id || entry.target.className;
-            performance.mark(`element-visible-${elementId}`);
+            setTimeout(() => {
+              performance.mark(`element-visible-${elementId}`);
+            }, 0);
             
-            // Lazy load content if needed
+            // Lazy load content if needed (batch DOM queries)
             const lazyElements = entry.target.querySelectorAll('[data-lazy]');
-            lazyElements.forEach(el => {
-              const src = el.getAttribute('data-lazy');
-              if (src && el instanceof HTMLImageElement) {
-                el.src = src;
-                el.removeAttribute('data-lazy');
-              }
-            });
+            requestIdleCallback ? 
+              requestIdleCallback(() => processLazyElements(lazyElements)) :
+              setTimeout(() => processLazyElements(lazyElements), 0);
           }
         });
-      },
-      {
-        rootMargin: '50px 0px',
-        threshold: 0.1
-      }
-    );
+        
+        rafId = null;
+      });
+    };
+
+    const processLazyElements = (lazyElements: NodeListOf<Element>) => {
+      lazyElements.forEach(el => {
+        const src = el.getAttribute('data-lazy');
+        if (src && el instanceof HTMLImageElement) {
+          el.src = src;
+          el.removeAttribute('data-lazy');
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(batchedCallback, {
+      rootMargin: '50px 0px',
+      threshold: 0.1
+    });
 
     observer.observe(element);
-    return () => observer.unobserve(element);
+    return () => {
+      observer.unobserve(element);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
   }, []);
 
   return { observeElementPerformance };

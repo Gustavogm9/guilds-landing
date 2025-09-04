@@ -22,36 +22,40 @@ export function CTAStickyMobile({
   const [isExpanded, setIsExpanded] = useState(false);
   const { trackWhatsAppClick, trackCTAClick } = useAnalytics();
 
-  // Hide/show based on scroll position with throttling
+  // Hide/show based on scroll position with optimized RAF batching to prevent forced reflows
   useEffect(() => {
     let lastScrollY = window.scrollY;
-    let ticking = false;
+    let rafId: number | null = null;
     
     const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
+      if (rafId) return; // Already scheduled, prevent duplicate RAF calls
+      
+      rafId = requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        
+        // Only update if there's a significant change to reduce state updates
+        if (Math.abs(currentScrollY - lastScrollY) > 15) {
+          const shouldShow = currentScrollY < lastScrollY || currentScrollY < 100;
           
-          // Show when scrolling up, hide when scrolling down (with threshold)
-          if (Math.abs(currentScrollY - lastScrollY) > 10) {
-            if (currentScrollY < lastScrollY || currentScrollY < 100) {
-              setIsVisible(true);
-            } else {
-              setIsVisible(false);
-              setIsExpanded(false);
-            }
-            lastScrollY = currentScrollY;
+          setIsVisible(shouldShow);
+          if (!shouldShow) {
+            setIsExpanded(false);
           }
           
-          ticking = false;
-        });
+          lastScrollY = currentScrollY;
+        }
         
-        ticking = true;
-      }
+        rafId = null;
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
   }, []);
 
   const handleWhatsAppClick = () => {

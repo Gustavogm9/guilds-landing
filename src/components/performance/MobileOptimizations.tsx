@@ -22,20 +22,26 @@ export const MobileOptimizations = ({ children }: MobileOptimizationsProps) => {
 
   useEffect(() => {
     if (isMobile) {
-      // Disable complex animations on mobile for better performance
-      document.documentElement.style.setProperty('--animation-duration', reducedMotion ? '0s' : '0.2s');
-      document.documentElement.style.setProperty('--transition-duration', reducedMotion ? '0s' : '0.15s');
+      // Batch DOM updates to prevent forced reflows
+      const updateStyles = () => {
+        const docStyle = document.documentElement.style;
+        docStyle.setProperty('--animation-duration', reducedMotion ? '0s' : '0.2s');
+        docStyle.setProperty('--transition-duration', reducedMotion ? '0s' : '0.15s');
+        docStyle.setProperty('scroll-behavior', 'auto');
+        document.documentElement.classList.add('mobile-optimized');
+      };
       
-      // Optimize scroll behavior on mobile
-      document.documentElement.style.setProperty('scroll-behavior', 'auto');
-      
-      // Reduce blur effects on mobile (expensive to render)
-      document.documentElement.classList.add('mobile-optimized');
+      // Use RAF to batch style updates
+      requestAnimationFrame(updateStyles);
     } else {
-      // Full animations on desktop
-      document.documentElement.style.setProperty('--animation-duration', reducedMotion ? '0s' : '0.3s');
-      document.documentElement.style.setProperty('--transition-duration', reducedMotion ? '0s' : '0.3s');
-      document.documentElement.classList.remove('mobile-optimized');
+      const updateStyles = () => {
+        const docStyle = document.documentElement.style;
+        docStyle.setProperty('--animation-duration', reducedMotion ? '0s' : '0.3s');
+        docStyle.setProperty('--transition-duration', reducedMotion ? '0s' : '0.3s');
+        document.documentElement.classList.remove('mobile-optimized');
+      };
+      
+      requestAnimationFrame(updateStyles);
     }
   }, [isMobile, reducedMotion]);
 
