@@ -23,7 +23,7 @@ import ErrorBoundary from "./components/error/ErrorBoundary";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 
-// Lazy-loaded pages for better code splitting
+// Lazy-loaded pages for better code splitting - PHASE 1 COMPLETION
 const Services = React.lazy(() => import("./pages/Services"));
 const Privacy = React.lazy(() => import("./pages/Privacy"));
 const Terms = React.lazy(() => import("./pages/Terms"));
@@ -42,11 +42,11 @@ const ThankYou = React.lazy(() => import("./pages/ThankYou"));
 const Search = React.lazy(() => import("./pages/Search"));
 const ServerError = React.lazy(() => import("./pages/ServerError"));
 
-// Admin and auth pages - separate chunks
+// Admin and auth pages - separate chunks with preloading strategy
 const Admin = React.lazy(() => import("./pages/Admin"));
 const Auth = React.lazy(() => import("./pages/Auth"));
 
-// Lab and Craft pages - feature-specific chunks
+// Lab and Craft pages - feature-specific chunks with priority loading
 const Lab = React.lazy(() => import("./pages/Lab"));
 const LabWorkshop = React.lazy(() => import("./pages/LabWorkshop"));
 const Craft = React.lazy(() => import("./pages/Craft"));

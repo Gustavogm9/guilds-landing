@@ -6,6 +6,7 @@
 
 /* Import mobile optimizations */
 @import './styles/mobile-optimizations.css';
+@import './styles/reduced-bandwidth.css';
 
 /* Guilds Design System - Modern Design Tokens */
 @layer base {

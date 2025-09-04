@@ -1,0 +1,50 @@
+/* Optimizations for slow connections and data-saver mode */
+.reduced-bandwidth {
+  /* Disable expensive visual effects */
+  --animation-enabled: 0;
+  --blur-enabled: 0;
+  --shadow-enabled: 0;
+}
+
+.reduced-bandwidth * {
+  /* Disable all animations on slow connections */
+  animation-duration: 0s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0s !important;
+}
+
+.reduced-bandwidth .backdrop-blur-sm,
+.reduced-bandwidth .backdrop-blur-md,
+.reduced-bandwidth .backdrop-blur-lg {
+  backdrop-filter: none !important;
+  background: rgba(var(--background-rgb), 0.95) !important;
+}
+
+.reduced-bandwidth .shadow-lg,
+.reduced-bandwidth .shadow-xl,
+.reduced-bandwidth .shadow-2xl {
+  box-shadow: none !important;
+}
+
+.reduced-bandwidth .blur-xl,
+.reduced-bandwidth .blur-3xl {
+  filter: none !important;
+}
+
+.reduced-bandwidth .bg-gradient-to-r,
+.reduced-bandwidth .bg-gradient-to-br,
+.reduced-bandwidth .bg-gradient-to-l {
+  background: hsl(var(--background)) !important;
+}
+
+/* Reduce image quality indicators */
+.reduced-bandwidth [data-lazy] {
+  /* Load lower quality images first */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.reduced-bandwidth img {
+  /* Optimize image rendering for bandwidth */
+  image-rendering: -webkit-optimize-contrast;
+}

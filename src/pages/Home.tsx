@@ -24,10 +24,14 @@ import { SEOHead } from "@/components/seo/SEOHead";
 import { workflowSteps, painPoints, services, valuePillars, testimonials, featuredCases, evaluationFramework } from '../data/mockData';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { useLocalizedNavigation } from '@/hooks/useLocalizedNavigation';
+import { useAdvancedPerformanceOptimizations } from '@/components/performance/AdvancedOptimizations';
 
 const Home = () => {
   const { t } = useTranslation();
   const { getLocalizedPath } = useLocalizedNavigation();
+  
+  // PHASE 4: Advanced optimizations
+  useAdvancedPerformanceOptimizations();
 
   return (
     <>
