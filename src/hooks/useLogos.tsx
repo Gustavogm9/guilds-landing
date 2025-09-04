@@ -23,7 +23,7 @@ export function useLogos() {
   useEffect(() => {
     fetchLogos();
     
-    // Set up real-time subscription
+    // Set up real-time subscription with error handling
     const channel: RealtimeChannel = supabase
       .channel('logos-changes')
       .on(
@@ -39,11 +39,23 @@ export function useLogos() {
           fetchLogos();
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        // Handle subscription status to prevent console errors
+        if (status === 'CHANNEL_ERROR') {
+          console.warn('Logo realtime subscription failed, continuing with static data');
+        } else if (status === 'TIMED_OUT') {
+          console.warn('Logo realtime subscription timed out, continuing with static data');
+        }
+      });
 
     // Cleanup subscription on unmount
     return () => {
-      supabase.removeChannel(channel);
+      try {
+        supabase.removeChannel(channel);
+      } catch (error) {
+        // Silently handle cleanup errors to prevent console noise
+        console.warn('Error cleaning up logos subscription:', error);
+      }
     };
   }, []);
 
