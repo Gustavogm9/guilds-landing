@@ -124,8 +124,8 @@ export default defineConfig(({ mode }) => ({
         drop_debugger: true,
       },
     },
-    // Source maps for debugging (but smaller)
-    sourcemap: mode === 'development',
+    // Source maps for debugging and better SEO insights
+    sourcemap: true,
   },
   // CSS optimization
   css: {
