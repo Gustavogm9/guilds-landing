@@ -5,7 +5,8 @@ import {
   createOptimizedImageProps, 
   generateBlurDataURL, 
   optimizeForCLS,
-  createLazyLoadObserver
+  createLazyLoadObserver,
+  generateImageSources
 } from '@/lib/imageOptimization';
 
 interface OptimizedImageProps extends Omit<ImageOptimizationOptions, 'src'> {
@@ -48,6 +49,14 @@ export function OptimizedImage({
     format,
     loading,
     sizes
+  });
+
+  // Generate multiple format sources for better compression
+  const sources = generateImageSources({
+    src,
+    alt,
+    quality,
+    format
   });
 
   // Intersection Observer for lazy loading
@@ -118,24 +127,45 @@ export function OptimizedImage({
         />
       )}
       
-      {/* Main image - only render when in view or priority */}
+      {/* Main image with modern format support - only render when in view or priority */}
       {(inView || priority) && (
-        <img
-          ref={imgRef}
-          {...imageProps}
-          className={cn(
-            'transition-opacity duration-300',
-            isLoaded ? 'opacity-100' : 'opacity-0',
-            aspectRatio ? 'absolute inset-0 w-full h-full object-cover' : 'w-full h-auto',
-            hasError && 'hidden'
+        <picture className={cn(
+          'transition-opacity duration-300',
+          isLoaded ? 'opacity-100' : 'opacity-0',
+          aspectRatio ? 'absolute inset-0 w-full h-full' : 'w-full h-auto',
+          hasError && 'hidden'
+        )}>
+          {/* Modern formats for better compression */}
+          {sources.avif && (
+            <source
+              srcSet={sources.avif}
+              type="image/avif"
+              sizes={sizes}
+            />
           )}
-          style={aspectRatio ? imageStyles : {}}
-          onLoad={handleLoad}
-          onError={handleError}
-          // Accessibility improvements
-          {...(!alt && { 'aria-hidden': 'true', role: 'presentation' })}
-          {...(alt && { role: 'img' })}
-        />
+          {sources.webp && (
+            <source
+              srcSet={sources.webp}
+              type="image/webp"
+              sizes={sizes}
+            />
+          )}
+          
+          {/* Fallback image */}
+          <img
+            ref={imgRef}
+            {...imageProps}
+            className={cn(
+              aspectRatio ? 'absolute inset-0 w-full h-full object-cover' : 'w-full h-auto'
+            )}
+            style={aspectRatio ? imageStyles : {}}
+            onLoad={handleLoad}
+            onError={handleError}
+            // Accessibility improvements
+            {...(!alt && { 'aria-hidden': 'true', role: 'presentation' })}
+            {...(alt && { role: 'img' })}
+          />
+        </picture>
       )}
       
       {/* Error fallback */}
