@@ -6,7 +6,7 @@ import { MetricBadge } from "@/components/ui/MetricBadge";
 import { TestimonialCarousel } from "@/components/ui/TestimonialCarousel";
 import { Section, HeroSection, ContentSection, FeatureSection } from "@/components/ui/section";
 import { Grid, ServiceGrid, FeatureGrid, MetricGrid, CaseGrid } from "@/components/ui/grid";
-import { HeroImage } from "@/components/ui/image";
+import { HeroImage } from "@/components/ui/OptimizedImage";
 import { Card } from "@/components/ui/card";
 import { DynamicLogo } from "@/components/ui/DynamicLogo";
 import { QualificationButton } from "@/components/forms/QualificationButton";
@@ -66,7 +66,14 @@ const Home = () => {
             {/* Hero Image */}
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-3xl"></div>
-              <HeroImage src={heroImage} alt="Guilds - Sistemas inteligentes, resultados reais" className="relative" />
+              <HeroImage 
+                src={heroImage} 
+                alt="Guilds - Sistemas inteligentes, resultados reais" 
+                className="relative rounded-3xl"
+                width={600}
+                height={400}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+              />
             </div>
           </Grid>
         </div>

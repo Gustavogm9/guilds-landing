@@ -26,9 +26,18 @@ export function Footer() {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <DynamicLogo usageContext="Footers e rodapés" type="symbol" variant="light" className="h-8 w-auto" alt="Guilds" fallback={<div className="w-8 h-8 bg-brand-accent rounded-full flex items-center justify-center">
+              <DynamicLogo 
+                usageContext="Footers e rodapés" 
+                type="symbol" 
+                variant="light" 
+                className="h-8 w-auto" 
+                alt="Guilds"
+                width={32}
+                height={32}
+                fallback={<div className="w-8 h-8 bg-brand-accent rounded-full flex items-center justify-center">
                     <span className="text-white font-bold text-sm">G</span>
-                  </div>} />
+                  </div>} 
+              />
               <span className="font-sora font-bold text-xl">{getCompanyName()}</span>
             </div>
             <p className="text-neutral-400 text-sm leading-relaxed">

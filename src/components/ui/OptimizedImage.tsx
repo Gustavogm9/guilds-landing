@@ -183,12 +183,12 @@ export function OptimizedImage({
 }
 
 // Specialized components for common use cases
-export function HeroImage(props: Omit<OptimizedImageProps, 'priority' | 'sizes'>) {
+export function HeroImage(props: Omit<OptimizedImageProps, 'priority'>) {
   return (
     <OptimizedImage
       {...props}
       priority={true}
-      sizes="100vw"
+      sizes={props.sizes || "100vw"}
       className={cn('w-full h-full object-cover', props.className)}
     />
   );
