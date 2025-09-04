@@ -60,11 +60,17 @@ export const ConsentBanner = () => {
 
               <div className="text-xs text-muted-foreground">
                 Ao continuar navegando, você concorda com nossa{' '}
-                <a href="/privacidade" className="text-primary hover:underline">
+                <a 
+                  href="/privacidade" 
+                  className="text-foreground underline hover:text-primary focus:text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:rounded-sm"
+                >
                   Política de Privacidade
                 </a>
                 {' '}e{' '}
-                <a href="/cookies" className="text-primary hover:underline">
+                <a 
+                  href="/cookies" 
+                  className="text-foreground underline hover:text-primary focus:text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:rounded-sm"
+                >
                   Política de Cookies
                 </a>
               </div>
