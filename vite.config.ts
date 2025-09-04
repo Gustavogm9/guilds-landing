@@ -50,20 +50,57 @@ export default defineConfig(({ mode }) => ({
           return `assets/[name]-[hash].[ext]`;
         },
         manualChunks: {
-          // Separate vendor chunks
+          // Core React dependencies
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom'],
-          ui: [
+          
+          // UI library chunks - split by size and usage
+          'radix-core': [
             '@radix-ui/react-dialog',
             '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-accordion',
-            '@radix-ui/react-tabs',
+            '@radix-ui/react-popover',
             '@radix-ui/react-tooltip'
           ],
+          'radix-forms': [
+            '@radix-ui/react-checkbox',
+            '@radix-ui/react-select',
+            '@radix-ui/react-radio-group',
+            '@radix-ui/react-switch'
+          ],
+          'radix-layout': [
+            '@radix-ui/react-accordion',
+            '@radix-ui/react-tabs',
+            '@radix-ui/react-scroll-area',
+            '@radix-ui/react-separator'
+          ],
+          
+          // Form handling
           forms: ['react-hook-form', 'zod', '@hookform/resolvers'],
+          
+          // Heavy libraries - separate chunks
           icons: ['lucide-react'],
-          utils: ['clsx', 'tailwind-merge', 'class-variance-authority']
-        }
+          charts: ['recharts'],
+          query: ['@tanstack/react-query'],
+          
+          // Utilities
+          utils: ['clsx', 'tailwind-merge', 'class-variance-authority', 'date-fns'],
+          
+          // Animation and effects
+          animations: ['canvas-confetti', 'embla-carousel-react'],
+          
+          // Development tools (only in dev builds)
+          ...(mode === 'development' && {
+            'dev-tools': ['rollup-plugin-visualizer']
+          })
+        },
+        
+        // Dynamic imports for route-based code splitting
+        ...(mode === 'production' && {
+          dynamicImportVarsOptions: {
+            include: ['src/pages/**'],
+            exclude: ['node_modules/**']
+          }
+        })
       }
     },
     // Optimize dependencies
