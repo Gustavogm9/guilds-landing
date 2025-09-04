@@ -111,7 +111,7 @@ const Header = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-6">
+            <nav id="main-navigation" className="hidden md:flex items-center space-x-6">
               {/* Services Mega Menu */}
               <NavigationMenu>
                 <NavigationMenuList>
