@@ -43,6 +43,7 @@ const Search = React.lazy(() => import("./pages/Search"));
 const ServerError = React.lazy(() => import("./pages/ServerError"));
 
 // Admin and auth pages - separate chunks with preloading strategy
+const CRM = React.lazy(() => import("./pages/CRM"));
 const Admin = React.lazy(() => import("./pages/Admin"));
 const Auth = React.lazy(() => import("./pages/Auth"));
 
@@ -137,7 +138,8 @@ const App = () => {
                               <Route path="/lab/workshops/:slug" element={<LabWorkshop />} />
                               <Route path="/craft" element={<Craft />} />
                               <Route path="/craft/ideias/:slug" element={<CraftIdea />} />
-                              <Route path="/craft/portfolio" element={<CraftPortfolio />} />
+        <Route path="/craft/portfolio" element={<CraftPortfolio />} />
+        <Route path="/crm" element={<CRM />} />
                               <Route path="/conteudo" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Conteúdo</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
                               <Route path="/sobre" element={<NewAbout />} />
                               <Route path="/equipe" element={<Team />} />
