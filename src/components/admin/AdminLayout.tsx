@@ -16,7 +16,8 @@ import {
   Phone,
   FlaskConical,
   Palette,
-  ChevronRight
+  ChevronRight,
+  Database
 } from 'lucide-react';
 
 import {
@@ -80,6 +81,11 @@ const menuItems = [
     items: [
       { title: "Qualificação", icon: FileText, url: "/admin/forms" }
     ]
+  },
+  {
+    title: "CRM",
+    icon: Database,
+    url: "/admin/crm"
   }
 ];
 

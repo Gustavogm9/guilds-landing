@@ -13,7 +13,8 @@ import {
   Calendar,
   Activity,
   ArrowUpRight,
-  RefreshCw
+  RefreshCw,
+  Database
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDashboardStats } from '@/hooks/useDashboardStats';
@@ -290,14 +291,20 @@ export function AdminDashboard() {
 
       {/* Future Sections Placeholder */}
       <div className="grid gap-6 md:grid-cols-3">
-        <Card className="border-dashed border-2 border-muted-foreground/20">
+        <Card 
+          className="cursor-pointer hover:shadow-md transition-shadow"
+          onClick={() => navigate("/admin/crm")}
+        >
           <CardHeader>
-            <CardTitle className="text-muted-foreground">CRM</CardTitle>
-            <CardDescription>Em breve</CardDescription>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              CRM
+            </CardTitle>
+            <CardDescription>Sistema de gestão de relacionamento</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Sistema de gestão de relacionamento com clientes
+              Gerencie pipelines, leads e oportunidades
             </p>
           </CardContent>
         </Card>
