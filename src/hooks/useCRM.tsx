@@ -40,6 +40,53 @@ export interface CRMContact {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  // Enhanced fields
+  lead_score?: number;
+  icp_score?: number;
+  lifecycle_stage?: string;
+  lead_source?: string;
+  products_interest?: string[];
+  engagement_score?: number;
+  last_interaction_date?: string;
+  next_action?: string;
+  next_action_date?: string;
+  budget_range?: string;
+  decision_timeline?: string;
+  pain_points?: string[];
+  company_size?: string;
+  industry?: string;
+  job_title?: string;
+  social_media?: Record<string, any>;
+  notes?: string;
+}
+
+export interface CRMContactInteraction {
+  id: string;
+  contact_id: string;
+  interaction_type: 'email' | 'phone' | 'whatsapp' | 'meeting' | 'form' | 'newsletter' | 'website' | 'social' | 'other';
+  interaction_date: string;
+  subject?: string;
+  description?: string;
+  outcome?: string;
+  next_steps?: string;
+  channel_data?: Record<string, any>;
+  created_by?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CRMProductInterest {
+  id: string;
+  contact_id: string;
+  product_category: 'software_apps' | 'automacao_ia' | 'jogos_gamificacao' | 'consultoria' | 'workshops';
+  interest_level: number;
+  specific_products?: string[];
+  budget_indicated?: number;
+  timeline_indicated?: string;
+  source_interaction?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CRMDeal {
@@ -130,7 +177,7 @@ export function useCRM() {
     return data as any[];
   };
 
-  // Fetch contacts
+  // Fetch contacts with enhanced data
   const {
     data: contacts,
     isLoading: contactsLoading
@@ -141,12 +188,36 @@ export function useCRM() {
         .from('crm_contacts')
         .select('*')
         .eq('is_active', true)
-        .order('created_at', { ascending: false });
+        .order('last_interaction_date', { ascending: false, nullsFirst: false });
       
       if (error) throw error;
       return data as CRMContact[];
     }
   });
+
+  // Fetch contact interactions
+  const fetchContactInteractions = async (contactId: string) => {
+    const { data, error } = await supabase
+      .from('crm_contact_interactions')
+      .select('*')
+      .eq('contact_id', contactId)
+      .order('interaction_date', { ascending: false });
+    
+    if (error) throw error;
+    return data as CRMContactInteraction[];
+  };
+
+  // Fetch product interests
+  const fetchProductInterests = async (contactId: string) => {
+    const { data, error } = await supabase
+      .from('crm_product_interests')
+      .select('*')
+      .eq('contact_id', contactId)
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    return data as CRMProductInterest[];
+  };
 
   // Create pipeline mutation
   const createPipeline = useMutation({
@@ -285,6 +356,34 @@ export function useCRM() {
     }
   });
 
+  // Create interaction mutation
+  const createInteraction = useMutation({
+    mutationFn: async (interaction: Omit<CRMContactInteraction, 'id' | 'created_at' | 'updated_at'>) => {
+      const { data, error } = await supabase
+        .from('crm_contact_interactions')
+        .insert([interaction])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-contacts'] });
+      toast({
+        title: "Interação registrada",
+        description: "Interação registrada com sucesso!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao registrar interação",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
   return {
     // Data
     pipelines,
@@ -297,6 +396,8 @@ export function useCRM() {
     // Fetch functions
     fetchStagesByPipeline,
     fetchDealsByPipeline,
+    fetchContactInteractions,
+    fetchProductInterests,
     
     // Mutations
     createPipeline: createPipeline.mutate,
@@ -313,6 +414,9 @@ export function useCRM() {
     
     moveDeal: moveDeal.mutate,
     isMovingDeal: moveDeal.isPending,
+    
+    createInteraction: createInteraction.mutate,
+    isCreatingInteraction: createInteraction.isPending,
     
     // Errors
     pipelinesError

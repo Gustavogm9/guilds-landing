@@ -435,42 +435,146 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_contact_interactions: {
+        Row: {
+          channel_data: Json | null
+          contact_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          interaction_date: string
+          interaction_type: string
+          next_steps: string | null
+          outcome: string | null
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          channel_data?: Json | null
+          contact_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          interaction_date?: string
+          interaction_type: string
+          next_steps?: string | null
+          outcome?: string | null
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          channel_data?: Json | null
+          contact_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          interaction_date?: string
+          interaction_type?: string
+          next_steps?: string | null
+          outcome?: string | null
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_contact_interactions_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crm_contacts: {
         Row: {
+          budget_range: string | null
           company: string | null
+          company_size: string | null
           created_at: string
           custom_fields: Json | null
+          decision_timeline: string | null
           email: string | null
+          engagement_score: number | null
+          icp_score: number | null
           id: string
+          industry: string | null
           is_active: boolean
+          job_title: string | null
+          last_interaction_date: string | null
+          lead_score: number | null
+          lead_source: string | null
+          lifecycle_stage: string | null
           name: string
+          next_action: string | null
+          next_action_date: string | null
+          notes: string | null
+          pain_points: string[] | null
           phone: string | null
+          products_interest: string[] | null
+          social_media: Json | null
           source: string | null
           tags: string[] | null
           updated_at: string
         }
         Insert: {
+          budget_range?: string | null
           company?: string | null
+          company_size?: string | null
           created_at?: string
           custom_fields?: Json | null
+          decision_timeline?: string | null
           email?: string | null
+          engagement_score?: number | null
+          icp_score?: number | null
           id?: string
+          industry?: string | null
           is_active?: boolean
+          job_title?: string | null
+          last_interaction_date?: string | null
+          lead_score?: number | null
+          lead_source?: string | null
+          lifecycle_stage?: string | null
           name: string
+          next_action?: string | null
+          next_action_date?: string | null
+          notes?: string | null
+          pain_points?: string[] | null
           phone?: string | null
+          products_interest?: string[] | null
+          social_media?: Json | null
           source?: string | null
           tags?: string[] | null
           updated_at?: string
         }
         Update: {
+          budget_range?: string | null
           company?: string | null
+          company_size?: string | null
           created_at?: string
           custom_fields?: Json | null
+          decision_timeline?: string | null
           email?: string | null
+          engagement_score?: number | null
+          icp_score?: number | null
           id?: string
+          industry?: string | null
           is_active?: boolean
+          job_title?: string | null
+          last_interaction_date?: string | null
+          lead_score?: number | null
+          lead_source?: string | null
+          lifecycle_stage?: string | null
           name?: string
+          next_action?: string | null
+          next_action_date?: string | null
+          notes?: string | null
+          pain_points?: string[] | null
           phone?: string | null
+          products_interest?: string[] | null
+          social_media?: Json | null
           source?: string | null
           tags?: string[] | null
           updated_at?: string
@@ -582,6 +686,53 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_lead_scoring: {
+        Row: {
+          calculated_at: string
+          contact_id: string
+          created_at: string
+          criteria: Json
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          score_type: string
+          score_value: number
+          updated_at: string
+        }
+        Insert: {
+          calculated_at?: string
+          contact_id: string
+          created_at?: string
+          criteria?: Json
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          score_type: string
+          score_value?: number
+          updated_at?: string
+        }
+        Update: {
+          calculated_at?: string
+          contact_id?: string
+          created_at?: string
+          criteria?: Json
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          score_type?: string
+          score_value?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_lead_scoring_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crm_pipelines: {
         Row: {
           color: string
@@ -617,6 +768,56 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      crm_product_interests: {
+        Row: {
+          budget_indicated: number | null
+          contact_id: string
+          created_at: string
+          id: string
+          interest_level: number
+          notes: string | null
+          product_category: string
+          source_interaction: string | null
+          specific_products: string[] | null
+          timeline_indicated: string | null
+          updated_at: string
+        }
+        Insert: {
+          budget_indicated?: number | null
+          contact_id: string
+          created_at?: string
+          id?: string
+          interest_level?: number
+          notes?: string | null
+          product_category: string
+          source_interaction?: string | null
+          specific_products?: string[] | null
+          timeline_indicated?: string | null
+          updated_at?: string
+        }
+        Update: {
+          budget_indicated?: number | null
+          contact_id?: string
+          created_at?: string
+          id?: string
+          interest_level?: number
+          notes?: string | null
+          product_category?: string
+          source_interaction?: string | null
+          specific_products?: string[] | null
+          timeline_indicated?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_product_interests_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       crm_stages: {
         Row: {
@@ -1605,6 +1806,18 @@ export type Database = {
       cleanup_old_enrollments: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      create_contact_from_lead_source: {
+        Args: {
+          p_company?: string
+          p_email: string
+          p_name: string
+          p_phone?: string
+          p_pipeline_name?: string
+          p_source?: string
+          p_source_data?: Json
+        }
+        Returns: string
       }
       get_all_newsletter_subscriptions: {
         Args: Record<PropertyKey, never>

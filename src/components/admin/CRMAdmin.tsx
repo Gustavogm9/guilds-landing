@@ -1,369 +1,316 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Plus, 
-  Settings, 
-  Users, 
-  Workflow, 
-  Activity,
-  MoreHorizontal,
-  Edit,
-  Trash
-} from 'lucide-react';
+import { Plus, Settings, Users, FileText, Eye, ExternalLink } from 'lucide-react';
 import { useCRM } from '@/hooks/useCRM';
-import { 
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table';
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { PipelineForm } from './PipelineForm';
 import { StageForm } from './StageForm';
 import { ContactForm } from './ContactForm';
+import { EnhancedContactCard } from '@/components/crm/contact/EnhancedContactCard';
+import { ContactDetailModal } from '@/components/crm/contact/ContactDetailModal';
+import { useNavigate } from 'react-router-dom';
 
-export function CRMAdmin() {
-  const [selectedTab, setSelectedTab] = useState('pipelines');
-  const [showPipelineForm, setShowPipelineForm] = useState(false);
-  const [showStageForm, setShowStageForm] = useState(false);
-  const [showContactForm, setShowContactForm] = useState(false);
-  const [selectedPipelineId, setSelectedPipelineId] = useState<string>('');
-
+export default function CRMAdmin() {
+  const navigate = useNavigate();
   const { 
     pipelines, 
     contacts, 
     pipelinesLoading, 
     contactsLoading,
-    fetchStagesByPipeline 
+    createPipeline,
+    isCreatingPipeline,
+    createContact,
+    isCreatingContact
   } = useCRM();
 
-  const { data: stages } = useQuery({
-    queryKey: ['crm-stages-admin', selectedPipelineId],
-    queryFn: () => selectedPipelineId ? fetchStagesByPipeline(selectedPipelineId) : Promise.resolve([]),
-    enabled: !!selectedPipelineId
-  });
+  const [showPipelineForm, setShowPipelineForm] = useState(false);
+  const [showStageForm, setShowStageForm] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [selectedPipeline, setSelectedPipeline] = useState<string | null>(null);
+  const [selectedContact, setSelectedContact] = useState(null);
+  const [showContactDetail, setShowContactDetail] = useState(false);
+
+  const handleCreatePipeline = (data: any) => {
+    createPipeline(data);
+  };
+
+  const handleCreateContact = (data: any) => {
+    createContact(data);
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* Header */}
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">CRM - Administração</h1>
+          <h1 className="text-3xl font-bold">CRM Admin</h1>
           <p className="text-muted-foreground">
-            Configure pipelines, estágios, contatos e campos personalizados
+            Gerencie pipelines, estágios e contatos do sistema CRM
           </p>
         </div>
+        <Button 
+          onClick={() => navigate('/crm')} 
+          variant="outline"
+          className="gap-2"
+        >
+          <ExternalLink className="h-4 w-4" />
+          Ver Kanban
+        </Button>
       </div>
 
-      <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="pipelines">
-            <Workflow className="h-4 w-4 mr-2" />
-            Pipelines
-          </TabsTrigger>
-          <TabsTrigger value="stages">
-            <Settings className="h-4 w-4 mr-2" />
-            Estágios
-          </TabsTrigger>
-          <TabsTrigger value="contacts">
-            <Users className="h-4 w-4 mr-2" />
-            Contatos
-          </TabsTrigger>
-          <TabsTrigger value="fields">
-            <Activity className="h-4 w-4 mr-2" />
-            Campos
-          </TabsTrigger>
-        </TabsList>
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pipelines Ativos</CardTitle>
+            <Settings className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {pipelinesLoading ? '...' : pipelines?.filter(p => p.is_active).length || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {pipelines?.length || 0} total
+            </p>
+          </CardContent>
+        </Card>
 
-        <TabsContent value="pipelines" className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Pipelines</h2>
-            
-            <Dialog open={showPipelineForm} onOpenChange={setShowPipelineForm}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Novo Pipeline
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Novo Pipeline</DialogTitle>
-                </DialogHeader>
-                <PipelineForm onSuccess={() => setShowPipelineForm(false)} />
-              </DialogContent>
-            </Dialog>
-          </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Contatos Ativos</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {contactsLoading ? '...' : contacts?.length || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Total de leads e clientes
+            </p>
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardContent>
-              {pipelinesLoading ? (
-                <div className="text-center py-8">Carregando pipelines...</div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Nome</TableHead>
-                      <TableHead>Tipo</TableHead>
-                      <TableHead>Descrição</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Ações</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {pipelines?.map(pipeline => (
-                      <TableRow key={pipeline.id}>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <div 
-                              className="w-3 h-3 rounded-full" 
-                              style={{ backgroundColor: pipeline.color }}
-                            />
-                            <span className="font-medium">{pipeline.name}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary">
-                            {pipeline.type === 'sales' ? 'Vendas' : 
-                             pipeline.type === 'support' ? 'Suporte' : 'Projetos'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="max-w-xs">
-                          <span className="line-clamp-2">{pipeline.description}</span>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={pipeline.is_active ? "default" : "secondary"}>
-                            {pipeline.is_active ? 'Ativo' : 'Inativo'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => setSelectedPipelineId(pipeline.id)}>
-                                <Edit className="h-4 w-4 mr-2" />
-                                Editar
-                              </DropdownMenuItem>
-                              <DropdownMenuItem 
-                                onClick={() => {
-                                  setSelectedPipelineId(pipeline.id);
-                                  setSelectedTab('stages');
-                                }}
-                              >
-                                <Settings className="h-4 w-4 mr-2" />
-                                Configurar Estágios
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="text-destructive">
-                                <Trash className="h-4 w-4 mr-2" />
-                                Excluir
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Novos esta semana</CardTitle>
+            <Plus className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {contactsLoading ? '...' : 
+                contacts?.filter(c => {
+                  const weekAgo = new Date();
+                  weekAgo.setDate(weekAgo.getDate() - 7);
+                  return new Date(c.created_at) > weekAgo;
+                }).length || 0
+              }
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Últimos 7 dias
+            </p>
+          </CardContent>
+        </Card>
+      </div>
 
-        <TabsContent value="stages" className="space-y-4">
-          <div className="flex items-center justify-between">
+      {/* Pipelines */}
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-xl font-semibold">Estágios</h2>
-              {selectedPipelineId && (
-                <p className="text-sm text-muted-foreground">
-                  Pipeline: {pipelines?.find(p => p.id === selectedPipelineId)?.name}
-                </p>
-              )}
+              <CardTitle>Pipelines</CardTitle>
+              <CardDescription>
+                {pipelinesLoading ? 'Carregando...' : `${pipelines?.length || 0} pipelines configurados`}
+              </CardDescription>
             </div>
-            
-            <div className="flex gap-2">
-              <select 
-                value={selectedPipelineId}
-                onChange={(e) => setSelectedPipelineId(e.target.value)}
-                className="px-3 py-2 border rounded-md"
-              >
-                <option value="">Selecione um pipeline</option>
-                {pipelines?.map(pipeline => (
-                  <option key={pipeline.id} value={pipeline.id}>
-                    {pipeline.name}
-                  </option>
-                ))}
-              </select>
-              
-              <Dialog open={showStageForm} onOpenChange={setShowStageForm}>
-                <DialogTrigger asChild>
-                  <Button disabled={!selectedPipelineId}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Novo Estágio
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Novo Estágio</DialogTitle>
-                  </DialogHeader>
-                  <StageForm 
-                    pipelineId={selectedPipelineId}
-                    onSuccess={() => setShowStageForm(false)} 
-                  />
-                </DialogContent>
-              </Dialog>
-            </div>
-          </div>
-
-          <Card>
-            <CardContent>
-              {selectedPipelineId ? (
-                stages && stages.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {stages.map((stage, index) => (
-                      <Card key={stage.id} className="relative">
-                        <CardHeader>
-                          <div className="flex items-center justify-between">
-                            <CardTitle className="text-sm flex items-center gap-2">
-                              <div 
-                                className="w-3 h-3 rounded-full" 
-                                style={{ backgroundColor: stage.color }}
-                              />
-                              {stage.name}
-                            </CardTitle>
-                            <Badge variant="outline" className="text-xs">
-                              #{index + 1}
-                            </Badge>
-                          </div>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-xs text-muted-foreground">
-                            {stage.description || 'Sem descrição'}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    Nenhum estágio encontrado para este pipeline
-                  </div>
-                )
-              ) : (
-                <div className="text-center py-8">
-                  Selecione um pipeline para ver os estágios
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="contacts" className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Contatos</h2>
-            
-            <Dialog open={showContactForm} onOpenChange={setShowContactForm}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Novo Contato
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Novo Contato</DialogTitle>
-                </DialogHeader>
-                <ContactForm onSuccess={() => setShowContactForm(false)} />
-              </DialogContent>
-            </Dialog>
-          </div>
-
-          <Card>
-            <CardContent>
-              {contactsLoading ? (
-                <div className="text-center py-8">Carregando contatos...</div>
-              ) : contacts && contacts.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Nome</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Empresa</TableHead>
-                      <TableHead>Telefone</TableHead>
-                      <TableHead>Ações</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {contacts.map(contact => (
-                      <TableRow key={contact.id}>
-                        <TableCell className="font-medium">{contact.name}</TableCell>
-                        <TableCell>{contact.email || '-'}</TableCell>
-                        <TableCell>{contact.company || '-'}</TableCell>
-                        <TableCell>{contact.phone || '-'}</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>
-                                <Edit className="h-4 w-4 mr-2" />
-                                Editar
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="text-destructive">
-                                <Trash className="h-4 w-4 mr-2" />
-                                Excluir
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              ) : (
-                <div className="text-center py-8">
-                  Nenhum contato encontrado
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="fields" className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Campos Personalizados</h2>
-            <Button>
+            <Button onClick={() => setShowPipelineForm(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              Novo Campo
+              Novo Pipeline
             </Button>
           </div>
+        </CardHeader>
+        <CardContent>
+          {pipelinesLoading ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Carregando pipelines...</p>
+            </div>
+          ) : pipelines && pipelines.length > 0 ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {pipelines.map((pipeline) => (
+                <Card key={pipeline.id} className="relative">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <div 
+                          className="w-4 h-4 rounded-full" 
+                          style={{ backgroundColor: pipeline.color }}
+                        />
+                        {pipeline.name}
+                      </CardTitle>
+                      <Badge 
+                        variant={pipeline.is_active ? "default" : "secondary"}
+                        className="text-xs"
+                      >
+                        {pipeline.is_active ? "Ativo" : "Inativo"}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      {pipeline.description || 'Sem descrição'}
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <Badge variant="outline" className="text-xs">
+                        {pipeline.type === 'sales' ? 'Vendas' : 
+                         pipeline.type === 'support' ? 'Suporte' : 'Projetos'}
+                      </Badge>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => {
+                          setSelectedPipeline(pipeline.id);
+                          setShowStageForm(true);
+                        }}
+                      >
+                        <Settings className="h-4 w-4 mr-1" />
+                        Estágios
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <Settings className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <p className="text-muted-foreground">Nenhum pipeline encontrado</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-          <Card>
-            <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                Funcionalidade de campos personalizados em desenvolvimento...
+      {/* Contacts */}
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle>Contatos</CardTitle>
+              <CardDescription>
+                {contactsLoading ? 'Carregando...' : `${contacts?.length || 0} contatos ativos`}
+              </CardDescription>
+            </div>
+            <Button onClick={() => setShowContactForm(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Novo Contato
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {contactsLoading ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Carregando contatos...</p>
+            </div>
+          ) : contacts && contacts.length > 0 ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {contacts.slice(0, 6).map((contact) => (
+                <EnhancedContactCard
+                  key={contact.id}
+                  contact={contact}
+                  onViewDetails={(contact) => {
+                    setSelectedContact(contact);
+                    setShowContactDetail(true);
+                  }}
+                  onAddInteraction={(contact) => {
+                    // TODO: Implementar modal de nova interação
+                    console.log('Add interaction for:', contact.name);
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <p className="text-muted-foreground">Nenhum contato encontrado</p>
+            </div>
+          )}
+          
+          {contacts && contacts.length > 6 && (
+            <div className="text-center pt-4 border-t mt-4">
+              <Button variant="outline" onClick={() => navigate('/crm')}>
+                <Eye className="h-4 w-4 mr-2" />
+                Ver todos os {contacts.length} contatos no CRM
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Lead Sources Integration Status */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Integração de Fontes de Lead</CardTitle>
+          <CardDescription>
+            Status das integrações automáticas com formulários e fontes de captura
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              { name: 'Newsletter', status: 'active', pipeline: 'Inbound Marketing' },
+              { name: 'Formulário Contato', status: 'active', pipeline: 'Contato Direto' },
+              { name: 'Qualificação', status: 'active', pipeline: 'Qualificação' },
+              { name: 'Workshops', status: 'active', pipeline: 'Educacional' }
+            ].map((source) => (
+              <div key={source.name} className="flex items-center justify-between p-3 border rounded-lg">
+                <div>
+                  <h4 className="font-medium text-sm">{source.name}</h4>
+                  <p className="text-xs text-muted-foreground">{source.pipeline}</p>
+                </div>
+                <Badge 
+                  variant={source.status === 'active' ? 'default' : 'secondary'}
+                  className="text-xs"
+                >
+                  {source.status === 'active' ? 'Ativo' : 'Inativo'}
+                </Badge>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Forms */}
+      {showPipelineForm && (
+        <PipelineForm
+          onSuccess={() => setShowPipelineForm(false)}
+        />
+      )}
+
+      {showStageForm && selectedPipeline && (
+        <StageForm
+          pipelineId={selectedPipeline}
+          onSuccess={() => {
+            setShowStageForm(false);
+            setSelectedPipeline(null);
+          }}
+        />
+      )}
+
+      {showContactForm && (
+        <ContactForm
+          onSuccess={() => setShowContactForm(false)}
+        />
+      )}
+
+      {/* Contact Detail Modal */}
+      <ContactDetailModal
+        contact={selectedContact}
+        open={showContactDetail}
+        onOpenChange={setShowContactDetail}
+        onEdit={(contact) => {
+          // TODO: Implementar edição de contato
+          console.log('Edit contact:', contact.name);
+        }}
+      />
     </div>
   );
 }
