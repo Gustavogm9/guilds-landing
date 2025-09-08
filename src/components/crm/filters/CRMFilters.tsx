@@ -157,7 +157,7 @@ export function CRMFilters({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Search */}
             <div className="space-y-2">
               <label className="text-xs font-medium">Buscar</label>
@@ -210,7 +210,10 @@ export function CRMFilters({
                 </SelectContent>
               </Select>
             </div>
+          </div>
 
+          {/* Second Row - Date and Value Range */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Date Range */}
             <div className="space-y-2">
               <label className="text-xs font-medium">Período</label>
@@ -236,22 +239,122 @@ export function CRMFilters({
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    initialFocus
-                    mode="range"
-                    defaultMonth={filters.dateRange?.[0] || undefined}
-                    selected={{
-                      from: filters.dateRange?.[0] || undefined,
-                      to: filters.dateRange?.[1] || undefined,
-                    }}
-                    onSelect={(range) => {
-                      updateFilter('dateRange', range ? [range.from || null, range.to || null] : undefined);
-                    }}
-                    numberOfMonths={2}
-                    locale={ptBR}
-                  />
+                  <div className="p-3">
+                    {/* Quick Presets */}
+                    <div className="flex gap-2 mb-3 flex-wrap">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const today = new Date();
+                          updateFilter('dateRange', [today, today]);
+                        }}
+                        className="text-xs h-7"
+                      >
+                        Hoje
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const today = new Date();
+                          const weekAgo = new Date();
+                          weekAgo.setDate(today.getDate() - 7);
+                          updateFilter('dateRange', [weekAgo, today]);
+                        }}
+                        className="text-xs h-7"
+                      >
+                        7 dias
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const today = new Date();
+                          const monthAgo = new Date();
+                          monthAgo.setMonth(today.getMonth() - 1);
+                          updateFilter('dateRange', [monthAgo, today]);
+                        }}
+                        className="text-xs h-7"
+                      >
+                        30 dias
+                      </Button>
+                    </div>
+                    <Calendar
+                      initialFocus
+                      mode="range"
+                      defaultMonth={filters.dateRange?.[0] || undefined}
+                      selected={{
+                        from: filters.dateRange?.[0] || undefined,
+                        to: filters.dateRange?.[1] || undefined,
+                      }}
+                      onSelect={(range) => {
+                        updateFilter('dateRange', range ? [range.from || null, range.to || null] : undefined);
+                      }}
+                      numberOfMonths={2}
+                      locale={ptBR}
+                      className="pointer-events-auto"
+                    />
+                  </div>
                 </PopoverContent>
               </Popover>
+            </div>
+
+            {/* Value Range */}
+            <div className="space-y-2">
+              <label className="text-xs font-medium">Potencial de Venda (R$)</label>
+              <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <Input
+                    type="number"
+                    placeholder="Mín."
+                    value={filters.valueRange?.[0] || ''}
+                    onChange={(e) => {
+                      const min = e.target.value ? parseFloat(e.target.value) : undefined;
+                      const max = filters.valueRange?.[1];
+                      updateFilter('valueRange', min !== undefined || max !== undefined ? [min || 0, max || 999999] : undefined);
+                    }}
+                    className="h-9 text-xs"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Máx."
+                    value={filters.valueRange?.[1] || ''}
+                    onChange={(e) => {
+                      const max = e.target.value ? parseFloat(e.target.value) : undefined;
+                      const min = filters.valueRange?.[0];
+                      updateFilter('valueRange', min !== undefined || max !== undefined ? [min || 0, max || 999999] : undefined);
+                    }}
+                    className="h-9 text-xs"
+                  />
+                </div>
+                <div className="flex gap-1 flex-wrap">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => updateFilter('valueRange', [5000, 25000])}
+                    className="text-xs h-6"
+                  >
+                    R$ 5-25K
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => updateFilter('valueRange', [25000, 100000])}
+                    className="text-xs h-6"
+                  >
+                    R$ 25-100K
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => updateFilter('valueRange', [100000, 999999])}
+                    className="text-xs h-6"
+                  >
+                    R$ 100K+
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -310,6 +413,31 @@ export function CRMFilters({
                     <X 
                       className="h-3 w-3 cursor-pointer" 
                       onClick={() => updateFilter('quickView', null)} 
+                    />
+                  </Badge>
+                )}
+                {filters.dateRange && filters.dateRange[0] && (
+                  <Badge variant="secondary" className="flex items-center gap-1">
+                    {filters.dateRange[1] 
+                      ? `${format(filters.dateRange[0], 'dd/MM')} - ${format(filters.dateRange[1], 'dd/MM')}`
+                      : format(filters.dateRange[0], 'dd/MM/yyyy')
+                    }
+                    <X 
+                      className="h-3 w-3 cursor-pointer" 
+                      onClick={() => updateFilter('dateRange', undefined)} 
+                    />
+                  </Badge>
+                )}
+                {filters.valueRange && (filters.valueRange[0] || filters.valueRange[1]) && (
+                  <Badge variant="secondary" className="flex items-center gap-1">
+                    R$ {filters.valueRange[0] ? `${filters.valueRange[0].toLocaleString()}` : '0'} - 
+                    {filters.valueRange[1] && filters.valueRange[1] < 999999 
+                      ? ` R$ ${filters.valueRange[1].toLocaleString()}`
+                      : '+'
+                    }
+                    <X 
+                      className="h-3 w-3 cursor-pointer" 
+                      onClick={() => updateFilter('valueRange', undefined)} 
                     />
                   </Badge>
                 )}

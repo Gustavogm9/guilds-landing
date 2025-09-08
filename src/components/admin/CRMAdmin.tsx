@@ -50,7 +50,7 @@ export default function CRMAdmin() {
           </p>
         </div>
         <Button 
-          onClick={() => navigate('/crm')} 
+          onClick={() => navigate('/admin/crm/kanban')} 
           variant="outline"
           className="gap-2"
         >
@@ -236,7 +236,7 @@ export default function CRMAdmin() {
           
           {contacts && contacts.length > 6 && (
             <div className="text-center pt-4 border-t mt-4">
-              <Button variant="outline" onClick={() => navigate('/crm')}>
+              <Button variant="outline" onClick={() => navigate('/admin/crm/kanban')}>
                 <Eye className="h-4 w-4 mr-2" />
                 Ver todos os {contacts.length} contatos no CRM
               </Button>

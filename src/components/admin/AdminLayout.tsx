@@ -17,7 +17,8 @@ import {
   FlaskConical,
   Palette,
   ChevronRight,
-  Database
+  Database,
+  Kanban
 } from 'lucide-react';
 
 import {
@@ -85,7 +86,10 @@ const menuItems = [
   {
     title: "CRM",
     icon: Database,
-    url: "/admin/crm"
+    items: [
+      { title: "Admin", icon: Settings, url: "/admin/crm" },
+      { title: "Kanban", icon: Kanban, url: "/admin/crm/kanban" }
+    ]
   }
 ];
 
