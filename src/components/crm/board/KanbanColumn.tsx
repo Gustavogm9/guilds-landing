@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { DealCard } from './DealCard';
+import { StageRevenueCard } from './StageRevenueCard';
 import { CRMStage, CRMDeal } from '@/hooks/useCRM';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -42,6 +43,8 @@ export function KanbanColumn({ stage, deals, isLoading }: KanbanColumnProps) {
       </CardHeader>
       
       <CardContent className="pt-0">
+        <StageRevenueCard deals={deals} stageColor={stage.color} />
+        
         <div className="space-y-3 min-h-[500px]">
           {isLoading ? (
             // Loading skeletons
