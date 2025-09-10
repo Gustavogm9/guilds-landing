@@ -1184,6 +1184,476 @@ export type Database = {
         }
         Relationships: []
       }
+      project_client_access: {
+        Row: {
+          access_level: string | null
+          access_token: string | null
+          client_contact_id: string
+          created_at: string | null
+          id: string
+          invitation_accepted_at: string | null
+          invitation_sent_at: string | null
+          is_active: boolean | null
+          last_accessed_at: string | null
+          permissions: Json | null
+          project_id: string
+          token_expires_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          access_level?: string | null
+          access_token?: string | null
+          client_contact_id: string
+          created_at?: string | null
+          id?: string
+          invitation_accepted_at?: string | null
+          invitation_sent_at?: string | null
+          is_active?: boolean | null
+          last_accessed_at?: string | null
+          permissions?: Json | null
+          project_id: string
+          token_expires_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          access_level?: string | null
+          access_token?: string | null
+          client_contact_id?: string
+          created_at?: string | null
+          id?: string
+          invitation_accepted_at?: string | null
+          invitation_sent_at?: string | null
+          is_active?: boolean | null
+          last_accessed_at?: string | null
+          permissions?: Json | null
+          project_id?: string
+          token_expires_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_client_access_client_contact_id_fkey"
+            columns: ["client_contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_client_access_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_milestones: {
+        Row: {
+          client_action_description: string | null
+          client_action_required: boolean | null
+          completed_date: string | null
+          created_at: string | null
+          deliverables: string[] | null
+          dependencies: string[] | null
+          description: string | null
+          due_date: string
+          id: string
+          is_active: boolean | null
+          milestone_type: string | null
+          notification_sent: boolean | null
+          project_id: string
+          status: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          client_action_description?: string | null
+          client_action_required?: boolean | null
+          completed_date?: string | null
+          created_at?: string | null
+          deliverables?: string[] | null
+          dependencies?: string[] | null
+          description?: string | null
+          due_date: string
+          id?: string
+          is_active?: boolean | null
+          milestone_type?: string | null
+          notification_sent?: boolean | null
+          project_id: string
+          status?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          client_action_description?: string | null
+          client_action_required?: boolean | null
+          completed_date?: string | null
+          created_at?: string | null
+          deliverables?: string[] | null
+          dependencies?: string[] | null
+          description?: string | null
+          due_date?: string
+          id?: string
+          is_active?: boolean | null
+          milestone_type?: string | null
+          notification_sent?: boolean | null
+          project_id?: string
+          status?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_milestones_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_reports: {
+        Row: {
+          content: Json
+          created_at: string | null
+          generated_at: string | null
+          id: string
+          is_active: boolean | null
+          metrics: Json | null
+          period_end: string | null
+          period_start: string | null
+          project_id: string
+          report_type: string
+          sent_at: string | null
+          sent_to_client: boolean | null
+          template_used: string | null
+          title: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string | null
+          generated_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          metrics?: Json | null
+          period_end?: string | null
+          period_start?: string | null
+          project_id: string
+          report_type: string
+          sent_at?: string | null
+          sent_to_client?: boolean | null
+          template_used?: string | null
+          title: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string | null
+          generated_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          metrics?: Json | null
+          period_end?: string | null
+          period_start?: string | null
+          project_id?: string
+          report_type?: string
+          sent_at?: string | null
+          sent_to_client?: boolean | null
+          template_used?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_reports_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_sprints: {
+        Row: {
+          burndown_data: Json | null
+          created_at: string | null
+          description: string | null
+          end_date: string
+          goal_description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          project_id: string
+          sprint_number: number
+          start_date: string
+          status: string
+          updated_at: string | null
+          velocity_points: number | null
+        }
+        Insert: {
+          burndown_data?: Json | null
+          created_at?: string | null
+          description?: string | null
+          end_date: string
+          goal_description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          project_id: string
+          sprint_number: number
+          start_date: string
+          status?: string
+          updated_at?: string | null
+          velocity_points?: number | null
+        }
+        Update: {
+          burndown_data?: Json | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string
+          goal_description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          project_id?: string
+          sprint_number?: number
+          start_date?: string
+          status?: string
+          updated_at?: string | null
+          velocity_points?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_sprints_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_status_logs: {
+        Row: {
+          action_type: string
+          change_description: string | null
+          changed_by: string | null
+          client_visible: boolean | null
+          created_at: string | null
+          entity_id: string
+          entity_type: string
+          id: string
+          new_values: Json | null
+          old_values: Json | null
+          project_id: string
+        }
+        Insert: {
+          action_type: string
+          change_description?: string | null
+          changed_by?: string | null
+          client_visible?: boolean | null
+          created_at?: string | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          project_id: string
+        }
+        Update: {
+          action_type?: string
+          change_description?: string | null
+          changed_by?: string | null
+          client_visible?: boolean | null
+          created_at?: string | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_status_logs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_tasks: {
+        Row: {
+          acceptance_criteria: string[] | null
+          actual_hours: number | null
+          assigned_to: string | null
+          client_visible: boolean | null
+          completed_at: string | null
+          created_at: string | null
+          custom_fields: Json | null
+          dependencies: string[] | null
+          description: string | null
+          due_date: string | null
+          estimated_hours: number | null
+          id: string
+          is_active: boolean | null
+          priority: string | null
+          project_id: string
+          reporter_id: string | null
+          sprint_id: string | null
+          status: string
+          story_points: number | null
+          tags: string[] | null
+          task_type: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          acceptance_criteria?: string[] | null
+          actual_hours?: number | null
+          assigned_to?: string | null
+          client_visible?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          custom_fields?: Json | null
+          dependencies?: string[] | null
+          description?: string | null
+          due_date?: string | null
+          estimated_hours?: number | null
+          id?: string
+          is_active?: boolean | null
+          priority?: string | null
+          project_id: string
+          reporter_id?: string | null
+          sprint_id?: string | null
+          status?: string
+          story_points?: number | null
+          tags?: string[] | null
+          task_type?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          acceptance_criteria?: string[] | null
+          actual_hours?: number | null
+          assigned_to?: string | null
+          client_visible?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          custom_fields?: Json | null
+          dependencies?: string[] | null
+          description?: string | null
+          due_date?: string | null
+          estimated_hours?: number | null
+          id?: string
+          is_active?: boolean | null
+          priority?: string | null
+          project_id?: string
+          reporter_id?: string | null
+          sprint_id?: string | null
+          status?: string
+          story_points?: number | null
+          tags?: string[] | null
+          task_type?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_tasks_sprint_id_fkey"
+            columns: ["sprint_id"]
+            isOneToOne: false
+            referencedRelation: "project_sprints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          actual_end_date: string | null
+          budget_value: number | null
+          client_id: string | null
+          created_at: string | null
+          custom_fields: Json | null
+          deal_id: string | null
+          description: string | null
+          expected_end_date: string | null
+          id: string
+          is_active: boolean | null
+          priority: string | null
+          progress_percentage: number | null
+          project_manager_id: string | null
+          project_type: string | null
+          start_date: string | null
+          status: string
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          actual_end_date?: string | null
+          budget_value?: number | null
+          client_id?: string | null
+          created_at?: string | null
+          custom_fields?: Json | null
+          deal_id?: string | null
+          description?: string | null
+          expected_end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          priority?: string | null
+          progress_percentage?: number | null
+          project_manager_id?: string | null
+          project_type?: string | null
+          start_date?: string | null
+          status?: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          actual_end_date?: string | null
+          budget_value?: number | null
+          client_id?: string | null
+          created_at?: string | null
+          custom_fields?: Json | null
+          deal_id?: string | null
+          description?: string | null
+          expected_end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          priority?: string | null
+          progress_percentage?: number | null
+          project_manager_id?: string | null
+          project_type?: string | null
+          start_date?: string | null
+          status?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "crm_deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       public_company_settings: {
         Row: {
           brand_accent_color: string
