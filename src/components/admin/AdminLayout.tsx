@@ -18,7 +18,8 @@ import {
   Palette,
   ChevronRight,
   Database,
-  Kanban
+  Kanban,
+  FolderKanban
 } from 'lucide-react';
 
 import {
@@ -88,6 +89,7 @@ const menuItems = [
     icon: Database,
     items: [
       { title: "Admin", icon: Settings, url: "/admin/crm" },
+      { title: "Projetos", icon: FolderKanban, url: "/admin/projects" },
       { title: "Kanban", icon: Kanban, url: "/admin/crm/kanban" }
     ]
   }

@@ -11,6 +11,7 @@ import CRMRoutes from '@/pages/CRMRoutes';
 import { LabAdmin } from '@/components/admin/LabAdmin';
 import { CompanyAdmin } from '@/components/admin/CompanyAdmin';
 import { NewsletterAdmin } from '@/components/admin/NewsletterAdmin';
+import Projects from '@/pages/Projects';
 
 export default function Admin() {
   return (
@@ -25,6 +26,7 @@ export default function Admin() {
         <Route path="team" element={<CompanyAdmin />} />
         <Route path="lab" element={<LabAdmin />} />
         <Route path="craft" element={<CraftAdmin />} />
+        <Route path="projects/*" element={<Projects />} />
         <Route path="crm/*" element={<CRMRoutes />} />
       </Routes>
     </AdminLayout>
