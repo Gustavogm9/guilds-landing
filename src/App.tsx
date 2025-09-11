@@ -53,6 +53,9 @@ const Craft = React.lazy(() => import("./pages/Craft"));
 const CraftIdea = React.lazy(() => import("./pages/CraftIdea"));
 const CraftPortfolio = React.lazy(() => import("./pages/CraftPortfolio"));
 
+// Client Portal - secure client access
+const ClientPortal = React.lazy(() => import("./pages/ClientPortal"));
+
 // Loading fallback component
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -117,6 +120,13 @@ const App = () => {
                       <Route path="/auth" element={
                         <Suspense fallback={<PageLoader />}>
                           <Auth />
+                        </Suspense>
+                      } />
+                      
+                      {/* Client Portal - WITHOUT site layout */}
+                      <Route path="/portal/cliente" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <ClientPortal />
                         </Suspense>
                       } />
                       
