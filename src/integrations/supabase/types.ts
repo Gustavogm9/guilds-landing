@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      client_notification_preferences: {
+        Row: {
+          client_contact_id: string
+          created_at: string
+          email_notifications: boolean | null
+          frequency: string | null
+          id: string
+          milestone_notifications: boolean | null
+          report_notifications: boolean | null
+          task_notifications: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          client_contact_id: string
+          created_at?: string
+          email_notifications?: boolean | null
+          frequency?: string | null
+          id?: string
+          milestone_notifications?: boolean | null
+          report_notifications?: boolean | null
+          task_notifications?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          client_contact_id?: string
+          created_at?: string
+          email_notifications?: boolean | null
+          frequency?: string | null
+          id?: string
+          milestone_notifications?: boolean | null
+          report_notifications?: boolean | null
+          task_notifications?: boolean | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       company_culture: {
         Row: {
           application_info: string | null
@@ -1247,6 +1283,54 @@ export type Database = {
           },
         ]
       }
+      project_email_notifications: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          notification_type: string
+          project_id: string
+          recipient_email: string
+          recipient_type: string
+          retry_count: number | null
+          sent_at: string | null
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          notification_type: string
+          project_id: string
+          recipient_email: string
+          recipient_type?: string
+          retry_count?: number | null
+          sent_at?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          notification_type?: string
+          project_id?: string
+          recipient_email?: string
+          recipient_type?: string
+          retry_count?: number | null
+          sent_at?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       project_milestones: {
         Row: {
           client_action_description: string | null
@@ -1572,6 +1656,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      project_webhook_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          payload: Json
+          project_id: string
+          response_body: string | null
+          response_code: number | null
+          retry_count: number | null
+          sent_at: string | null
+          status: string
+          webhook_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          payload: Json
+          project_id: string
+          response_body?: string | null
+          response_code?: number | null
+          retry_count?: number | null
+          sent_at?: string | null
+          status?: string
+          webhook_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          payload?: Json
+          project_id?: string
+          response_body?: string | null
+          response_code?: number | null
+          retry_count?: number | null
+          sent_at?: string | null
+          status?: string
+          webhook_url?: string | null
+        }
+        Relationships: []
       }
       projects: {
         Row: {
@@ -2286,6 +2412,14 @@ export type Database = {
           p_pipeline_name?: string
           p_source?: string
           p_source_data?: Json
+        }
+        Returns: string
+      }
+      generate_client_access_token: {
+        Args: {
+          p_access_level?: string
+          p_client_contact_id: string
+          p_project_id: string
         }
         Returns: string
       }
