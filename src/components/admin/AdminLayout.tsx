@@ -19,7 +19,8 @@ import {
   ChevronRight,
   Database,
   Kanban,
-  FolderKanban
+  FolderKanban,
+  Bell
 } from 'lucide-react';
 
 import {
@@ -90,6 +91,7 @@ const menuItems = [
     items: [
       { title: "Admin", icon: Settings, url: "/admin/crm" },
       { title: "Projetos", icon: FolderKanban, url: "/admin/projects" },
+      { title: "Notificações", icon: Bell, url: "/admin/notifications" },
       { title: "Kanban", icon: Kanban, url: "/admin/crm/kanban" }
     ]
   }
