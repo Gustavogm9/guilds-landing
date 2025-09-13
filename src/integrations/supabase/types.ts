@@ -2001,6 +2001,48 @@ export type Database = {
         }
         Relationships: []
       }
+      system_performance_logs: {
+        Row: {
+          created_at: string
+          duration_ms: number | null
+          end_time: string | null
+          error_count: number | null
+          id: string
+          metadata: Json | null
+          operation_type: string
+          records_processed: number | null
+          start_time: string
+          status: string
+          success_count: number | null
+        }
+        Insert: {
+          created_at?: string
+          duration_ms?: number | null
+          end_time?: string | null
+          error_count?: number | null
+          id?: string
+          metadata?: Json | null
+          operation_type: string
+          records_processed?: number | null
+          start_time?: string
+          status?: string
+          success_count?: number | null
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number | null
+          end_time?: string | null
+          error_count?: number | null
+          id?: string
+          metadata?: Json | null
+          operation_type?: string
+          records_processed?: number | null
+          start_time?: string
+          status?: string
+          success_count?: number | null
+        }
+        Relationships: []
+      }
       team_members: {
         Row: {
           avatar_url: string | null
@@ -2378,7 +2420,39 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      admin_dashboard_summary: {
+        Row: {
+          active_projects: number | null
+          avg_email_processing_time: number | null
+          failed_emails: number | null
+          new_contacts_month: number | null
+          new_projects_month: number | null
+          pending_emails: number | null
+          pending_webhooks: number | null
+          system_errors_today: number | null
+          total_contacts: number | null
+          total_deals: number | null
+          total_projects: number | null
+        }
+        Relationships: []
+      }
+      project_statistics: {
+        Row: {
+          active_projects: number | null
+          avg_budget: number | null
+          avg_progress: number | null
+          completed_projects: number | null
+          draft_projects: number | null
+          last_updated: string | null
+          on_hold_projects: number | null
+          projects_last_30_days: number | null
+          projects_last_7_days: number | null
+          total_budget: number | null
+          total_projects: number | null
+          unique_clients: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       check_rate_limit: {
@@ -2399,8 +2473,22 @@ export type Database = {
         Args: { email_param: string; ip_param: unknown }
         Returns: boolean
       }
+      cleanup_old_data: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       cleanup_old_enrollments: {
         Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      complete_system_operation: {
+        Args: {
+          p_error_count?: number
+          p_log_id: string
+          p_records_processed?: number
+          p_status?: string
+          p_success_count?: number
+        }
         Returns: undefined
       }
       create_contact_from_lead_source: {
@@ -2463,6 +2551,14 @@ export type Database = {
           user_agent?: string
           user_id?: string
         }
+        Returns: undefined
+      }
+      log_system_operation: {
+        Args: { p_metadata?: Json; p_operation_type: string }
+        Returns: string
+      }
+      refresh_project_statistics: {
+        Args: Record<PropertyKey, never>
         Returns: undefined
       }
     }
