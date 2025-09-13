@@ -1,3 +1,4 @@
+// Update the edge functions to include performance logging
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.56.0'
 import { Resend } from "npm:resend@4.0.0";
@@ -30,6 +31,17 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Log operation start
+  const { data: logData } = await supabase.rpc('log_system_operation', {
+    p_operation_type: 'email_batch',
+    p_metadata: { scheduled: req.headers.get('x-scheduled') === 'true' }
+  });
+  
+  const logId = logData;
+  let processedCount = 0;
+  let successCount = 0;
+  let errorCount = 0;
+
   try {
     // Get pending email notifications
     const { data: notifications, error } = await supabase
@@ -46,6 +58,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log(`Processing ${notifications?.length || 0} email notifications`);
+    processedCount = notifications?.length || 0;
 
     const results = [];
 
@@ -70,6 +83,7 @@ const handler = async (req: Request): Promise<Response> => {
           })
           .eq('id', notification.id);
 
+        successCount++;
         results.push({
           id: notification.id,
           status: 'sent',
@@ -78,6 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       } catch (emailError: any) {
         console.error('Error sending email:', emailError);
+        errorCount++;
 
         // Update retry count and status
         await supabase
@@ -96,8 +111,21 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
+    // Complete operation log
+    if (logId) {
+      await supabase.rpc('complete_system_operation', {
+        p_log_id: logId,
+        p_records_processed: processedCount,
+        p_success_count: successCount,
+        p_error_count: errorCount,
+        p_status: 'completed'
+      });
+    }
+
     return new Response(JSON.stringify({
-      processed: results.length,
+      processed: processedCount,
+      successful: successCount,
+      failed: errorCount,
       results
     }), {
       status: 200,
@@ -109,6 +137,18 @@ const handler = async (req: Request): Promise<Response> => {
 
   } catch (error: any) {
     console.error("Error in project-email-service function:", error);
+    
+    // Complete operation log with error
+    if (logId) {
+      await supabase.rpc('complete_system_operation', {
+        p_log_id: logId,
+        p_records_processed: processedCount,
+        p_success_count: successCount,
+        p_error_count: errorCount + 1,
+        p_status: 'failed'
+      });
+    }
+    
     return new Response(
       JSON.stringify({ error: error.message }),
       {

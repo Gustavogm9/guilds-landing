@@ -2420,22 +2420,6 @@ export type Database = {
       }
     }
     Views: {
-      admin_dashboard_summary: {
-        Row: {
-          active_projects: number | null
-          avg_email_processing_time: number | null
-          failed_emails: number | null
-          new_contacts_month: number | null
-          new_projects_month: number | null
-          pending_emails: number | null
-          pending_webhooks: number | null
-          system_errors_today: number | null
-          total_contacts: number | null
-          total_deals: number | null
-          total_projects: number | null
-        }
-        Relationships: []
-      }
       project_statistics: {
         Row: {
           active_projects: number | null
@@ -2511,6 +2495,22 @@ export type Database = {
         }
         Returns: string
       }
+      get_admin_dashboard_summary: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          active_projects: number
+          avg_email_processing_time: number
+          failed_emails: number
+          new_contacts_month: number
+          new_projects_month: number
+          pending_emails: number
+          pending_webhooks: number
+          system_errors_today: number
+          total_contacts: number
+          total_deals: number
+          total_projects: number
+        }[]
+      }
       get_all_newsletter_subscriptions: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -2533,6 +2533,23 @@ export type Database = {
           pending_count: number
           total_count: number
           unsubscribed_count: number
+        }[]
+      }
+      get_project_statistics: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          active_projects: number
+          avg_budget: number
+          avg_progress: number
+          completed_projects: number
+          draft_projects: number
+          last_updated: string
+          on_hold_projects: number
+          projects_last_30_days: number
+          projects_last_7_days: number
+          total_budget: number
+          total_projects: number
+          unique_clients: number
         }[]
       }
       get_recent_newsletter_subscriptions: {

@@ -12,6 +12,7 @@ import { LabAdmin } from '@/components/admin/LabAdmin';
 import { CompanyAdmin } from '@/components/admin/CompanyAdmin';
 import { NewsletterAdmin } from '@/components/admin/NewsletterAdmin';
 import { NotificationsAdmin } from '@/components/admin/NotificationsAdmin';
+import { SystemPerformanceAdmin } from '@/components/admin/SystemPerformanceAdmin';
 import Projects from '@/pages/Projects';
 
 export default function Admin() {
@@ -28,6 +29,7 @@ export default function Admin() {
         <Route path="lab" element={<LabAdmin />} />
         <Route path="craft" element={<CraftAdmin />} />
         <Route path="notifications" element={<NotificationsAdmin />} />
+        <Route path="performance" element={<SystemPerformanceAdmin />} />
         <Route path="projects/*" element={<Projects />} />
         <Route path="crm/*" element={<CRMRoutes />} />
       </Routes>
