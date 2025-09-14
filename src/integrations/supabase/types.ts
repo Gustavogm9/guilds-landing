@@ -14,6 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
+      brand_colors: {
+        Row: {
+          accent_color: string
+          accessibility_notes: string | null
+          contrast_checked: boolean
+          created_at: string
+          gradients: Json
+          id: string
+          is_active: boolean
+          is_system_preset: boolean
+          neutral_scale: Json
+          primary_color: string
+          scheme_description: string | null
+          scheme_name: string
+          semantic_colors: Json
+          shadows: Json
+          system_colors: Json
+          theme_mode: string
+          updated_at: string
+        }
+        Insert: {
+          accent_color?: string
+          accessibility_notes?: string | null
+          contrast_checked?: boolean
+          created_at?: string
+          gradients?: Json
+          id?: string
+          is_active?: boolean
+          is_system_preset?: boolean
+          neutral_scale?: Json
+          primary_color?: string
+          scheme_description?: string | null
+          scheme_name?: string
+          semantic_colors?: Json
+          shadows?: Json
+          system_colors?: Json
+          theme_mode?: string
+          updated_at?: string
+        }
+        Update: {
+          accent_color?: string
+          accessibility_notes?: string | null
+          contrast_checked?: boolean
+          created_at?: string
+          gradients?: Json
+          id?: string
+          is_active?: boolean
+          is_system_preset?: boolean
+          neutral_scale?: Json
+          primary_color?: string
+          scheme_description?: string | null
+          scheme_name?: string
+          semantic_colors?: Json
+          shadows?: Json
+          system_colors?: Json
+          theme_mode?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       client_notification_preferences: {
         Row: {
           client_contact_id: string
@@ -47,6 +107,45 @@ export type Database = {
           report_notifications?: boolean | null
           task_notifications?: boolean | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      color_presets: {
+        Row: {
+          category: string
+          colors: Json
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          preset_description: string | null
+          preset_name: string
+          updated_at: string
+          usage_count: number
+        }
+        Insert: {
+          category?: string
+          colors: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          preset_description?: string | null
+          preset_name: string
+          updated_at?: string
+          usage_count?: number
+        }
+        Update: {
+          category?: string
+          colors?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          preset_description?: string | null
+          preset_name?: string
+          updated_at?: string
+          usage_count?: number
         }
         Relationships: []
       }

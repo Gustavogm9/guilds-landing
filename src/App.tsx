@@ -17,6 +17,7 @@ import { TranslationProvider } from "./contexts/TranslationContext";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { SkipLinks } from "./components/a11y/SkipLink";
 import { initPerformanceMonitoring } from "./lib/performanceMonitor";
+import { DynamicColorProvider } from "./components/providers/DynamicColorProvider";
 import ErrorBoundary from "./components/error/ErrorBoundary";
 
 // Critical pages - loaded immediately
@@ -93,7 +94,8 @@ const App = () => {
         <ConsentProvider>
           <AuthProvider>
             <TranslationProvider>
-              <QualificationProvider>
+              <DynamicColorProvider>
+                <QualificationProvider>
                 <ErrorBoundary>
                   <Toaster />
                   <Sonner />
@@ -199,12 +201,13 @@ const App = () => {
                   </BrowserRouter>
                 </ErrorBoundary>
               </QualificationProvider>
-            </TranslationProvider>
-          </AuthProvider>
-        </ConsentProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
+            </DynamicColorProvider>
+          </TranslationProvider>
+        </AuthProvider>
+      </ConsentProvider>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 };
 
 export default App;

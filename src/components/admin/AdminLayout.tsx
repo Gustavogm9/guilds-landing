@@ -21,7 +21,8 @@ import {
   Kanban,
   FolderKanban,
   Bell,
-  Activity
+  Activity,
+  Lightbulb
 } from 'lucide-react';
 
 import {
@@ -57,6 +58,7 @@ const menuItems = [
     icon: Globe,
     items: [
       { title: "Logos", icon: Image, url: "/admin/logos" },
+      { title: "Cores", icon: Palette, url: "/admin/colors" },
       { title: "SEO", icon: Search, url: "/admin/seo" },
       { title: "Newsletter", icon: Mail, url: "/admin/newsletter" },
       { title: "Contatos", icon: Phone, url: "/admin/contacts" }
@@ -76,7 +78,7 @@ const menuItems = [
     icon: GraduationCap,
     items: [
       { title: "Lab", icon: FlaskConical, url: "/admin/lab" },
-      { title: "Craft", icon: Palette, url: "/admin/craft" }
+      { title: "Craft", icon: Lightbulb, url: "/admin/craft" }
     ]
   },
   {
