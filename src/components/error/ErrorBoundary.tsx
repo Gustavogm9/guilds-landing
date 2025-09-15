@@ -22,6 +22,15 @@ class ErrorBoundary extends Component<Props, State> {
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
     
+    // Log detailed error information
+    console.group('🚨 React Error Boundary - Detailed Error');
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    console.error('Component stack:', errorInfo.componentStack);
+    console.error('Current URL:', window.location.href);
+    console.error('User agent:', navigator.userAgent);
+    console.groupEnd();
+    
     // In a real app, you would send this to your error reporting service
     this.reportError(error, errorInfo);
   }

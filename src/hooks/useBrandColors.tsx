@@ -260,22 +260,51 @@ export const useBrandColors = () => {
 
 // Hook for public access to current colors (no mutations)
 export const usePublicBrandColors = () => {
-  const { data: brandColors } = useQuery({
-    queryKey: ['brand-colors'],
+  const { data: colors, isLoading } = useQuery({
+    queryKey: ['public-brand-colors'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('brand_colors')
         .select('primary_color, accent_color, neutral_scale, semantic_colors, gradients, shadows')
         .eq('is_active', true)
         .single();
-      
-      if (error && error.code !== 'PGRST116') throw error;
+
+      if (error) {
+        console.warn('Failed to fetch brand colors, using defaults:', error);
+        return {
+          primary_color: 'hsl(240, 85%, 55%)',
+          accent_color: 'hsl(165, 85%, 45%)',
+          neutral_scale: {
+            "50": "hsl(220, 20%, 98%)",
+            "100": "hsl(220, 14%, 96%)",
+            "200": "hsl(220, 13%, 91%)",
+            "300": "hsl(220, 9%, 79%)",
+            "400": "hsl(220, 9%, 46%)",
+            "500": "hsl(220, 9%, 26%)",
+            "600": "hsl(220, 12%, 17%)",
+            "700": "hsl(220, 16%, 12%)",
+            "800": "hsl(220, 18%, 8%)",
+            "900": "hsl(220, 23%, 5%)"
+          },
+          semantic_colors: {
+            "success": "hsl(142, 76%, 36%)",
+            "warning": "hsl(38, 92%, 50%)",
+            "danger": "hsl(346, 87%, 43%)"
+          },
+          gradients: {
+            "primary": "linear-gradient(135deg, hsl(240, 85%, 55%), hsl(240, 85%, 65%))",
+            "hero": "linear-gradient(135deg, hsl(240, 85%, 55%) 0%, hsl(165, 85%, 45%) 100%)"
+          },
+          shadows: {
+            "guild": "0 10px 30px -10px hsl(240, 85%, 55%, 0.3)",
+            "glow": "0 0 40px hsl(165, 85%, 45%, 0.4)"
+          }
+        };
+      }
       return data;
     },
+    staleTime: 1000 * 60 * 10, // 10 minutes
   });
 
-  return {
-    colors: brandColors,
-    isLoading: !brandColors,
-  };
+  return { colors, isLoading };
 };

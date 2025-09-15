@@ -34,9 +34,22 @@ const ColorAdmin = () => {
     resetToDefault
   } = useBrandColors();
 
+  // Safe fallback values
+  const safeColors = brandColors || {
+    primary_color: 'hsl(240, 85%, 55%)',
+    accent_color: 'hsl(165, 85%, 45%)',
+    scheme_name: 'Padrão Guilds',
+    scheme_description: 'Esquema de cores padrão carregado',
+    semantic_colors: {
+      success: 'hsl(142, 76%, 36%)',
+      warning: 'hsl(38, 92%, 50%)',
+      danger: 'hsl(346, 87%, 43%)'
+    }
+  };
+
   const [previewColors, setPreviewColors] = useState({
-    primary: brandColors?.primary_color || 'hsl(240, 85%, 55%)',
-    accent: brandColors?.accent_color || 'hsl(165, 85%, 45%)',
+    primary: safeColors.primary_color,
+    accent: safeColors.accent_color,
   });
 
   const [activeTab, setActiveTab] = useState('main');
@@ -202,6 +215,21 @@ const ColorAdmin = () => {
       <div className="flex items-center justify-center h-64">
         <RefreshCw className="w-6 h-6 animate-spin" />
         <span className="ml-2">Carregando esquema de cores...</span>
+      </div>
+    );
+  }
+
+  if (!safeColors && !isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64">
+        <AlertCircle className="w-12 h-12 text-muted-foreground mb-4" />
+        <h3 className="text-lg font-semibold mb-2">Erro ao carregar cores</h3>
+        <p className="text-muted-foreground text-center mb-4">
+          Não foi possível carregar as configurações de cores.
+        </p>
+        <Button onClick={() => window.location.reload()}>
+          Tentar Novamente
+        </Button>
       </div>
     );
   }
@@ -421,15 +449,15 @@ const ColorAdmin = () => {
       </Tabs>
 
       {/* Current scheme info */}
-      {brandColors && (
+      {safeColors && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Palette className="w-5 h-5" />
-              Esquema Atual: {brandColors.scheme_name}
+              Esquema Atual: {safeColors.scheme_name}
             </CardTitle>
-            {brandColors.scheme_description && (
-              <CardDescription>{brandColors.scheme_description}</CardDescription>
+            {safeColors.scheme_description && (
+              <CardDescription>{safeColors.scheme_description}</CardDescription>
             )}
           </CardHeader>
           <CardContent>
@@ -438,41 +466,41 @@ const ColorAdmin = () => {
                 <Label>Primária</Label>
                 <div 
                   className="w-full h-12 rounded border"
-                  style={{ backgroundColor: brandColors.primary_color }}
+                  style={{ backgroundColor: safeColors.primary_color }}
                 />
-                <code className="text-xs">{brandColors.primary_color}</code>
+                <code className="text-xs">{safeColors.primary_color}</code>
               </div>
               <div className="space-y-2">
                 <Label>Accent</Label>
                 <div 
                   className="w-full h-12 rounded border"
-                  style={{ backgroundColor: brandColors.accent_color }}
+                  style={{ backgroundColor: safeColors.accent_color }}
                 />
-                <code className="text-xs">{brandColors.accent_color}</code>
+                <code className="text-xs">{safeColors.accent_color}</code>
               </div>
               <div className="space-y-2">
                 <Label>Success</Label>
                 <div 
                   className="w-full h-12 rounded border"
-                  style={{ backgroundColor: brandColors.semantic_colors.success }}
+                  style={{ backgroundColor: safeColors.semantic_colors?.success || 'hsl(142, 76%, 36%)' }}
                 />
-                <code className="text-xs">{brandColors.semantic_colors.success}</code>
+                <code className="text-xs">{safeColors.semantic_colors?.success || 'hsl(142, 76%, 36%)'}</code>
               </div>
               <div className="space-y-2">
                 <Label>Warning</Label>
                 <div 
                   className="w-full h-12 rounded border"
-                  style={{ backgroundColor: brandColors.semantic_colors.warning }}
+                  style={{ backgroundColor: safeColors.semantic_colors?.warning || 'hsl(38, 92%, 50%)' }}
                 />
-                <code className="text-xs">{brandColors.semantic_colors.warning}</code>
+                <code className="text-xs">{safeColors.semantic_colors?.warning || 'hsl(38, 92%, 50%)'}</code>
               </div>
               <div className="space-y-2">
                 <Label>Danger</Label>
                 <div 
                   className="w-full h-12 rounded border"
-                  style={{ backgroundColor: brandColors.semantic_colors.danger }}
+                  style={{ backgroundColor: safeColors.semantic_colors?.danger || 'hsl(346, 87%, 43%)' }}
                 />
-                <code className="text-xs">{brandColors.semantic_colors.danger}</code>
+                <code className="text-xs">{safeColors.semantic_colors?.danger || 'hsl(346, 87%, 43%)'}</code>
               </div>
             </div>
           </CardContent>
