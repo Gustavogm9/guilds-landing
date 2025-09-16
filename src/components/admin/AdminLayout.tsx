@@ -22,7 +22,9 @@ import {
   FolderKanban,
   Bell,
   Activity,
-  Lightbulb
+  Lightbulb,
+  DollarSign,
+  Calculator
 } from 'lucide-react';
 
 import {
@@ -97,6 +99,14 @@ const menuItems = [
       { title: "Notificações", icon: Bell, url: "/admin/notifications" },
       { title: "Performance", icon: Activity, url: "/admin/performance" },
       { title: "Kanban", icon: Kanban, url: "/admin/crm/kanban" }
+    ]
+  },
+  {
+    title: "Financeiro",
+    icon: DollarSign,
+    items: [
+      { title: "Dashboard", icon: LayoutDashboard, url: "/admin/financial" },
+      { title: "Folha de Pagamento", icon: Calculator, url: "/admin/payroll" }
     ]
   }
 ];
