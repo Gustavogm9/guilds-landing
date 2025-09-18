@@ -1,57 +1,82 @@
-import React from 'react';
+import { useState } from 'react';
+import { useFinancial } from '@/hooks/useFinancial';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useFinancial } from '@/hooks/useFinancial';
-import { formatCurrency } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
+  DollarSign, 
   TrendingUp, 
   TrendingDown, 
-  DollarSign, 
-  AlertTriangle,
   Calendar,
-  PlusCircle,
+  Plus,
+  FileText,
   Download,
-  BarChart3
+  PieChart
 } from 'lucide-react';
+import { FinancialKPIs } from './dashboard/FinancialKPIs';
+import { FinancialCharts } from './dashboard/FinancialCharts';
+import { FinancialAlerts } from './dashboard/FinancialAlerts';
+import { FinancialFilters } from './dashboard/FinancialFilters';
+import { FinancialReports } from './reports/FinancialReports';
+import { AccountForm } from './forms/AccountForm';
+import { SupplierForm } from './forms/SupplierForm';
+import { PayableForm } from './forms/PayableForm';
+import { ReceivableForm } from './forms/ReceivableForm';
 
-export function FinancialDashboard() {
-  const { 
-    accountsPayable, 
-    accountsReceivable, 
-    transactions, 
-    metrics, 
-    isLoading 
+export default function FinancialDashboard() {
+  const {
+    chartOfAccounts,
+    costCenters,
+    suppliers,
+    accountsPayable,
+    accountsReceivable,
+    transactions,
+    metrics,
+    isLoading,
+    createPayable,
+    createReceivable,
+    createSupplier,
+    createTransaction,
+    isCreatingPayable,
+    isCreatingReceivable,
+    isCreatingSupplier,
+    isCreatingTransaction,
   } = useFinancial();
+
+  const [filters, setFilters] = useState({
+    dateRange: { from: null, to: null },
+    status: 'all',
+    type: 'all',
+    amountRange: { min: '', max: '' },
+    search: '',
+  });
+
+  const handleExportData = () => {
+    // Implementar exportação de dados
+    console.log('Exportando dados financeiros...');
+  };
 
   if (isLoading) {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Gestão Financeira</h1>
+          <Skeleton className="h-9 w-64" />
           <div className="flex gap-2">
-            <Button variant="outline" disabled>
-              <Download className="h-4 w-4 mr-2" />
-              Relatórios
-            </Button>
-            <Button disabled>
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Nova Transação
-            </Button>
+            <Skeleton className="h-9 w-24" />
+            <Skeleton className="h-9 w-24" />
+            <Skeleton className="h-9 w-32" />
           </div>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
             <Card key={i} className="animate-pulse">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <div className="h-4 bg-muted rounded w-20"></div>
-                <div className="h-4 w-4 bg-muted rounded"></div>
+              <CardHeader className="space-y-0 pb-2">
+                <Skeleton className="h-4 w-3/4" />
               </CardHeader>
               <CardContent>
-                <div className="h-8 bg-muted rounded w-24 mb-1"></div>
-                <div className="h-3 bg-muted rounded w-16"></div>
+                <Skeleton className="h-8 w-1/2" />
               </CardContent>
             </Card>
           ))}
@@ -62,10 +87,10 @@ export function FinancialDashboard() {
 
   const getStatusBadge = (status: string) => {
     const variants = {
-      pending: 'default',
+      pending: 'secondary',
       paid: 'default',
       overdue: 'destructive',
-      cancelled: 'secondary'
+      cancelled: 'outline'
     } as const;
     
     const labels = {
@@ -76,10 +101,7 @@ export function FinancialDashboard() {
     };
     
     return (
-      <Badge 
-        variant={variants[status as keyof typeof variants] || 'default'}
-        className={status === 'paid' ? 'bg-primary text-primary-foreground' : ''}
-      >
+      <Badge variant={variants[status as keyof typeof variants] || 'secondary'}>
         {labels[status as keyof typeof labels] || status}
       </Badge>
     );
@@ -87,95 +109,64 @@ export function FinancialDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Gestão Financeira</h1>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <BarChart3 className="h-4 w-4 mr-2" />
+      {/* Header com ações rápidas */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Gestão Financeira</h1>
+          <p className="text-muted-foreground">
+            Dashboard avançado com KPIs em tempo real e análise preditiva
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="outline">
+            <FileText className="h-4 w-4 mr-2" />
             Relatórios
           </Button>
-          <Button variant="outline">
+          <Button size="sm" variant="outline" onClick={handleExportData}>
             <Download className="h-4 w-4 mr-2" />
             Exportar
           </Button>
-          <Button>
-            <PlusCircle className="h-4 w-4 mr-2" />
+          <Button size="sm">
+            <Plus className="h-4 w-4 mr-2" />
             Nova Transação
           </Button>
         </div>
       </div>
 
-      {/* Financial Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Contas a Receber</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-primary">
-              {formatCurrency(metrics.totalReceivable)}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {accountsReceivable.filter(r => r.status === 'pending').length} pendentes
-            </p>
-          </CardContent>
-        </Card>
+      {/* KPIs em tempo real */}
+      <FinancialKPIs />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Contas a Pagar</CardTitle>
-            <TrendingDown className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-destructive">
-              {formatCurrency(metrics.totalPayable)}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {accountsPayable.filter(p => p.status === 'pending').length} pendentes
-            </p>
-          </CardContent>
-        </Card>
+      {/* Alertas e notificações */}
+      <FinancialAlerts />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Fluxo de Caixa</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className={`text-2xl font-bold ${metrics.cashFlow >= 0 ? 'text-primary' : 'text-destructive'}`}>
-              {formatCurrency(metrics.cashFlow)}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Projeção líquida
-            </p>
-          </CardContent>
-        </Card>
+      {/* Filtros avançados */}
+      <FinancialFilters 
+        onFiltersChange={setFilters}
+        onExportData={handleExportData}
+      />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Vencidos</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-destructive" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-destructive">
-              {formatCurrency(metrics.overdueReceivable + metrics.overduePayable)}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Requer atenção
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Gráficos e análises */}
+      <FinancialCharts />
 
-      {/* Main Content Tabs */}
-      <Tabs defaultValue="receivables" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="receivables">Contas a Receber</TabsTrigger>
-          <TabsTrigger value="payables">Contas a Pagar</TabsTrigger>
+      {/* Tabelas com dados detalhados */}
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-8">
+          <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+          <TabsTrigger value="receivables">Receber</TabsTrigger>
+          <TabsTrigger value="payables">Pagar</TabsTrigger>
           <TabsTrigger value="transactions">Transações</TabsTrigger>
+          <TabsTrigger value="suppliers">Fornecedores</TabsTrigger>
+          <TabsTrigger value="accounts">Contas</TabsTrigger>
+          <TabsTrigger value="centers">Centros</TabsTrigger>
           <TabsTrigger value="reports">Relatórios</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="overview" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <FinancialCharts />
+            <FinancialAlerts />
+          </div>
+        </TabsContent>
 
         <TabsContent value="receivables" className="space-y-4">
           <Card>
@@ -184,11 +175,11 @@ export function FinancialDashboard() {
                 <div>
                   <CardTitle>Contas a Receber</CardTitle>
                   <p className="text-sm text-muted-foreground">
-                    Gerencie suas receitas e cobranças
+                    {accountsReceivable.length} conta(s) no total
                   </p>
                 </div>
                 <Button>
-                  <PlusCircle className="h-4 w-4 mr-2" />
+                  <Plus className="h-4 w-4 mr-2" />
                   Nova Cobrança
                 </Button>
               </div>
@@ -200,15 +191,16 @@ export function FinancialDashboard() {
                     <div className="flex-1">
                       <div className="font-medium">{receivable.description}</div>
                       <div className="text-sm text-muted-foreground">
-                        {receivable.contact?.name || 'Cliente não especificado'}
+                        Vencimento: {new Date(receivable.due_date).toLocaleDateString('pt-BR')}
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <div className="font-medium">{formatCurrency(receivable.amount)}</div>
-                        <div className="text-sm text-muted-foreground flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          {new Date(receivable.due_date).toLocaleDateString('pt-BR')}
+                        <div className="font-medium">
+                          {new Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          }).format(receivable.amount)}
                         </div>
                       </div>
                       {getStatusBadge(receivable.status)}
@@ -232,11 +224,11 @@ export function FinancialDashboard() {
                 <div>
                   <CardTitle>Contas a Pagar</CardTitle>
                   <p className="text-sm text-muted-foreground">
-                    Gerencie suas despesas e fornecedores
+                    {accountsPayable.length} conta(s) no total
                   </p>
                 </div>
                 <Button>
-                  <PlusCircle className="h-4 w-4 mr-2" />
+                  <Plus className="h-4 w-4 mr-2" />
                   Nova Despesa
                 </Button>
               </div>
@@ -248,15 +240,16 @@ export function FinancialDashboard() {
                     <div className="flex-1">
                       <div className="font-medium">{payable.description}</div>
                       <div className="text-sm text-muted-foreground">
-                        {payable.supplier?.name || 'Fornecedor não especificado'}
+                        Vencimento: {new Date(payable.due_date).toLocaleDateString('pt-BR')}
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <div className="font-medium">{formatCurrency(payable.amount)}</div>
-                        <div className="text-sm text-muted-foreground flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          {new Date(payable.due_date).toLocaleDateString('pt-BR')}
+                        <div className="font-medium">
+                          {new Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          }).format(payable.amount)}
                         </div>
                       </div>
                       {getStatusBadge(payable.status)}
@@ -278,13 +271,13 @@ export function FinancialDashboard() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>Transações Financeiras</CardTitle>
+                  <CardTitle>Transações</CardTitle>
                   <p className="text-sm text-muted-foreground">
-                    Histórico completo de movimentações
+                    {transactions.length} transação(ões) no total
                   </p>
                 </div>
                 <Button>
-                  <PlusCircle className="h-4 w-4 mr-2" />
+                  <Plus className="h-4 w-4 mr-2" />
                   Nova Transação
                 </Button>
               </div>
@@ -296,17 +289,18 @@ export function FinancialDashboard() {
                     <div className="flex-1">
                       <div className="font-medium">{transaction.description}</div>
                       <div className="text-sm text-muted-foreground">
-                        {transaction.account?.name || 'Conta não especificada'}
+                        {new Date(transaction.transaction_date).toLocaleDateString('pt-BR')}
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
-                      <div className="text-right">
-                        <div className={`font-medium ${transaction.transaction_type === 'credit' ? 'text-primary' : 'text-destructive'}`}>
-                          {transaction.transaction_type === 'credit' ? '+' : '-'}{formatCurrency(transaction.amount)}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {new Date(transaction.transaction_date).toLocaleDateString('pt-BR')}
-                        </div>
+                      <div className={`text-right font-medium ${
+                        transaction.transaction_type === 'credit' ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {transaction.transaction_type === 'credit' ? '+' : '-'}
+                        {new Intl.NumberFormat('pt-BR', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        }).format(Math.abs(transaction.amount))}
                       </div>
                       <Badge variant={transaction.transaction_type === 'credit' ? 'default' : 'secondary'}>
                         {transaction.transaction_type === 'credit' ? 'Crédito' : 'Débito'}
@@ -324,50 +318,137 @@ export function FinancialDashboard() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="suppliers" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Fornecedores</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {suppliers.length} fornecedor(es) cadastrado(s)
+                  </p>
+                </div>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Novo Fornecedor
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {suppliers.slice(0, 10).map((supplier) => (
+                  <div key={supplier.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex-1">
+                      <div className="font-medium">{supplier.name}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {supplier.email || 'Email não informado'}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <Badge variant={supplier.is_active ? 'default' : 'secondary'}>
+                        {supplier.is_active ? 'Ativo' : 'Inativo'}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+                {suppliers.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Nenhum fornecedor encontrado
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="accounts" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Plano de Contas</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {chartOfAccounts.length} conta(s) no plano
+                  </p>
+                </div>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Nova Conta
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {chartOfAccounts.slice(0, 10).map((account) => (
+                  <div key={account.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex-1">
+                      <div className="font-medium">{account.code} - {account.name}</div>
+                      <div className="text-sm text-muted-foreground">
+                        Tipo: {account.account_type}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <Badge variant={account.is_active ? 'default' : 'secondary'}>
+                        {account.is_active ? 'Ativa' : 'Inativa'}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+                {chartOfAccounts.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Nenhuma conta encontrada
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="centers" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Centros de Custo</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {costCenters.length} centro(s) de custo
+                  </p>
+                </div>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Novo Centro
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {costCenters.slice(0, 10).map((center) => (
+                  <div key={center.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex-1">
+                      <div className="font-medium">{center.name}</div>
+                      <div className="text-sm text-muted-foreground">
+                        Centro de custo
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <Badge variant={center.is_active ? 'default' : 'secondary'}>
+                        {center.is_active ? 'Ativo' : 'Inativo'}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+                {costCenters.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Nenhum centro de custo encontrado
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="reports" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card className="cursor-pointer hover:shadow-md transition-shadow">
-              <CardHeader>
-                <CardTitle className="text-lg">DRE</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Demonstração do Resultado do Exercício
-                </p>
-              </CardHeader>
-              <CardContent>
-                <Button variant="outline" className="w-full">
-                  Gerar Relatório
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="cursor-pointer hover:shadow-md transition-shadow">
-              <CardHeader>
-                <CardTitle className="text-lg">Fluxo de Caixa</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Análise detalhada do fluxo de caixa
-                </p>
-              </CardHeader>
-              <CardContent>
-                <Button variant="outline" className="w-full">
-                  Gerar Relatório
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="cursor-pointer hover:shadow-md transition-shadow">
-              <CardHeader>
-                <CardTitle className="text-lg">Balanço Patrimonial</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Posição patrimonial da empresa
-                </p>
-              </CardHeader>
-              <CardContent>
-                <Button variant="outline" className="w-full">
-                  Gerar Relatório
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+          <FinancialReports />
         </TabsContent>
       </Tabs>
     </div>
