@@ -69,7 +69,7 @@ export function PayableForm({ isOpen, onClose, payable, onSuccess }: PayableForm
       await createPayable({
         description: data.description,
         amount: parseFloat(data.amount.replace(/[^\d,-]/g, '').replace(',', '.')),
-        due_date: data.due_date,
+        due_date: data.due_date.toISOString().split('T')[0],
         supplier_id: data.supplier_id || null,
         account_id: data.account_id || null,
         cost_center_id: data.cost_center_id || null,

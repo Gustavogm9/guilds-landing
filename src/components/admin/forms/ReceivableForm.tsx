@@ -72,7 +72,7 @@ export function ReceivableForm({ isOpen, onClose, receivable, onSuccess }: Recei
       await createReceivable({
         description: data.description,
         amount: parseFloat(data.amount.replace(/[^\d,-]/g, '').replace(',', '.')),
-        due_date: data.due_date,
+        due_date: data.due_date.toISOString().split('T')[0],
         contact_id: data.contact_id || null,
         project_id: data.project_id || null,
         deal_id: data.deal_id || null,

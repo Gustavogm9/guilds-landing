@@ -59,7 +59,14 @@ export function AccountForm({ isOpen, onClose, account, accounts, onSuccess }: A
       } else {
         const { error } = await supabase
           .from('chart_of_accounts')
-          .insert([data]);
+          .insert([{
+            code: data.code,
+            name: data.name,
+            account_type: data.account_type,
+            parent_id: data.parent_id || null,
+            level: data.level,
+            is_active: data.is_active
+          }]);
         if (error) throw error;
         toast({ title: 'Conta criada com sucesso!' });
       }

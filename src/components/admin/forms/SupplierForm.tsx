@@ -55,22 +55,33 @@ export function SupplierForm({ isOpen, onClose, supplier, onSuccess }: SupplierF
   const handleSubmit = async (data: SupplierFormData) => {
     setLoading(true);
     try {
-      // Clean empty strings
-      const cleanData = Object.fromEntries(
-        Object.entries(data).map(([key, value]) => [key, value === '' ? null : value])
-      );
-
       if (supplier?.id) {
         const { error } = await supabase
           .from('suppliers')
-          .update(cleanData)
+          .update({
+            name: data.name,
+            document: data.document || null,
+            email: data.email || null,
+            phone: data.phone || null,
+            address: data.address ? { full_address: data.address } : null,
+            payment_terms: data.payment_terms ? parseInt(data.payment_terms) : 30,
+            is_active: data.is_active
+          })
           .eq('id', supplier.id);
         if (error) throw error;
         toast({ title: 'Fornecedor atualizado com sucesso!' });
       } else {
         const { error } = await supabase
           .from('suppliers')
-          .insert([cleanData]);
+          .insert([{
+            name: data.name,
+            document: data.document || null,
+            email: data.email || null,
+            phone: data.phone || null,
+            address: data.address ? { full_address: data.address } : null,
+            payment_terms: data.payment_terms ? parseInt(data.payment_terms) : 30,
+            is_active: data.is_active
+          }]);
         if (error) throw error;
         toast({ title: 'Fornecedor criado com sucesso!' });
       }
