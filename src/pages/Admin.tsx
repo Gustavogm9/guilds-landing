@@ -15,7 +15,7 @@ import { NotificationsAdmin } from '@/components/admin/NotificationsAdmin';
 import { SystemPerformanceAdmin } from '@/components/admin/SystemPerformanceAdmin';
 import ColorAdmin from '@/components/admin/ColorAdmin';
 import Projects from '@/pages/Projects';
-import { FinancialDashboard } from '@/components/admin/FinancialDashboard';
+import FinancialDashboard from '@/components/admin/FinancialDashboard';
 import { PayrollAdmin } from '@/components/admin/PayrollAdmin';
 
 export default function Admin() {
