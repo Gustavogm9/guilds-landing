@@ -20,6 +20,8 @@ import {
 import { AutomationWorkflows } from './AutomationWorkflows';
 import { AutomationTriggers } from './AutomationTriggers';
 import { FinancialNotifications } from './FinancialNotifications';
+import { FinancialIntegrations } from './FinancialIntegrations';
+import { useFinancialEdgeFunctions } from '@/hooks/useFinancialEdgeFunctions';
 
 interface AutomationRule {
   id: string;
@@ -34,6 +36,14 @@ interface AutomationRule {
 }
 
 export function FinancialAutomation() {
+  const {
+    processOverdueAccounts,
+    sendFinancialAlerts,
+    generateWeeklyReport,
+    generateMonthlyReport,
+    isProcessingAutomation,
+    isGeneratingReport
+  } = useFinancialEdgeFunctions();
   const [automationRules] = useState<AutomationRule[]>([
     {
       id: '1',
@@ -130,9 +140,13 @@ export function FinancialAutomation() {
             <Settings className="h-4 w-4 mr-2" />
             Configurações
           </Button>
-          <Button size="sm">
+          <Button 
+            size="sm"
+            onClick={processOverdueAccounts}
+            disabled={isProcessingAutomation}
+          >
             <Zap className="h-4 w-4 mr-2" />
-            Nova Automação
+            {isProcessingAutomation ? 'Processando...' : 'Executar Automação'}
           </Button>
         </div>
       </div>
@@ -191,11 +205,12 @@ export function FinancialAutomation() {
       </div>
 
       <Tabs defaultValue="rules" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="rules">Regras</TabsTrigger>
           <TabsTrigger value="workflows">Workflows</TabsTrigger>
           <TabsTrigger value="triggers">Gatilhos</TabsTrigger>
           <TabsTrigger value="notifications">Notificações</TabsTrigger>
+          <TabsTrigger value="integrations">Integrações</TabsTrigger>
         </TabsList>
 
         <TabsContent value="rules" className="space-y-4">
@@ -259,6 +274,10 @@ export function FinancialAutomation() {
 
         <TabsContent value="notifications" className="space-y-4">
           <FinancialNotifications />
+        </TabsContent>
+
+        <TabsContent value="integrations" className="space-y-4">
+          <FinancialIntegrations />
         </TabsContent>
       </Tabs>
     </div>

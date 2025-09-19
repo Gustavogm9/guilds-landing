@@ -6,3 +6,12 @@ site_url = "http://localhost:3000"
 
 [functions.newsletter-confirm]
 verify_jwt = false
+
+[functions.financial-automation]
+verify_jwt = false
+
+[functions.financial-webhook-processor]
+verify_jwt = false
+
+[functions.financial-report-generator]
+verify_jwt = false
