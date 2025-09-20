@@ -15,3 +15,6 @@ verify_jwt = false
 
 [functions.financial-report-generator]
 verify_jwt = false
+
+[functions.financial-ai-analysis]
+verify_jwt = false
