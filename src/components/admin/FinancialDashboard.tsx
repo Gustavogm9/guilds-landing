@@ -21,6 +21,7 @@ import { FinancialAlerts } from './dashboard/FinancialAlerts';
 import { FinancialFilters } from './dashboard/FinancialFilters';
 import { FinancialAutomation } from './automation/FinancialAutomation';
 import { FinancialAnalytics } from './analytics/FinancialAnalytics';
+import { ComplianceCenter } from './compliance/ComplianceCenter';
 import { FinancialReports } from './reports/FinancialReports';
 import { AccountForm } from './forms/AccountForm';
 import { SupplierForm } from './forms/SupplierForm';
@@ -152,7 +153,7 @@ export default function FinancialDashboard() {
 
       {/* Tabelas com dados detalhados */}
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-10">
+        <TabsList className="grid w-full grid-cols-11">
           <TabsTrigger value="overview">Visão Geral</TabsTrigger>
           <TabsTrigger value="receivables">Receber</TabsTrigger>
           <TabsTrigger value="payables">Pagar</TabsTrigger>
@@ -162,6 +163,7 @@ export default function FinancialDashboard() {
           <TabsTrigger value="centers">Centros</TabsTrigger>
           <TabsTrigger value="automation">Automação</TabsTrigger>
           <TabsTrigger value="analytics">IA & Analytics</TabsTrigger>
+          <TabsTrigger value="compliance">Compliance</TabsTrigger>
           <TabsTrigger value="reports">Relatórios</TabsTrigger>
         </TabsList>
 
@@ -457,6 +459,10 @@ export default function FinancialDashboard() {
 
         <TabsContent value="analytics" className="space-y-4">
           <FinancialAnalytics />
+        </TabsContent>
+
+        <TabsContent value="compliance" className="space-y-4">
+          <ComplianceCenter />
         </TabsContent>
 
         <TabsContent value="reports" className="space-y-4">
