@@ -611,29 +611,35 @@ export type Database = {
       }
       cost_centers: {
         Row: {
+          budget_amount: number | null
           code: string
           created_at: string
           department: string
           id: string
           is_active: boolean
+          manager_id: string | null
           name: string
           updated_at: string
         }
         Insert: {
+          budget_amount?: number | null
           code: string
           created_at?: string
           department: string
           id?: string
           is_active?: boolean
+          manager_id?: string | null
           name: string
           updated_at?: string
         }
         Update: {
+          budget_amount?: number | null
           code?: string
           created_at?: string
           department?: string
           id?: string
           is_active?: boolean
+          manager_id?: string | null
           name?: string
           updated_at?: string
         }
@@ -2779,6 +2785,57 @@ export type Database = {
         }
         Relationships: []
       }
+      system_error_logs: {
+        Row: {
+          component_name: string | null
+          created_at: string
+          error_message: string
+          error_stack: string | null
+          error_type: string
+          id: string
+          metadata: Json | null
+          resolved: boolean | null
+          resolved_at: string | null
+          resolved_by: string | null
+          session_id: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          component_name?: string | null
+          created_at?: string
+          error_message: string
+          error_stack?: string | null
+          error_type: string
+          id?: string
+          metadata?: Json | null
+          resolved?: boolean | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          session_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          component_name?: string | null
+          created_at?: string
+          error_message?: string
+          error_stack?: string | null
+          error_type?: string
+          id?: string
+          metadata?: Json | null
+          resolved?: boolean | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          session_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       system_performance_logs: {
         Row: {
           created_at: string
@@ -3347,6 +3404,16 @@ export type Database = {
           user_id?: string
         }
         Returns: undefined
+      }
+      log_system_error: {
+        Args: {
+          p_component_name?: string
+          p_error_message: string
+          p_error_stack?: string
+          p_error_type: string
+          p_metadata?: Json
+        }
+        Returns: string
       }
       log_system_operation: {
         Args: { p_metadata?: Json; p_operation_type: string }

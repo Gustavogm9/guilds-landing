@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useErrorHandler } from './useErrorHandler';
 
 // Types
 export interface ChartOfAccount {
@@ -102,35 +103,50 @@ export interface FinancialTransaction {
 
 export function useFinancial() {
   const queryClient = useQueryClient();
+  const { handleError } = useErrorHandler();
 
   // Fetch chart of accounts
-  const { data: chartOfAccounts = [], isLoading: chartLoading } = useQuery({
+  const { data: chartOfAccounts = [], isLoading: chartLoading, error: chartError } = useQuery({
     queryKey: ['chart-of-accounts'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('chart_of_accounts')
-        .select('*')
-        .eq('is_active', true)
-        .order('code');
-      
-      if (error) throw error;
-      return data as ChartOfAccount[];
+      try {
+        const { data, error } = await supabase
+          .from('chart_of_accounts')
+          .select('*')
+          .eq('is_active', true)
+          .order('code');
+        
+        if (error) throw error;
+        return data as ChartOfAccount[];
+      } catch (error) {
+        handleError(error as Error, 'useFinancial.chartOfAccounts');
+        throw error;
+      }
     },
+    retry: 2,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
   // Fetch cost centers
-  const { data: costCenters = [], isLoading: centersLoading } = useQuery({
+  const { data: costCenters = [], isLoading: centersLoading, error: centersError } = useQuery({
     queryKey: ['cost-centers'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('cost_centers')
-        .select('*')
-        .eq('is_active', true)
-        .order('code');
-      
-      if (error) throw error;
-      return data as CostCenter[];
+      try {
+        const { data, error } = await supabase
+          .from('cost_centers')
+          .select('*')
+          .eq('is_active', true)
+          .order('code');
+        
+        if (error) throw error;
+        return data as CostCenter[];
+      } catch (error) {
+        handleError(error as Error, 'useFinancial.costCenters');
+        throw error;
+      }
     },
+    retry: 2,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
   // Fetch suppliers
