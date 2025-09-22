@@ -13,6 +13,12 @@ import { ComplianceCenter } from './compliance/ComplianceCenter';
 import { FinancialReports } from './reports/FinancialReports';
 import FinancialErrorBoundary from '@/components/error/FinancialErrorBoundary';
 import { FinancialLoadingFallback } from '@/components/financial/FinancialLoadingFallback';
+import { FinancialFilters, FinancialFiltersType } from './dashboard/FinancialFilters';
+import { PayableForm } from './forms/PayableForm';
+import { ReceivableForm } from './forms/ReceivableForm';
+import { SupplierForm } from './forms/SupplierForm';
+import { TransactionForm } from './forms/TransactionForm';
+import { AccountForm } from './forms/AccountForm';
 import { 
   FileText, 
   Download, 
@@ -42,11 +48,38 @@ export default function FinancialDashboard() {
     isCreatingTransaction,
   } = useFinancial();
 
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<FinancialFiltersType>({
     dateRange: 'last_30_days',
     status: 'all',
     category: 'all',
+    accountType: 'all',
+    amountRange: {},
+    searchTerm: ''
   });
+
+  const [openForms, setOpenForms] = useState({
+    payable: false,
+    receivable: false,
+    supplier: false,
+    transaction: false,
+    account: false
+  });
+
+  const refreshData = () => {
+    // Trigger a refetch by updating a key - the useFinancial hook will handle the refetch
+    window.location.reload();
+  };
+
+  const resetFilters = () => {
+    setFilters({
+      dateRange: 'last_30_days',
+      status: 'all',
+      category: 'all',
+      accountType: 'all',
+      amountRange: {},
+      searchTerm: ''
+    });
+  };
 
   const handleExportData = () => {
     console.log('Exportando dados financeiros...');
@@ -92,12 +125,22 @@ export default function FinancialDashboard() {
               <FileText className="h-4 w-4" />
               Relatórios
             </Button>
-            <Button className="gap-2">
+            <Button 
+              className="gap-2"
+              onClick={() => setOpenForms(prev => ({ ...prev, transaction: true }))}
+            >
               <Plus className="h-4 w-4" />
               Nova Transação
             </Button>
           </div>
         </div>
+
+        {/* Filters */}
+        <FinancialFilters
+          filters={filters}
+          onFiltersChange={setFilters}
+          onReset={resetFilters}
+        />
 
         {/* KPIs */}
         <FinancialKPIs />
@@ -129,14 +172,23 @@ export default function FinancialDashboard() {
 
           <TabsContent value="receivables" className="space-y-4">
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-success" />
-                  Contas a Receber
-                </CardTitle>
-                <CardDescription>
-                  Total de {accountsReceivable.length} contas a receber
-                </CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-success" />
+                    Contas a Receber
+                  </CardTitle>
+                  <CardDescription>
+                    Total de {accountsReceivable.length} contas a receber
+                  </CardDescription>
+                </div>
+                <Button 
+                  size="sm" 
+                  onClick={() => setOpenForms(prev => ({ ...prev, receivable: true }))}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Nova Conta a Receber
+                </Button>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -163,14 +215,23 @@ export default function FinancialDashboard() {
 
           <TabsContent value="payables" className="space-y-4">
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <DollarSign className="h-5 w-5 text-danger" />
-                  Contas a Pagar
-                </CardTitle>
-                <CardDescription>
-                  Total de {accountsPayable.length} contas a pagar
-                </CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <DollarSign className="h-5 w-5 text-danger" />
+                    Contas a Pagar
+                  </CardTitle>
+                  <CardDescription>
+                    Total de {accountsPayable.length} contas a pagar
+                  </CardDescription>
+                </div>
+                <Button 
+                  size="sm" 
+                  onClick={() => setOpenForms(prev => ({ ...prev, payable: true }))}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Nova Conta a Pagar
+                </Button>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -243,11 +304,20 @@ export default function FinancialDashboard() {
 
           <TabsContent value="suppliers" className="space-y-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Fornecedores</CardTitle>
-                <CardDescription>
-                  Gestão de {suppliers.length} fornecedores ativos
-                </CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Fornecedores</CardTitle>
+                  <CardDescription>
+                    Gestão de {suppliers.length} fornecedores ativos
+                  </CardDescription>
+                </div>
+                <Button 
+                  size="sm" 
+                  onClick={() => setOpenForms(prev => ({ ...prev, supplier: true }))}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Novo Fornecedor
+                </Button>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -279,11 +349,20 @@ export default function FinancialDashboard() {
 
           <TabsContent value="accounts" className="space-y-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Plano de Contas</CardTitle>
-                <CardDescription>
-                  {chartOfAccounts.length} contas ativas no plano
-                </CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Plano de Contas</CardTitle>
+                  <CardDescription>
+                    {chartOfAccounts.length} contas ativas no plano
+                  </CardDescription>
+                </div>
+                <Button 
+                  size="sm" 
+                  onClick={() => setOpenForms(prev => ({ ...prev, account: true }))}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Nova Conta
+                </Button>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -356,6 +435,37 @@ export default function FinancialDashboard() {
             <FinancialReports />
           </TabsContent>
         </Tabs>
+
+        {/* Forms */}
+        <PayableForm
+          isOpen={openForms.payable}
+          onClose={() => setOpenForms(prev => ({ ...prev, payable: false }))}
+          onSuccess={refreshData}
+        />
+        
+        <ReceivableForm
+          isOpen={openForms.receivable}
+          onClose={() => setOpenForms(prev => ({ ...prev, receivable: false }))}
+          onSuccess={refreshData}
+        />
+        
+        <SupplierForm
+          isOpen={openForms.supplier}
+          onClose={() => setOpenForms(prev => ({ ...prev, supplier: false }))}
+          onSuccess={refreshData}
+        />
+        
+        <TransactionForm
+          isOpen={openForms.transaction}
+          onClose={() => setOpenForms(prev => ({ ...prev, transaction: false }))}
+          onSuccess={refreshData}
+        />
+        
+        <AccountForm
+          isOpen={openForms.account}
+          onClose={() => setOpenForms(prev => ({ ...prev, account: false }))}
+          onSuccess={refreshData}
+        />
       </div>
     </FinancialErrorBoundary>
   );

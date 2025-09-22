@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { useFinancial } from '@/hooks/useFinancial';
 
 const supplierSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -34,8 +34,8 @@ interface SupplierFormProps {
 }
 
 export function SupplierForm({ isOpen, onClose, supplier, onSuccess }: SupplierFormProps) {
-  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { createSupplier, isCreatingSupplier } = useFinancial();
 
   const form = useForm<SupplierFormData>({
     resolver: zodResolver(supplierSchema),
@@ -53,38 +53,16 @@ export function SupplierForm({ isOpen, onClose, supplier, onSuccess }: SupplierF
   });
 
   const handleSubmit = async (data: SupplierFormData) => {
-    setLoading(true);
     try {
-      if (supplier?.id) {
-        const { error } = await supabase
-          .from('suppliers')
-          .update({
-            name: data.name,
-            document: data.document || null,
-            email: data.email || null,
-            phone: data.phone || null,
-            address: data.address ? { full_address: data.address } : null,
-            payment_terms: data.payment_terms ? parseInt(data.payment_terms) : 30,
-            is_active: data.is_active
-          })
-          .eq('id', supplier.id);
-        if (error) throw error;
-        toast({ title: 'Fornecedor atualizado com sucesso!' });
-      } else {
-        const { error } = await supabase
-          .from('suppliers')
-          .insert([{
-            name: data.name,
-            document: data.document || null,
-            email: data.email || null,
-            phone: data.phone || null,
-            address: data.address ? { full_address: data.address } : null,
-            payment_terms: data.payment_terms ? parseInt(data.payment_terms) : 30,
-            is_active: data.is_active
-          }]);
-        if (error) throw error;
-        toast({ title: 'Fornecedor criado com sucesso!' });
-      }
+      await createSupplier({
+        name: data.name,
+        document: data.document || null,
+        email: data.email || null,
+        phone: data.phone || null,
+        address: data.address ? { full_address: data.address } : null,
+        payment_terms: data.payment_terms ? parseInt(data.payment_terms) : 30,
+        is_active: data.is_active
+      });
       onSuccess();
       onClose();
     } catch (error: any) {
@@ -93,8 +71,6 @@ export function SupplierForm({ isOpen, onClose, supplier, onSuccess }: SupplierF
         description: error.message,
         variant: 'destructive'
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -233,8 +209,8 @@ export function SupplierForm({ isOpen, onClose, supplier, onSuccess }: SupplierF
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">
               Cancelar
             </Button>
-            <Button type="submit" disabled={loading} className="flex-1">
-              {loading ? 'Salvando...' : supplier ? 'Atualizar' : 'Criar'}
+            <Button type="submit" disabled={isCreatingSupplier} className="flex-1">
+              {isCreatingSupplier ? 'Salvando...' : supplier ? 'Atualizar' : 'Criar'}
             </Button>
           </div>
         </form>

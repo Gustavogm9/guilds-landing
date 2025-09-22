@@ -10,13 +10,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useFinancial } from '@/hooks/useFinancial';
 
 const accountSchema = z.object({
   code: z.string().min(1, 'Código é obrigatório'),
   name: z.string().min(1, 'Nome é obrigatório'),
-  account_type: z.enum(['asset', 'liability', 'equity', 'revenue', 'expense']),
+  account_type: z.enum(['asset', 'liability', 'equity', 'revenue', 'expense'], {
+    required_error: 'Tipo da conta é obrigatório'
+  }),
   parent_id: z.string().optional(),
-  level: z.number().min(1).max(5),
+  level: z.string().optional(),
   is_active: z.boolean()
 });
 
@@ -26,22 +29,22 @@ interface AccountFormProps {
   isOpen: boolean;
   onClose: () => void;
   account?: any;
-  accounts: any[];
   onSuccess: () => void;
 }
 
-export function AccountForm({ isOpen, onClose, account, accounts, onSuccess }: AccountFormProps) {
+export function AccountForm({ isOpen, onClose, account, onSuccess }: AccountFormProps) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { chartOfAccounts } = useFinancial();
 
   const form = useForm<AccountFormData>({
     resolver: zodResolver(accountSchema),
     defaultValues: {
       code: account?.code || '',
       name: account?.name || '',
-      account_type: account?.account_type || 'asset',
+      account_type: account?.account_type || 'expense',
       parent_id: account?.parent_id || '',
-      level: account?.level || 1,
+      level: account?.level?.toString() || '1',
       is_active: account?.is_active !== false
     }
   });
@@ -49,24 +52,26 @@ export function AccountForm({ isOpen, onClose, account, accounts, onSuccess }: A
   const handleSubmit = async (data: AccountFormData) => {
     setLoading(true);
     try {
+      const accountData = {
+        code: data.code,
+        name: data.name,
+        account_type: data.account_type,
+        parent_id: data.parent_id || null,
+        level: parseInt(data.level || '1'),
+        is_active: data.is_active
+      };
+
       if (account?.id) {
         const { error } = await supabase
           .from('chart_of_accounts')
-          .update(data)
+          .update(accountData)
           .eq('id', account.id);
         if (error) throw error;
         toast({ title: 'Conta atualizada com sucesso!' });
       } else {
         const { error } = await supabase
           .from('chart_of_accounts')
-          .insert([{
-            code: data.code,
-            name: data.name,
-            account_type: data.account_type,
-            parent_id: data.parent_id || null,
-            level: data.level,
-            is_active: data.is_active
-          }]);
+          .insert([accountData]);
         if (error) throw error;
         toast({ title: 'Conta criada com sucesso!' });
       }
@@ -83,13 +88,15 @@ export function AccountForm({ isOpen, onClose, account, accounts, onSuccess }: A
     }
   };
 
-  const parentAccounts = accounts?.filter(acc => 
-    acc.level < (form.watch('level') || 1) && acc.account_type === form.watch('account_type')
+  const parentAccounts = chartOfAccounts?.filter(acc => 
+    acc.account_type === form.watch('account_type') && 
+    acc.id !== account?.id &&
+    acc.level < 3
   );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>{account ? 'Editar Conta' : 'Nova Conta'}</DialogTitle>
         </DialogHeader>
@@ -97,11 +104,11 @@ export function AccountForm({ isOpen, onClose, account, accounts, onSuccess }: A
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="code">Código</Label>
+              <Label htmlFor="code">Código *</Label>
               <Input
                 id="code"
                 {...form.register('code')}
-                placeholder="ex: 1.1.01"
+                placeholder="1.1.01"
               />
               {form.formState.errors.code && (
                 <p className="text-sm text-destructive mt-1">
@@ -113,29 +120,28 @@ export function AccountForm({ isOpen, onClose, account, accounts, onSuccess }: A
             <div>
               <Label htmlFor="level">Nível</Label>
               <Select
-                value={form.watch('level')?.toString()}
-                onValueChange={(value) => form.setValue('level', parseInt(value))}
+                value={form.watch('level')}
+                onValueChange={(value) => form.setValue('level', value)}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {[1, 2, 3, 4, 5].map(level => (
-                    <SelectItem key={level} value={level.toString()}>
-                      Nível {level}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="1">1 - Grupo</SelectItem>
+                  <SelectItem value="2">2 - Subgrupo</SelectItem>
+                  <SelectItem value="3">3 - Conta</SelectItem>
+                  <SelectItem value="4">4 - Subconta</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           <div>
-            <Label htmlFor="name">Nome da Conta</Label>
+            <Label htmlFor="name">Nome da Conta *</Label>
             <Input
               id="name"
               {...form.register('name')}
-              placeholder="ex: Caixa e Equivalentes"
+              placeholder="Nome da conta"
             />
             {form.formState.errors.name && (
               <p className="text-sm text-destructive mt-1">
@@ -145,10 +151,10 @@ export function AccountForm({ isOpen, onClose, account, accounts, onSuccess }: A
           </div>
 
           <div>
-            <Label htmlFor="account_type">Tipo da Conta</Label>
+            <Label htmlFor="account_type">Tipo da Conta *</Label>
             <Select
               value={form.watch('account_type')}
-              onValueChange={(value) => form.setValue('account_type', value as any)}
+              onValueChange={(value: any) => form.setValue('account_type', value)}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -161,23 +167,27 @@ export function AccountForm({ isOpen, onClose, account, accounts, onSuccess }: A
                 <SelectItem value="expense">Despesa</SelectItem>
               </SelectContent>
             </Select>
+            {form.formState.errors.account_type && (
+              <p className="text-sm text-destructive mt-1">
+                {form.formState.errors.account_type.message}
+              </p>
+            )}
           </div>
 
-          {parentAccounts && parentAccounts.length > 0 && (
+          {parseInt(form.watch('level') || '1') > 1 && (
             <div>
-              <Label htmlFor="parent_id">Conta Pai (Opcional)</Label>
+              <Label htmlFor="parent_id">Conta Pai</Label>
               <Select
-                value={form.watch('parent_id') || ''}
-                onValueChange={(value) => form.setValue('parent_id', value || undefined)}
+                value={form.watch('parent_id')}
+                onValueChange={(value) => form.setValue('parent_id', value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione uma conta pai" />
+                  <SelectValue placeholder="Selecione a conta pai" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Nenhuma</SelectItem>
-                  {parentAccounts.map(acc => (
-                    <SelectItem key={acc.id} value={acc.id}>
-                      {acc.code} - {acc.name}
+                  {parentAccounts?.map(account => (
+                    <SelectItem key={account.id} value={account.id}>
+                      {account.code} - {account.name}
                     </SelectItem>
                   ))}
                 </SelectContent>

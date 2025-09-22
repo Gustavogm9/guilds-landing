@@ -1,80 +1,64 @@
 import { useState } from 'react';
-import { Calendar, Filter, Search, Download } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CalendarIcon, Filter, X } from 'lucide-react';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 
-interface FilterState {
-  dateRange: {
-    from: Date | null;
-    to: Date | null;
-  };
-  status: string;
-  type: string;
+export interface FinancialFiltersType {
+  dateRange: 'last_7_days' | 'last_30_days' | 'last_3_months' | 'last_6_months' | 'custom';
+  customStartDate?: Date;
+  customEndDate?: Date;
+  status: 'all' | 'pending' | 'paid' | 'overdue' | 'cancelled';
+  category: 'all' | 'receitas' | 'despesas_operacionais' | 'investimentos' | 'financeiro' | 'impostos' | 'folha_pagamento';
+  accountType: 'all' | 'asset' | 'liability' | 'equity' | 'revenue' | 'expense';
   amountRange: {
-    min: string;
-    max: string;
+    min?: number;
+    max?: number;
   };
-  search: string;
+  searchTerm: string;
 }
 
 interface FinancialFiltersProps {
-  onFiltersChange: (filters: FilterState) => void;
-  onExportData: () => void;
+  filters: FinancialFiltersType;
+  onFiltersChange: (filters: FinancialFiltersType) => void;
+  onReset: () => void;
 }
 
-export function FinancialFilters({ onFiltersChange, onExportData }: FinancialFiltersProps) {
-  const [filters, setFilters] = useState<FilterState>({
-    dateRange: { from: null, to: null },
-    status: 'all',
-    type: 'all',
-    amountRange: { min: '', max: '' },
-    search: '',
-  });
+export function FinancialFilters({ filters, onFiltersChange, onReset }: FinancialFiltersProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
 
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-
-  const updateFilter = (key: keyof FilterState, value: any) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-    onFiltersChange(newFilters);
-  };
-
-  const clearFilters = () => {
-    const clearedFilters: FilterState = {
-      dateRange: { from: null, to: null },
-      status: 'all',
-      type: 'all',
-      amountRange: { min: '', max: '' },
-      search: '',
-    };
-    setFilters(clearedFilters);
-    onFiltersChange(clearedFilters);
+  const updateFilter = (key: keyof FinancialFiltersType, value: any) => {
+    onFiltersChange({ ...filters, [key]: value });
   };
 
   const getActiveFiltersCount = () => {
     let count = 0;
-    if (filters.dateRange.from || filters.dateRange.to) count++;
+    if (filters.dateRange !== 'last_30_days') count++;
     if (filters.status !== 'all') count++;
-    if (filters.type !== 'all') count++;
+    if (filters.category !== 'all') count++;
+    if (filters.accountType !== 'all') count++;
     if (filters.amountRange.min || filters.amountRange.max) count++;
-    if (filters.search) count++;
+    if (filters.searchTerm) count++;
     return count;
   };
 
-  const formatCurrency = (value: string) => {
-    const numericValue = value.replace(/\D/g, '');
-    const formattedValue = new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(parseInt(numericValue || '0') / 100);
-    return formattedValue;
+  const getDateRangeLabel = () => {
+    switch (filters.dateRange) {
+      case 'last_7_days': return 'Últimos 7 dias';
+      case 'last_30_days': return 'Últimos 30 dias';
+      case 'last_3_months': return 'Últimos 3 meses';
+      case 'last_6_months': return 'Últimos 6 meses';
+      case 'custom': return 'Período personalizado';
+      default: return 'Últimos 30 dias';
+    }
   };
 
   return (
@@ -83,207 +67,255 @@ export function FinancialFilters({ onFiltersChange, onExportData }: FinancialFil
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Filter className="h-5 w-5" />
-            Filtros e Busca
-          </CardTitle>
-          <div className="flex items-center gap-2">
+            Filtros
             {getActiveFiltersCount() > 0 && (
               <Badge variant="secondary">
-                {getActiveFiltersCount()} filtro(s) ativo(s)
+                {getActiveFiltersCount()}
               </Badge>
             )}
-            <Button variant="outline" size="sm" onClick={onExportData}>
-              <Download className="h-4 w-4 mr-2" />
-              Exportar
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              {isExpanded ? 'Recolher' : 'Expandir'}
             </Button>
+            {getActiveFiltersCount() > 0 && (
+              <Button variant="outline" size="sm" onClick={onReset}>
+                <X className="h-4 w-4 mr-1" />
+                Limpar
+              </Button>
+            )}
           </div>
         </div>
       </CardHeader>
+      
       <CardContent className="space-y-4">
-        {/* Busca rápida */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar por descrição, fornecedor, cliente..."
-            value={filters.search}
-            onChange={(e) => updateFilter('search', e.target.value)}
-            className="pl-10"
-          />
+        {/* Filtros básicos - sempre visíveis */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <Label>Período</Label>
+            <Select
+              value={filters.dateRange}
+              onValueChange={(value: FinancialFiltersType['dateRange']) =>
+                updateFilter('dateRange', value)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="last_7_days">Últimos 7 dias</SelectItem>
+                <SelectItem value="last_30_days">Últimos 30 dias</SelectItem>
+                <SelectItem value="last_3_months">Últimos 3 meses</SelectItem>
+                <SelectItem value="last_6_months">Últimos 6 meses</SelectItem>
+                <SelectItem value="custom">Personalizado</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label>Status</Label>
+            <Select
+              value={filters.status}
+              onValueChange={(value: FinancialFiltersType['status']) =>
+                updateFilter('status', value)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="pending">Pendente</SelectItem>
+                <SelectItem value="paid">Pago</SelectItem>
+                <SelectItem value="overdue">Em atraso</SelectItem>
+                <SelectItem value="cancelled">Cancelado</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label>Categoria</Label>
+            <Select
+              value={filters.category}
+              onValueChange={(value: FinancialFiltersType['category']) =>
+                updateFilter('category', value)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas</SelectItem>
+                <SelectItem value="receitas">Receitas</SelectItem>
+                <SelectItem value="despesas_operacionais">Despesas Operacionais</SelectItem>
+                <SelectItem value="investimentos">Investimentos</SelectItem>
+                <SelectItem value="financeiro">Financeiro</SelectItem>
+                <SelectItem value="impostos">Impostos</SelectItem>
+                <SelectItem value="folha_pagamento">Folha de Pagamento</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label>Buscar</Label>
+            <Input
+              placeholder="Digite para buscar..."
+              value={filters.searchTerm}
+              onChange={(e) => updateFilter('searchTerm', e.target.value)}
+            />
+          </div>
         </div>
 
-        {/* Filtros avançados */}
-        <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="w-full">
-              <Filter className="h-4 w-4 mr-2" />
-              Filtros Avançados
-              {getActiveFiltersCount() > 0 && (
-                <Badge variant="secondary" className="ml-2">
-                  {getActiveFiltersCount()}
-                </Badge>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80 space-y-4" align="start">
-            {/* Período */}
-            <div className="space-y-2">
-              <Label>Período</Label>
-              <div className="grid grid-cols-2 gap-2">
+        {/* Filtros avançados - apenas quando expandido */}
+        {isExpanded && (
+          <div className="border-t pt-4 space-y-4">
+            {filters.dateRange === 'custom' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-xs text-muted-foreground">De</Label>
-                  <Input
-                    type="date"
-                    value={filters.dateRange.from?.toISOString().split('T')[0] || ''}
-                    onChange={(e) => updateFilter('dateRange', {
-                      ...filters.dateRange,
-                      from: e.target.value ? new Date(e.target.value) : null
-                    })}
-                  />
+                  <Label>Data Inicial</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !filters.customStartDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {filters.customStartDate ? (
+                          format(filters.customStartDate, "dd/MM/yyyy", { locale: ptBR })
+                        ) : (
+                          <span>Selecione a data inicial</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={filters.customStartDate}
+                        onSelect={(date) => updateFilter('customStartDate', date)}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
+
                 <div>
-                  <Label className="text-xs text-muted-foreground">Até</Label>
-                  <Input
-                    type="date"
-                    value={filters.dateRange.to?.toISOString().split('T')[0] || ''}
-                    onChange={(e) => updateFilter('dateRange', {
-                      ...filters.dateRange,
-                      to: e.target.value ? new Date(e.target.value) : null
-                    })}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Status */}
-            <div className="space-y-2">
-              <Label>Status</Label>
-              <Select value={filters.status} onValueChange={(value) => updateFilter('status', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Todos os status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os status</SelectItem>
-                  <SelectItem value="pending">Pendente</SelectItem>
-                  <SelectItem value="paid">Pago</SelectItem>
-                  <SelectItem value="overdue">Vencido</SelectItem>
-                  <SelectItem value="cancelled">Cancelado</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Tipo */}
-            <div className="space-y-2">
-              <Label>Tipo</Label>
-              <Select value={filters.type} onValueChange={(value) => updateFilter('type', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Todos os tipos" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os tipos</SelectItem>
-                  <SelectItem value="receivable">Contas a Receber</SelectItem>
-                  <SelectItem value="payable">Contas a Pagar</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Separator />
-
-            {/* Faixa de valores */}
-            <div className="space-y-2">
-              <Label>Valor</Label>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <Label className="text-xs text-muted-foreground">Mínimo</Label>
-                  <Input
-                    placeholder="R$ 0,00"
-                    value={filters.amountRange.min}
-                    onChange={(e) => {
-                      const formatted = formatCurrency(e.target.value);
-                      updateFilter('amountRange', {
-                        ...filters.amountRange,
-                        min: formatted
-                      });
-                    }}
-                  />
-                </div>
-                <div>
-                  <Label className="text-xs text-muted-foreground">Máximo</Label>
-                  <Input
-                    placeholder="R$ 0,00"
-                    value={filters.amountRange.max}
-                    onChange={(e) => {
-                      const formatted = formatCurrency(e.target.value);
-                      updateFilter('amountRange', {
-                        ...filters.amountRange,
-                        max: formatted
-                      });
-                    }}
-                  />
+                  <Label>Data Final</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !filters.customEndDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {filters.customEndDate ? (
+                          format(filters.customEndDate, "dd/MM/yyyy", { locale: ptBR })
+                        ) : (
+                          <span>Selecione a data final</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={filters.customEndDate}
+                        onSelect={(date) => updateFilter('customEndDate', date)}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
-            </div>
-
-            <Separator />
-
-            {/* Ações */}
-            <div className="flex justify-between gap-2">
-              <Button variant="outline" onClick={clearFilters} className="flex-1">
-                Limpar
-              </Button>
-              <Button onClick={() => setIsFilterOpen(false)} className="flex-1">
-                Aplicar
-              </Button>
-            </div>
-          </PopoverContent>
-        </Popover>
-
-        {/* Filtros ativos */}
-        {getActiveFiltersCount() > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {filters.search && (
-              <Badge variant="secondary" className="gap-1">
-                Busca: "{filters.search}"
-                <button
-                  onClick={() => updateFilter('search', '')}
-                  className="ml-1 text-xs hover:text-foreground"
+            )}
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>Tipo de Conta</Label>
+                <Select
+                  value={filters.accountType}
+                  onValueChange={(value: FinancialFiltersType['accountType']) =>
+                    updateFilter('accountType', value)
+                  }
                 >
-                  ×
-                </button>
-              </Badge>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos os tipos</SelectItem>
+                    <SelectItem value="asset">Ativo</SelectItem>
+                    <SelectItem value="liability">Passivo</SelectItem>
+                    <SelectItem value="equity">Patrimônio Líquido</SelectItem>
+                    <SelectItem value="revenue">Receita</SelectItem>
+                    <SelectItem value="expense">Despesa</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>Valor Mínimo (R$)</Label>
+                <Input
+                  type="number"
+                  placeholder="0,00"
+                  value={filters.amountRange.min || ''}
+                  onChange={(e) =>
+                    updateFilter('amountRange', {
+                      ...filters.amountRange,
+                      min: e.target.value ? parseFloat(e.target.value) : undefined
+                    })
+                  }
+                />
+              </div>
+
+              <div>
+                <Label>Valor Máximo (R$)</Label>
+                <Input
+                  type="number"
+                  placeholder="99999,00"
+                  value={filters.amountRange.max || ''}
+                  onChange={(e) =>
+                    updateFilter('amountRange', {
+                      ...filters.amountRange,
+                      max: e.target.value ? parseFloat(e.target.value) : undefined
+                    })
+                  }
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Resumo dos filtros ativos */}
+        {getActiveFiltersCount() > 0 && (
+          <div className="flex flex-wrap gap-2 pt-2 border-t">
+            <span className="text-sm text-muted-foreground">Filtros ativos:</span>
+            {filters.dateRange !== 'last_30_days' && (
+              <Badge variant="outline">{getDateRangeLabel()}</Badge>
             )}
             {filters.status !== 'all' && (
-              <Badge variant="secondary" className="gap-1">
-                Status: {filters.status}
-                <button
-                  onClick={() => updateFilter('status', 'all')}
-                  className="ml-1 text-xs hover:text-foreground"
-                >
-                  ×
-                </button>
+              <Badge variant="outline">Status: {filters.status}</Badge>
+            )}
+            {filters.category !== 'all' && (
+              <Badge variant="outline">Categoria: {filters.category}</Badge>
+            )}
+            {filters.accountType !== 'all' && (
+              <Badge variant="outline">Tipo: {filters.accountType}</Badge>
+            )}
+            {(filters.amountRange.min || filters.amountRange.max) && (
+              <Badge variant="outline">
+                Valor: R$ {filters.amountRange.min || 0} - R$ {filters.amountRange.max || '∞'}
               </Badge>
             )}
-            {filters.type !== 'all' && (
-              <Badge variant="secondary" className="gap-1">
-                Tipo: {filters.type}
-                <button
-                  onClick={() => updateFilter('type', 'all')}
-                  className="ml-1 text-xs hover:text-foreground"
-                >
-                  ×
-                </button>
-              </Badge>
-            )}
-            {(filters.dateRange.from || filters.dateRange.to) && (
-              <Badge variant="secondary" className="gap-1">
-                Período: {filters.dateRange.from?.toLocaleDateString('pt-BR')} - {filters.dateRange.to?.toLocaleDateString('pt-BR')}
-                <button
-                  onClick={() => updateFilter('dateRange', { from: null, to: null })}
-                  className="ml-1 text-xs hover:text-foreground"
-                >
-                  ×
-                </button>
-              </Badge>
+            {filters.searchTerm && (
+              <Badge variant="outline">Busca: "{filters.searchTerm}"</Badge>
             )}
           </div>
         )}
