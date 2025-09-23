@@ -21,6 +21,9 @@ import { AutomationWorkflows } from './AutomationWorkflows';
 import { AutomationTriggers } from './AutomationTriggers';
 import { FinancialNotifications } from './FinancialNotifications';
 import { FinancialIntegrations } from './FinancialIntegrations';
+import { WorkflowBuilder } from './WorkflowBuilder';
+import { RealTimeMonitoring } from './RealTimeMonitoring';
+import { APIIntegrationManager } from './APIIntegrationManager';
 import { useFinancialEdgeFunctions } from '@/hooks/useFinancialEdgeFunctions';
 
 interface AutomationRule {
@@ -204,14 +207,15 @@ export function FinancialAutomation() {
         </Card>
       </div>
 
-      <Tabs defaultValue="rules" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="rules">Regras</TabsTrigger>
-          <TabsTrigger value="workflows">Workflows</TabsTrigger>
-          <TabsTrigger value="triggers">Gatilhos</TabsTrigger>
-          <TabsTrigger value="notifications">Notificações</TabsTrigger>
-          <TabsTrigger value="integrations">Integrações</TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="rules" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="rules">Regras</TabsTrigger>
+            <TabsTrigger value="workflows">Workflows</TabsTrigger>
+            <TabsTrigger value="builder">Builder</TabsTrigger>
+            <TabsTrigger value="monitoring">Monitor</TabsTrigger>
+            <TabsTrigger value="triggers">Gatilhos</TabsTrigger>
+            <TabsTrigger value="integrations">APIs</TabsTrigger>
+          </TabsList>
 
         <TabsContent value="rules" className="space-y-4">
           <Card>
@@ -268,16 +272,20 @@ export function FinancialAutomation() {
           <AutomationWorkflows />
         </TabsContent>
 
+        <TabsContent value="builder" className="space-y-4">
+          <WorkflowBuilder />
+        </TabsContent>
+
+        <TabsContent value="monitoring" className="space-y-4">
+          <RealTimeMonitoring />
+        </TabsContent>
+
         <TabsContent value="triggers" className="space-y-4">
           <AutomationTriggers />
         </TabsContent>
 
-        <TabsContent value="notifications" className="space-y-4">
-          <FinancialNotifications />
-        </TabsContent>
-
         <TabsContent value="integrations" className="space-y-4">
-          <FinancialIntegrations />
+          <APIIntegrationManager />
         </TabsContent>
       </Tabs>
     </div>
