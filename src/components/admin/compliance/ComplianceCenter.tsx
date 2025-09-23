@@ -8,470 +8,303 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Shield, 
   FileText, 
-  Clock, 
+  AlertTriangle, 
   CheckCircle, 
-  AlertTriangle,
+  Clock, 
   Download,
-  Lock,
-  Users,
-  Database,
   Eye,
-  Key,
-  Calendar,
-  FileCheck
+  Lock,
+  Gavel
 } from 'lucide-react';
 import { useComplianceCenter } from '@/hooks/useComplianceCenter';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export const ComplianceCenter = () => {
-  const {
-    auditLogs,
-    complianceReports,
-    accessControls,
-    backupStatus,
-    securityMetrics,
-    generateComplianceReport,
-    exportAuditTrail,
-    runSecurityScan,
-    performBackup,
-    isGeneratingReport,
-    isExportingAudit,
-    isRunningSecurityScan,
-    isPerformingBackup
+const ComplianceCenter = () => {
+  const { 
+    complianceData, 
+    auditReports, 
+    generateReport, 
+    runComplianceCheck,
+    isLoading 
   } = useComplianceCenter();
+  
+  const [activeCheck, setActiveCheck] = useState<string | null>(null);
 
-  const [selectedTimeframe, setSelectedTimeframe] = useState('30d');
+  const complianceFrameworks = [
+    {
+      id: 'lgpd',
+      name: 'LGPD',
+      description: 'Lei Geral de Proteção de Dados',
+      status: 'compliant',
+      score: 95,
+      lastCheck: '2024-01-15',
+      criticalIssues: 0,
+      totalChecks: 25
+    },
+    {
+      id: 'sox',
+      name: 'SOX',
+      description: 'Sarbanes-Oxley Act',
+      status: 'warning',
+      score: 78,
+      lastCheck: '2024-01-10',
+      criticalIssues: 2,
+      totalChecks: 18
+    },
+    {
+      id: 'pci',
+      name: 'PCI DSS',
+      description: 'Payment Card Industry Data Security',
+      status: 'non_compliant',
+      score: 65,
+      lastCheck: '2024-01-05',
+      criticalIssues: 4,
+      totalChecks: 22
+    },
+    {
+      id: 'iso27001',
+      name: 'ISO 27001',
+      description: 'Information Security Management',
+      status: 'compliant',
+      score: 88,
+      lastCheck: '2024-01-12',
+      criticalIssues: 1,
+      totalChecks: 30
+    }
+  ];
+
+  const auditTrail = [
+    {
+      id: 1,
+      timestamp: '2024-01-15 10:30:00',
+      user: 'admin@guilds.com.br',
+      action: 'financial_transaction_created',
+      resource: 'Transaction #TX-001',
+      details: 'Receita de projeto - R$ 50.000',
+      risk: 'low'
+    },
+    {
+      id: 2,
+      timestamp: '2024-01-15 09:45:00',
+      user: 'finance@guilds.com.br',
+      action: 'account_updated',
+      resource: 'Account #ACC-123',
+      details: 'Alteração de saldo - Conta Corrente',
+      risk: 'medium'
+    },
+    {
+      id: 3,
+      timestamp: '2024-01-15 08:20:00',
+      user: 'system',
+      action: 'automated_backup',
+      resource: 'Financial Database',
+      details: 'Backup automático executado',
+      risk: 'low'
+    }
+  ];
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'compliant': return 'text-success bg-success/10';
+      case 'warning': return 'text-warning bg-warning/10';
+      case 'non_compliant': return 'text-danger bg-danger/10';
+      default: return 'text-muted-foreground bg-muted';
+    }
+  };
+
+  const getRiskColor = (risk: string) => {
+    switch (risk) {
+      case 'low': return 'text-success';
+      case 'medium': return 'text-warning';
+      case 'high': return 'text-danger';
+      default: return 'text-muted-foreground';
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-8 w-64" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-32" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Central de Compliance</h2>
+          <h2 className="text-2xl font-bold">Centro de Conformidade</h2>
           <p className="text-muted-foreground">
-            Auditoria, conformidade e controles de segurança financeira
+            Monitore e garanta a conformidade regulatória
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button 
-            variant="outline" 
-            onClick={() => runSecurityScan()}
-            disabled={isRunningSecurityScan}
-          >
-            <Shield className="w-4 h-4 mr-2" />
-            Scan Segurança
-          </Button>
-          <Button 
-            variant="outline"
-            onClick={() => performBackup()}
-            disabled={isPerformingBackup}
-          >
-            <Database className="w-4 h-4 mr-2" />
-            Backup Manual
-          </Button>
-        </div>
+        <Button onClick={() => generateReport('full')} className="gap-2">
+          <Download className="h-4 w-4" />
+          Relatório Completo
+        </Button>
       </div>
 
-      {/* Status Cards */}
+      {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Score de Compliance
-            </CardTitle>
-            <CheckCircle className="h-4 w-4 text-success" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-success">94%</div>
-            <Progress value={94} className="mt-2" />
-            <p className="text-xs text-muted-foreground mt-2">
-              Excelente conformidade
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Logs de Auditoria
-            </CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">2,847</div>
-            <p className="text-xs text-muted-foreground">
-              +127 nas últimas 24h
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Último Backup
-            </CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">2h</div>
-            <p className="text-xs text-success">
-              ✓ Backup automático ativo
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Alertas de Segurança
-            </CardTitle>
-            <AlertTriangle className="h-4 w-4 text-warning" />
-          </CardHeader>
-          <CardContent>
-                    <div className="text-2xl font-bold text-destructive">3</div>
-            <p className="text-xs text-muted-foreground">
-              Requer atenção
-            </p>
-          </CardContent>
-        </Card>
+        {complianceFrameworks.map((framework) => (
+          <Card key={framework.id}>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium">
+                  {framework.name}
+                </CardTitle>
+                <Badge className={getStatusColor(framework.status)}>
+                  {framework.status === 'compliant' && <CheckCircle className="h-3 w-3 mr-1" />}
+                  {framework.status === 'warning' && <AlertTriangle className="h-3 w-3 mr-1" />}
+                  {framework.status === 'non_compliant' && <AlertTriangle className="h-3 w-3 mr-1" />}
+                  {framework.status === 'compliant' ? 'Conforme' : 
+                   framework.status === 'warning' ? 'Atenção' : 'Não Conforme'}
+                </Badge>
+              </div>
+              <CardDescription>{framework.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span>Score</span>
+                  <span className="font-medium">{framework.score}%</span>
+                </div>
+                <Progress value={framework.score} className="h-2" />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Última verificação: {framework.lastCheck}</span>
+                  <span>{framework.criticalIssues} críticos</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      <Tabs defaultValue="audit" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="audit">Auditoria</TabsTrigger>
-          <TabsTrigger value="compliance">Compliance</TabsTrigger>
-          <TabsTrigger value="security">Segurança</TabsTrigger>
-          <TabsTrigger value="access">Acessos</TabsTrigger>
-          <TabsTrigger value="backup">Backup</TabsTrigger>
-          <TabsTrigger value="reports">Relatórios</TabsTrigger>
+      <Tabs defaultValue="frameworks" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="frameworks" className="gap-2">
+            <Shield className="h-4 w-4" />
+            Frameworks
+          </TabsTrigger>
+          <TabsTrigger value="audit" className="gap-2">
+            <Eye className="h-4 w-4" />
+            Auditoria
+          </TabsTrigger>
+          <TabsTrigger value="security" className="gap-2">
+            <Lock className="h-4 w-4" />
+            Segurança
+          </TabsTrigger>
+          <TabsTrigger value="legal" className="gap-2">
+            <Gavel className="h-4 w-4" />
+            Legal
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="audit" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Eye className="w-5 h-5" />
-                  Trilha de Auditoria Recente
-                </CardTitle>
-                <CardDescription>
-                  Últimas atividades registradas no sistema
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {[
-                  {
-                    action: "Transação Criada",
-                    user: "admin@guilds.com.br",
-                    details: "Nova transação de R$ 5.400,00",
-                    timestamp: "15:34:22",
-                    type: "create"
-                  },
-                  {
-                    action: "Relatório Exportado",
-                    user: "financeiro@guilds.com.br", 
-                    details: "Relatório DRE - Janeiro 2024",
-                    timestamp: "14:21:10",
-                    type: "export"
-                  },
-                  {
-                    action: "Usuário Logado",
-                    user: "gestor@guilds.com.br",
-                    details: "Login via SSO",
-                    timestamp: "13:45:33",
-                    type: "auth"
-                  },
-                  {
-                    action: "Configuração Alterada",
-                    user: "admin@guilds.com.br",
-                    details: "Política de backup atualizada",
-                    timestamp: "12:12:45",
-                    type: "config"
-                  }
-                ].map((log, index) => (
-                  <div key={index} className="flex items-start gap-3 p-3 border rounded-lg">
-                    <div className={`w-2 h-2 rounded-full mt-2 ${
-                      log.type === 'create' ? 'bg-success' :
-                      log.type === 'export' ? 'bg-primary' :
-                      log.type === 'auth' ? 'bg-warning' :
-                      'bg-muted-foreground'
-                    }`} />
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center justify-between">
-                        <p className="font-medium text-sm">{log.action}</p>
-                        <Badge variant="outline" className="text-xs">
-                          {log.timestamp}
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        {log.user} - {log.details}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-                
-                <Button 
-                  className="w-full" 
-                  variant="outline"
-                  onClick={() => exportAuditTrail(selectedTimeframe)}
-                  disabled={isExportingAudit}
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Exportar Trilha Completa
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <AlertTriangle className="w-5 h-5 text-warning" />
-                  Eventos Críticos
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Alert>
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription>
-                    <strong>Tentativa de acesso suspeita</strong><br/>
-                    IP 192.168.1.100 tentou acessar dados financeiros sensíveis
-                  </AlertDescription>
-                </Alert>
-                
-                <Alert>
-                  <Lock className="h-4 w-4" />
-                  <AlertDescription>
-                    <strong>Sessão expirada</strong><br/>
-                    Usuário admin@guilds.com.br teve sessão encerrada por inatividade
-                  </AlertDescription>
-                </Alert>
-                
-                <Alert>
-                  <FileCheck className="h-4 w-4" />
-                  <AlertDescription>
-                    <strong>Backup verificado</strong><br/>
-                    Integridade dos dados confirmada no backup de 14:00
-                  </AlertDescription>
-                </Alert>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="compliance" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              {
-                title: "LGPD - Lei Geral de Proteção de Dados",
-                status: "Conforme", 
-                progress: 95,
-                items: [
-                  "✓ Política de Privacidade atualizada",
-                  "✓ Consentimento explícito implementado",
-                  "✓ Direito ao esquecimento configurado",
-                  "⚠ Relatório de impacto pendente"
-                ]
-              },
-              {
-                title: "SOX - Sarbanes-Oxley",
-                status: "Conforme",
-                progress: 92,
-                items: [
-                  "✓ Controles internos documentados",
-                  "✓ Segregação de funções implementada", 
-                  "✓ Auditoria independente aprovada",
-                  "✓ Relatórios de conformidade atuais"
-                ]
-              },
-              {
-                title: "Receita Federal",
-                status: "Conforme",
-                progress: 98,
-                items: [
-                  "✓ SPED Fiscal em dia",
-                  "✓ Certificado digital válido",
-                  "✓ Backup de segurança ativo",
-                  "✓ Controle de versões implementado"
-                ]
-              }
-            ].map((compliance, index) => (
-              <Card key={index}>
+        <TabsContent value="frameworks" className="mt-6">
+          <div className="grid gap-4">
+            {complianceFrameworks.map((framework) => (
+              <Card key={framework.id}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{compliance.title}</CardTitle>
-                    <Badge 
-                      variant={compliance.progress > 90 ? "default" : "destructive"}
-                    >
-                      {compliance.status}
-                    </Badge>
+                    <div>
+                      <CardTitle>{framework.name}</CardTitle>
+                      <CardDescription>{framework.description}</CardDescription>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setActiveCheck(framework.id)}
+                        disabled={activeCheck === framework.id}
+                      >
+                        {activeCheck === framework.id ? (
+                          <>
+                            <Clock className="h-4 w-4 mr-2 animate-spin" />
+                            Verificando...
+                          </>
+                        ) : (
+                          'Verificar Agora'
+                        )}
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        Ver Detalhes
+                      </Button>
+                    </div>
                   </div>
-                  <Progress value={compliance.progress} className="mt-2" />
-                  <p className="text-sm text-muted-foreground">
-                    {compliance.progress}% de conformidade
-                  </p>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
-                    {compliance.items.map((item, itemIndex) => (
-                      <div key={itemIndex} className="text-sm">
-                        {item}
-                      </div>
-                    ))}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                      <p className="text-sm font-medium">Score Atual</p>
+                      <p className="text-2xl font-bold">{framework.score}%</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Verificações</p>
+                      <p className="text-2xl font-bold">{framework.totalChecks}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Problemas Críticos</p>
+                      <p className="text-2xl font-bold text-danger">{framework.criticalIssues}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Última Verificação</p>
+                      <p className="text-sm text-muted-foreground">{framework.lastCheck}</p>
+                    </div>
                   </div>
-                  <Button className="w-full mt-4" variant="outline" size="sm">
-                    <FileText className="w-4 h-4 mr-2" />
-                    Ver Detalhes
-                  </Button>
+                  
+                  {framework.criticalIssues > 0 && (
+                    <Alert className="mt-4">
+                      <AlertTriangle className="h-4 w-4" />
+                      <AlertDescription>
+                        {framework.criticalIssues} problema(s) crítico(s) encontrado(s). 
+                        Ação imediata necessária.
+                      </AlertDescription>
+                    </Alert>
+                  )}
                 </CardContent>
               </Card>
             ))}
           </div>
         </TabsContent>
 
-        <TabsContent value="security" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="w-5 h-5" />
-                  Status de Segurança
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-4 border rounded-lg">
-                    <div className="text-2xl font-bold text-success">98%</div>
-                    <p className="text-sm text-muted-foreground">Proteção Geral</p>
-                  </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <div className="text-2xl font-bold text-success">SSL</div>
-                    <p className="text-sm text-muted-foreground">Criptografia</p>
-                  </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <div className="text-2xl font-bold text-warning">3</div>
-                    <p className="text-sm text-muted-foreground">Alertas Ativos</p>
-                  </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <div className="text-2xl font-bold text-success">0</div>
-                    <p className="text-sm text-muted-foreground">Violações</p>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Firewall</span>
-                    <Badge variant="default">Ativo</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Antivírus</span>
-                    <Badge variant="default">Atualizado</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Detecção de Intrusão</span>
-                    <Badge variant="default">Monitorando</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Backup Criptografado</span>
-                    <Badge variant="default">Ativo</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Vulnerabilidades Detectadas</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="border-l-4 border-warning pl-3">
-                    <p className="font-semibold text-sm">Senha Fraca Detectada</p>
-                    <p className="text-xs text-muted-foreground">
-                      Usuário com senha não conforme à política
-                    </p>
-                    <Badge variant="destructive" className="mt-1">Média</Badge>
-                  </div>
-                  
-                  <div className="border-l-4 border-orange-500 pl-3">
-                    <p className="font-semibold text-sm">Certificado Próximo ao Vencimento</p>
-                    <p className="text-xs text-muted-foreground">
-                      SSL expira em 45 dias
-                    </p>
-                    <Badge variant="secondary" className="mt-1">Baixa</Badge>
-                  </div>
-                  
-                  <div className="border-l-4 border-blue-500 pl-3">
-                    <p className="font-semibold text-sm">Atualização Disponível</p>
-                    <p className="text-xs text-muted-foreground">
-                      Nova versão de segurança do sistema
-                    </p>
-                    <Badge variant="outline" className="mt-1">Info</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="access" className="space-y-4">
+        <TabsContent value="audit" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="w-5 h-5" />
-                Controle de Acesso e Permissões
-              </CardTitle>
+              <CardTitle>Trilha de Auditoria</CardTitle>
+              <CardDescription>
+                Histórico completo de ações e alterações no sistema
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {[
-                  {
-                    user: "admin@guilds.com.br",
-                    role: "Administrador", 
-                    permissions: ["Todas as permissões"],
-                    lastAccess: "Hoje, 15:30",
-                    status: "online"
-                  },
-                  {
-                    user: "financeiro@guilds.com.br",
-                    role: "Financeiro",
-                    permissions: ["Transações", "Relatórios", "Configurações Financeiras"],
-                    lastAccess: "Hoje, 14:20",
-                    status: "online"
-                  },
-                  {
-                    user: "gestor@guilds.com.br", 
-                    role: "Gestor",
-                    permissions: ["Visualizar Dashboards", "Exportar Relatórios"],
-                    lastAccess: "Ontem, 18:45",
-                    status: "offline"
-                  },
-                  {
-                    user: "auditor@guilds.com.br",
-                    role: "Auditor",
-                    permissions: ["Apenas Leitura", "Logs de Auditoria"],
-                    lastAccess: "2 dias atrás",
-                    status: "offline"
-                  }
-                ].map((access, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium">{access.user}</p>
-                        <Badge variant="outline">{access.role}</Badge>
-                        <div className={`w-2 h-2 rounded-full ${
-                          access.status === 'online' ? 'bg-success' : 'bg-muted-foreground'
-                        }`} />
+                {auditTrail.map((entry) => (
+                  <div key={entry.id} className="flex items-center gap-4 p-4 border rounded-lg">
+                    <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-2">
+                      <div>
+                        <p className="text-sm font-medium">{entry.timestamp}</p>
+                        <p className="text-xs text-muted-foreground">{entry.user}</p>
                       </div>
-                      <div className="text-sm text-muted-foreground mt-1">
-                        Permissões: {access.permissions.join(', ')}
+                      <div>
+                        <p className="text-sm font-medium">{entry.action}</p>
+                        <p className="text-xs text-muted-foreground">{entry.resource}</p>
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        Último acesso: {access.lastAccess}
+                      <div>
+                        <p className="text-sm">{entry.details}</p>
                       </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline">
-                        <Key className="w-4 h-4 mr-1" />
-                        Editar
-                      </Button>
+                      <div className="flex justify-between items-center">
+                        <Badge className={getRiskColor(entry.risk)}>
+                          {entry.risk === 'low' ? 'Baixo' : 
+                           entry.risk === 'medium' ? 'Médio' : 'Alto'}
+                        </Badge>
+                        <Button variant="ghost" size="sm">
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -480,71 +313,90 @@ export const ComplianceCenter = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="backup" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <TabsContent value="security" className="mt-6">
+          <div className="grid gap-4">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Database className="w-5 h-5" />
-                  Status do Backup
-                </CardTitle>
+                <CardTitle>Análise de Segurança</CardTitle>
+                <CardDescription>
+                  Status da segurança de dados financeiros
+                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center p-6 border rounded-lg bg-success/5">
-                  <CheckCircle className="w-12 h-12 text-success mx-auto mb-4" />
-                  <div className="text-2xl font-bold text-success">Atualizado</div>
-                  <p className="text-sm text-muted-foreground">
-                    Último backup: Hoje às 14:00
-                  </p>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Backup Automático</span>
-                    <Badge variant="default">Ativo</Badge>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Shield className="h-5 w-5 text-success" />
+                      <h4 className="font-medium">Criptografia</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Dados em repouso e em trânsito criptografados
+                    </p>
+                    <Badge className="mt-2 text-success bg-success/10">Ativo</Badge>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Frequência</span>
-                    <span className="text-sm text-muted-foreground">A cada 4 horas</span>
+                  
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Lock className="h-5 w-5 text-success" />
+                      <h4 className="font-medium">Controle de Acesso</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Autenticação multifator e permissões granulares
+                    </p>
+                    <Badge className="mt-2 text-success bg-success/10">Ativo</Badge>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Retenção</span>
-                    <span className="text-sm text-muted-foreground">30 dias</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Criptografia</span>
-                    <Badge variant="default">AES-256</Badge>
+                  
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Eye className="h-5 w-5 text-warning" />
+                      <h4 className="font-medium">Monitoramento</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Detecção de anomalias e atividades suspeitas
+                    </p>
+                    <Badge className="mt-2 text-warning bg-warning/10">Parcial</Badge>
                   </div>
                 </div>
               </CardContent>
             </Card>
+          </div>
+        </TabsContent>
 
+        <TabsContent value="legal" className="mt-6">
+          <div className="grid gap-4">
             <Card>
               <CardHeader>
-                <CardTitle>Histórico de Backups</CardTitle>
+                <CardTitle>Documentos Legais</CardTitle>
+                <CardDescription>
+                  Contratos, políticas e documentação de conformidade
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {[
-                    { time: "14:00", date: "Hoje", size: "145 MB", status: "success" },
-                    { time: "10:00", date: "Hoje", size: "142 MB", status: "success" },
-                    { time: "06:00", date: "Hoje", size: "140 MB", status: "success" },
-                    { time: "02:00", date: "Hoje", size: "138 MB", status: "success" },
-                    { time: "22:00", date: "Ontem", size: "136 MB", status: "success" }
-                  ].map((backup, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                    { name: 'Política de Privacidade', status: 'Atualizada', date: '2024-01-01' },
+                    { name: 'Termos de Uso', status: 'Atualizada', date: '2024-01-01' },
+                    { name: 'Política de Cookies', status: 'Pendente', date: '2023-12-15' },
+                    { name: 'Manual de Segurança', status: 'Atualizada', date: '2024-01-10' }
+                  ].map((doc, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex items-center gap-3">
-                        <CheckCircle className="w-4 h-4 text-success" />
+                        <FileText className="h-5 w-5 text-muted-foreground" />
                         <div>
-                          <p className="font-medium text-sm">{backup.date} - {backup.time}</p>
-                          <p className="text-xs text-muted-foreground">
-                            Tamanho: {backup.size}
+                          <p className="font-medium">{doc.name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            Última atualização: {doc.date}
                           </p>
                         </div>
                       </div>
-                      <Button size="sm" variant="outline">
-                        <Download className="w-4 h-4" />
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Badge className={doc.status === 'Atualizada' ? 'text-success bg-success/10' : 'text-warning bg-warning/10'}>
+                          {doc.status}
+                        </Badge>
+                        <Button variant="outline" size="sm">
+                          <Download className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -552,50 +404,9 @@ export const ComplianceCenter = () => {
             </Card>
           </div>
         </TabsContent>
-
-        <TabsContent value="reports" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              {
-                title: "Relatório de Auditoria",
-                description: "Trilha completa de atividades do sistema",
-                icon: FileText,
-                action: "generate_audit"
-              },
-              {
-                title: "Relatório de Compliance",
-                description: "Status de conformidade regulatória",
-                icon: CheckCircle,
-                action: "generate_compliance"
-              },
-              {
-                title: "Relatório de Segurança",
-                description: "Análise de vulnerabilidades e proteções",
-                icon: Shield,
-                action: "generate_security"
-              }
-            ].map((report, index) => (
-              <Card key={index}>
-                <CardHeader className="text-center">
-                  <report.icon className="w-12 h-12 mx-auto text-primary mb-4" />
-                  <CardTitle className="text-lg">{report.title}</CardTitle>
-                  <CardDescription>{report.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button 
-                    className="w-full"
-                    onClick={() => generateComplianceReport(report.action)}
-                    disabled={isGeneratingReport}
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    Gerar Relatório
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
       </Tabs>
     </div>
   );
 };
+
+export default ComplianceCenter;

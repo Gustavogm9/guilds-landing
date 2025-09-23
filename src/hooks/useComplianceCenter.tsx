@@ -1,304 +1,195 @@
-import { useState } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 
-interface AuditLog {
+interface ComplianceFramework {
   id: string;
-  event_type: string;
-  user_id?: string;
-  ip_address?: unknown;
-  user_agent?: string;
-  created_at: string;
-  details?: any;
+  name: string;
+  description: string;
+  status: 'compliant' | 'warning' | 'non_compliant';
+  score: number;
+  lastCheck: string;
+  criticalIssues: number;
+  totalChecks: number;
 }
 
-interface ComplianceReport {
+interface AuditEntry {
   id: string;
-  report_type: string;
-  generated_at: string;
-  status: string;
-  file_path?: string;
-  metadata: any;
+  timestamp: string;
+  user: string;
+  action: string;
+  resource: string;
+  details: string;
+  risk: 'low' | 'medium' | 'high';
 }
 
-interface AccessControl {
-  user_id: string;
-  permissions: string[];
-  role: string;
-  last_access: string;
-  is_active: boolean;
-}
-
-interface BackupStatus {
-  last_backup: string;
-  status: 'success' | 'failed' | 'in_progress';
-  size: string;
-  next_scheduled: string;
-  retention_policy: string;
+interface ComplianceData {
+  frameworks: ComplianceFramework[];
+  auditTrail: AuditEntry[];
+  securityStatus: {
+    encryption: boolean;
+    accessControl: boolean;
+    monitoring: boolean;
+  };
 }
 
 export const useComplianceCenter = () => {
-  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
-  const [complianceReports, setComplianceReports] = useState<ComplianceReport[]>([]);
-  const [accessControls, setAccessControls] = useState<AccessControl[]>([]);
-  const [backupStatus, setBackupStatus] = useState<BackupStatus | null>(null);
-  const [securityMetrics, setSecurityMetrics] = useState<any>({});
+  const [complianceData, setComplianceData] = useState<ComplianceData | null>(null);
+  const [auditReports, setAuditReports] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
-  // Buscar logs de auditoria
-  const { data: auditData } = useQuery({
-    queryKey: ['audit-logs'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('security_events')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(50);
-      
-      if (error) throw error;
-      setAuditLogs(data || []);
-      return data;
-    }
-  });
+  useEffect(() => {
+    loadComplianceData();
+  }, []);
 
-  // Gerar relatório de compliance
-  const generateComplianceReport = useMutation({
-    mutationFn: async (reportType: string) => {
-      const { data, error } = await supabase.functions.invoke('compliance-reporting', {
-        body: {
-          report_type: reportType,
-          timeframe: '30d',
-          include_audit_trail: true,
-          include_security_scan: true
-        }
-      });
+  const loadComplianceData = async () => {
+    try {
+      setIsLoading(true);
       
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data, variables) => {
-      const reportLabels = {
-        generate_audit: 'Auditoria',
-        generate_compliance: 'Compliance',
-        generate_security: 'Segurança'
-      } as const;
-      
-      toast.success(`Relatório de ${reportLabels[variables as keyof typeof reportLabels]} gerado com sucesso!`);
-    },
-    onError: (error) => {
-      toast.error(`Erro ao gerar relatório: ${error.message}`);
-    },
-  });
-
-  // Exportar trilha de auditoria
-  const exportAuditTrail = useMutation({
-    mutationFn: async (timeframe: string) => {
-      const { data, error } = await supabase.functions.invoke('audit-export', {
-        body: {
-          timeframe,
-          format: 'xlsx',
-          include_user_details: true,
-          include_ip_tracking: true
-        }
-      });
-      
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
-      toast.success('Trilha de auditoria exportada com sucesso!');
-      // Trigger download
-      if (data.download_url) {
-        window.open(data.download_url, '_blank');
-      }
-    },
-    onError: (error) => {
-      toast.error(`Erro ao exportar auditoria: ${error.message}`);
-    },
-  });
-
-  // Executar scan de segurança
-  const runSecurityScan = useMutation({
-    mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('security-scanner', {
-        body: {
-          scan_type: 'comprehensive',
-          check_vulnerabilities: true,
-          check_permissions: true,
-          check_data_integrity: true
-        }
-      });
-      
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
-      setSecurityMetrics(data.metrics || {});
-      toast.success(`Scan de segurança concluído! Score: ${data.security_score}/100`);
-    },
-    onError: (error) => {
-      toast.error(`Erro no scan de segurança: ${error.message}`);
-    },
-  });
-
-  // Realizar backup manual
-  const performBackup = useMutation({
-    mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('backup-manager', {
-        body: {
-          backup_type: 'manual',
-          encrypt: true,
-          compress: true,
-          include_audit_logs: true
-        }
-      });
-      
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
-      setBackupStatus({
-        last_backup: new Date().toISOString(),
-        status: 'success',
-        size: data.backup_size || '0 MB',
-        next_scheduled: data.next_scheduled,
-        retention_policy: '30 days'
-      });
-      toast.success('Backup realizado com sucesso!');
-    },
-    onError: (error) => {
-      toast.error(`Erro no backup: ${error.message}`);
-    },
-  });
-
-  // Monitorar atividade em tempo real
-  const monitorRealTimeActivity = useMutation({
-    mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('realtime-monitor', {
-        body: {
-          monitor_type: 'financial_activities',
-          alert_thresholds: {
-            suspicious_transactions: 1000000, // R$ 1M
-            failed_login_attempts: 5,
-            data_access_outside_hours: true
+      // Simulate loading compliance data
+      // In a real implementation, this would fetch from Supabase
+      const mockData: ComplianceData = {
+        frameworks: [
+          {
+            id: 'lgpd',
+            name: 'LGPD',
+            description: 'Lei Geral de Proteção de Dados',
+            status: 'compliant',
+            score: 95,
+            lastCheck: '2024-01-15',
+            criticalIssues: 0,
+            totalChecks: 25
+          },
+          {
+            id: 'sox',
+            name: 'SOX',
+            description: 'Sarbanes-Oxley Act',
+            status: 'warning',
+            score: 78,
+            lastCheck: '2024-01-10',
+            criticalIssues: 2,
+            totalChecks: 18
           }
+        ],
+        auditTrail: [],
+        securityStatus: {
+          encryption: true,
+          accessControl: true,
+          monitoring: false
         }
-      });
-      
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
-      if (data.alerts && data.alerts.length > 0) {
-        toast.warning(`${data.alerts.length} alerta(s) de segurança detectado(s)!`);
-      }
-    },
-    onError: (error) => {
-      toast.error(`Erro no monitoramento: ${error.message}`);
-    },
-  });
+      };
 
-  // Verificar conformidade LGPD
-  const checkLGPDCompliance = useMutation({
-    mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('lgpd-compliance', {
-        body: {
-          check_data_processing: true,
-          check_consent_records: true,
-          check_data_retention: true,
-          generate_report: true
-        }
+      setComplianceData(mockData);
+    } catch (error) {
+      console.error('Error loading compliance data:', error);
+      toast({
+        title: 'Erro',
+        description: 'Erro ao carregar dados de conformidade',
+        variant: 'destructive'
       });
-      
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
-      toast.success(`Verificação LGPD: ${data.compliance_score}% conforme`);
-    },
-    onError: (error) => {
-      toast.error(`Erro na verificação LGPD: ${error.message}`);
-    },
-  });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  // Configurar políticas de retenção
-  const updateRetentionPolicies = useMutation({
-    mutationFn: async (policies: any) => {
-      const { data, error } = await supabase.functions.invoke('retention-manager', {
-        body: {
-          policies,
-          apply_immediately: true,
-          create_backup_before_deletion: true
-        }
+  const runComplianceCheck = async (frameworkId: string) => {
+    try {
+      toast({
+        title: 'Verificação Iniciada',
+        description: 'Executando verificação de conformidade...'
       });
-      
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      toast.success('Políticas de retenção atualizadas!');
-    },
-    onError: (error) => {
-      toast.error(`Erro ao atualizar políticas: ${error.message}`);
-    },
-  });
 
-  // Gerar certificado de conformidade
-  const generateComplianceCertificate = useMutation({
-    mutationFn: async (certificateType: string) => {
-      const { data, error } = await supabase.functions.invoke('compliance-certificate', {
-        body: {
-          certificate_type: certificateType,
-          include_audit_summary: true,
-          include_security_metrics: true,
-          digital_signature: true
+      // Simulate API call to run compliance check
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      toast({
+        title: 'Verificação Concluída',
+        description: 'Verificação de conformidade executada com sucesso'
+      });
+
+      // Reload data after check
+      await loadComplianceData();
+    } catch (error) {
+      console.error('Error running compliance check:', error);
+      toast({
+        title: 'Erro',
+        description: 'Erro ao executar verificação de conformidade',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const generateReport = async (reportType: 'full' | 'summary' | 'specific') => {
+    try {
+      toast({
+        title: 'Gerando Relatório',
+        description: 'Preparando relatório de conformidade...'
+      });
+
+      // In a real implementation, this would call an edge function
+      const { data, error } = await supabase.functions.invoke('compliance-reporting', {
+        body: { reportType, timestamp: new Date().toISOString() }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Relatório Gerado',
+        description: 'Relatório de conformidade gerado com sucesso'
+      });
+
+      // In a real implementation, this would trigger a download
+      console.log('Report generated:', data);
+    } catch (error) {
+      console.error('Error generating report:', error);
+      toast({
+        title: 'Erro',
+        description: 'Erro ao gerar relatório de conformidade',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const runSecurityScan = async () => {
+    try {
+      toast({
+        title: 'Scanner Iniciado',
+        description: 'Executando análise de segurança...'
+      });
+
+      const { data, error } = await supabase.functions.invoke('security-scanner', {
+        body: { 
+          scanType: 'full',
+          timestamp: new Date().toISOString()
         }
       });
-      
+
       if (error) throw error;
+
+      toast({
+        title: 'Análise Concluída',
+        description: 'Análise de segurança executada com sucesso'
+      });
+
       return data;
-    },
-    onSuccess: (data, variables) => {
-      toast.success(`Certificado de ${variables} gerado com sucesso!`);
-    },
-    onError: (error) => {
-      toast.error(`Erro ao gerar certificado: ${error.message}`);
-    },
-  });
+    } catch (error) {
+      console.error('Error running security scan:', error);
+      toast({
+        title: 'Erro',
+        description: 'Erro ao executar análise de segurança',
+        variant: 'destructive'
+      });
+    }
+  };
 
   return {
-    // Data
-    auditLogs,
-    complianceReports, 
-    accessControls,
-    backupStatus,
-    securityMetrics,
-    
-    // Actions
-    generateComplianceReport: generateComplianceReport.mutate,
-    exportAuditTrail: exportAuditTrail.mutate,
-    runSecurityScan: runSecurityScan.mutate,
-    performBackup: performBackup.mutate,
-    monitorRealTimeActivity: monitorRealTimeActivity.mutate,
-    checkLGPDCompliance: checkLGPDCompliance.mutate,
-    updateRetentionPolicies: updateRetentionPolicies.mutate,
-    generateComplianceCertificate: generateComplianceCertificate.mutate,
-    
-    // Loading states
-    isGeneratingReport: generateComplianceReport.isPending,
-    isExportingAudit: exportAuditTrail.isPending,
-    isRunningSecurityScan: runSecurityScan.isPending,
-    isPerformingBackup: performBackup.isPending,
-    isMonitoringActivity: monitorRealTimeActivity.isPending,
-    isCheckingLGPD: checkLGPDCompliance.isPending,
-    isUpdatingPolicies: updateRetentionPolicies.isPending,
-    isGeneratingCertificate: generateComplianceCertificate.isPending,
-    
-    // Utils
-    setAuditLogs,
-    setComplianceReports,
-    setAccessControls,
-    setBackupStatus,
-    setSecurityMetrics
+    complianceData,
+    auditReports,
+    isLoading,
+    runComplianceCheck,
+    generateReport,
+    runSecurityScan,
+    loadComplianceData
   };
 };

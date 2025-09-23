@@ -9,7 +9,7 @@ import { FinancialCharts } from './dashboard/FinancialCharts';
 import { FinancialAlerts } from './dashboard/FinancialAlerts';
 import { FinancialAutomation } from './automation/FinancialAutomation';
 import { FinancialAnalytics } from './analytics/FinancialAnalytics';
-import { ComplianceCenter } from './compliance/ComplianceCenter';
+import ComplianceCenter from './compliance/ComplianceCenter';
 import { FinancialReports } from './reports/FinancialReports';
 import FinancialErrorBoundary from '@/components/error/FinancialErrorBoundary';
 import { FinancialLoadingFallback } from '@/components/financial/FinancialLoadingFallback';
@@ -150,17 +150,12 @@ export default function FinancialDashboard() {
 
         {/* Main Content */}
         <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-8">
-            <TabsTrigger value="overview">Visão Geral</TabsTrigger>
-            <TabsTrigger value="receivables">A Receber</TabsTrigger>
-            <TabsTrigger value="payables">A Pagar</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="transactions">Transações</TabsTrigger>
-            <TabsTrigger value="suppliers">Fornecedores</TabsTrigger>
-            <TabsTrigger value="accounts">Contas</TabsTrigger>
-            <TabsTrigger value="centers">Centros</TabsTrigger>
-            <TabsTrigger value="automation">Automação</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="compliance">Compliance</TabsTrigger>
+            <TabsTrigger value="automation">Automação</TabsTrigger>
+            <TabsTrigger value="compliance">Conformidade</TabsTrigger>
             <TabsTrigger value="reports">Relatórios</TabsTrigger>
           </TabsList>
 

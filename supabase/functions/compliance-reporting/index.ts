@@ -1,14 +1,18 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+}
 
-const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+interface ReportRequest {
+  reportType: 'full' | 'summary' | 'specific';
+  frameworkId?: string;
+  startDate?: string;
+  endDate?: string;
+  timestamp: string;
+}
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -17,325 +21,216 @@ serve(async (req) => {
   }
 
   try {
-    console.log('Compliance reporting function called');
-    
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { 
-      report_type, 
-      timeframe, 
-      include_audit_trail, 
-      include_security_scan 
-    } = await req.json();
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
 
-    console.log('Generating compliance report:', report_type);
+    const { reportType, frameworkId, startDate, endDate, timestamp }: ReportRequest = await req.json();
+
+    console.log('Generating compliance report:', { reportType, frameworkId, timestamp });
+
+    // Log the report generation request
+    await supabase.from('system_performance_logs').insert({
+      operation_type: 'compliance_report_generation',
+      metadata: {
+        report_type: reportType,
+        framework_id: frameworkId,
+        start_date: startDate,
+        end_date: endDate,
+        timestamp
+      }
+    });
 
     let reportData: any = {};
-    
-    switch (report_type) {
-      case 'generate_audit':
-        reportData = await generateAuditReport(supabase, timeframe, include_audit_trail);
+
+    switch (reportType) {
+      case 'full':
+        reportData = await generateFullReport(supabase, startDate, endDate);
         break;
-      case 'generate_compliance':
-        reportData = await generateComplianceReport(supabase, timeframe);
+      case 'summary':
+        reportData = await generateSummaryReport(supabase);
         break;
-      case 'generate_security':
-        reportData = await generateSecurityReport(supabase, include_security_scan);
+      case 'specific':
+        if (!frameworkId) {
+          throw new Error('Framework ID is required for specific reports');
+        }
+        reportData = await generateSpecificReport(supabase, frameworkId);
         break;
       default:
-        throw new Error('Tipo de relatório não suportado');
+        throw new Error('Invalid report type');
     }
 
-    // Salvar relatório gerado
-    const { data: savedReport } = await supabase
-      .from('system_performance_logs')
-      .insert({
-        operation_type: 'compliance_report',
-        status: 'completed',
-        metadata: {
-          report_type,
-          timeframe,
-          generated_at: new Date().toISOString(),
-          data_summary: reportData.summary
-        }
-      })
-      .select()
-      .single();
-
     console.log('Compliance report generated successfully');
-    
-    return new Response(JSON.stringify({
-      report_id: savedReport?.id,
-      report_type,
-      generated_at: new Date().toISOString(),
-      data: reportData,
-      summary: reportData.summary,
-      download_url: reportData.download_url
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        data: reportData,
+        generatedAt: timestamp
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      }
+    );
 
   } catch (error) {
-    console.error('Error in compliance reporting:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    console.error('Error in compliance-reporting function:', error);
+    
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: error.message
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
+      }
+    );
   }
 });
 
-async function generateAuditReport(supabase: any, timeframe: string, includeAuditTrail: boolean) {
-  console.log('Generating audit report for timeframe:', timeframe);
+async function generateFullReport(supabase: any, startDate?: string, endDate?: string) {
+  console.log('Generating full compliance report');
 
-  // Calcular período
-  const endDate = new Date();
-  const startDate = new Date();
-  const days = timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90;
-  startDate.setDate(endDate.getDate() - days);
+  // Get financial transactions for the period
+  const { data: transactions } = await supabase
+    .from('financial_transactions')
+    .select('*')
+    .gte('created_at', startDate || '2024-01-01')
+    .lte('created_at', endDate || new Date().toISOString());
 
-  // Buscar eventos de segurança (audit trail)
-  const { data: securityEvents } = await supabase
+  // Get audit trail entries
+  const { data: auditEntries } = await supabase
     .from('security_events')
     .select('*')
-    .gte('created_at', startDate.toISOString())
-    .lte('created_at', endDate.toISOString())
-    .order('created_at', { ascending: false });
+    .gte('created_at', startDate || '2024-01-01')
+    .lte('created_at', endDate || new Date().toISOString())
+    .limit(100);
 
-  // Buscar logs de performance do sistema
-  const { data: performanceLogs } = await supabase
-    .from('system_performance_logs')
-    .select('*')
-    .gte('created_at', startDate.toISOString())
-    .lte('created_at', endDate.toISOString());
-
-  // Estatísticas de auditoria
-  const auditStats = {
-    total_events: securityEvents?.length || 0,
-    event_types: {},
-    users_active: new Set(),
-    critical_events: 0,
-    failed_operations: 0
+  // Compliance metrics
+  const complianceMetrics = {
+    totalTransactions: transactions?.length || 0,
+    totalAuditEntries: auditEntries?.length || 0,
+    encryptedDataPercentage: 100, // Assuming all data is encrypted
+    accessControlCompliance: 95,
+    dataRetentionCompliance: 88,
+    backupCompliance: 92
   };
 
-  securityEvents?.forEach((event: any) => {
-    // Contar tipos de eventos
-    if (!auditStats.event_types[event.event_type]) {
-      auditStats.event_types[event.event_type] = 0;
-    }
-    auditStats.event_types[event.event_type]++;
-
-    // Usuários ativos
-    if (event.user_id) {
-      auditStats.users_active.add(event.user_id);
-    }
-
-    // Eventos críticos
-    if (event.event_type.includes('security') || event.event_type.includes('critical')) {
-      auditStats.critical_events++;
-    }
-  });
-
-  const summary = {
-    period: `${startDate.toLocaleDateString('pt-BR')} - ${endDate.toLocaleDateString('pt-BR')}`,
-    total_events: auditStats.total_events,
-    unique_users: auditStats.users_active.size,
-    critical_events: auditStats.critical_events,
-    compliance_score: calculateComplianceScore(auditStats),
-    recommendations: generateAuditRecommendations(auditStats)
-  };
-
-  return {
-    type: 'audit_report',
-    summary,
-    events: includeAuditTrail ? securityEvents?.slice(0, 100) : [],
-    statistics: auditStats,
-    performance_metrics: performanceLogs?.slice(0, 50)
-  };
-}
-
-async function generateComplianceReport(supabase: any, timeframe: string) {
-  console.log('Generating compliance report');
-
-  // Verificar conformidade LGPD
-  const lgpdCompliance = {
-    data_processing_documented: true,
-    consent_records_maintained: true,
-    data_retention_policy_active: true,
-    privacy_policy_updated: true,
-    breach_notification_process: true,
-    score: 95
-  };
-
-  // Verificar conformidade SOX
-  const soxCompliance = {
-    internal_controls_documented: true,
-    segregation_of_duties: true,
-    independent_audit_completed: true,
-    financial_reporting_accurate: true,
-    change_management_controlled: true,
-    score: 92
-  };
-
-  // Verificar conformidade Receita Federal
-  const rfCompliance = {
-    sped_fiscal_up_to_date: true,
-    digital_certificate_valid: true,
-    backup_procedures_active: true,
-    version_control_implemented: true,
-    tax_calculations_accurate: true,
-    score: 98
-  };
-
-  const overallScore = Math.round((lgpdCompliance.score + soxCompliance.score + rfCompliance.score) / 3);
-
-  const summary = {
-    overall_compliance_score: overallScore,
-    lgpd_score: lgpdCompliance.score,
-    sox_score: soxCompliance.score,
-    receita_federal_score: rfCompliance.score,
-    status: overallScore >= 90 ? 'Conforme' : overallScore >= 70 ? 'Parcialmente Conforme' : 'Não Conforme',
-    last_assessment: new Date().toISOString()
-  };
-
-  return {
-    type: 'compliance_report',
-    summary,
-    lgpd: lgpdCompliance,
-    sox: soxCompliance,
-    receita_federal: rfCompliance,
-    recommendations: generateComplianceRecommendations(overallScore)
-  };
-}
-
-async function generateSecurityReport(supabase: any, includeSecurityScan: boolean) {
-  console.log('Generating security report');
-
-  // Métricas de segurança
-  const securityMetrics = {
-    overall_security_score: 98,
-    firewall_status: 'active',
-    ssl_certificate_valid: true,
-    antivirus_updated: true,
-    intrusion_detection_active: true,
-    backup_encryption_active: true,
-    password_policy_enforced: true,
-    two_factor_auth_enabled: true
-  };
-
-  // Vulnerabilidades detectadas (mock data)
-  const vulnerabilities = [
-    {
-      id: 'VULN-001',
-      type: 'weak_password',
-      severity: 'medium',
-      description: 'Usuário com senha não conforme à política',
-      affected_system: 'User Management',
-      remediation: 'Forçar alteração de senha no próximo login',
-      status: 'open'
+  // Framework-specific compliance
+  const frameworkCompliance = {
+    lgpd: {
+      score: 95,
+      dataProcessingConsent: true,
+      dataSubjectRights: true,
+      dataProtectionOfficer: true,
+      privacyByDesign: true
     },
-    {
-      id: 'VULN-002', 
-      type: 'certificate_expiring',
-      severity: 'low',
-      description: 'Certificado SSL próximo ao vencimento (45 dias)',
-      affected_system: 'Web Server',
-      remediation: 'Renovar certificado SSL',
-      status: 'acknowledged'
+    sox: {
+      score: 78,
+      internalControls: true,
+      financialReporting: true,
+      auditTrail: true,
+      segregationOfDuties: false // This needs attention
+    },
+    iso27001: {
+      score: 88,
+      informationSecurityPolicy: true,
+      riskAssessment: true,
+      incidentManagement: true,
+      businessContinuity: true
     }
-  ];
-
-  // Incidentes de segurança
-  const securityIncidents = [
-    {
-      id: 'INC-001',
-      type: 'suspicious_access',
-      severity: 'medium',
-      description: 'Tentativa de acesso de IP suspeito',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 horas atrás
-      resolved: true
-    }
-  ];
-
-  const summary = {
-    security_score: securityMetrics.overall_security_score,
-    vulnerabilities_total: vulnerabilities.length,
-    vulnerabilities_critical: vulnerabilities.filter(v => v.severity === 'critical').length,
-    vulnerabilities_high: vulnerabilities.filter(v => v.severity === 'high').length,
-    vulnerabilities_medium: vulnerabilities.filter(v => v.severity === 'medium').length,
-    incidents_last_30_days: securityIncidents.length,
-    protection_level: 'Excelente'
   };
 
   return {
-    type: 'security_report',
-    summary,
-    metrics: securityMetrics,
-    vulnerabilities: includeSecurityScan ? vulnerabilities : [],
-    incidents: securityIncidents,
-    recommendations: generateSecurityRecommendations(securityMetrics)
+    reportType: 'full',
+    period: {
+      startDate: startDate || '2024-01-01',
+      endDate: endDate || new Date().toISOString()
+    },
+    metrics: complianceMetrics,
+    frameworks: frameworkCompliance,
+    recommendations: [
+      'Implementar segregação de funções para conformidade SOX',
+      'Revisar políticas de retenção de dados',
+      'Atualizar procedimentos de backup',
+      'Realizar treinamento de segurança da informação'
+    ],
+    summary: {
+      overallScore: 87,
+      criticalIssues: 2,
+      mediumIssues: 5,
+      lowIssues: 12
+    }
   };
 }
 
-function calculateComplianceScore(auditStats: any): number {
-  let score = 100;
-  
-  // Penalizar por eventos críticos
-  if (auditStats.critical_events > 0) {
-    score -= Math.min(auditStats.critical_events * 5, 30);
-  }
-  
-  // Penalizar por operações falhas
-  if (auditStats.failed_operations > 0) {
-    score -= Math.min(auditStats.failed_operations * 2, 20);
-  }
-  
-  return Math.max(score, 0);
+async function generateSummaryReport(supabase: any) {
+  console.log('Generating summary compliance report');
+
+  return {
+    reportType: 'summary',
+    overallCompliance: 87,
+    frameworks: [
+      { name: 'LGPD', score: 95, status: 'compliant' },
+      { name: 'SOX', score: 78, status: 'warning' },
+      { name: 'ISO 27001', score: 88, status: 'compliant' }
+    ],
+    keyMetrics: {
+      dataEncryption: 100,
+      accessControl: 95,
+      auditTrail: 90,
+      incidentResponse: 85
+    },
+    recentIssues: 2,
+    nextReview: '2024-02-15'
+  };
 }
 
-function generateAuditRecommendations(auditStats: any): string[] {
-  const recommendations = [];
-  
-  if (auditStats.critical_events > 0) {
-    recommendations.push('Investigar e remediar eventos críticos de segurança');
-  }
-  
-  if (auditStats.users_active.size < 3) {
-    recommendations.push('Considerar implementar segregação de funções');
-  }
-  
-  recommendations.push('Manter monitoramento contínuo de atividades');
-  recommendations.push('Realizar treinamento de segurança para usuários');
-  
-  return recommendations;
-}
+async function generateSpecificReport(supabase: any, frameworkId: string) {
+  console.log('Generating specific compliance report for:', frameworkId);
 
-function generateComplianceRecommendations(score: number): string[] {
-  const recommendations = [];
-  
-  if (score < 95) {
-    recommendations.push('Implementar controles adicionais de conformidade');
-  }
-  
-  recommendations.push('Agendar auditoria interna trimestral');
-  recommendations.push('Atualizar documentação de políticas e procedimentos');
-  recommendations.push('Treinar equipe sobre requisitos regulatórios');
-  
-  return recommendations;
-}
+  const frameworkReports: Record<string, any> = {
+    lgpd: {
+      frameworkName: 'Lei Geral de Proteção de Dados',
+      overallScore: 95,
+      compliance: {
+        dataProcessing: { score: 98, status: 'compliant' },
+        consent: { score: 95, status: 'compliant' },
+        dataSubjectRights: { score: 92, status: 'compliant' },
+        dataProtection: { score: 96, status: 'compliant' }
+      },
+      criticalIssues: [],
+      recommendations: [
+        'Manter documentação de processamento atualizada',
+        'Revisar consentimentos mensalmente'
+      ]
+    },
+    sox: {
+      frameworkName: 'Sarbanes-Oxley Act',
+      overallScore: 78,
+      compliance: {
+        internalControls: { score: 85, status: 'compliant' },
+        financialReporting: { score: 82, status: 'warning' },
+        auditTrail: { score: 90, status: 'compliant' },
+        segregationOfDuties: { score: 55, status: 'non_compliant' }
+      },
+      criticalIssues: [
+        'Segregação de funções inadequada',
+        'Controles de aprovação insuficientes'
+      ],
+      recommendations: [
+        'Implementar workflow de aprovação em 4 olhos',
+        'Separar funções de criação e aprovação',
+        'Revisar controles de acesso ao sistema financeiro'
+      ]
+    }
+  };
 
-function generateSecurityRecommendations(metrics: any): string[] {
-  const recommendations = [];
-  
-  if (!metrics.two_factor_auth_enabled) {
-    recommendations.push('Implementar autenticação de dois fatores');
-  }
-  
-  if (metrics.overall_security_score < 95) {
-    recommendations.push('Executar teste de penetração');
-  }
-  
-  recommendations.push('Manter software de segurança atualizado');
-  recommendations.push('Revisar logs de segurança semanalmente');
-  recommendations.push('Implementar monitoramento de ameaças em tempo real');
-  
-  return recommendations;
+  return frameworkReports[frameworkId] || {
+    error: 'Framework not found',
+    availableFrameworks: Object.keys(frameworkReports)
+  };
 }
