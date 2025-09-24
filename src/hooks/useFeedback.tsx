@@ -329,6 +329,171 @@ export const useFeedback = (projectId?: string) => {
     }
   });
 
+  // Admin functions
+  const fetchAllFeedback = async (): Promise<FeedbackEntry[]> => {
+    try {
+      const { data, error } = await supabase
+        .from('feedback_entries')
+        .select(`
+          *,
+          module:feedback_modules(name, key),
+          contact:crm_contacts(name, email)
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return (data || []).map(entry => ({
+        ...entry,
+        persona: entry.persona as 'gestor' | 'usuario_final' | 'parceiro',
+        channel: entry.channel as 'inapp' | 'whatsapp' | 'email' | 'import' | 'api',
+        type: entry.type as 'bug' | 'ideia' | 'duvida' | 'srs' | 'nps' | 'csat' | 'ces' | 'pmf' | 'usability',
+        severity: entry.severity as 'blocker' | 'high' | 'medium' | 'low' | 'idea',
+        status: entry.status as 'new' | 'triaged' | 'in_backlog' | 'in_progress' | 'released' | 'wont_fix',
+        attachments: Array.isArray(entry.attachments) ? entry.attachments : JSON.parse(entry.attachments as string || '[]'),
+        context: typeof entry.context === 'object' ? entry.context : JSON.parse(entry.context as string || '{}'),
+        ip_address: entry.ip_address as string || '',
+        user_agent: entry.user_agent as string || ''
+      })) as FeedbackEntry[];
+    } catch (error) {
+      console.error('Error fetching all feedback:', error);
+      throw error;
+    }
+  };
+
+  const fetchAllTickets = async (): Promise<FeedbackTicket[]> => {
+    try {
+      const { data, error } = await supabase
+        .from('feedback_tickets')
+        .select(`
+          *,
+          contact:crm_contacts(name, email),
+          feedback:feedback_entries(verbatim, type)
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return (data || []).map(ticket => ({
+        ...ticket,
+        status: ticket.status as 'open' | 'pending' | 'solved' | 'closed',
+        priority: ticket.priority as 'low' | 'medium' | 'high' | 'urgent'
+      }));
+    } catch (error) {
+      console.error('Error fetching all tickets:', error);
+      throw error;
+    }
+  };
+
+  const updateFeedbackStatus = async (
+    feedbackId: string, 
+    status: FeedbackEntry['status']
+  ): Promise<void> => {
+    try {
+      const { error } = await supabase
+        .from('feedback_entries')
+        .update({ status })
+        .eq('id', feedbackId);
+
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ['feedbackEntries'] });
+    } catch (error) {
+      console.error('Error updating feedback status:', error);
+      throw error;
+    }
+  };
+
+  const updateTicketStatus = async (
+    ticketId: string, 
+    status: FeedbackTicket['status']
+  ): Promise<void> => {
+    try {
+      const { error } = await supabase
+        .from('feedback_tickets')
+        .update({ status })
+        .eq('id', ticketId);
+
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ['feedbackTickets'] });
+    } catch (error) {
+      console.error('Error updating ticket status:', error);
+      throw error;
+    }
+  };
+
+  const getFeedbackMetrics = async (startDate: string, endDate: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('feedback_entries')
+        .select('*')
+        .gte('created_at', startDate)
+        .lte('created_at', endDate);
+
+      if (error) throw error;
+
+      const total = data?.length || 0;
+      const bugs = data?.filter(e => e.type === 'bug').length || 0;
+      const ideas = data?.filter(e => e.type === 'ideia').length || 0;
+      const npsEntries = data?.filter(e => e.type === 'nps' && e.score) || [];
+      const avgNPS = npsEntries.length > 0 
+        ? npsEntries.reduce((acc, e) => acc + (e.score || 0), 0) / npsEntries.length
+        : 0;
+
+      const distribution = data?.reduce((acc, entry) => {
+        acc[entry.type] = (acc[entry.type] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>) || {};
+
+      const statusDistribution = data?.reduce((acc, entry) => {
+        acc[entry.status] = (acc[entry.status] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>) || {};
+
+      return {
+        total,
+        bugs,
+        ideas,
+        avgNPS,
+        distribution,
+        statusDistribution,
+        highPriority: data?.filter(e => e.severity === 'blocker' || e.severity === 'high').length || 0,
+        mediumPriority: data?.filter(e => e.severity === 'medium').length || 0,
+        lowPriority: data?.filter(e => e.severity === 'low' || e.severity === 'idea').length || 0,
+        avgRiceScore: data?.filter(e => e.rice_score)
+          .reduce((acc, e, _, arr) => acc + (e.rice_score || 0) / arr.length, 0) || 0
+      };
+    } catch (error) {
+      console.error('Error fetching feedback metrics:', error);
+      throw error;
+    }
+  };
+
+  const getTicketMetrics = async (startDate: string, endDate: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('feedback_tickets')
+        .select('*')
+        .gte('created_at', startDate)
+        .lte('created_at', endDate);
+
+      if (error) throw error;
+
+      const total = data?.length || 0;
+      const open = data?.filter(t => t.status === 'open').length || 0;
+      const resolved = data?.filter(t => t.status === 'solved' || t.status === 'closed').length || 0;
+      const resolutionRate = total > 0 ? (resolved / total) * 100 : 0;
+
+      return {
+        total,
+        open,
+        resolved,
+        resolutionRate,
+        avgResponseTime: 24 // Placeholder - would calculate from first_response_at
+      };
+    } catch (error) {
+      console.error('Error fetching ticket metrics:', error);
+      throw error;
+    }
+  };
+
   return {
     // Data
     feedbackEntries,
@@ -339,12 +504,22 @@ export const useFeedback = (projectId?: string) => {
     fetchModulesByProject,
     fetchTicketsByProject,
     fetchMetricsByProject,
+    fetchAllFeedback,
+    fetchAllTickets,
 
     // Mutations
     submitFeedback,
     updateFeedbackEntry,
     createTicket,
     updateTicket,
+
+    // Admin functions
+    updateFeedbackStatus,
+    updateTicketStatus,
+
+    // Metrics
+    getFeedbackMetrics,
+    getTicketMetrics,
 
     // Loading states
     isSubmitting: submitFeedback.isPending,

@@ -17,6 +17,8 @@ import ColorAdmin from '@/components/admin/ColorAdmin';
 import Projects from '@/pages/Projects';
 import FinancialDashboard from '@/components/admin/FinancialDashboard';
 import { PayrollAdmin } from '@/components/admin/PayrollAdmin';
+import { FeedbackAdmin } from '@/components/admin/FeedbackAdmin';
+import { FeedbackMetrics } from '@/components/admin/FeedbackMetrics';
 
 export default function Admin() {
   return (
@@ -38,6 +40,8 @@ export default function Admin() {
         <Route path="crm/*" element={<CRMRoutes />} />
         <Route path="financial" element={<FinancialDashboard />} />
         <Route path="payroll" element={<PayrollAdmin />} />
+        <Route path="feedback" element={<FeedbackAdmin />} />
+        <Route path="feedback-metrics" element={<FeedbackMetrics />} />
       </Routes>
     </AdminLayout>
   );
