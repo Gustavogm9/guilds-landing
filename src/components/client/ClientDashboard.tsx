@@ -11,13 +11,17 @@ import {
   FileText,
   LogOut,
   Calendar,
-  Target
+  Target,
+  MessageSquare,
+  BarChart3,
+  CheckSquare
 } from 'lucide-react';
 import { ClientAccess } from '@/hooks/useClientAuth';
 import { ClientProjectTimeline } from './ClientProjectTimeline';
 import { ClientTasksView } from './ClientTasksView';
 import { ClientMilestonesView } from './ClientMilestonesView';
 import { ClientReportsView } from './ClientReportsView';
+import { ClientFeedbackView } from './ClientFeedbackView';
 
 interface ClientDashboardProps {
   clientAccess: ClientAccess;
@@ -138,7 +142,7 @@ export const ClientDashboard = ({ clientAccess }: ClientDashboardProps) => {
 
       {/* Tabs Navigation */}
       <Tabs defaultValue="timeline" className="space-y-6">
-        <TabsList className="grid grid-cols-4 w-full max-w-2xl">
+        <TabsList className="grid grid-cols-5 w-full max-w-2xl">
           {permissions.view_timeline && (
             <TabsTrigger value="timeline" className="flex items-center gap-2">
               <LayoutDashboard className="h-4 w-4" />
@@ -156,6 +160,11 @@ export const ClientDashboard = ({ clientAccess }: ClientDashboardProps) => {
           <TabsTrigger value="milestones" className="flex items-center gap-2">
             <Target className="h-4 w-4" />
             <span className="hidden sm:inline">Marcos</span>
+          </TabsTrigger>
+          
+          <TabsTrigger value="feedback" className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4" />
+            <span className="hidden sm:inline">Feedback</span>
           </TabsTrigger>
           
           {permissions.view_reports && (
@@ -180,6 +189,19 @@ export const ClientDashboard = ({ clientAccess }: ClientDashboardProps) => {
 
         <TabsContent value="milestones" className="space-y-6">
           <ClientMilestonesView projectId={project.id} permissions={permissions} />
+        </TabsContent>
+
+        <TabsContent value="feedback" className="space-y-6">
+          <ClientFeedbackView
+            projectId={project.id}
+            contactId={clientAccess.client_contact_id}
+            user={{
+              id: clientAccess.client_contact_id,
+              name: 'Cliente',
+              email: '',
+              role: 'gestor'
+            }}
+          />
         </TabsContent>
 
         {permissions.view_reports && (
