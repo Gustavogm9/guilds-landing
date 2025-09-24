@@ -348,6 +348,36 @@ export const useProjects = () => {
     }
   });
 
+  // Fetch feedback modules for a project
+  const fetchFeedbackModulesByProject = async (projectId: string) => {
+    const { data, error } = await supabase
+      .from('feedback_modules')
+      .select('*')
+      .eq('project_id', projectId)
+      .eq('is_active', true)
+      .order('display_order');
+
+    if (error) throw error;
+    return data;
+  };
+
+  // Fetch feedback entries for a project
+  const fetchFeedbackByProject = async (projectId: string) => {
+    const { data, error } = await supabase
+      .from('feedback_entries')
+      .select(`
+        *,
+        module:feedback_modules(name, key),
+        contact:crm_contacts(name, email)
+      `)
+      .eq('project_id', projectId)
+      .order('created_at', { ascending: false })
+      .limit(100);
+
+    if (error) throw error;
+    return data;
+  };
+
   return {
     // Data
     projects,
@@ -359,6 +389,8 @@ export const useProjects = () => {
     fetchTasksByProject,
     fetchMilestonesByProject,
     fetchClientAccessByProject,
+    fetchFeedbackModulesByProject,
+    fetchFeedbackByProject,
     
     // Mutations
     createProject,
