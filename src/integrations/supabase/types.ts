@@ -1458,6 +1458,478 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback_campaign_executions: {
+        Row: {
+          campaign_id: string
+          channel: string
+          contact_id: string | null
+          created_at: string
+          delivered_at: string | null
+          error_message: string | null
+          id: string
+          message_sent: string | null
+          project_id: string
+          responded_at: string | null
+          response_feedback_id: string | null
+          sent_at: string | null
+          status: string
+        }
+        Insert: {
+          campaign_id: string
+          channel: string
+          contact_id?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          message_sent?: string | null
+          project_id: string
+          responded_at?: string | null
+          response_feedback_id?: string | null
+          sent_at?: string | null
+          status?: string
+        }
+        Update: {
+          campaign_id?: string
+          channel?: string
+          contact_id?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          message_sent?: string | null
+          project_id?: string
+          responded_at?: string | null
+          response_feedback_id?: string | null
+          sent_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_campaign_executions_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "feedback_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feedback_campaign_executions_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feedback_campaign_executions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feedback_campaign_executions_response_feedback_id_fkey"
+            columns: ["response_feedback_id"]
+            isOneToOne: false
+            referencedRelation: "feedback_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feedback_campaigns: {
+        Row: {
+          channel: string
+          created_at: string
+          id: string
+          is_active: boolean
+          message_template: string
+          name: string
+          project_id: string
+          settings: Json | null
+          target_persona: string
+          trigger_delay_hours: number | null
+          trigger_event: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          channel?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          message_template: string
+          name: string
+          project_id: string
+          settings?: Json | null
+          target_persona: string
+          trigger_delay_hours?: number | null
+          trigger_event: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          message_template?: string
+          name?: string
+          project_id?: string
+          settings?: Json | null
+          target_persona?: string
+          trigger_delay_hours?: number | null
+          trigger_event?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_campaigns_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feedback_entries: {
+        Row: {
+          attachments: Json | null
+          channel: string
+          contact_id: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          ip_address: unknown | null
+          locale: string | null
+          module_id: string | null
+          persona: string
+          priority_score: number | null
+          project_id: string
+          resolution_note: string | null
+          resolved_at: string | null
+          rice_confidence: number | null
+          rice_effort: number | null
+          rice_impact: number | null
+          rice_reach: number | null
+          rice_score: number | null
+          score: number | null
+          severity: string
+          status: string
+          type: string
+          updated_at: string
+          user_agent: string | null
+          verbatim: string
+          wsjf_job_size: number | null
+          wsjf_risk_reduction: number | null
+          wsjf_score: number | null
+          wsjf_time_criticality: number | null
+          wsjf_user_value: number | null
+        }
+        Insert: {
+          attachments?: Json | null
+          channel: string
+          contact_id?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          locale?: string | null
+          module_id?: string | null
+          persona: string
+          priority_score?: number | null
+          project_id: string
+          resolution_note?: string | null
+          resolved_at?: string | null
+          rice_confidence?: number | null
+          rice_effort?: number | null
+          rice_impact?: number | null
+          rice_reach?: number | null
+          rice_score?: number | null
+          score?: number | null
+          severity?: string
+          status?: string
+          type: string
+          updated_at?: string
+          user_agent?: string | null
+          verbatim: string
+          wsjf_job_size?: number | null
+          wsjf_risk_reduction?: number | null
+          wsjf_score?: number | null
+          wsjf_time_criticality?: number | null
+          wsjf_user_value?: number | null
+        }
+        Update: {
+          attachments?: Json | null
+          channel?: string
+          contact_id?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          locale?: string | null
+          module_id?: string | null
+          persona?: string
+          priority_score?: number | null
+          project_id?: string
+          resolution_note?: string | null
+          resolved_at?: string | null
+          rice_confidence?: number | null
+          rice_effort?: number | null
+          rice_impact?: number | null
+          rice_reach?: number | null
+          rice_score?: number | null
+          score?: number | null
+          severity?: string
+          status?: string
+          type?: string
+          updated_at?: string
+          user_agent?: string | null
+          verbatim?: string
+          wsjf_job_size?: number | null
+          wsjf_risk_reduction?: number | null
+          wsjf_score?: number | null
+          wsjf_time_criticality?: number | null
+          wsjf_user_value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_entries_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feedback_entries_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "feedback_modules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feedback_entries_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feedback_metrics_daily: {
+        Row: {
+          avg_first_response_hours: number | null
+          avg_resolution_hours: number | null
+          bugs_count: number | null
+          ces_responses: number | null
+          ces_score: number | null
+          created_at: string
+          csat_responses: number | null
+          csat_score: number | null
+          date: string
+          email_feedback: number | null
+          id: string
+          ideas_count: number | null
+          inapp_feedback: number | null
+          nps_responses: number | null
+          nps_score: number | null
+          pmf_responses: number | null
+          pmf_score: number | null
+          project_id: string
+          questions_count: number | null
+          tickets_closed: number | null
+          tickets_created: number | null
+          total_feedback: number | null
+          whatsapp_feedback: number | null
+        }
+        Insert: {
+          avg_first_response_hours?: number | null
+          avg_resolution_hours?: number | null
+          bugs_count?: number | null
+          ces_responses?: number | null
+          ces_score?: number | null
+          created_at?: string
+          csat_responses?: number | null
+          csat_score?: number | null
+          date: string
+          email_feedback?: number | null
+          id?: string
+          ideas_count?: number | null
+          inapp_feedback?: number | null
+          nps_responses?: number | null
+          nps_score?: number | null
+          pmf_responses?: number | null
+          pmf_score?: number | null
+          project_id: string
+          questions_count?: number | null
+          tickets_closed?: number | null
+          tickets_created?: number | null
+          total_feedback?: number | null
+          whatsapp_feedback?: number | null
+        }
+        Update: {
+          avg_first_response_hours?: number | null
+          avg_resolution_hours?: number | null
+          bugs_count?: number | null
+          ces_responses?: number | null
+          ces_score?: number | null
+          created_at?: string
+          csat_responses?: number | null
+          csat_score?: number | null
+          date?: string
+          email_feedback?: number | null
+          id?: string
+          ideas_count?: number | null
+          inapp_feedback?: number | null
+          nps_responses?: number | null
+          nps_score?: number | null
+          pmf_responses?: number | null
+          pmf_score?: number | null
+          project_id?: string
+          questions_count?: number | null
+          tickets_closed?: number | null
+          tickets_created?: number | null
+          total_feedback?: number | null
+          whatsapp_feedback?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_metrics_daily_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feedback_modules: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean
+          key: string
+          name: string
+          path_hint: string | null
+          project_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          key: string
+          name: string
+          path_hint?: string | null
+          project_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          key?: string
+          name?: string
+          path_hint?: string | null
+          project_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_modules_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feedback_tickets: {
+        Row: {
+          assigned_to: string | null
+          closed_at: string | null
+          contact_id: string | null
+          created_at: string
+          csat_comment: string | null
+          csat_score: number | null
+          description: string
+          feedback_id: string | null
+          first_response_at: string | null
+          id: string
+          priority: string
+          project_id: string
+          resolution_note: string | null
+          resolved_at: string | null
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          closed_at?: string | null
+          contact_id?: string | null
+          created_at?: string
+          csat_comment?: string | null
+          csat_score?: number | null
+          description: string
+          feedback_id?: string | null
+          first_response_at?: string | null
+          id?: string
+          priority?: string
+          project_id: string
+          resolution_note?: string | null
+          resolved_at?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          closed_at?: string | null
+          contact_id?: string | null
+          created_at?: string
+          csat_comment?: string | null
+          csat_score?: number | null
+          description?: string
+          feedback_id?: string | null
+          first_response_at?: string | null
+          id?: string
+          priority?: string
+          project_id?: string
+          resolution_note?: string | null
+          resolved_at?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_tickets_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feedback_tickets_feedback_id_fkey"
+            columns: ["feedback_id"]
+            isOneToOne: false
+            referencedRelation: "feedback_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feedback_tickets_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       financial_forecasts: {
         Row: {
           assumptions: Json | null
