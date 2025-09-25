@@ -19,6 +19,7 @@ import FinancialDashboard from '@/components/admin/FinancialDashboard';
 import { PayrollAdmin } from '@/components/admin/PayrollAdmin';
 import { FeedbackAdmin } from '@/components/admin/FeedbackAdmin';
 import { FeedbackMetrics } from '@/components/admin/FeedbackMetrics';
+import { FeedbackLiveMetrics } from '@/components/admin/FeedbackLiveMetrics';
 import { CampaignAdmin } from '@/components/admin/CampaignAdmin';
 import { CampaignAutomation } from '@/components/admin/CampaignAutomation';
 
@@ -44,6 +45,9 @@ export default function Admin() {
         <Route path="payroll" element={<PayrollAdmin />} />
         <Route path="feedback" element={<FeedbackAdmin />} />
         <Route path="feedback-metrics" element={<FeedbackMetrics />} />
+        <Route path="campaigns" element={<CampaignAdmin />} />
+        <Route path="campaign-automation" element={<CampaignAutomation />} />
+        <Route path="feedback-live" element={<FeedbackLiveMetrics />} />
       </Routes>
     </AdminLayout>
   );
