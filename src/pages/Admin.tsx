@@ -19,6 +19,8 @@ import FinancialDashboard from '@/components/admin/FinancialDashboard';
 import { PayrollAdmin } from '@/components/admin/PayrollAdmin';
 import { FeedbackAdmin } from '@/components/admin/FeedbackAdmin';
 import { FeedbackMetrics } from '@/components/admin/FeedbackMetrics';
+import { CampaignAdmin } from '@/components/admin/CampaignAdmin';
+import { CampaignAutomation } from '@/components/admin/CampaignAutomation';
 
 export default function Admin() {
   return (
