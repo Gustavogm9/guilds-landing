@@ -22,6 +22,9 @@ import { FeedbackMetrics } from '@/components/admin/FeedbackMetrics';
 import { FeedbackLiveMetrics } from '@/components/admin/FeedbackLiveMetrics';
 import { FeedbackNotifications } from '@/components/admin/FeedbackNotifications';
 import { FeedbackExport } from '@/components/admin/FeedbackExport';
+import { UserManagement } from '@/components/admin/UserManagement';
+import { RoleHierarchy } from '@/components/admin/RoleHierarchy';
+import { AuditLog } from '@/components/admin/AuditLog';
 import { CampaignAdmin } from '@/components/admin/CampaignAdmin';
 import { CampaignAutomation } from '@/components/admin/CampaignAutomation';
 
@@ -49,9 +52,12 @@ export default function Admin() {
         <Route path="feedback-metrics" element={<FeedbackMetrics />} />
         <Route path="campaigns" element={<CampaignAdmin />} />
         <Route path="campaign-automation" element={<CampaignAutomation />} />
-        <Route path="feedback-live" element={<FeedbackLiveMetrics />} />
-        <Route path="feedback-notifications" element={<FeedbackNotifications />} />
-        <Route path="feedback-export" element={<FeedbackExport />} />
+          <Route path="feedback-live" element={<FeedbackLiveMetrics />} />
+          <Route path="feedback-notifications" element={<FeedbackNotifications />} />
+          <Route path="feedback-export" element={<FeedbackExport />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="roles" element={<RoleHierarchy />} />
+          <Route path="audit" element={<AuditLog />} />
       </Routes>
     </AdminLayout>
   );

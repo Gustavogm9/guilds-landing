@@ -2437,6 +2437,48 @@ export type Database = {
           },
         ]
       }
+      permission_audit_log: {
+        Row: {
+          action_type: string
+          created_at: string
+          id: string
+          ip_address: unknown | null
+          new_value: Json | null
+          old_value: Json | null
+          permission: Database["public"]["Enums"]["permission_action"] | null
+          resource: Database["public"]["Enums"]["app_resource"] | null
+          target_user_id: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          new_value?: Json | null
+          old_value?: Json | null
+          permission?: Database["public"]["Enums"]["permission_action"] | null
+          resource?: Database["public"]["Enums"]["app_resource"] | null
+          target_user_id?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          new_value?: Json | null
+          old_value?: Json | null
+          permission?: Database["public"]["Enums"]["permission_action"] | null
+          resource?: Database["public"]["Enums"]["app_resource"] | null
+          target_user_id?: string | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       project_client_access: {
         Row: {
           access_level: string | null
@@ -3134,6 +3176,33 @@ export type Database = {
           },
         ]
       }
+      role_permissions: {
+        Row: {
+          action: Database["public"]["Enums"]["permission_action"]
+          conditions: Json | null
+          id: string
+          is_granted: boolean
+          resource: Database["public"]["Enums"]["app_resource"]
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Insert: {
+          action: Database["public"]["Enums"]["permission_action"]
+          conditions?: Json | null
+          id?: string
+          is_granted?: boolean
+          resource: Database["public"]["Enums"]["app_resource"]
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Update: {
+          action?: Database["public"]["Enums"]["permission_action"]
+          conditions?: Json | null
+          id?: string
+          is_granted?: boolean
+          resource?: Database["public"]["Enums"]["app_resource"]
+          role?: Database["public"]["Enums"]["app_role"]
+        }
+        Relationships: []
+      }
       security_events: {
         Row: {
           created_at: string | null
@@ -3398,6 +3467,131 @@ export type Database = {
           position?: string
           social_links?: Json | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_permissions: {
+        Row: {
+          action: Database["public"]["Enums"]["permission_action"]
+          conditions: Json | null
+          expires_at: string | null
+          granted_at: string
+          granted_by: string | null
+          id: string
+          is_granted: boolean
+          reason: string | null
+          resource: Database["public"]["Enums"]["app_resource"]
+          user_id: string
+        }
+        Insert: {
+          action: Database["public"]["Enums"]["permission_action"]
+          conditions?: Json | null
+          expires_at?: string | null
+          granted_at?: string
+          granted_by?: string | null
+          id?: string
+          is_granted: boolean
+          reason?: string | null
+          resource: Database["public"]["Enums"]["app_resource"]
+          user_id: string
+        }
+        Update: {
+          action?: Database["public"]["Enums"]["permission_action"]
+          conditions?: Json | null
+          expires_at?: string | null
+          granted_at?: string
+          granted_by?: string | null
+          id?: string
+          is_granted?: boolean
+          reason?: string | null
+          resource?: Database["public"]["Enums"]["app_resource"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          department: string | null
+          display_name: string
+          employee_id: string | null
+          id: string
+          is_active: boolean
+          job_title: string | null
+          last_login_at: string | null
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          department?: string | null
+          display_name: string
+          employee_id?: string | null
+          id?: string
+          is_active?: boolean
+          job_title?: string | null
+          last_login_at?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          department?: string | null
+          display_name?: string
+          employee_id?: string | null
+          id?: string
+          is_active?: boolean
+          job_title?: string | null
+          last_login_at?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_profiles_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          assigned_at: string
+          assigned_by: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          notes: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string
+          assigned_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -3867,6 +4061,31 @@ export type Database = {
           id: string
         }[]
       }
+      get_user_roles: {
+        Args: { p_user_id: string }
+        Returns: {
+          role_name: Database["public"]["Enums"]["app_role"]
+        }[]
+      }
+      has_permission: {
+        Args: {
+          p_action: Database["public"]["Enums"]["permission_action"]
+          p_resource: Database["public"]["Enums"]["app_resource"]
+          p_user_id: string
+        }
+        Returns: boolean
+      }
+      has_role: {
+        Args: {
+          p_role: Database["public"]["Enums"]["app_role"]
+          p_user_id: string
+        }
+        Returns: boolean
+      }
+      is_superadmin: {
+        Args: { p_user_id?: string }
+        Returns: boolean
+      }
       log_security_event: {
         Args: {
           details?: Json
@@ -3897,7 +4116,26 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      app_resource:
+        | "crm"
+        | "financial"
+        | "projects"
+        | "feedback"
+        | "analytics"
+        | "settings"
+        | "users"
+        | "campaigns"
+        | "newsletters"
+        | "workshops"
+      app_role: "superadmin" | "admin" | "manager" | "analyst" | "viewer"
+      permission_action:
+        | "create"
+        | "read"
+        | "update"
+        | "delete"
+        | "approve"
+        | "export"
+        | "manage"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4024,6 +4262,29 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_resource: [
+        "crm",
+        "financial",
+        "projects",
+        "feedback",
+        "analytics",
+        "settings",
+        "users",
+        "campaigns",
+        "newsletters",
+        "workshops",
+      ],
+      app_role: ["superadmin", "admin", "manager", "analyst", "viewer"],
+      permission_action: [
+        "create",
+        "read",
+        "update",
+        "delete",
+        "approve",
+        "export",
+        "manage",
+      ],
+    },
   },
 } as const

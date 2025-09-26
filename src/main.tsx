@@ -7,6 +7,14 @@ import './lib/initLogos.ts' // Initialize logos system
 import { useDynamicFavicon } from './hooks/useDynamicFavicon'
 import { initializePerformanceOptimizations } from '@/lib/serviceWorker'
 import heroImage from './assets/hero-image.jpg'
+import { AuthProvider } from '@/contexts/AuthContext';
+import { PermissionsProvider } from '@/contexts/PermissionsContext';
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 // Preload critical LCP image immediately in main thread with size hints
 const link = document.createElement('link');
@@ -29,7 +37,19 @@ document.head.appendChild(linkDesktop);
 // Component to handle favicon initialization
 function AppWithFavicon() {
   useDynamicFavicon();
-  return <App />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <AuthProvider>
+          <PermissionsProvider>
+            <Toaster />
+            <Sonner />
+            <App />
+          </PermissionsProvider>
+        </AuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
 }
 
 // Initialize performance optimizations
