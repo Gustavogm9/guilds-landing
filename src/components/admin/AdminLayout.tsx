@@ -108,6 +108,18 @@ const menuItems = [
       { title: "Dashboard", icon: LayoutDashboard, url: "/admin/financial" },
       { title: "Folha de Pagamento", icon: Calculator, url: "/admin/payroll" }
     ]
+  },
+  {
+    title: "Feedback",
+    icon: Bell,
+    items: [
+      { title: "Admin", icon: Settings, url: "/admin/feedback" },
+      { title: "Campanhas", icon: Bell, url: "/admin/campaigns" },
+      { title: "Automação", icon: Activity, url: "/admin/campaign-automation" },
+      { title: "Métricas Live", icon: Activity, url: "/admin/feedback-live" },
+      { title: "Notificações", icon: Bell, url: "/admin/feedback-notifications" },
+      { title: "Export", icon: FileText, url: "/admin/feedback-export" }
+    ]
   }
 ];
 

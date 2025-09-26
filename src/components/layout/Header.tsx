@@ -31,6 +31,7 @@ import { QualificationButton } from "@/components/forms/QualificationButton";
 import { LanguageSelector } from "@/components/ui/LanguageSelector";
 import { useTranslation } from "@/contexts/TranslationContext";
 import { useLocalizedNavigation } from "@/hooks/useLocalizedNavigation";
+import { FeedbackWidget } from "@/components/feedback/FeedbackWidget";
 import guildsLogoFull from "@/assets/guilds-logo-full.svg";
 import guildsLogoShield from "@/assets/guilds-logo-shield.svg";
 
@@ -303,6 +304,26 @@ const Header = () => {
           </div>
         </div>
       </header>
+
+      {/* Global Feedback Widget */}
+      <FeedbackWidget 
+        projectKey="guilds-website"
+        moduleKey="general"
+        user={{
+          id: 'anonymous',
+          name: 'Visitor',
+          email: '',
+          role: 'usuario_final'
+        }}
+        featureFlags={{
+          srs: false,
+          nps: true,
+          attachments: true,
+          ideas: true,
+          questions: true
+        }}
+        position="bottom-right"
+      />
 
       {/* Mobile Persistent CTA */}
       <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-gradient-forge p-4">

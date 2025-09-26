@@ -20,6 +20,8 @@ import { PayrollAdmin } from '@/components/admin/PayrollAdmin';
 import { FeedbackAdmin } from '@/components/admin/FeedbackAdmin';
 import { FeedbackMetrics } from '@/components/admin/FeedbackMetrics';
 import { FeedbackLiveMetrics } from '@/components/admin/FeedbackLiveMetrics';
+import { FeedbackNotifications } from '@/components/admin/FeedbackNotifications';
+import { FeedbackExport } from '@/components/admin/FeedbackExport';
 import { CampaignAdmin } from '@/components/admin/CampaignAdmin';
 import { CampaignAutomation } from '@/components/admin/CampaignAutomation';
 
@@ -48,6 +50,8 @@ export default function Admin() {
         <Route path="campaigns" element={<CampaignAdmin />} />
         <Route path="campaign-automation" element={<CampaignAutomation />} />
         <Route path="feedback-live" element={<FeedbackLiveMetrics />} />
+        <Route path="feedback-notifications" element={<FeedbackNotifications />} />
+        <Route path="feedback-export" element={<FeedbackExport />} />
       </Routes>
     </AdminLayout>
   );
