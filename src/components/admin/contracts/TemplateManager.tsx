@@ -194,10 +194,22 @@ export const TemplateManager = () => {
               <Badge variant="outline">
                 {contractTypes.find(t => t.value === template.contract_type)?.label || template.contract_type}
               </Badge>
+              
+              {/* Template Configuration Preview */}
+              {template.default_clauses && template.default_clauses.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="text-xs">
+                    <Settings className="mr-1 h-3 w-3" />
+                    {template.default_clauses.length} cláusulas configuradas
+                  </Badge>
+                </div>
+              )}
+              
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Criado em:</span>
                 <span>{new Date(template.created_at).toLocaleDateString()}</span>
               </div>
+              
               <Button 
                 variant="outline" 
                 className="w-full" 
@@ -205,7 +217,7 @@ export const TemplateManager = () => {
                 onClick={() => handleConfigureTemplate(template)}
               >
                 <Settings className="mr-2 h-3 w-3" />
-                Configurar
+                {template.default_clauses && template.default_clauses.length > 0 ? 'Reconfigurar' : 'Configurar'}
               </Button>
             </CardContent>
           </Card>

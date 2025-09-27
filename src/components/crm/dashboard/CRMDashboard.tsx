@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { 
   TrendingUp, 
@@ -11,9 +12,13 @@ import {
   Activity,
   ArrowUp,
   ArrowDown,
-  Minus
+  Minus,
+  FileText,
+  Plus
 } from 'lucide-react';
 import { CRMDeal, CRMPipeline, CRMStage } from '@/hooks/useCRM';
+import { useCRMContractIntegration } from '@/hooks/useCRMContractIntegration';
+import { TemplateSelectionModal } from './TemplateSelectionModal';
 
 interface CRMDashboardProps {
   deals: CRMDeal[];
@@ -43,6 +48,9 @@ interface StageAnalysis {
 }
 
 export function CRMDashboard({ deals, pipelines, stages, selectedPipelineId }: CRMDashboardProps) {
+  const { generateContractFromDeal, isGenerating } = useCRMContractIntegration();
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [selectedDealForContract, setSelectedDealForContract] = useState<CRMDeal | null>(null);
   // Calculate pipeline metrics
   const calculateMetrics = (): PipelineMetrics => {
     const pipelineDeals = deals.filter(deal => deal.pipeline_id === selectedPipelineId);
@@ -112,6 +120,29 @@ export function CRMDashboard({ deals, pipelines, stages, selectedPipelineId }: C
     if (value > 0) return 'text-emerald-600';
     if (value < 0) return 'text-rose-600';
     return 'text-slate-600';
+  };
+
+  const handleGenerateContractFromDashboard = (deal: CRMDeal) => {
+    setSelectedDealForContract(deal);
+    setIsTemplateModalOpen(true);
+  };
+
+  const handleTemplateSelected = async (templateId: string) => {
+    if (!selectedDealForContract) return;
+    
+    try {
+      const contractId = await generateContractFromDeal(selectedDealForContract.id, templateId);
+      window.location.href = `/admin/contratos?id=${contractId}`;
+    } catch (error) {
+      console.error('Erro ao gerar contrato:', error);
+    } finally {
+      setSelectedDealForContract(null);
+    }
+  };
+
+  const closeTemplateModal = () => {
+    setIsTemplateModalOpen(false);
+    setSelectedDealForContract(null);
   };
 
   return (
@@ -251,11 +282,28 @@ export function CRMDashboard({ deals, pipelines, stages, selectedPipelineId }: C
 
         {/* Conversion Funnel */}
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5" />
               Funil de Conversão
             </CardTitle>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => {
+                  // Get first active deal for demo - in production, this could be configurable
+                  const firstDeal = deals.find(d => d.pipeline_id === selectedPipelineId);
+                  if (firstDeal) {
+                    handleGenerateContractFromDashboard(firstDeal);
+                  }
+                }}
+                size="sm"
+                variant="outline"
+                disabled={isGenerating}
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                {isGenerating ? 'Gerando...' : 'Gerar Contrato'}
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -351,6 +399,14 @@ export function CRMDashboard({ deals, pipelines, stages, selectedPipelineId }: C
           </div>
         </CardContent>
       </Card>
+
+      {/* Template Selection Modal */}
+      <TemplateSelectionModal
+        isOpen={isTemplateModalOpen}
+        onClose={closeTemplateModal}
+        onSelectTemplate={handleTemplateSelected}
+        dealTitle={selectedDealForContract?.title}
+      />
     </div>
   );
 }

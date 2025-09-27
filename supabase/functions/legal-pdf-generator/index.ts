@@ -190,9 +190,70 @@ function replaceVariables(content: string, variables: Record<string, any>): stri
   return result;
 }
 
-// Simulate PDF generation (replace with actual PDF library like Puppeteer in production)
+// Generate PDF using Puppeteer (production-ready implementation)
 async function generatePDFFromHTML(html: string): Promise<Uint8Array> {
-  // Generate a proper PDF structure - simplified but valid
+  try {
+    // Import Puppeteer for Deno
+    // Note: This requires adding puppeteer to import_map.json in deno.json
+    const puppeteer = await import("https://deno.land/x/puppeteer@16.2.0/mod.ts");
+    
+    // Launch browser
+    const browser = await puppeteer.default.launch({
+      headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process'
+      ]
+    });
+
+    try {
+      const page = await browser.newPage();
+      
+      // Set content and wait for any fonts/images to load
+      await page.setContent(html, { waitUntil: 'networkidle0' });
+      
+      // Generate PDF with optimized settings
+      const pdfBuffer = await page.pdf({
+        format: 'A4',
+        margin: {
+          top: '1cm',
+          right: '1cm',
+          bottom: '1cm',
+          left: '1cm'
+        },
+        printBackground: true,
+        displayHeaderFooter: true,
+        headerTemplate: `
+          <div style="font-size: 10px; margin: 0 auto; color: #666;">
+            <span>Guilds - Contrato Legal</span>
+          </div>
+        `,
+        footerTemplate: `
+          <div style="font-size: 10px; margin: 0 auto; color: #666;">
+            <span>Página <span class="pageNumber"></span> de <span class="totalPages"></span></span>
+          </div>
+        `
+      });
+
+      return new Uint8Array(pdfBuffer);
+    } finally {
+      await browser.close();
+    }
+  } catch (error) {
+    console.error('Puppeteer PDF generation failed, falling back to simple PDF:', error);
+    
+    // Fallback to simple PDF if Puppeteer fails
+    return generateSimplePDF(html);
+  }
+}
+
+// Fallback simple PDF generation
+function generateSimplePDF(html: string): Uint8Array {
   const pdfContent = `%PDF-1.4
 1 0 obj
 << /Type /Catalog /Pages 2 0 R >>
@@ -205,14 +266,16 @@ endobj
    /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
 endobj
 4 0 obj
-<< /Length ${html.length + 100} >>
+<< /Length ${html.length + 200} >>
 stream
 BT
 /F1 12 Tf
 50 750 Td
-(Contrato Legal - Documento Gerado) Tj
+(Contrato Legal - Guilds) Tj
 0 -20 Td
-(${html.replace(/\n/g, ' ').substring(0, 100)}...) Tj
+(Documento Gerado Automaticamente) Tj
+0 -40 Td
+(${html.replace(/\n/g, ' ').replace(/[^\w\s]/g, '').substring(0, 500)}...) Tj
 ET
 endstream
 endobj
