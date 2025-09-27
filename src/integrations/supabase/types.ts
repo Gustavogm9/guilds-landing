@@ -2335,6 +2335,8 @@ export type Database = {
           ai_risk_score: number | null
           approved_at: string | null
           approved_by: string | null
+          clicksign_document_key: string | null
+          clicksign_status: string | null
           client_contact_id: string
           content_markdown: string | null
           contract_number: string | null
@@ -2342,10 +2344,13 @@ export type Database = {
           created_by: string | null
           deal_id: string | null
           id: string
+          pdf_generated_at: string | null
           pdf_hash: string | null
           pdf_url: string | null
           project_id: string | null
           selected_clauses: string[] | null
+          signed_at: string | null
+          signed_document_url: string | null
           status: string
           template_id: string
           title: string
@@ -2358,6 +2363,8 @@ export type Database = {
           ai_risk_score?: number | null
           approved_at?: string | null
           approved_by?: string | null
+          clicksign_document_key?: string | null
+          clicksign_status?: string | null
           client_contact_id: string
           content_markdown?: string | null
           contract_number?: string | null
@@ -2365,10 +2372,13 @@ export type Database = {
           created_by?: string | null
           deal_id?: string | null
           id?: string
+          pdf_generated_at?: string | null
           pdf_hash?: string | null
           pdf_url?: string | null
           project_id?: string | null
           selected_clauses?: string[] | null
+          signed_at?: string | null
+          signed_document_url?: string | null
           status?: string
           template_id: string
           title: string
@@ -2381,6 +2391,8 @@ export type Database = {
           ai_risk_score?: number | null
           approved_at?: string | null
           approved_by?: string | null
+          clicksign_document_key?: string | null
+          clicksign_status?: string | null
           client_contact_id?: string
           content_markdown?: string | null
           contract_number?: string | null
@@ -2388,10 +2400,13 @@ export type Database = {
           created_by?: string | null
           deal_id?: string | null
           id?: string
+          pdf_generated_at?: string | null
           pdf_hash?: string | null
           pdf_url?: string | null
           project_id?: string | null
           selected_clauses?: string[] | null
+          signed_at?: string | null
+          signed_document_url?: string | null
           status?: string
           template_id?: string
           title?: string
@@ -2434,6 +2449,7 @@ export type Database = {
           contract_type: string
           created_at: string
           created_by: string | null
+          default_clauses: Json | null
           default_groups: string[] | null
           description: string | null
           id: string
@@ -2447,6 +2463,7 @@ export type Database = {
           contract_type: string
           created_at?: string
           created_by?: string | null
+          default_clauses?: Json | null
           default_groups?: string[] | null
           description?: string | null
           id?: string
@@ -2460,6 +2477,7 @@ export type Database = {
           contract_type?: string
           created_at?: string
           created_by?: string | null
+          default_clauses?: Json | null
           default_groups?: string[] | null
           description?: string | null
           id?: string

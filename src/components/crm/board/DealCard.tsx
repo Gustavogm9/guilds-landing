@@ -11,9 +11,11 @@ import {
   MoreHorizontal, 
   Phone, 
   User,
-  Building2
+  Building2,
+  FileText
 } from 'lucide-react';
 import { CRMDeal } from '@/hooks/useCRM';
+import { useCRMContractIntegration } from '@/hooks/useCRMContractIntegration';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -29,6 +31,8 @@ interface DealCardProps {
 }
 
 export function DealCard({ deal, index }: DealCardProps) {
+  const { generateContractFromDeal, isGenerating } = useCRMContractIntegration();
+
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -43,6 +47,16 @@ export function DealCard({ deal, index }: DealCardProps) {
       style: 'currency',
       currency: deal.currency || 'BRL'
     }).format(value);
+  };
+
+  const handleGenerateContract = async () => {
+    try {
+      const contractId = await generateContractFromDeal(deal.id);
+      // Redirecionar para o ContractBuilder com o novo contrato
+      window.location.href = `/admin/contratos?id=${contractId}`;
+    } catch (error) {
+      console.error('Erro ao gerar contrato:', error);
+    }
   };
 
   return (
@@ -78,6 +92,13 @@ export function DealCard({ deal, index }: DealCardProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem 
+                    onClick={handleGenerateContract}
+                    disabled={isGenerating}
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    {isGenerating ? 'Gerando...' : 'Gerar Contrato'}
+                  </DropdownMenuItem>
                   <DropdownMenuItem>Editar</DropdownMenuItem>
                   <DropdownMenuItem>Duplicar</DropdownMenuItem>
                   <DropdownMenuItem className="text-destructive">

@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { useLegal, LegalContract, LegalClause } from '@/hooks/useLegal';
 import { useCRM } from '@/hooks/useCRM';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ContractBuilderProps {
   contractId?: string | null;
@@ -43,6 +44,7 @@ export const ContractBuilder = ({ contractId }: ContractBuilderProps) => {
     variables_data: {}
   });
   const [clausesByGroup, setClausesByGroup] = useState<Record<string, LegalClause[]>>({});
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   const {
     contracts,
@@ -156,6 +158,29 @@ export const ContractBuilder = ({ contractId }: ContractBuilderProps) => {
       await sendToClicksign.mutateAsync(selectedContract.id);
     } catch (error) {
       console.error('Erro ao enviar para Clicksign:', error);
+    }
+  };
+
+  const handleGeneratePDF = async () => {
+    if (!selectedContract) return;
+    setIsGeneratingPDF(true);
+    try {
+      const response = await supabase.functions.invoke('legal-pdf-generator', {
+        body: { contractId: selectedContract.id }
+      });
+      
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+      
+      // Open PDF in new tab
+      if (response.data?.pdfUrl) {
+        window.open(response.data.pdfUrl, '_blank');
+      }
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error);
+    } finally {
+      setIsGeneratingPDF(false);
     }
   };
 
@@ -313,6 +338,17 @@ export const ContractBuilder = ({ contractId }: ContractBuilderProps) => {
                     {isGeneratingLawDesign && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     <Palette className="mr-2 h-4 w-4" />
                     Law Design
+                  </Button>
+
+                  <Button 
+                    onClick={() => handleGeneratePDF()}
+                    disabled={!selectedContract || isGeneratingPDF}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    {isGeneratingPDF && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    <FileText className="mr-2 h-4 w-4" />
+                    Gerar PDF
                   </Button>
 
                   <Button 
