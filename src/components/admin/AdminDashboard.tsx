@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDashboardStats } from '@/hooks/useDashboardStats';
+import { MultiProductDashboard } from '@/components/admin/dashboard/MultiProductDashboard';
 
 const quickActions = [
   {
@@ -53,6 +54,14 @@ const quickActions = [
 export function AdminDashboard() {
   const navigate = useNavigate();
   const { stats, recentActivities, isLoading, error, refetch } = useDashboardStats();
+  
+  // Check for multi-product dashboard flag
+  const useMultiProduct = window.location.search.includes('multiproduct=true') || 
+                         localStorage.getItem('admin-multiproduct') === 'true';
+  
+  if (useMultiProduct) {
+    return <MultiProductDashboard />;
+  }
 
   const formatNumber = (num: number) => {
     if (num >= 1000) {

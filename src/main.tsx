@@ -9,6 +9,7 @@ import { initializePerformanceOptimizations } from '@/lib/serviceWorker'
 import heroImage from './assets/hero-image.jpg'
 import { AuthProvider } from '@/contexts/AuthContext';
 import { PermissionsProvider } from '@/contexts/PermissionsContext';
+import { MultiProductProvider } from '@/contexts/MultiProductContext';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -42,9 +43,11 @@ function AppWithFavicon() {
       <TooltipProvider>
         <AuthProvider>
           <PermissionsProvider>
-            <Toaster />
-            <Sonner />
-            <App />
+            <MultiProductProvider>
+              <Toaster />
+              <Sonner />
+              <App />
+            </MultiProductProvider>
           </PermissionsProvider>
         </AuthProvider>
       </TooltipProvider>
