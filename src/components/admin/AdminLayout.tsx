@@ -24,7 +24,8 @@ import {
   Activity,
   Lightbulb,
   DollarSign,
-  Calculator
+  Calculator,
+  Shield
 } from 'lucide-react';
 
 import {
@@ -54,6 +55,15 @@ const menuItems = [
     icon: LayoutDashboard,
     url: "/admin",
     exact: true
+  },
+  {
+    title: "Usuários & Roles",
+    icon: Shield,
+    items: [
+      { title: "Usuários", icon: Users, url: "/admin/users" },
+      { title: "Roles", icon: Shield, url: "/admin/roles" },
+      { title: "Auditoria", icon: Activity, url: "/admin/audit" }
+    ]
   },
   {
     title: "Site Management",
