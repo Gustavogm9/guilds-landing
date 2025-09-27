@@ -105,6 +105,23 @@ export const ContractBuilder = ({ contractId }: ContractBuilderProps) => {
     }
   }, [clauseGroups, fetchClausesByGroup]);
 
+  // Auto-select default clauses when template changes
+  useEffect(() => {
+    const autoSelectDefaultClauses = async () => {
+      if (!contractData.template_id || !templates.length) return;
+      
+      const selectedTemplate = templates.find(t => t.id === contractData.template_id);
+      if (!selectedTemplate?.default_clauses || selectedTemplate.default_clauses.length === 0) return;
+      
+      // Only auto-select if no clauses are currently selected (for new contracts)
+      if (selectedClauses.length === 0) {
+        setSelectedClauses(selectedTemplate.default_clauses);
+      }
+    };
+
+    autoSelectDefaultClauses();
+  }, [contractData.template_id, templates, selectedClauses.length]);
+
   const handleSaveContract = async () => {
     try {
       if (selectedContract) {

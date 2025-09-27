@@ -35,6 +35,7 @@ export interface LegalTemplate {
   description?: string;
   contract_type: string;
   default_groups: string[];
+  default_clauses: string[];
   variables_mapping: Record<string, any>;
   is_default: boolean;
   created_by?: string;
@@ -337,6 +338,102 @@ export const useLegal = () => {
     }
   });
 
+  // Update clause
+  const updateClause = useMutation({
+    mutationFn: async ({ id, ...updates }: any) => {
+      const { data, error } = await supabase
+        .from('legal_clauses')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['legal-clause-groups'] });
+      toast.success('Cláusula atualizada com sucesso!');
+    },
+    onError: (error) => {
+      console.error('Erro ao atualizar cláusula:', error);
+      toast.error('Erro ao atualizar cláusula');
+    }
+  });
+
+  // Delete clause
+  const deleteClause = useMutation({
+    mutationFn: async (clauseId: string) => {
+      // First check if clause is used in any contracts
+      const { data: contractsUsing } = await supabase
+        .from('legal_contracts')
+        .select('id, title')
+        .contains('selected_clauses', [clauseId]);
+
+      if (contractsUsing && contractsUsing.length > 0) {
+        throw new Error(`Não é possível deletar. Cláusula está sendo usada em ${contractsUsing.length} contrato(s).`);
+      }
+
+      const { data, error } = await supabase
+        .from('legal_clauses')
+        .update({ is_active: false })
+        .eq('id', clauseId)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['legal-clause-groups'] });
+      toast.success('Cláusula removida com sucesso!');
+    },
+    onError: (error) => {
+      console.error('Erro ao remover cláusula:', error);
+      toast.error(error.message || 'Erro ao remover cláusula');
+    }
+  });
+
+  // Duplicate clause
+  const duplicateClause = useMutation({
+    mutationFn: async (clauseId: string) => {
+      // First get the original clause
+      const { data: originalClause, error: fetchError } = await supabase
+        .from('legal_clauses')
+        .select('*')
+        .eq('id', clauseId)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      // Create duplicate with modified title
+      const duplicateData = {
+        ...originalClause,
+        id: undefined, // Let Supabase generate new ID
+        title: `${originalClause.title} (Cópia)`,
+        created_at: undefined,
+        updated_at: undefined
+      };
+
+      const { data, error } = await supabase
+        .from('legal_clauses')
+        .insert([duplicateData])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['legal-clause-groups'] });
+      toast.success('Cláusula duplicada com sucesso!');
+    },
+    onError: (error) => {
+      console.error('Erro ao duplicar cláusula:', error);
+      toast.error('Erro ao duplicar cláusula');
+    }
+  });
+
   // Create template
   const createTemplate = useMutation({
     mutationFn: async (templateData: any) => {
@@ -356,6 +453,29 @@ export const useLegal = () => {
     onError: (error) => {
       console.error('Erro ao criar template:', error);
       toast.error('Erro ao criar template');
+    }
+  });
+
+  // Update template (for configuration)
+  const updateTemplate = useMutation({
+    mutationFn: async ({ id, ...updates }: any) => {
+      const { data, error } = await supabase
+        .from('legal_templates')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['legal-templates'] });
+      toast.success('Template configurado com sucesso!');
+    },
+    onError: (error) => {
+      console.error('Erro ao configurar template:', error);
+      toast.error('Erro ao configurar template');
     }
   });
 
@@ -385,7 +505,11 @@ export const useLegal = () => {
     sendToClicksign,
     createClauseGroup,
     createClause,
+    updateClause,
+    deleteClause,
+    duplicateClause,
     createTemplate,
+    updateTemplate,
     
     // Mutation states
     isCreatingContract: createContract.isPending,
@@ -393,6 +517,9 @@ export const useLegal = () => {
     isGeneratingDraft: generateContractDraft.isPending,
     isReviewingContract: reviewContractWithAI.isPending,
     isGeneratingLawDesign: generateLawDesign.isPending,
-    isSendingToClicksign: sendToClicksign.isPending
+    isSendingToClicksign: sendToClicksign.isPending,
+    isUpdatingClause: updateClause.isPending,
+    isDeletingClause: deleteClause.isPending,
+    isDuplicatingClause: duplicateClause.isPending
   };
 };

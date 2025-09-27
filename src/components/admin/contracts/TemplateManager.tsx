@@ -11,9 +11,12 @@ import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Edit, Copy, Star, FileText, Settings } from 'lucide-react';
 import { useLegal } from '@/hooks/useLegal';
+import { TemplateConfigurator } from './TemplateConfigurator';
 
 export const TemplateManager = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isConfigDialogOpen, setIsConfigDialogOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
   const [templateForm, setTemplateForm] = useState({
     name: '',
     description: '',
@@ -23,7 +26,7 @@ export const TemplateManager = () => {
     variables_mapping: '{}'
   });
 
-  const { templates, clauseGroups, createTemplate } = useLegal();
+  const { templates, clauseGroups, createTemplate, updateTemplate } = useLegal();
 
   const contractTypes = [
     { value: 'software', label: 'Desenvolvimento de Software' },
@@ -66,6 +69,26 @@ export const TemplateManager = () => {
         ? prev.default_groups.filter(id => id !== groupId)
         : [...prev.default_groups, groupId]
     }));
+  };
+
+  const handleConfigureTemplate = (template: any) => {
+    setSelectedTemplate(template);
+    setIsConfigDialogOpen(true);
+  };
+
+  const handleSaveConfiguration = async (selectedClauses: string[]) => {
+    if (!selectedTemplate) return;
+    
+    try {
+      await updateTemplate.mutateAsync({
+        id: selectedTemplate.id,
+        default_clauses: selectedClauses
+      });
+      setIsConfigDialogOpen(false);
+      setSelectedTemplate(null);
+    } catch (error) {
+      console.error('Erro ao configurar template:', error);
+    }
   };
 
   return (
@@ -175,7 +198,12 @@ export const TemplateManager = () => {
                 <span className="text-muted-foreground">Criado em:</span>
                 <span>{new Date(template.created_at).toLocaleDateString()}</span>
               </div>
-              <Button variant="outline" className="w-full" size="sm">
+              <Button 
+                variant="outline" 
+                className="w-full" 
+                size="sm"
+                onClick={() => handleConfigureTemplate(template)}
+              >
                 <Settings className="mr-2 h-3 w-3" />
                 Configurar
               </Button>
@@ -183,6 +211,29 @@ export const TemplateManager = () => {
           </Card>
         ))}
       </div>
+
+      {/* Template Configuration Dialog */}
+      <Dialog open={isConfigDialogOpen} onOpenChange={setIsConfigDialogOpen}>
+        <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Configurar Template: {selectedTemplate?.name}</DialogTitle>
+            <DialogDescription>
+              Selecione as cláusulas padrão que serão automaticamente incluídas neste template
+            </DialogDescription>
+          </DialogHeader>
+          {selectedTemplate && (
+            <TemplateConfigurator
+              templateId={selectedTemplate.id}
+              onSave={handleSaveConfiguration}
+              onCancel={() => {
+                setIsConfigDialogOpen(false);
+                setSelectedTemplate(null);
+              }}
+              isLoading={updateTemplate.isPending}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

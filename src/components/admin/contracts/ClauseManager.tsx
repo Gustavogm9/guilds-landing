@@ -11,9 +11,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Switch } from '@/components/ui/switch';
 import { Plus, Edit, Lock, Unlock } from 'lucide-react';
 import { useLegal, LegalClause } from '@/hooks/useLegal';
+import { ClauseEditor } from './ClauseEditor';
 
 export const ClauseManager = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedClause, setSelectedClause] = useState<LegalClause | null>(null);
   const [clausesByGroup, setClausesByGroup] = useState<Record<string, LegalClause[]>>({});
   const [clauseForm, setClauseForm] = useState({
     title: '',
@@ -25,7 +28,7 @@ export const ClauseManager = () => {
     is_locked_by_legal: false
   });
 
-  const { clauseGroups, fetchClausesByGroup, createClause } = useLegal();
+  const { clauseGroups, fetchClausesByGroup, createClause, updateClause } = useLegal();
 
   // Load clauses for each group
   useEffect(() => {
@@ -73,6 +76,33 @@ export const ClauseManager = () => {
       tags: '',
       is_locked_by_legal: false
     });
+  };
+
+  const handleEditClause = (clause: LegalClause) => {
+    setSelectedClause(clause);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleSaveClause = async (clauseData: any) => {
+    if (!selectedClause) return;
+    
+    try {
+      await updateClause.mutateAsync({
+        id: selectedClause.id,
+        ...clauseData
+      });
+      setIsEditDialogOpen(false);
+      setSelectedClause(null);
+      
+      // Reload clauses for the group
+      const updatedClauses = await fetchClausesByGroup(selectedClause.group_id);
+      setClausesByGroup(prev => ({
+        ...prev,
+        [selectedClause.group_id]: updatedClauses
+      }));
+    } catch (error) {
+      console.error('Erro ao atualizar cláusula:', error);
+    }
   };
 
   return (
@@ -195,7 +225,11 @@ export const ClauseManager = () => {
                           {clause.content_markdown.substring(0, 200)}...
                         </p>
                       </div>
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleEditClause(clause)}
+                      >
                         <Edit className="h-3 w-3" />
                       </Button>
                     </div>
@@ -211,6 +245,29 @@ export const ClauseManager = () => {
           </AccordionItem>
         ))}
       </Accordion>
+
+      {/* Edit Clause Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar Cláusula</DialogTitle>
+            <DialogDescription>
+              Modifique os detalhes da cláusula selecionada
+            </DialogDescription>
+          </DialogHeader>
+          {selectedClause && (
+            <ClauseEditor
+              clause={selectedClause}
+              onSave={handleSaveClause}
+              onCancel={() => {
+                setIsEditDialogOpen(false);
+                setSelectedClause(null);
+              }}
+              isLoading={updateClause.isPending}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

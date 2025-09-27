@@ -31,7 +31,26 @@ interface DealCardProps {
 }
 
 export function DealCard({ deal, index }: DealCardProps) {
-  const { generateContractFromDeal, isGenerating } = useCRMContractIntegration();
+  const { generateContractFromDeal, checkExistingContract, isGenerating } = useCRMContractIntegration();
+  const [existingContractId, setExistingContractId] = useState<string | null>(null);
+  const [checkingContract, setCheckingContract] = useState(false);
+
+  // Check if contract already exists for this deal
+  useEffect(() => {
+    const checkContract = async () => {
+      setCheckingContract(true);
+      try {
+        const contractId = await checkExistingContract(deal.id);
+        setExistingContractId(contractId);
+      } catch (error) {
+        console.error('Erro ao verificar contrato:', error);
+      } finally {
+        setCheckingContract(false);
+      }
+    };
+
+    checkContract();
+  }, [deal.id, checkExistingContract]);
 
   const getInitials = (name: string) => {
     return name
@@ -49,13 +68,18 @@ export function DealCard({ deal, index }: DealCardProps) {
     }).format(value);
   };
 
-  const handleGenerateContract = async () => {
-    try {
-      const contractId = await generateContractFromDeal(deal.id);
-      // Redirecionar para o ContractBuilder com o novo contrato
-      window.location.href = `/admin/contratos?id=${contractId}`;
-    } catch (error) {
-      console.error('Erro ao gerar contrato:', error);
+  const handleContractAction = async () => {
+    if (existingContractId) {
+      // Navigate to existing contract
+      window.location.href = `/admin/contratos?id=${existingContractId}`;
+    } else {
+      // Generate new contract
+      try {
+        const contractId = await generateContractFromDeal(deal.id);
+        window.location.href = `/admin/contratos?id=${contractId}`;
+      } catch (error) {
+        console.error('Erro ao gerar contrato:', error);
+      }
     }
   };
 
@@ -93,11 +117,22 @@ export function DealCard({ deal, index }: DealCardProps) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem 
-                    onClick={handleGenerateContract}
-                    disabled={isGenerating}
+                    onClick={handleContractAction}
+                    disabled={isGenerating || checkingContract}
                   >
                     <FileText className="h-4 w-4 mr-2" />
-                    {isGenerating ? 'Gerando...' : 'Gerar Contrato'}
+                    {checkingContract ? (
+                      'Verificando...'
+                    ) : existingContractId ? (
+                      <>
+                        <Badge variant="secondary" className="mr-2">
+                          Existente
+                        </Badge>
+                        Ver Contrato
+                      </>
+                    ) : (
+                      isGenerating ? 'Gerando...' : 'Gerar Contrato'
+                    )}
                   </DropdownMenuItem>
                   <DropdownMenuItem>Editar</DropdownMenuItem>
                   <DropdownMenuItem>Duplicar</DropdownMenuItem>
