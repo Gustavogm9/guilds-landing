@@ -1,17 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useLegal } from './useLegal';
 
-export interface CRMContractIntegration {
-  generateContractFromDeal: (dealId: string, templateId?: string) => Promise<string>;
-  checkExistingContract: (dealId: string) => Promise<string | null>;
-  isGenerating: boolean;
-}
-
-export function useCRMContractIntegration(): CRMContractIntegration {
+export function useCRMContractIntegration() {
   const { toast } = useToast();
-  const { createContract } = useLegal();
 
   // Verificar se já existe contrato para o deal
   const checkExistingContract = async (dealId: string): Promise<string | null> => {
@@ -20,9 +12,9 @@ export function useCRMContractIntegration(): CRMContractIntegration {
       .select('id')
       .eq('deal_id', dealId)
       .eq('is_active', true)
-      .single();
+      .maybeSingle();
 
-    if (error && error.code !== 'PGRST116') {
+    if (error) {
       console.error('Error checking existing contract:', error);
       return null;
     }
@@ -33,7 +25,13 @@ export function useCRMContractIntegration(): CRMContractIntegration {
   // Gerar contrato a partir do deal
   const generateContractMutation = useMutation({
     mutationFn: async ({ dealId, templateId }: { dealId: string; templateId?: string }) => {
-      // Buscar dados do deal com relacionamentos
+      // Verificar se já existe contrato
+      const existingContractId = await checkExistingContract(dealId);
+      if (existingContractId) {
+        return existingContractId;
+      }
+
+      // Buscar dados do deal
       const { data: dealData, error: dealError } = await supabase
         .from('crm_deals')
         .select('*')
@@ -44,39 +42,33 @@ export function useCRMContractIntegration(): CRMContractIntegration {
         throw new Error('Deal não encontrado');
       }
 
-      // Buscar contato separadamente
+      // Buscar contato se existe
       let contactData = null;
       if (dealData.contact_id) {
         const { data: contact } = await supabase
           .from('crm_contacts')
           .select('*')
           .eq('id', dealData.contact_id)
-          .single();
+          .maybeSingle();
         contactData = contact;
       }
 
-      // Buscar pipeline separadamente
+      // Buscar pipeline se existe
       let pipelineData = null;
       if (dealData.pipeline_id) {
         const { data: pipeline } = await supabase
           .from('crm_pipelines')
           .select('*')
           .eq('id', dealData.pipeline_id)
-          .single();
+          .maybeSingle();
         pipelineData = pipeline;
-      }
-
-      // Verificar se já existe contrato
-      const existingContractId = await checkExistingContract(dealId);
-      if (existingContractId) {
-        return existingContractId;
       }
 
       // Buscar template padrão se não especificado
       let selectedTemplateId = templateId;
       
       if (!selectedTemplateId) {
-        const { data: templates, error: templatesError } = await supabase
+        const { data: templates } = await supabase
           .from('legal_templates')
           .select('*')
           .eq('is_active', true)
@@ -84,7 +76,7 @@ export function useCRMContractIntegration(): CRMContractIntegration {
           .order('created_at', { ascending: false })
           .limit(1);
 
-        if (!templatesError && templates && templates.length > 0) {
+        if (templates && templates.length > 0) {
           selectedTemplateId = templates[0].id;
         }
       }
@@ -110,19 +102,26 @@ export function useCRMContractIntegration(): CRMContractIntegration {
       };
 
       // Criar contrato
-      const contractData = {
-        client_contact_id: dealData.contact_id,
-        deal_id: dealId,
-        template_id: selectedTemplateId,
-        title: `Contrato: ${dealData.title}`,
-        variables_data: contractVariables,
-        status: 'draft' as const
-      };
+      const { data: newContract, error: createError } = await supabase
+        .from('legal_contracts')
+        .insert({
+          client_contact_id: dealData.contact_id,
+          deal_id: dealId,
+          template_id: selectedTemplateId,
+          title: `Contrato: ${dealData.title}`,
+          variables_data: contractVariables,
+          status: 'draft'
+        })
+        .select('id')
+        .single();
 
-      const result = await createContract.mutateAsync(contractData);
-      return typeof result === 'string' ? result : result.id;
+      if (createError || !newContract) {
+        throw new Error('Erro ao criar contrato: ' + (createError?.message || 'Erro desconhecido'));
+      }
+
+      return newContract.id;
     },
-    onSuccess: (contractId) => {
+    onSuccess: () => {
       toast({
         title: 'Contrato gerado com sucesso',
         description: 'O contrato foi criado e está pronto para edição.',
