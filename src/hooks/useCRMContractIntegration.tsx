@@ -1,6 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+
+// Usando client direto para evitar dependências circulares
+const supabaseUrl = 'https://itvruukwhgttnjpvghzq.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0dnJ1dWt3aGd0dG5qcHZnaHpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMjQ4MjgsImV4cCI6MjA3MTcwMDgyOH0.NWcAv2VONoAOKiXGHBMZAB42_SCPaI8nTxFTXw6GTBM';
+
+import { createClient } from '@supabase/supabase-js';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export function useCRMContractIntegration() {
   const { toast } = useToast();
