@@ -337,7 +337,17 @@ async function processAccountingSync(supabase: any, data: any) {
   
   const { accounts, transactions, period } = data;
 
-  let syncResults = {
+  interface SyncError {
+    type: string;
+    data: any;
+    error: string;
+  }
+
+  let syncResults: {
+    accounts_synced: number;
+    transactions_synced: number;
+    errors: SyncError[];
+  } = {
     accounts_synced: 0,
     transactions_synced: 0,
     errors: []
@@ -359,7 +369,7 @@ async function processAccountingSync(supabase: any, data: any) {
         syncResults.accounts_synced++;
       } catch (error: any) {
         console.error('Error syncing account:', error);
-        syncResults.errors.push({ type: 'account', data: account, error: error.message });
+        syncResults.errors.push({ type: 'account', data: account, error: error instanceof Error ? error.message : String(error) });
       }
     }
   }
@@ -383,7 +393,7 @@ async function processAccountingSync(supabase: any, data: any) {
         syncResults.transactions_synced++;
       } catch (error: any) {
         console.error('Error syncing transaction:', error);
-        syncResults.errors.push({ type: 'transaction', data: transaction, error: error.message });
+        syncResults.errors.push({ type: 'transaction', data: transaction, error: error instanceof Error ? error.message : String(error) });
       }
     }
   }

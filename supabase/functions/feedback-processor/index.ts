@@ -39,7 +39,7 @@ serve(async (req) => {
     console.error('Feedback processing error:', error);
     
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -171,7 +171,7 @@ async function processCampaignExecutions(supabase: any) {
         .from('feedback_campaign_executions')
         .update({
           status: 'failed',
-          error_message: err.message
+          error_message: err instanceof Error ? err.message : String(err)
         })
         .eq('id', execution.id);
     }
@@ -213,10 +213,10 @@ function calculateRiceScores(feedback: any) {
   };
 
   return {
-    reach: typeReach[feedback.type] || 5,
-    impact: severityImpact[feedback.severity] || 2,
+    reach: (typeReach as any)[feedback.type] || 5,
+    impact: (severityImpact as any)[feedback.severity] || 2,
     confidence: 70, // Default confidence
-    effort: typeEffort[feedback.type] || 4
+    effort: (typeEffort as any)[feedback.type] || 4
   };
 }
 

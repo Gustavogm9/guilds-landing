@@ -164,7 +164,7 @@ serve(async (req) => {
     
     return new Response(
       JSON.stringify({ 
-        error: error.message || 'Internal server error',
+        error: error instanceof Error ? error.message : 'Internal server error',
         success: false 
       }),
       {
@@ -176,7 +176,7 @@ serve(async (req) => {
 });
 
 function calculatePriorityScore(type: string, severity: string): number {
-  const typeWeights = {
+  const typeWeights: { [key: string]: number } = {
     'bug': 100,
     'duvida': 80,
     'usability': 70,
@@ -188,7 +188,7 @@ function calculatePriorityScore(type: string, severity: string): number {
     'pmf': 20
   };
 
-  const severityMultipliers = {
+  const severityMultipliers: { [key: string]: number } = {
     'blocker': 2.0,
     'high': 1.5,
     'medium': 1.0,

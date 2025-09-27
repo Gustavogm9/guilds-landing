@@ -132,7 +132,7 @@ serve(async (req) => {
           .from('feedback_campaign_executions')
           .update({
             status: 'failed',
-            error_message: error.message
+            error_message: error instanceof Error ? error.message : String(error)
           })
           .eq('id', execution.id);
       }
@@ -153,7 +153,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Campaign execution error:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
       { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 

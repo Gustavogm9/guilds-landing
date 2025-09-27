@@ -64,7 +64,7 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in financial AI analysis:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -219,8 +219,16 @@ Formato de resposta JSON com array de predictions, cada um com category, descrip
 async function detectAnomalies(financialData: any, sensitivity: string) {
   console.log('Detecting anomalies with sensitivity:', sensitivity);
   
+  interface Anomaly {
+    type: string;
+    description: string;
+    severity: string;
+    timestamp?: string;
+    affected_area: string;
+  }
+  
   // Implementar lógica de detecção de anomalias
-  const anomalies = [];
+  const anomalies: Anomaly[] = [];
   
   if (financialData.transactions) {
     const transactions = financialData.transactions;

@@ -135,8 +135,8 @@ serve(async (req) => {
             rule_id: rule.id,
             timestamp: new Date().toISOString(),
             status: 'error',
-            error: ruleError.message,
-            stack: ruleError.stack
+        error: ruleError instanceof Error ? ruleError.message : String(ruleError),
+        stack: ruleError instanceof Error ? ruleError.stack : undefined
           })
 
           errorCount++
@@ -170,8 +170,8 @@ serve(async (req) => {
       
       await supabaseClient.rpc('log_system_error', {
         p_error_type: 'webhook_processing_error',
-        p_error_message: error.message,
-        p_error_stack: error.stack,
+        p_error_message: error instanceof Error ? error.message : String(error),
+        p_error_stack: error instanceof Error ? error.stack : undefined,
         p_component_name: 'advanced-webhook-processor'
       })
     }

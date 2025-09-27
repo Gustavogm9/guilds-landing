@@ -77,7 +77,7 @@ serve(async (req) => {
     
     return new Response(JSON.stringify({ 
       success: false,
-      error: error.message,
+      error: error instanceof Error ? error.message : String(error),
       timestamp: new Date().toISOString()
     }), {
       status: 500,
@@ -117,7 +117,7 @@ async function processOverdueAccounts(supabase: any, params: any) {
     const { error } = await supabase
       .from('accounts_payable')
       .update({ status: 'overdue' })
-      .in('id', overduePayables.map(p => p.id));
+      .in('id', overduePayables.map((p: any) => p.id));
     
     if (!error) updatedPayables = overduePayables.length;
   }
@@ -126,7 +126,7 @@ async function processOverdueAccounts(supabase: any, params: any) {
     const { error } = await supabase
       .from('accounts_receivable')
       .update({ status: 'overdue' })
-      .in('id', overdueReceivables.map(r => r.id));
+      .in('id', overdueReceivables.map((r: any) => r.id));
     
     if (!error) updatedReceivables = overdueReceivables.length;
   }
@@ -154,7 +154,7 @@ async function sendFinancialAlerts(supabase: any, params: any) {
     alerts.push({
       type: 'high_value_overdue',
       count: highValueOverdue.length,
-      totalAmount: highValueOverdue.reduce((sum, item) => sum + item.amount, 0)
+      totalAmount: highValueOverdue.reduce((sum: number, item: any) => sum + item.amount, 0)
     });
   }
 
@@ -169,8 +169,8 @@ async function sendFinancialAlerts(supabase: any, params: any) {
     .select('amount')
     .eq('status', 'pending');
 
-  const totalPayables = pendingPayables?.reduce((sum, p) => sum + p.amount, 0) || 0;
-  const totalReceivables = pendingReceivables?.reduce((sum, r) => sum + r.amount, 0) || 0;
+  const totalPayables = pendingPayables?.reduce((sum: number, p: any) => sum + p.amount, 0) || 0;
+  const totalReceivables = pendingReceivables?.reduce((sum: number, r: any) => sum + r.amount, 0) || 0;
   const cashFlow = totalReceivables - totalPayables;
 
   if (cashFlow < (params?.cashFlowThreshold || 0)) {
@@ -215,8 +215,8 @@ async function generateAutomatedReports(supabase: any, params: any) {
     date: today,
     summary: {
       todayTransactions: transactions?.length || 0,
-      pendingPayables: payables?.reduce((sum, p) => sum + p.amount, 0) || 0,
-      pendingReceivables: receivables?.reduce((sum, r) => sum + r.amount, 0) || 0
+      pendingPayables: payables?.reduce((sum: number, p: any) => sum + p.amount, 0) || 0,
+      pendingReceivables: receivables?.reduce((sum: number, r: any) => sum + r.amount, 0) || 0
     }
   };
 
