@@ -2189,6 +2189,288 @@ export type Database = {
         }
         Relationships: []
       }
+      legal_clause_groups: {
+        Row: {
+          color: string
+          created_at: string
+          description: string | null
+          display_order: number
+          icon_name: string | null
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      legal_clauses: {
+        Row: {
+          conditions: Json
+          content_markdown: string
+          created_at: string
+          display_order: number
+          group_id: string
+          id: string
+          is_active: boolean
+          is_locked_by_legal: boolean
+          tags: string[] | null
+          title: string
+          updated_at: string
+          variables: Json
+        }
+        Insert: {
+          conditions?: Json
+          content_markdown: string
+          created_at?: string
+          display_order?: number
+          group_id: string
+          id?: string
+          is_active?: boolean
+          is_locked_by_legal?: boolean
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          variables?: Json
+        }
+        Update: {
+          conditions?: Json
+          content_markdown?: string
+          created_at?: string
+          display_order?: number
+          group_id?: string
+          id?: string
+          is_active?: boolean
+          is_locked_by_legal?: boolean
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          variables?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "legal_clauses_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "legal_clause_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      legal_contract_signatures: {
+        Row: {
+          contract_id: string
+          created_at: string
+          envelope_id: string | null
+          id: string
+          provider: string
+          sent_at: string | null
+          signed_at: string | null
+          signers: Json
+          status: string
+          updated_at: string
+          webhook_data: Json | null
+        }
+        Insert: {
+          contract_id: string
+          created_at?: string
+          envelope_id?: string | null
+          id?: string
+          provider?: string
+          sent_at?: string | null
+          signed_at?: string | null
+          signers?: Json
+          status?: string
+          updated_at?: string
+          webhook_data?: Json | null
+        }
+        Update: {
+          contract_id?: string
+          created_at?: string
+          envelope_id?: string | null
+          id?: string
+          provider?: string
+          sent_at?: string | null
+          signed_at?: string | null
+          signers?: Json
+          status?: string
+          updated_at?: string
+          webhook_data?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "legal_contract_signatures_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "legal_contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      legal_contracts: {
+        Row: {
+          ai_draft_review: Json | null
+          ai_law_design_summary: string | null
+          ai_risk_score: number | null
+          approved_at: string | null
+          approved_by: string | null
+          client_contact_id: string
+          content_markdown: string | null
+          contract_number: string | null
+          created_at: string
+          created_by: string | null
+          deal_id: string | null
+          id: string
+          pdf_hash: string | null
+          pdf_url: string | null
+          project_id: string | null
+          selected_clauses: string[] | null
+          status: string
+          template_id: string
+          title: string
+          updated_at: string
+          variables_data: Json
+        }
+        Insert: {
+          ai_draft_review?: Json | null
+          ai_law_design_summary?: string | null
+          ai_risk_score?: number | null
+          approved_at?: string | null
+          approved_by?: string | null
+          client_contact_id: string
+          content_markdown?: string | null
+          contract_number?: string | null
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          id?: string
+          pdf_hash?: string | null
+          pdf_url?: string | null
+          project_id?: string | null
+          selected_clauses?: string[] | null
+          status?: string
+          template_id: string
+          title: string
+          updated_at?: string
+          variables_data?: Json
+        }
+        Update: {
+          ai_draft_review?: Json | null
+          ai_law_design_summary?: string | null
+          ai_risk_score?: number | null
+          approved_at?: string | null
+          approved_by?: string | null
+          client_contact_id?: string
+          content_markdown?: string | null
+          contract_number?: string | null
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          id?: string
+          pdf_hash?: string | null
+          pdf_url?: string | null
+          project_id?: string | null
+          selected_clauses?: string[] | null
+          status?: string
+          template_id?: string
+          title?: string
+          updated_at?: string
+          variables_data?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "legal_contracts_client_contact_id_fkey"
+            columns: ["client_contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "legal_contracts_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "crm_deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "legal_contracts_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "legal_contracts_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "legal_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      legal_templates: {
+        Row: {
+          contract_type: string
+          created_at: string
+          created_by: string | null
+          default_groups: string[] | null
+          description: string | null
+          id: string
+          is_active: boolean
+          is_default: boolean
+          name: string
+          updated_at: string
+          variables_mapping: Json
+        }
+        Insert: {
+          contract_type: string
+          created_at?: string
+          created_by?: string | null
+          default_groups?: string[] | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          name: string
+          updated_at?: string
+          variables_mapping?: Json
+        }
+        Update: {
+          contract_type?: string
+          created_at?: string
+          created_by?: string | null
+          default_groups?: string[] | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          name?: string
+          updated_at?: string
+          variables_mapping?: Json
+        }
+        Relationships: []
+      }
       logos: {
         Row: {
           created_at: string
@@ -3994,6 +4276,10 @@ export type Database = {
           p_client_contact_id: string
           p_project_id: string
         }
+        Returns: string
+      }
+      generate_contract_number: {
+        Args: Record<PropertyKey, never>
         Returns: string
       }
       get_admin_dashboard_summary: {
