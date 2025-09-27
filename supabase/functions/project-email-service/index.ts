@@ -1,7 +1,7 @@
 // Update the edge functions to include performance logging
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.56.0'
-import { Resend } from "npm:resend@4.0.0";
+import { Resend } from "https://esm.sh/resend@4.0.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -90,7 +90,7 @@ const handler = async (req: Request): Promise<Response> => {
           email_id: emailResponse.data?.id
         });
 
-      } catch (emailError: any) {
+      } catch (emailError) {
         console.error('Error sending email:', emailError);
         errorCount++;
 
@@ -106,7 +106,7 @@ const handler = async (req: Request): Promise<Response> => {
         results.push({
           id: notification.id,
           status: 'failed',
-          error: emailError.message
+          error: emailError instanceof Error ? emailError.message : 'Unknown error'
         });
       }
     }
@@ -135,7 +135,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
 
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error in project-email-service function:", error);
     
     // Complete operation log with error
@@ -150,7 +150,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
     
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

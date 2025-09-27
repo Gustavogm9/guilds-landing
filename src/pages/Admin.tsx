@@ -29,6 +29,7 @@ import { CampaignAdmin } from '@/components/admin/CampaignAdmin';
 import { MultiProductReports } from '@/components/admin/reports/MultiProductReports';
 import { MultiProductAutomation } from '@/components/admin/automation/MultiProductAutomation';
 import { MultiProductCRM } from '@/components/admin/crm/MultiProductCRM';
+import { LegalAdmin } from '@/components/admin/LegalAdmin';
 
 export default function Admin() {
   return (
@@ -56,12 +57,13 @@ export default function Admin() {
         <Route path="campaigns" element={<CampaignAdmin />} />
         <Route path="feedback" element={<FeedbackAdmin />} />
         <Route path="feedback-metrics" element={<FeedbackMetrics />} />
-          <Route path="feedback-live" element={<FeedbackLiveMetrics />} />
-          <Route path="feedback-notifications" element={<FeedbackNotifications />} />
-          <Route path="feedback-export" element={<FeedbackExport />} />
-          <Route path="users" element={<UserManagement />} />
-          <Route path="roles" element={<RoleHierarchy />} />
-          <Route path="audit" element={<AuditLog />} />
+        <Route path="feedback-live" element={<FeedbackLiveMetrics />} />
+        <Route path="feedback-notifications" element={<FeedbackNotifications />} />
+        <Route path="feedback-export" element={<FeedbackExport />} />
+        <Route path="users" element={<UserManagement />} />
+        <Route path="roles" element={<RoleHierarchy />} />
+        <Route path="audit" element={<AuditLog />} />
+        <Route path="legal" element={<LegalAdmin />} />
       </Routes>
     </AdminLayout>
   );

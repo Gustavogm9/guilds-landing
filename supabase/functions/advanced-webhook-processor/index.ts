@@ -205,7 +205,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         error: 'Internal server error',
-        message: error.message,
+        message: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       }),
       {
@@ -340,7 +340,7 @@ async function executeActions(actions: any[], payload: any, supabase: any): Prom
       }
     } catch (actionError) {
       console.error(`Error executing action ${action.type}:`, actionError)
-      results.push({ action: action.type, error: actionError.message })
+      results.push({ action: action.type, error: actionError instanceof Error ? actionError.message : String(actionError) })
     }
   }
 

@@ -114,7 +114,7 @@ export const ContractBuilder = ({ contractId }: ContractBuilderProps) => {
           ...contractData,
           selected_clauses: selectedClauses
         });
-        setSelectedContract(result);
+        setSelectedContract(result as any);
       }
     } catch (error) {
       console.error('Erro ao salvar contrato:', error);
