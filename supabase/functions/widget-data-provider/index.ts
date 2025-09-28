@@ -66,10 +66,11 @@ serve(async (req) => {
     return new Response(JSON.stringify({ data, metadata }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Widget data provider error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: errorMessage,
       data: null 
     }), {
       status: 500,
@@ -180,8 +181,8 @@ async function fetchFunnelData(supabase: any, filters: any) {
     };
   });
 
-  const totalLeads = Math.max(...stageData.map(s => s.count));
-  const totalValue = stageData.reduce((sum, s) => sum + s.value, 0);
+  const totalLeads = Math.max(...stageData.map((s: any) => s.count));
+  const totalValue = stageData.reduce((sum: number, s: any) => sum + s.value, 0);
   const lastStageCount = stageData[stageData.length - 1]?.count || 0;
   const overallConversion = totalLeads > 0 ? (lastStageCount / totalLeads) * 100 : 0;
 

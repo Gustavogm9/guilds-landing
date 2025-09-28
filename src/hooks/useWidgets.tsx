@@ -59,12 +59,16 @@ export function useWidgets(): UseWidgetsReturn {
 
       if (layoutsError) throw layoutsError;
 
-      const formattedLayouts = layoutsData.map(layout => ({
-        ...layout,
-        widgets: layout.widgets_config || [],
+      const formattedLayouts = (layoutsData || []).map(layout => ({
+        id: layout.id,
+        name: layout.name,
+        description: layout.description || undefined,
+        widgets: (layout.widgets_config as any) || [],
+        isDefault: layout.is_default,
+        createdBy: layout.created_by,
         createdAt: new Date(layout.created_at),
         updatedAt: new Date(layout.updated_at)
-      }));
+      })) as DashboardLayout[];
 
       setLayouts(formattedLayouts);
       
@@ -121,8 +125,7 @@ export function useWidgets(): UseWidgetsReturn {
       return {
         timestamp: new Date(),
         data: response.data,
-        isLoading: false,
-        metadata: response.metadata
+        isLoading: false
       };
     } catch (err) {
       console.error(`Error fetching data for widget ${config.id}:`, err);
@@ -333,17 +336,32 @@ export function useWidgets(): UseWidgetsReturn {
   const saveLayoutToDatabase = useCallback(async (layout: DashboardLayout) => {
     if (!user) return;
 
-    const { error } = await supabase
-      .from('dashboard_layouts')
-      .upsert({
-        id: layout.id,
-        name: layout.name,
-        description: layout.description,
-        widgets_config: layout.widgets,
-        is_default: layout.isDefault,
-        created_by: user.id,
-        updated_at: new Date().toISOString()
-      });
+    if (layout.id === crypto.randomUUID()) {
+      // New layout - use insert
+      const { error } = await supabase
+        .from('dashboard_layouts')
+        .insert({
+          name: layout.name,
+          description: layout.description,
+          widgets_config: layout.widgets as any,
+          is_default: layout.isDefault,
+          created_by: user.id
+        });
+      if (error) throw error;
+    } else {
+      // Existing layout - use update
+      const { error } = await supabase
+        .from('dashboard_layouts')
+        .update({
+          name: layout.name,
+          description: layout.description,
+          widgets_config: layout.widgets as any,
+          is_default: layout.isDefault,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', layout.id);
+      if (error) throw error;
+    }
 
     if (error) throw error;
   }, [user]);

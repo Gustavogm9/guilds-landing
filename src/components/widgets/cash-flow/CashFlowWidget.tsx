@@ -1,7 +1,7 @@
 import React from 'react';
 import { BaseWidget } from '../BaseWidget';
 import { WidgetComponentProps, CashFlowData } from '@/types/widgets';
-import { TrendingDown, AlertTriangle, DollarSign } from 'lucide-react';
+import { TrendingDown, TrendingUp, AlertTriangle, DollarSign } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
