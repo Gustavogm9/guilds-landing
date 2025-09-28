@@ -141,7 +141,12 @@ export function useWidgets(): UseWidgetsReturn {
   // Dynamically import widget component
   const getWidgetComponent = useCallback(async (widgetType: string) => {
     try {
-      const module = await import(`@/components/widgets/${widgetType}/${widgetType}Widget.tsx`);
+      // Convert kebab-case to PascalCase for component names
+      const componentName = widgetType.split('-').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join('');
+      
+      const module = await import(`@/components/widgets/${widgetType}/${componentName}Widget.tsx`);
       return module.default;
     } catch (err) {
       console.error(`Error loading widget component ${widgetType}:`, err);

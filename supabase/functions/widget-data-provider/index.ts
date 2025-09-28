@@ -58,6 +58,22 @@ serve(async (req) => {
       case 'security':
         data = await fetchSecurityData(supabase, filters);
         break;
+
+      case 'project-velocity':
+        data = await fetchProjectVelocityData(supabase, filters);
+        break;
+        
+      case 'performance-monitoring':
+        data = await fetchPerformanceMonitoringData(supabase, filters);
+        break;
+        
+      case 'market-intelligence':
+        data = await fetchMarketIntelligenceData(supabase, filters);
+        break;
+        
+      case 'automation-status':
+        data = await fetchAutomationStatusData(supabase, filters);
+        break;
         
       default:
         throw new Error(`Widget type "${widgetType}" not supported`);
@@ -509,5 +525,156 @@ async function fetchSecurityData(supabase: any, filters: any) {
       iso27001: Math.round(compliance.iso27001)
     },
     recentEvents
+  };
+}
+
+// Fetch functions for new widgets
+async function fetchProjectVelocityData(supabase: any, filters: any) {
+  // Mock data for now - in production, fetch from project management system
+  return {
+    currentSprint: {
+      name: "Sprint 24",
+      velocity: 42,
+      targetVelocity: 45,
+      completedStoryPoints: 28,
+      totalStoryPoints: 45,
+      daysRemaining: 3
+    },
+    velocityTrend: [
+      { sprint: "S21", velocity: 38, target: 40 },
+      { sprint: "S22", velocity: 41, target: 42 },
+      { sprint: "S23", velocity: 39, target: 43 },
+      { sprint: "S24", velocity: 42, target: 45 }
+    ],
+    blockers: [
+      {
+        id: "1",
+        title: "API dependency não resolvida",
+        severity: "high" as const,
+        daysBlocked: 2
+      }
+    ],
+    teamPerformance: {
+      averageVelocity: 40,
+      predictedCompletion: "15 Mar",
+      riskLevel: "medium" as const
+    }
+  };
+}
+
+async function fetchPerformanceMonitoringData(supabase: any, filters: any) {
+  return {
+    coreWebVitals: {
+      lcp: 2.1,
+      fid: 85,
+      cls: 0.08,
+      fcp: 1.5
+    },
+    systemHealth: {
+      uptime: 99.8,
+      responseTime: 245,
+      errorRate: 0.12,
+      throughput: 1250
+    },
+    alerts: [
+      {
+        type: "performance" as const,
+        message: "Response time spike detected",
+        severity: "medium" as const,
+        timestamp: new Date()
+      }
+    ],
+    trends: Array.from({ length: 24 }, (_, i) => ({
+      timestamp: new Date(Date.now() - (23 - i) * 3600000).toISOString(),
+      responseTime: 200 + Math.random() * 100,
+      errorRate: Math.random() * 2
+    }))
+  };
+}
+
+async function fetchMarketIntelligenceData(supabase: any, filters: any) {
+  return {
+    competitorAnalysis: {
+      totalCompetitors: 23,
+      newCompetitors: 2,
+      marketShare: 15.8,
+      positionRanking: 3
+    },
+    marketTrends: [
+      {
+        trend: "AI Integration in SMB Tools",
+        impact: "high" as const,
+        growth: 45,
+        category: "Technology"
+      },
+      {
+        trend: "Remote Work Solutions",
+        impact: "medium" as const,
+        growth: 28,
+        category: "Workplace"
+      }
+    ],
+    opportunities: [
+      {
+        title: "IA para Automação de Processos",
+        potential: 35,
+        difficulty: "medium" as const,
+        timeToMarket: "6 meses"
+      }
+    ],
+    threats: [
+      {
+        threat: "Entrada de big tech no mercado",
+        severity: "high" as const,
+        probability: 70
+      }
+    ],
+    industryMetrics: {
+      averageGrowthRate: 12.5,
+      marketSize: 2500000000,
+      customerAcquisitionCost: 1250,
+      customerLifetimeValue: 4500
+    }
+  };
+}
+
+async function fetchAutomationStatusData(supabase: any, filters: any) {
+  return {
+    activeWorkflows: 18,
+    totalWorkflows: 22,
+    successRate: 96.8,
+    executionsToday: 156,
+    recentExecutions: [
+      {
+        id: "1",
+        name: "Newsletter Campaign",
+        status: "success" as const,
+        duration: 2340,
+        timestamp: new Date(Date.now() - 300000)
+      },
+      {
+        id: "2", 
+        name: "CRM Sync",
+        status: "failure" as const,
+        duration: 1200,
+        timestamp: new Date(Date.now() - 600000),
+        errorMessage: "API timeout"
+      }
+    ],
+    workflows: [
+      {
+        id: "1",
+        name: "Lead Qualification",
+        type: "email" as const,
+        isActive: true,
+        lastRun: new Date(Date.now() - 1800000),
+        successRate: 98.5
+      }
+    ],
+    systemHealth: {
+      queueSize: 12,
+      avgProcessingTime: 1850,
+      failureRate: 3.2
+    }
   };
 }
