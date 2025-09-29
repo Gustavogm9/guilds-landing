@@ -28,6 +28,8 @@ const contactSchema = z.object({
   phone: z.string().optional(),
   company: z.string().optional(),
   source: z.string().optional(),
+  business_unit: z.string().optional(),
+  referred_by: z.string().optional(),
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
@@ -48,8 +50,12 @@ export function ContactForm({ open, onOpenChange }: ContactFormProps) {
       phone: '',
       company: '',
       source: '',
+      business_unit: '',
+      referred_by: '',
     }
   });
+
+  const watchSource = form.watch('source');
 
   const onSubmit = (data: ContactFormData) => {
     createContact({
@@ -59,7 +65,10 @@ export function ContactForm({ open, onOpenChange }: ContactFormProps) {
       company: data.company || undefined,
       source: data.source || undefined,
       tags: [],
-      custom_fields: {},
+      custom_fields: {
+        business_unit: data.business_unit || undefined,
+        referred_by: data.source === 'referral' ? data.referred_by : undefined,
+      },
       is_active: true,
     });
     form.reset();
@@ -138,6 +147,31 @@ export function ContactForm({ open, onOpenChange }: ContactFormProps) {
 
             <FormField
               control={form.control}
+              name="business_unit"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Qual Negócio</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione o negócio" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="guilds">Guilds (Software/Apps/Automação/IA)</SelectItem>
+                      <SelectItem value="guilds_lab">Guilds Lab (Workshops e Treinamento)</SelectItem>
+                      <SelectItem value="guilds_craft">Guilds Craft (P&D e Parcerias)</SelectItem>
+                      <SelectItem value="doavya">Doavya</SelectItem>
+                      <SelectItem value="outros">Outros</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="source"
               render={({ field }) => (
                 <FormItem>
@@ -162,6 +196,22 @@ export function ContactForm({ open, onOpenChange }: ContactFormProps) {
                 </FormItem>
               )}
             />
+
+            {watchSource === 'referral' && (
+              <FormField
+                control={form.control}
+                name="referred_by"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quem Indicou</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Nome de quem indicou" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <div className="flex justify-end gap-3 pt-4">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
