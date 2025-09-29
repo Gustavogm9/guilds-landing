@@ -21,6 +21,9 @@ import {
   FormMessage 
 } from '@/components/ui/form';
 import { useCRM } from '@/hooks/useCRM';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { useQueryClient } from '@tanstack/react-query';
 
 const contactSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -41,7 +44,9 @@ interface ContactFormProps {
 }
 
 export function ContactForm({ open, onOpenChange }: ContactFormProps) {
-  const { createContact, isCreatingContact } = useCRM();
+  const { fetchPipelineByName, fetchFirstStageOfPipeline } = useCRM();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
@@ -59,23 +64,110 @@ export function ContactForm({ open, onOpenChange }: ContactFormProps) {
 
   const watchSource = form.watch('source');
 
-  const onSubmit = (data: ContactFormData) => {
-    createContact({
-      name: data.name,
-      email: data.email || undefined,
-      phone: data.phone || undefined,
-      company: data.company || undefined,
-      source: data.source || undefined,
-      tags: [],
-      custom_fields: {
-        business_unit: data.business_unit || undefined,
-        referred_by: data.source === 'referral' ? data.referred_by : undefined,
-        networking_source: data.source === 'networking' ? data.networking_source : undefined,
-      },
-      is_active: true,
-    });
-    form.reset();
-    onOpenChange(false);
+  const onSubmit = async (data: ContactFormData) => {
+    try {
+      // 1. Criar o contato
+      const { data: contactData, error: contactError } = await supabase
+        .from('crm_contacts')
+        .insert([{
+          name: data.name,
+          email: data.email || undefined,
+          phone: data.phone || undefined,
+          company: data.company || undefined,
+          source: data.source || undefined,
+          tags: [],
+          custom_fields: {
+            business_unit: data.business_unit || undefined,
+            referred_by: data.source === 'referral' ? data.referred_by : undefined,
+            networking_source: data.source === 'networking' ? data.networking_source : undefined,
+          },
+          is_active: true,
+        }])
+        .select()
+        .single();
+
+      if (contactError) throw contactError;
+
+      // 2. Determinar pipeline baseado na origem
+      const pipelineMap: Record<string, string> = {
+        'referral': 'Contato Direto',
+        'networking': 'Contato Direto',
+        'website': 'Inbound Marketing',
+        'social_media': 'Inbound Marketing',
+        'email_marketing': 'Inbound Marketing',
+      };
+
+      const pipelineName = pipelineMap[data.source || ''] || 'Pipeline de Vendas';
+
+      // 3. Buscar pipeline
+      const pipeline = await fetchPipelineByName(pipelineName);
+      
+      if (!pipeline) {
+        // Fallback: buscar primeiro pipeline ativo
+        const { data: fallbackPipeline } = await supabase
+          .from('crm_pipelines')
+          .select('*')
+          .eq('is_active', true)
+          .order('display_order')
+          .limit(1)
+          .single();
+        
+        if (fallbackPipeline) {
+          const firstStage = await fetchFirstStageOfPipeline(fallbackPipeline.id);
+          if (firstStage) {
+            await createDealFromContact(contactData, fallbackPipeline.id, firstStage.id, data.source);
+          }
+        }
+      } else {
+        // 4. Buscar primeiro estágio
+        const firstStage = await fetchFirstStageOfPipeline(pipeline.id);
+        
+        if (firstStage) {
+          await createDealFromContact(contactData, pipeline.id, firstStage.id, data.source);
+        }
+      }
+
+      toast({
+        title: "Sucesso!",
+        description: "Contato e oportunidade criados automaticamente",
+      });
+
+      form.reset();
+      onOpenChange(false);
+      
+      // Invalidar queries para atualizar listas
+      queryClient.invalidateQueries({ queryKey: ['crm-contacts'] });
+      queryClient.invalidateQueries({ queryKey: ['crm-deals'] });
+    } catch (error: any) {
+      toast({
+        title: "Erro ao criar contato",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const createDealFromContact = async (
+    contact: any, 
+    pipelineId: string, 
+    stageId: string, 
+    source?: string
+  ) => {
+    await supabase
+      .from('crm_deals')
+      .insert([{
+        pipeline_id: pipelineId,
+        stage_id: stageId,
+        contact_id: contact.id,
+        title: `Oportunidade - ${contact.name}`,
+        description: `Lead capturado via ${source || 'Contato Direto'}`,
+        source: source,
+        tags: [contact.custom_fields?.business_unit, source].filter(Boolean),
+        currency: 'BRL',
+        probability: 0,
+        custom_fields: {},
+        is_active: true,
+      }]);
   };
 
   return (
@@ -237,8 +329,8 @@ export function ContactForm({ open, onOpenChange }: ContactFormProps) {
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isCreatingContact}>
-                {isCreatingContact ? 'Criando...' : 'Criar Contato'}
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? 'Criando...' : 'Criar Contato'}
               </Button>
             </div>
           </form>

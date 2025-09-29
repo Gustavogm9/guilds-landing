@@ -219,6 +219,34 @@ export function useCRM() {
     return data as CRMProductInterest[];
   };
 
+  // Fetch pipeline by name
+  const fetchPipelineByName = async (name: string) => {
+    const { data, error } = await supabase
+      .from('crm_pipelines')
+      .select('*')
+      .eq('name', name)
+      .eq('is_active', true)
+      .maybeSingle();
+    
+    if (error) throw error;
+    return data as CRMPipeline | null;
+  };
+
+  // Fetch first stage of pipeline
+  const fetchFirstStageOfPipeline = async (pipelineId: string) => {
+    const { data, error } = await supabase
+      .from('crm_stages')
+      .select('*')
+      .eq('pipeline_id', pipelineId)
+      .eq('is_active', true)
+      .order('display_order', { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    
+    if (error) throw error;
+    return data as CRMStage | null;
+  };
+
   // Create pipeline mutation
   const createPipeline = useMutation({
     mutationFn: async (pipeline: Omit<CRMPipeline, 'id' | 'created_at' | 'updated_at'>) => {
@@ -398,6 +426,8 @@ export function useCRM() {
     fetchDealsByPipeline,
     fetchContactInteractions,
     fetchProductInterests,
+    fetchPipelineByName,
+    fetchFirstStageOfPipeline,
     
     // Mutations
     createPipeline: createPipeline.mutate,
