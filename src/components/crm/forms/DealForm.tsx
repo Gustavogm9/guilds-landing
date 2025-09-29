@@ -280,6 +280,7 @@ export function DealForm({ pipelineId, stages, onSuccess }: DealFormProps) {
                   <SelectContent>
                     <SelectItem value="website">Website</SelectItem>
                     <SelectItem value="referral">Indicação</SelectItem>
+                    <SelectItem value="networking">Rede de Networking</SelectItem>
                     <SelectItem value="social_media">Redes Sociais</SelectItem>
                     <SelectItem value="cold_call">Cold Call</SelectItem>
                     <SelectItem value="email_marketing">Email Marketing</SelectItem>

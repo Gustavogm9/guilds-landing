@@ -31,13 +31,14 @@ interface CRMFiltersProps {
 }
 
 const LEAD_SOURCES = [
-  { value: 'newsletter', label: 'Newsletter' },
-  { value: 'contato_direto', label: 'Contato Direto' },
-  { value: 'workshop', label: 'Workshop' },
-  { value: 'qualificacao', label: 'Qualificação' },
   { value: 'website', label: 'Website' },
-  { value: 'social_media', label: 'Social Media' },
-  { value: 'referral', label: 'Indicação' }
+  { value: 'referral', label: 'Indicação' },
+  { value: 'networking', label: 'Rede de Networking' },
+  { value: 'social_media', label: 'Redes Sociais' },
+  { value: 'cold_call', label: 'Cold Call' },
+  { value: 'email_marketing', label: 'Email Marketing' },
+  { value: 'event', label: 'Evento' },
+  { value: 'other', label: 'Outros' }
 ];
 
 const PRODUCT_INTERESTS = [
