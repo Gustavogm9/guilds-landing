@@ -35,7 +35,18 @@ import {
   Database,
   Zap,
   Globe,
-  GraduationCap
+  GraduationCap,
+  Target,
+  Kanban,
+  TrendingUp,
+  FolderKanban,
+  MessageSquare,
+  BarChart3,
+  FileSignature,
+  Scale,
+  Settings,
+  Bell,
+  UserCog
 } from 'lucide-react';
 
 import {
@@ -55,31 +66,69 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   {
-    title: "Dashboard Principal",
+    title: "Dashboard",
     icon: LayoutDashboard,
     url: "/admin",
   },
   {
-    title: "Multi-Produto",
-    icon: Shield,
+    title: "Vendas & Relacionamento",
+    icon: Target,
     items: [
-      { title: "Dashboard Geral", icon: LayoutDashboard, url: "/admin?multiproduct=true" },
-      { title: "CRM Multi-Produto", icon: Users, url: "/admin/crm-multiproduct" },
-      { title: "Relatórios", icon: FileText, url: "/admin/reports" },
+      { title: "CRM Dashboard", icon: Database, url: "/admin/crm" },
+      { title: "Board Kanban", icon: Kanban, url: "/admin/crm/board" },
+      { title: "Lead Scoring", icon: TrendingUp, url: "/admin/crm/scoring" },
+      { title: "Formulários", icon: FileText, url: "/admin/forms" },
+      { title: "Campanhas", icon: Mail, url: "/admin/campaigns" },
       { title: "Automações", icon: Zap, url: "/admin/automation" }
     ]
   },
   {
-    title: "Usuários & Roles",
-    icon: Shield,
+    title: "Gestão de Projetos",
+    icon: FolderKanban,
     items: [
-      { title: "Usuários", icon: Users, url: "/admin/users" },
+      { title: "Projetos", icon: Briefcase, url: "/admin/projects" },
+      { title: "Feedback Clientes", icon: MessageSquare, url: "/admin/feedback" },
+      { title: "Métricas", icon: BarChart3, url: "/admin/feedback-metrics" },
+      { title: "Exportar", icon: FileText, url: "/admin/feedback-export" }
+    ]
+  },
+  {
+    title: "Financeiro",
+    icon: DollarSign,
+    items: [
+      { title: "Dashboard", icon: Calculator, url: "/admin/financial" },
+      { title: "Folha de Pagamento", icon: DollarSign, url: "/admin/payroll" },
+      { title: "Relatórios", icon: BarChart3, url: "/admin/reports" }
+    ]
+  },
+  {
+    title: "Jurídico & Contratos",
+    icon: Scale,
+    items: [
+      { title: "Documentos Legais", icon: FileSignature, url: "/admin/legal" },
+      { title: "Contratos", icon: FileText, url: "/admin/contracts" }
+    ]
+  },
+  {
+    title: "Empresa & Pessoas",
+    icon: Building2,
+    items: [
+      { title: "Equipe", icon: Users, url: "/admin/team" },
+      { title: "Usuários", icon: UserCog, url: "/admin/users" },
       { title: "Roles", icon: Shield, url: "/admin/roles" },
       { title: "Auditoria", icon: Activity, url: "/admin/audit" }
     ]
   },
   {
-    title: "Site Management",
+    title: "Produtos",
+    icon: GraduationCap,
+    items: [
+      { title: "Guilds Lab", icon: GraduationCap, url: "/admin/lab" },
+      { title: "Guilds Craft", icon: Lightbulb, url: "/admin/craft" }
+    ]
+  },
+  {
+    title: "Site & Conteúdo",
     icon: Globe,
     items: [
       { title: "Logos", icon: Image, url: "/admin/logos" },
@@ -90,69 +139,12 @@ const menuItems: MenuItem[] = [
     ]
   },
   {
-    title: "Empresa",
-    icon: Building2,
-    items: [
-      { title: "Equipe", icon: Users, url: "/admin/team" },
-      { title: "Carreiras", icon: Briefcase, url: "/admin/careers" },
-      { title: "Cultura", icon: Heart, url: "/admin/culture" }
-    ]
-  },
-  {
-    title: "Lab & Craft",
-    icon: GraduationCap,
-    items: [
-      { title: "Lab", icon: GraduationCap, url: "/admin/lab" },
-      { title: "Craft", icon: Lightbulb, url: "/admin/craft" }
-    ]
-  },
-  {
-    title: "CRM & Vendas",
-    icon: Users,
-    items: [
-      { title: "Dashboard", icon: Database, url: "/admin/crm" },
-      { title: "Formulários", icon: FileText, url: "/admin/forms" }
-    ]
-  },
-  {
-    title: "Projetos",
-    icon: Briefcase,
-    items: [
-      { title: "Projetos", icon: Briefcase, url: "/admin/projects" }
-    ]
-  },
-  {
-    title: "Financeiro",
-    icon: DollarSign,
-    items: [
-      { title: "Dashboard", icon: Calculator, url: "/admin/financial" },
-      { title: "Folha de Pagamento", icon: DollarSign, url: "/admin/payroll" }
-    ]
-  },
-  {
-    title: "Feedback",
-    icon: Activity,
-    items: [
-      { title: "Admin", icon: Activity, url: "/admin/feedback" },
-      { title: "Métricas", icon: Activity, url: "/admin/feedback-metrics" },
-      { title: "Live Metrics", icon: Activity, url: "/admin/feedback-live" },
-      { title: "Notificações", icon: Activity, url: "/admin/feedback-notifications" },
-      { title: "Exportar", icon: Activity, url: "/admin/feedback-export" }
-    ]
-  },
-  {
-    title: "Campanhas",
-    icon: Mail,
-    items: [
-      { title: "Campanhas", icon: Mail, url: "/admin/campaigns" }
-    ]
-  },
-  {
     title: "Sistema",
-    icon: Activity,
+    icon: Settings,
     items: [
       { title: "Performance", icon: Activity, url: "/admin/performance" },
-      { title: "Notificações", icon: Activity, url: "/admin/notifications" }
+      { title: "Notificações", icon: Bell, url: "/admin/notifications" },
+      { title: "Multi-Produto", icon: Shield, url: "/admin/crm-multiproduct" }
     ]
   }
 ];

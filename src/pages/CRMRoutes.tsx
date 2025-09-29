@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { CRMBoard } from '@/components/crm/board/CRMBoard';
 import CRMAdmin from '@/components/admin/CRMAdmin';
+import { LeadScoringDashboard } from '@/components/crm/lead-scoring/LeadScoringDashboard';
 
 export default function CRMRoutes() {
   return (
@@ -9,6 +10,7 @@ export default function CRMRoutes() {
       <Route index element={<CRMAdmin />} />
       <Route path="board" element={<CRMBoard />} />
       <Route path="kanban" element={<CRMBoard />} />
+      <Route path="scoring" element={<LeadScoringDashboard />} />
     </Routes>
   );
 }
