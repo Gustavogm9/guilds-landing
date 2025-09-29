@@ -181,14 +181,14 @@ export function CRMFilters({
             <div className="space-y-2">
               <label className="text-xs font-medium">Fonte do Lead</label>
               <Select
-                value={filters.source || ''}
+                value={filters.source}
                 onValueChange={(value) => updateFilter('source', value || undefined)}
               >
                 <SelectTrigger className="h-9">
                   <SelectValue placeholder="Todas as fontes" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas as fontes</SelectItem>
+                  
                   {LEAD_SOURCES.map(source => (
                     <SelectItem key={source.value} value={source.value}>
                       {source.label}
@@ -202,14 +202,14 @@ export function CRMFilters({
             <div className="space-y-2">
               <label className="text-xs font-medium">Estágio do Lead</label>
               <Select
-                value={filters.lifecycleStage || ''}
+                value={filters.lifecycleStage}
                 onValueChange={(value) => updateFilter('lifecycleStage', value || undefined)}
               >
                 <SelectTrigger className="h-9">
                   <SelectValue placeholder="Todos os estágios" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos os estágios</SelectItem>
+                  
                   {LIFECYCLE_STAGES.map(stage => (
                     <SelectItem key={stage.value} value={stage.value}>
                       {stage.label}
