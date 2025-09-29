@@ -278,28 +278,27 @@ export default function CRMAdmin() {
         </CardContent>
       </Card>
 
-      {/* Forms */}
-      {showPipelineForm && (
-        <PipelineForm
-          onSuccess={() => setShowPipelineForm(false)}
-        />
-      )}
+      {/* Modals */}
+      <PipelineForm
+        open={showPipelineForm}
+        onOpenChange={setShowPipelineForm}
+      />
 
-      {showStageForm && selectedPipeline && (
+      {selectedPipeline && (
         <StageForm
           pipelineId={selectedPipeline}
-          onSuccess={() => {
-            setShowStageForm(false);
-            setSelectedPipeline(null);
+          open={showStageForm}
+          onOpenChange={(open) => {
+            setShowStageForm(open);
+            if (!open) setSelectedPipeline(null);
           }}
         />
       )}
 
-      {showContactForm && (
-        <ContactForm
-          onSuccess={() => setShowContactForm(false)}
-        />
-      )}
+      <ContactForm
+        open={showContactForm}
+        onOpenChange={setShowContactForm}
+      />
 
       {/* Contact Detail Modal */}
       <ContactDetailModal
