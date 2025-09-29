@@ -197,7 +197,7 @@ export function CRMBoard() {
             </DialogContent>
           </Dialog>
           
-          <Button variant="outline">
+          <Button type="button" variant="outline">
             <Settings className="h-4 w-4 mr-2" />
             Configurações
           </Button>
@@ -255,6 +255,7 @@ export function CRMBoard() {
             <>
               <div className="flex items-center justify-between">
                 <Button
+                  type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => setShowFilters(!showFilters)}
@@ -272,6 +273,7 @@ export function CRMBoard() {
                 {/* View Mode Toggle */}
                 <div className="flex rounded-lg border bg-card p-1">
                   <Button
+                    type="button"
                     variant={viewMode === 'kanban' ? 'default' : 'ghost'}
                     size="sm"
                     onClick={() => setViewMode('kanban')}
@@ -279,6 +281,7 @@ export function CRMBoard() {
                     <Grid3X3 className="h-4 w-4" />
                   </Button>
                   <Button
+                    type="button"
                     variant={viewMode === 'list' ? 'default' : 'ghost'}
                     size="sm"
                     onClick={() => setViewMode('list')}

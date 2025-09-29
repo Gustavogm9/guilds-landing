@@ -91,9 +91,15 @@ export function CRMFilters({
   filters, 
   onFiltersChange, 
   onClearFilters,
-  totalDeals,
-  filteredDeals 
+  totalDeals = 0,
+  filteredDeals = 0
 }: CRMFiltersProps) {
+  // Validação de segurança
+  if (!onFiltersChange || !onClearFilters) {
+    console.error('CRMFilters: onFiltersChange ou onClearFilters não fornecidos');
+    return null;
+  }
+
   const hasActiveFilters = Object.values(filters).some(value => 
     value !== undefined && value !== null && 
     (Array.isArray(value) ? value.length > 0 : true)
@@ -120,6 +126,7 @@ export function CRMFilters({
               return (
                 <Button
                   key={view.value}
+                  type="button"
                   variant={isActive ? "default" : "outline"}
                   className="h-auto p-3 flex flex-col items-start gap-1"
                   onClick={() => updateFilter('quickView', isActive ? null : view.value)}
@@ -145,6 +152,7 @@ export function CRMFilters({
               </span>
               {hasActiveFilters && (
                 <Button
+                  type="button"
                   variant="ghost"
                   size="sm"
                   onClick={onClearFilters}
@@ -220,6 +228,7 @@ export function CRMFilters({
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
+                    type="button"
                     variant="outline"
                     className="h-9 w-full justify-start text-left font-normal"
                   >
@@ -243,6 +252,7 @@ export function CRMFilters({
                     {/* Quick Presets */}
                     <div className="flex gap-2 mb-3 flex-wrap">
                       <Button
+                        type="button"
                         variant="outline"
                         size="sm"
                         onClick={() => {
@@ -254,6 +264,7 @@ export function CRMFilters({
                         Hoje
                       </Button>
                       <Button
+                        type="button"
                         variant="outline"
                         size="sm"
                         onClick={() => {
@@ -267,6 +278,7 @@ export function CRMFilters({
                         7 dias
                       </Button>
                       <Button
+                        type="button"
                         variant="outline"
                         size="sm"
                         onClick={() => {
@@ -330,6 +342,7 @@ export function CRMFilters({
                 </div>
                 <div className="flex gap-1 flex-wrap">
                   <Button
+                    type="button"
                     variant="outline"
                     size="sm"
                     onClick={() => updateFilter('valueRange', [5000, 25000])}
@@ -338,6 +351,7 @@ export function CRMFilters({
                     R$ 5-25K
                   </Button>
                   <Button
+                    type="button"
                     variant="outline"
                     size="sm"
                     onClick={() => updateFilter('valueRange', [25000, 100000])}
@@ -346,6 +360,7 @@ export function CRMFilters({
                     R$ 25-100K
                   </Button>
                   <Button
+                    type="button"
                     variant="outline"
                     size="sm"
                     onClick={() => updateFilter('valueRange', [100000, 999999])}
@@ -367,6 +382,7 @@ export function CRMFilters({
                 return (
                   <Button
                     key={product.value}
+                    type="button"
                     variant={isSelected ? "default" : "outline"}
                     size="sm"
                     className="h-7 text-xs"
