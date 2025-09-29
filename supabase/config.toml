@@ -4,6 +4,18 @@ project_id = "itvruukwhgttnjpvghzq"
 enabled = true
 site_url = "http://localhost:3000"
 
+[functions.advanced-lead-processor]
+verify_jwt = false
+
+[functions.email-template-generator] 
+verify_jwt = false
+
+[functions.lead-intelligence-analyzer]
+verify_jwt = false
+
+[functions.nurturing-sequence-executor]
+verify_jwt = false
+
 [functions.newsletter-confirm]
 verify_jwt = false
 

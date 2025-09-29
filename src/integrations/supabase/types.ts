@@ -186,6 +186,206 @@ export type Database = {
           },
         ]
       }
+      automation_executions: {
+        Row: {
+          completed_at: string | null
+          contact_id: string | null
+          error_message: string | null
+          execution_data: Json | null
+          execution_type: string
+          id: string
+          performance_metrics: Json | null
+          results: Json | null
+          sequence_id: string | null
+          started_at: string
+          status: string
+          trigger_id: string | null
+          workflow_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          contact_id?: string | null
+          error_message?: string | null
+          execution_data?: Json | null
+          execution_type: string
+          id?: string
+          performance_metrics?: Json | null
+          results?: Json | null
+          sequence_id?: string | null
+          started_at?: string
+          status: string
+          trigger_id?: string | null
+          workflow_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          contact_id?: string | null
+          error_message?: string | null
+          execution_data?: Json | null
+          execution_type?: string
+          id?: string
+          performance_metrics?: Json | null
+          results?: Json | null
+          sequence_id?: string | null
+          started_at?: string
+          status?: string
+          trigger_id?: string | null
+          workflow_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_executions_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "automation_executions_sequence_id_fkey"
+            columns: ["sequence_id"]
+            isOneToOne: false
+            referencedRelation: "lead_nurturing_sequences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "automation_executions_trigger_id_fkey"
+            columns: ["trigger_id"]
+            isOneToOne: false
+            referencedRelation: "automation_triggers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "automation_executions_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_automation_workflows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automation_metrics: {
+        Row: {
+          contact_id: string | null
+          conversions: number | null
+          created_at: string
+          date: string
+          emails_clicked: number | null
+          emails_opened: number | null
+          emails_sent: number | null
+          engagement_score: number | null
+          id: string
+          revenue_generated: number | null
+          whatsapp_delivered: number | null
+          whatsapp_replied: number | null
+          whatsapp_sent: number | null
+          workflow_id: string | null
+        }
+        Insert: {
+          contact_id?: string | null
+          conversions?: number | null
+          created_at?: string
+          date?: string
+          emails_clicked?: number | null
+          emails_opened?: number | null
+          emails_sent?: number | null
+          engagement_score?: number | null
+          id?: string
+          revenue_generated?: number | null
+          whatsapp_delivered?: number | null
+          whatsapp_replied?: number | null
+          whatsapp_sent?: number | null
+          workflow_id?: string | null
+        }
+        Update: {
+          contact_id?: string | null
+          conversions?: number | null
+          created_at?: string
+          date?: string
+          emails_clicked?: number | null
+          emails_opened?: number | null
+          emails_sent?: number | null
+          engagement_score?: number | null
+          id?: string
+          revenue_generated?: number | null
+          whatsapp_delivered?: number | null
+          whatsapp_replied?: number | null
+          whatsapp_sent?: number | null
+          workflow_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_metrics_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "automation_metrics_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_automation_workflows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automation_triggers: {
+        Row: {
+          conditions: Json
+          cooldown_hours: number | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          event_name: string
+          execution_count: number | null
+          frequency_limit: string | null
+          id: string
+          is_active: boolean
+          last_executed_at: string | null
+          name: string
+          priority: number | null
+          target_workflows: string[] | null
+          trigger_type: string
+          updated_at: string
+        }
+        Insert: {
+          conditions?: Json
+          cooldown_hours?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_name: string
+          execution_count?: number | null
+          frequency_limit?: string | null
+          id?: string
+          is_active?: boolean
+          last_executed_at?: string | null
+          name: string
+          priority?: number | null
+          target_workflows?: string[] | null
+          trigger_type: string
+          updated_at?: string
+        }
+        Update: {
+          conditions?: Json
+          cooldown_hours?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_name?: string
+          execution_count?: number | null
+          frequency_limit?: string | null
+          id?: string
+          is_active?: boolean
+          last_executed_at?: string | null
+          name?: string
+          priority?: number | null
+          target_workflows?: string[] | null
+          trigger_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       brand_colors: {
         Row: {
           accent_color: string
@@ -1393,6 +1593,66 @@ export type Database = {
         }
         Relationships: []
       }
+      email_templates: {
+        Row: {
+          a_b_variants: Json | null
+          content_html: string
+          content_text: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          design_config: Json | null
+          id: string
+          is_active: boolean
+          name: string
+          performance_metrics: Json | null
+          personalization_fields: Json | null
+          subject_template: string
+          template_type: string
+          updated_at: string
+          usage_count: number | null
+          variables: Json | null
+        }
+        Insert: {
+          a_b_variants?: Json | null
+          content_html: string
+          content_text?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          design_config?: Json | null
+          id?: string
+          is_active?: boolean
+          name: string
+          performance_metrics?: Json | null
+          personalization_fields?: Json | null
+          subject_template: string
+          template_type: string
+          updated_at?: string
+          usage_count?: number | null
+          variables?: Json | null
+        }
+        Update: {
+          a_b_variants?: Json | null
+          content_html?: string
+          content_text?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          design_config?: Json | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          performance_metrics?: Json | null
+          personalization_fields?: Json | null
+          subject_template?: string
+          template_type?: string
+          updated_at?: string
+          usage_count?: number | null
+          variables?: Json | null
+        }
+        Relationships: []
+      }
       employees: {
         Row: {
           cost_center_id: string | null
@@ -2222,6 +2482,131 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_nurturing_sequences: {
+        Row: {
+          channel: string
+          conditions: Json | null
+          content_template_id: string | null
+          created_at: string
+          delay_hours: number
+          description: string | null
+          failure_actions: Json | null
+          id: string
+          is_active: boolean
+          name: string
+          personalization_rules: Json | null
+          sequence_order: number
+          success_actions: Json | null
+          trigger_event: string
+          updated_at: string
+          workflow_id: string | null
+        }
+        Insert: {
+          channel: string
+          conditions?: Json | null
+          content_template_id?: string | null
+          created_at?: string
+          delay_hours?: number
+          description?: string | null
+          failure_actions?: Json | null
+          id?: string
+          is_active?: boolean
+          name: string
+          personalization_rules?: Json | null
+          sequence_order?: number
+          success_actions?: Json | null
+          trigger_event: string
+          updated_at?: string
+          workflow_id?: string | null
+        }
+        Update: {
+          channel?: string
+          conditions?: Json | null
+          content_template_id?: string | null
+          created_at?: string
+          delay_hours?: number
+          description?: string | null
+          failure_actions?: Json | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          personalization_rules?: Json | null
+          sequence_order?: number
+          success_actions?: Json | null
+          trigger_event?: string
+          updated_at?: string
+          workflow_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_nurturing_sequences_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_automation_workflows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_scoring_rules: {
+        Row: {
+          category: string
+          condition_field: string
+          condition_operator: string
+          condition_value: string
+          created_at: string
+          created_by: string | null
+          decay_days: number | null
+          description: string | null
+          id: string
+          is_active: boolean
+          max_times_applicable: number | null
+          name: string
+          priority: number | null
+          rule_type: string
+          score_multiplier: number | null
+          score_points: number
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          condition_field: string
+          condition_operator: string
+          condition_value: string
+          created_at?: string
+          created_by?: string | null
+          decay_days?: number | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          max_times_applicable?: number | null
+          name: string
+          priority?: number | null
+          rule_type: string
+          score_multiplier?: number | null
+          score_points: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          condition_field?: string
+          condition_operator?: string
+          condition_value?: string
+          created_at?: string
+          created_by?: string | null
+          decay_days?: number | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          max_times_applicable?: number | null
+          name?: string
+          priority?: number | null
+          rule_type?: string
+          score_multiplier?: number | null
+          score_points?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       legal_clause_groups: {
         Row: {
           color: string
@@ -2564,6 +2949,54 @@ export type Database = {
           usage_context?: string | null
           variant?: string
           width?: number | null
+        }
+        Relationships: []
+      }
+      marketing_automation_workflows: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          is_template: boolean
+          name: string
+          steps: Json
+          success_metrics: Json | null
+          target_persona: string
+          trigger_conditions: Json
+          updated_at: string
+          workflow_type: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          is_template?: boolean
+          name: string
+          steps?: Json
+          success_metrics?: Json | null
+          target_persona: string
+          trigger_conditions?: Json
+          updated_at?: string
+          workflow_type: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          is_template?: boolean
+          name?: string
+          steps?: Json
+          success_metrics?: Json | null
+          target_persona?: string
+          trigger_conditions?: Json
+          updated_at?: string
+          workflow_type?: string
         }
         Relationships: []
       }
