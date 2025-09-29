@@ -30,6 +30,7 @@ const contactSchema = z.object({
   source: z.string().optional(),
   business_unit: z.string().optional(),
   referred_by: z.string().optional(),
+  networking_source: z.string().optional(),
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
@@ -52,6 +53,7 @@ export function ContactForm({ open, onOpenChange }: ContactFormProps) {
       source: '',
       business_unit: '',
       referred_by: '',
+      networking_source: '',
     }
   });
 
@@ -68,6 +70,7 @@ export function ContactForm({ open, onOpenChange }: ContactFormProps) {
       custom_fields: {
         business_unit: data.business_unit || undefined,
         referred_by: data.source === 'referral' ? data.referred_by : undefined,
+        networking_source: data.source === 'networking' ? data.networking_source : undefined,
       },
       is_active: true,
     });
@@ -185,6 +188,7 @@ export function ContactForm({ open, onOpenChange }: ContactFormProps) {
                     <SelectContent>
                       <SelectItem value="website">Website</SelectItem>
                       <SelectItem value="referral">Indicação</SelectItem>
+                      <SelectItem value="networking">Rede de Networking</SelectItem>
                       <SelectItem value="social_media">Redes Sociais</SelectItem>
                       <SelectItem value="cold_call">Cold Call</SelectItem>
                       <SelectItem value="email_marketing">Email Marketing</SelectItem>
@@ -206,6 +210,22 @@ export function ContactForm({ open, onOpenChange }: ContactFormProps) {
                     <FormLabel>Quem Indicou</FormLabel>
                     <FormControl>
                       <Input placeholder="Nome de quem indicou" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {watchSource === 'networking' && (
+              <FormField
+                control={form.control}
+                name="networking_source"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Qual Rede</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Nome da rede de networking" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
