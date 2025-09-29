@@ -148,7 +148,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.error('Erro no Advanced Lead Processor:', error);
     return new Response(JSON.stringify({ 
       error: 'Erro interno no processamento de lead',
-      details: error.message 
+      details: error instanceof Error ? error.message : String(error)
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

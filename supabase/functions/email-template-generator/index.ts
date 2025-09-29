@@ -49,7 +49,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.error('Erro no Email Template Generator:', error);
     return new Response(JSON.stringify({ 
       error: 'Erro interno no gerador de templates',
-      details: error.message 
+      details: error instanceof Error ? error.message : String(error)
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

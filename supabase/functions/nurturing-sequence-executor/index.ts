@@ -52,7 +52,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.error('Erro no Nurturing Sequence Executor:', error);
     return new Response(JSON.stringify({ 
       error: 'Erro interno no executor de sequências',
-      details: error.message 
+      details: error instanceof Error ? error.message : String(error)
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -186,7 +186,7 @@ async function handleSequenceExecution(req: Request, supabase: any) {
         sequence_name: sequence.name,
         result: {
           success: false,
-          error: error.message
+          error: error instanceof Error ? error.message : String(error)
         }
       });
     }
@@ -272,7 +272,7 @@ async function handleSequencesList(supabase: any) {
     .order('sequence_order');
 
   // Agrupar por workflow
-  const groupedSequences = (sequences || []).reduce((acc, seq) => {
+  const groupedSequences = (sequences || []).reduce((acc: Record<string, any>, seq: any) => {
     const workflowId = seq.workflow_id;
     if (!acc[workflowId]) {
       acc[workflowId] = {
@@ -344,7 +344,7 @@ async function executeSequenceStep(sequence: any, contact: any, supabase: any) {
 
     return {
       success: false,
-      error: error.message
+      error: error instanceof Error ? error.message : String(error)
     };
   }
 }
