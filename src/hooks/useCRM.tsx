@@ -163,18 +163,32 @@ export function useCRM() {
 
   // Fetch deals by pipeline with contacts
   const fetchDealsByPipeline = async (pipelineId: string) => {
-    const { data, error } = await supabase
-      .from('crm_deals')
-      .select(`
-        *,
-        contact:crm_contacts(*)
-      `)
-      .eq('pipeline_id', pipelineId)
-      .eq('is_active', true)
-      .order('created_at', { ascending: false });
-    
-    if (error) throw error;
-    return data as any[];
+    try {
+      const { data, error } = await supabase
+        .from('crm_deals')
+        .select(`
+          *,
+          contact:crm_contacts(*)
+        `)
+        .eq('pipeline_id', pipelineId)
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        console.error('Erro ao buscar deals:', error);
+        toast({
+          title: "Erro ao carregar oportunidades",
+          description: error.message,
+          variant: "destructive",
+        });
+        throw error;
+      }
+      
+      return data as any[];
+    } catch (err) {
+      console.error('Erro inesperado ao buscar deals:', err);
+      return [];
+    }
   };
 
   // Fetch contacts with enhanced data

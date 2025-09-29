@@ -110,7 +110,7 @@ const handler = async (req: Request): Promise<Response> => {
         new_data: fieldsToUpdate,
         icp_score: enrichedData.icp_score,
         auto_tags: autoTags,
-        enrichment_log,
+        enrichmentLog,
         data_quality_score: calculateDataQualityScore(contact, enrichedData)
       }
     };
