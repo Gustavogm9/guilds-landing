@@ -102,6 +102,7 @@ export interface CRMDeal {
   expected_close_date?: string;
   assigned_to?: string;
   source?: string;
+  business_unit?: 'guilds' | 'guilds_lab' | 'guilds_craft' | 'doavya' | 'outros';
   tags: string[];
   custom_fields: Record<string, any>;
   is_active: boolean;

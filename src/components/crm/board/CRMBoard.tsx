@@ -73,6 +73,9 @@ export function CRMBoard() {
       // Lifecycle stage filter
       if (filters.lifecycleStage && deal.contact?.lifecycle_stage !== filters.lifecycleStage) return false;
       
+      // Business unit filter
+      if (filters.businessUnit && deal.business_unit !== filters.businessUnit) return false;
+      
       // Product interests filter
       if (filters.productInterests && filters.productInterests.length > 0) {
         const contactInterests = deal.contact?.products_interest || [];

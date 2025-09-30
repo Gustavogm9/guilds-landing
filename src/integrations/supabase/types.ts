@@ -1295,6 +1295,7 @@ export type Database = {
       crm_deals: {
         Row: {
           assigned_to: string | null
+          business_unit: string | null
           contact_id: string | null
           created_at: string
           currency: string | null
@@ -1314,6 +1315,7 @@ export type Database = {
         }
         Insert: {
           assigned_to?: string | null
+          business_unit?: string | null
           contact_id?: string | null
           created_at?: string
           currency?: string | null
@@ -1333,6 +1335,7 @@ export type Database = {
         }
         Update: {
           assigned_to?: string | null
+          business_unit?: string | null
           contact_id?: string | null
           created_at?: string
           currency?: string | null

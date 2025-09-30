@@ -14,7 +14,8 @@ import {
   ArrowDown,
   Minus,
   FileText,
-  Plus
+  Package,
+  AlertCircle
 } from 'lucide-react';
 import { CRMDeal, CRMPipeline, CRMStage } from '@/hooks/useCRM';
 import { useCRMContractIntegration } from '@/hooks/useCRMContractIntegration';
@@ -51,6 +52,7 @@ export function CRMDashboard({ deals, pipelines, stages, selectedPipelineId }: C
   const { generateContractFromDeal, isGenerating } = useCRMContractIntegration();
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const [selectedDealForContract, setSelectedDealForContract] = useState<CRMDeal | null>(null);
+
   // Calculate pipeline metrics
   const calculateMetrics = (): PipelineMetrics => {
     const pipelineDeals = deals.filter(deal => deal.pipeline_id === selectedPipelineId);
@@ -85,8 +87,104 @@ export function CRMDashboard({ deals, pipelines, stages, selectedPipelineId }: C
     });
   };
 
+  // Analyze by source
+  const analyzeBySource = () => {
+    const pipelineDeals = deals.filter(deal => deal.pipeline_id === selectedPipelineId);
+    const sourceAnalysis = pipelineDeals
+      .filter(deal => deal.source)
+      .reduce((acc, deal) => {
+        const source = deal.source || 'Não informado';
+        if (!acc[source]) {
+          acc[source] = {
+            count: 0,
+            totalValue: 0,
+            deals: []
+          };
+        }
+        acc[source].count++;
+        acc[source].totalValue += deal.value || 0;
+        acc[source].deals.push(deal);
+        return acc;
+      }, {} as Record<string, { count: number; totalValue: number; deals: CRMDeal[] }>);
+    
+    return Object.entries(sourceAnalysis).map(([source, data]) => ({
+      source,
+      count: data.count,
+      totalValue: data.totalValue,
+      averageValue: data.totalValue / data.count,
+      percentage: (data.count / pipelineDeals.length) * 100
+    })).sort((a, b) => b.count - a.count);
+  };
+
+  // Analyze by business unit
+  const analyzeByBusinessUnit = () => {
+    const pipelineDeals = deals.filter(deal => deal.pipeline_id === selectedPipelineId);
+    const unitAnalysis = pipelineDeals
+      .filter(deal => deal.business_unit)
+      .reduce((acc, deal) => {
+        const unit = deal.business_unit || 'Não informado';
+        if (!acc[unit]) {
+          acc[unit] = {
+            count: 0,
+            totalValue: 0,
+            deals: []
+          };
+        }
+        acc[unit].count++;
+        acc[unit].totalValue += deal.value || 0;
+        acc[unit].deals.push(deal);
+        return acc;
+      }, {} as Record<string, { count: number; totalValue: number; deals: CRMDeal[] }>);
+    
+    return Object.entries(unitAnalysis).map(([unit, data]) => ({
+      unit: getBusinessUnitLabel(unit),
+      unitValue: unit,
+      count: data.count,
+      totalValue: data.totalValue,
+      averageValue: data.totalValue / data.count,
+      percentage: (data.count / pipelineDeals.length) * 100
+    })).sort((a, b) => b.count - a.count);
+  };
+
+  // Analyze forecast
+  const analyzeForecast = () => {
+    const today = new Date();
+    const next30Days = new Date(today);
+    next30Days.setDate(next30Days.getDate() + 30);
+    const next60Days = new Date(today);
+    next60Days.setDate(next60Days.getDate() + 60);
+    const next90Days = new Date(today);
+    next90Days.setDate(next90Days.getDate() + 90);
+
+    const pipelineDeals = deals.filter(deal => deal.pipeline_id === selectedPipelineId);
+
+    return {
+      overdue: pipelineDeals.filter(d => 
+        d.expected_close_date && new Date(d.expected_close_date) < today
+      ),
+      next30: pipelineDeals.filter(d => 
+        d.expected_close_date && 
+        new Date(d.expected_close_date) >= today && 
+        new Date(d.expected_close_date) <= next30Days
+      ),
+      next60: pipelineDeals.filter(d => 
+        d.expected_close_date && 
+        new Date(d.expected_close_date) > next30Days && 
+        new Date(d.expected_close_date) <= next60Days
+      ),
+      next90: pipelineDeals.filter(d => 
+        d.expected_close_date && 
+        new Date(d.expected_close_date) > next60Days && 
+        new Date(d.expected_close_date) <= next90Days
+      ),
+    };
+  };
+
   const metrics = calculateMetrics();
   const stageAnalysis = analyzeStages();
+  const sourceAnalysis = analyzeBySource();
+  const businessUnitAnalysis = analyzeByBusinessUnit();
+  const forecast = analyzeForecast();
   const selectedPipeline = pipelines.find(p => p.id === selectedPipelineId);
 
   // Mock data for trends (would come from time-series analysis)
@@ -120,6 +218,31 @@ export function CRMDashboard({ deals, pipelines, stages, selectedPipelineId }: C
     if (value > 0) return 'text-emerald-600';
     if (value < 0) return 'text-rose-600';
     return 'text-slate-600';
+  };
+
+  const getSourceLabel = (source: string) => {
+    const labels: Record<string, string> = {
+      'website': 'Website',
+      'referral': 'Indicação',
+      'networking': 'Rede de Networking',
+      'social_media': 'Redes Sociais',
+      'cold_call': 'Cold Call',
+      'email_marketing': 'Email Marketing',
+      'event': 'Evento',
+      'other': 'Outros'
+    };
+    return labels[source] || source;
+  };
+
+  const getBusinessUnitLabel = (unit: string) => {
+    const labels: Record<string, string> = {
+      'guilds': 'Guilds',
+      'guilds_lab': 'Guilds Lab',
+      'guilds_craft': 'Guilds Craft',
+      'doavya': 'Doavya',
+      'outros': 'Outros'
+    };
+    return labels[unit] || unit;
   };
 
   const handleGenerateContractFromDashboard = (deal: CRMDeal) => {
@@ -290,7 +413,6 @@ export function CRMDashboard({ deals, pipelines, stages, selectedPipelineId }: C
             <div className="flex gap-2">
               <Button
                 onClick={() => {
-                  // Get first active deal for demo - in production, this could be configurable
                   const firstDeal = deals.find(d => d.pipeline_id === selectedPipelineId);
                   if (firstDeal) {
                     handleGenerateContractFromDashboard(firstDeal);
@@ -352,6 +474,149 @@ export function CRMDashboard({ deals, pipelines, stages, selectedPipelineId }: C
                   </div>
                 );
               })}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* New Analytics Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Source Analysis */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="h-5 w-5" />
+              Análise por Origem
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {sourceAnalysis.length > 0 ? (
+                sourceAnalysis.map((item, index) => (
+                  <div key={item.source} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline">{index + 1}º</Badge>
+                        <span className="font-medium text-sm">{getSourceLabel(item.source)}</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-medium">{item.count} deals</div>
+                        <div className="text-xs text-muted-foreground">
+                          {formatCurrency(item.totalValue)}
+                        </div>
+                      </div>
+                    </div>
+                    <Progress value={item.percentage} className="h-2" />
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>{formatPercentage(item.percentage)} do total</span>
+                      <span>Ticket médio: {formatCurrency(item.averageValue)}</span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-sm text-muted-foreground text-center py-8">
+                  Nenhum dado de origem disponível
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Business Unit Analysis */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Package className="h-5 w-5" />
+              Análise por Negócio
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {businessUnitAnalysis.length > 0 ? (
+                businessUnitAnalysis.map((item) => (
+                  <div key={item.unitValue} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-sm">{item.unit}</span>
+                      <div className="text-right">
+                        <div className="text-sm font-medium">{item.count} deals</div>
+                        <div className="text-xs text-muted-foreground">
+                          {formatCurrency(item.totalValue)}
+                        </div>
+                      </div>
+                    </div>
+                    <Progress value={item.percentage} className="h-2" />
+                    <div className="text-xs text-muted-foreground">
+                      Ticket médio: {formatCurrency(item.averageValue)}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-sm text-muted-foreground text-center py-8">
+                  Nenhum negócio informado
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Forecast Analysis */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5" />
+              Previsão de Fechamento
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {forecast.overdue.length > 0 && (
+                <div className="p-3 bg-rose-50 dark:bg-rose-950/20 rounded-lg border border-rose-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <AlertCircle className="h-4 w-4 text-rose-600" />
+                      <span className="font-medium text-rose-900 dark:text-rose-100">
+                        Atrasadas
+                      </span>
+                    </div>
+                    <Badge variant="destructive">{forecast.overdue.length}</Badge>
+                  </div>
+                  <div className="text-sm text-rose-800 dark:text-rose-200 mt-1">
+                    {formatCurrency(forecast.overdue.reduce((sum, d) => sum + (d.value || 0), 0))}
+                  </div>
+                </div>
+              )}
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Próximos 30 dias</span>
+                  <div className="text-right">
+                    <Badge variant="secondary">{forecast.next30.length}</Badge>
+                    <div className="text-xs text-muted-foreground">
+                      {formatCurrency(forecast.next30.reduce((sum, d) => sum + (d.value || 0), 0))}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">30-60 dias</span>
+                  <div className="text-right">
+                    <Badge variant="secondary">{forecast.next60.length}</Badge>
+                    <div className="text-xs text-muted-foreground">
+                      {formatCurrency(forecast.next60.reduce((sum, d) => sum + (d.value || 0), 0))}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">60-90 dias</span>
+                  <div className="text-right">
+                    <Badge variant="secondary">{forecast.next90.length}</Badge>
+                    <div className="text-xs text-muted-foreground">
+                      {formatCurrency(forecast.next90.reduce((sum, d) => sum + (d.value || 0), 0))}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

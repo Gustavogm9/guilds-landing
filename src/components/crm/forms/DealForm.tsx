@@ -31,6 +31,7 @@ const dealSchema = z.object({
   probability: z.string().optional(),
   expected_close_date: z.date().optional(),
   source: z.string().optional(),
+  business_unit: z.string().optional(),
 });
 
 type DealFormData = z.infer<typeof dealSchema>;
@@ -54,6 +55,7 @@ export function DealForm({ pipelineId, stages, onSuccess }: DealFormProps) {
       value: '',
       probability: '50',
       source: '',
+      business_unit: '',
     }
   });
 
@@ -65,10 +67,11 @@ export function DealForm({ pipelineId, stages, onSuccess }: DealFormProps) {
       stage_id: data.stage_id,
       contact_id: data.contact_id || undefined,
       value: data.value ? parseFloat(data.value) : undefined,
-      currency: 'BRL',
+      currency: 'BRL' as const,
       probability: data.probability ? parseInt(data.probability) : 0,
       expected_close_date: data.expected_close_date?.toISOString().split('T')[0] || undefined,
       source: data.source || undefined,
+      business_unit: data.business_unit as 'guilds' | 'guilds_lab' | 'guilds_craft' | 'doavya' | 'outros' | undefined,
       tags: [],
       custom_fields: {},
       is_active: true,
@@ -286,6 +289,32 @@ export function DealForm({ pipelineId, stages, onSuccess }: DealFormProps) {
                     <SelectItem value="email_marketing">Email Marketing</SelectItem>
                     <SelectItem value="event">Evento</SelectItem>
                     <SelectItem value="other">Outros</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Business Unit */}
+          <FormField
+            control={form.control}
+            name="business_unit"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Qual Negócio</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o negócio" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="guilds">Guilds (Software/Apps/Automação/IA)</SelectItem>
+                    <SelectItem value="guilds_lab">Guilds Lab (Workshops e Treinamento)</SelectItem>
+                    <SelectItem value="guilds_craft">Guilds Craft (P&D e Parcerias)</SelectItem>
+                    <SelectItem value="doavya">Doavya</SelectItem>
+                    <SelectItem value="outros">Outros</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

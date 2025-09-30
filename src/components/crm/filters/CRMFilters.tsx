@@ -18,6 +18,7 @@ export interface CRMFilters {
   valueRange?: [number, number];
   dateRange?: [Date | null, Date | null];
   lifecycleStage?: string;
+  businessUnit?: string;
   quickView?: 'hot' | 'cold' | 'my_leads' | 'follow_ups' | null;
   searchTerm?: string;
 }
@@ -47,6 +48,14 @@ const PRODUCT_INTERESTS = [
   { value: 'jogos_gamificacao', label: 'Jogos & Gamificação' },
   { value: 'consultoria', label: 'Consultoria' },
   { value: 'workshops', label: 'Workshops' }
+];
+
+const BUSINESS_UNITS = [
+  { value: 'guilds', label: 'Guilds' },
+  { value: 'guilds_lab', label: 'Guilds Lab' },
+  { value: 'guilds_craft', label: 'Guilds Craft' },
+  { value: 'doavya', label: 'Doavya' },
+  { value: 'outros', label: 'Outros' }
 ];
 
 const LIFECYCLE_STAGES = [
@@ -214,6 +223,26 @@ export function CRMFilters({
                   {LIFECYCLE_STAGES.map(stage => (
                     <SelectItem key={stage.value} value={stage.value}>
                       {stage.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Business Unit */}
+            <div className="space-y-2">
+              <label className="text-xs font-medium">Qual Negócio</label>
+              <Select
+                value={filters.businessUnit}
+                onValueChange={(value) => updateFilter('businessUnit', value || undefined)}
+              >
+                <SelectTrigger className="h-9">
+                  <SelectValue placeholder="Todos os negócios" />
+                </SelectTrigger>
+                <SelectContent>
+                  {BUSINESS_UNITS.map(unit => (
+                    <SelectItem key={unit.value} value={unit.value}>
+                      {unit.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -421,6 +450,15 @@ export function CRMFilters({
                     <X 
                       className="h-3 w-3 cursor-pointer" 
                       onClick={() => updateFilter('lifecycleStage', undefined)} 
+                    />
+                  </Badge>
+                )}
+                {filters.businessUnit && (
+                  <Badge variant="secondary" className="flex items-center gap-1">
+                    Negócio: {BUSINESS_UNITS.find(u => u.value === filters.businessUnit)?.label}
+                    <X 
+                      className="h-3 w-3 cursor-pointer" 
+                      onClick={() => updateFilter('businessUnit', undefined)} 
                     />
                   </Badge>
                 )}
