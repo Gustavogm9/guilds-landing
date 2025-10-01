@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -24,16 +24,22 @@ import {
   RotateCcw,
   Copy,
   Eye,
-  EyeOff
+  EyeOff,
+  Search
 } from 'lucide-react';
 import { useMultiProduct } from '@/contexts/MultiProductContext';
 import { useToast } from '@/hooks/use-toast';
+import { useSEO } from '@/hooks/useSEO';
+import { BusinessUnit } from '@/hooks/useCurrentProduct';
 
 export function MultiProductSettings() {
   const { products } = useMultiProduct();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('general');
   const [showSecrets, setShowSecrets] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<BusinessUnit>('guilds');
+  
+  const { seoSettings, updateSEOSettings, loading: seoLoading } = useSEO(true, selectedProduct);
 
   // Mock settings state
   const [settings, setSettings] = useState({
@@ -88,6 +94,31 @@ export function MultiProductSettings() {
     });
   };
 
+  const handleSaveSEO = async () => {
+    if (!seoSettings) return;
+    
+    try {
+      await updateSEOSettings({
+        site_name: seoSettings.site_name,
+        title_template: seoSettings.title_template,
+        meta_description: seoSettings.meta_description,
+        og_image: seoSettings.og_image,
+        twitter_handle: seoSettings.twitter_handle,
+      });
+      
+      toast({
+        title: "SEO atualizado",
+        description: "Configurações de SEO atualizadas com sucesso.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível atualizar as configurações de SEO.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const updateSetting = (section: string, key: string, value: any) => {
     setSettings(prev => ({
       ...prev,
@@ -121,9 +152,10 @@ export function MultiProductSettings() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="general">Geral</TabsTrigger>
           <TabsTrigger value="products">Produtos</TabsTrigger>
+          <TabsTrigger value="seo">SEO</TabsTrigger>
           <TabsTrigger value="automation">Automação</TabsTrigger>
           <TabsTrigger value="notifications">Notificações</TabsTrigger>
           <TabsTrigger value="integrations">Integrações</TabsTrigger>
@@ -293,6 +325,108 @@ export function MultiProductSettings() {
               </Card>
             ))}
           </div>
+        </TabsContent>
+
+        {/* SEO Tab */}
+        <TabsContent value="seo" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Search className="h-5 w-5" />
+                    Configurações de SEO
+                  </CardTitle>
+                  <CardDescription>
+                    Configure SEO básico por produto
+                  </CardDescription>
+                </div>
+                <Select value={selectedProduct} onValueChange={(value: BusinessUnit) => setSelectedProduct(value)}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Produto" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="guilds">Guilds</SelectItem>
+                    <SelectItem value="doavya">Doavya</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {seoLoading ? (
+                <p className="text-sm text-muted-foreground">Carregando...</p>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <Label>Nome do Site</Label>
+                    <Input 
+                      value={seoSettings?.site_name || ''} 
+                      onChange={(e) => {
+                        if (seoSettings) {
+                          updateSEOSettings({ ...seoSettings, site_name: e.target.value });
+                        }
+                      }}
+                      placeholder="Guilds"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Template de Título</Label>
+                    <Input 
+                      value={seoSettings?.title_template || ''} 
+                      onChange={(e) => {
+                        if (seoSettings) {
+                          updateSEOSettings({ ...seoSettings, title_template: e.target.value });
+                        }
+                      }}
+                      placeholder="{title} | Guilds"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Use {'{title}'} como placeholder para o título da página
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Meta Description Padrão</Label>
+                    <Textarea 
+                      value={seoSettings?.meta_description || ''} 
+                      onChange={(e) => {
+                        if (seoSettings) {
+                          updateSEOSettings({ ...seoSettings, meta_description: e.target.value });
+                        }
+                      }}
+                      placeholder="Descrição padrão do site"
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Twitter Handle</Label>
+                    <Input 
+                      value={seoSettings?.twitter_handle || ''} 
+                      onChange={(e) => {
+                        if (seoSettings) {
+                          updateSEOSettings({ ...seoSettings, twitter_handle: e.target.value });
+                        }
+                      }}
+                      placeholder="@guilds"
+                    />
+                  </div>
+
+                  <Button onClick={handleSaveSEO} className="w-full">
+                    Salvar Configurações SEO
+                  </Button>
+
+                  <div className="pt-4 border-t">
+                    <p className="text-sm text-muted-foreground">
+                      Para configurações avançadas de SEO (páginas específicas, custom tags, analytics), 
+                      use a página dedicada de <strong>SEO Admin</strong>.
+                    </p>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="automation" className="space-y-4">

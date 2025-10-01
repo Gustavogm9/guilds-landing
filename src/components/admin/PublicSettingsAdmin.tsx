@@ -4,9 +4,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { Shield, Eye, EyeOff } from 'lucide-react';
+import { BusinessUnit } from '@/hooks/useCurrentProduct';
 
 interface PublicSettingsForm {
   company_name: string;
@@ -14,19 +16,22 @@ interface PublicSettingsForm {
   brand_accent_color: string;
   public_whatsapp_number: string;
   public_support_email: string;
+  business_unit: BusinessUnit;
 }
 
 export const PublicSettingsAdmin = () => {
   const queryClient = useQueryClient();
+  const [selectedProduct, setSelectedProduct] = useState<BusinessUnit>('guilds');
   
-  // Fetch current public settings
+  // Fetch current public settings filtered by product
   const { data: publicSettings, isLoading } = useQuery({
-    queryKey: ['public-company-settings-admin'],
+    queryKey: ['public-company-settings-admin', selectedProduct],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('public_company_settings')
         .select('*')
-        .single();
+        .eq('business_unit', selectedProduct)
+        .maybeSingle();
       
       if (error) throw error;
       return data;
@@ -38,10 +43,11 @@ export const PublicSettingsAdmin = () => {
     brand_primary_color: '',
     brand_accent_color: '',
     public_whatsapp_number: '',
-    public_support_email: ''
+    public_support_email: '',
+    business_unit: 'guilds' as BusinessUnit,
   });
 
-  // Update form when data loads
+  // Update form when data loads or product changes
   useEffect(() => {
     if (publicSettings) {
       setFormData({
@@ -49,18 +55,37 @@ export const PublicSettingsAdmin = () => {
         brand_primary_color: publicSettings.brand_primary_color || '',
         brand_accent_color: publicSettings.brand_accent_color || '',
         public_whatsapp_number: publicSettings.public_whatsapp_number || '',
-        public_support_email: publicSettings.public_support_email || ''
+        public_support_email: publicSettings.public_support_email || '',
+        business_unit: (publicSettings.business_unit as BusinessUnit) || selectedProduct,
+      });
+    } else {
+      // Reset form for new product
+      setFormData({
+        company_name: '',
+        brand_primary_color: 'hsl(240, 85%, 55%)',
+        brand_accent_color: 'hsl(165, 85%, 45%)',
+        public_whatsapp_number: '',
+        public_support_email: '',
+        business_unit: selectedProduct,
       });
     }
-  }, [publicSettings]);
+  }, [publicSettings, selectedProduct]);
 
   // Update public settings mutation
   const updateMutation = useMutation({
-    mutationFn: async (settings: Partial<PublicSettingsForm>) => {
+    mutationFn: async (settings: PublicSettingsForm) => {
       const { data, error } = await supabase
         .from('public_company_settings')
-        .update(settings)
-        .eq('id', publicSettings?.id)
+        .upsert({
+          company_name: settings.company_name,
+          brand_primary_color: settings.brand_primary_color,
+          brand_accent_color: settings.brand_accent_color,
+          public_whatsapp_number: settings.public_whatsapp_number,
+          public_support_email: settings.public_support_email,
+          business_unit: settings.business_unit,
+        }, {
+          onConflict: 'business_unit'
+        })
         .select()
         .single();
       
@@ -68,7 +93,7 @@ export const PublicSettingsAdmin = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['public-company-settings-admin'] });
+      queryClient.invalidateQueries({ queryKey: ['public-company-settings-admin', selectedProduct] });
       queryClient.invalidateQueries({ queryKey: ['public-company-settings'] });
       toast.success('Configurações públicas atualizadas com sucesso');
     },
@@ -83,21 +108,44 @@ export const PublicSettingsAdmin = () => {
     updateMutation.mutate(formData);
   };
 
+  const productNames = {
+    guilds: 'Guilds',
+    doavya: 'Doavya'
+  };
+
   if (isLoading) {
     return <div className="flex justify-center p-8">Carregando...</div>;
   }
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">Configurações Públicas</h2>
+          <p className="text-muted-foreground">
+            Configurações que serão exibidas no site público
+          </p>
+        </div>
+        <Select value={selectedProduct} onValueChange={(value: BusinessUnit) => setSelectedProduct(value)}>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Selecione o produto" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="guilds">{productNames.guilds}</SelectItem>
+            <SelectItem value="doavya">{productNames.doavya}</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-green-600" />
-            Configurações Públicas Seguras
+            Configurando: {productNames[selectedProduct]}
           </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Estas informações são expostas publicamente no site. Configure apenas dados seguros para exposição pública.
-          </p>
+          <CardDescription>
+            Informações que serão exibidas publicamente no site
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
