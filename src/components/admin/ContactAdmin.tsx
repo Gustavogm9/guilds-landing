@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { useContactInfo, ContactInfoItem } from '@/hooks/useContactInfo';
-import { Plus, Edit2, Trash2, Mail, Phone, MapPin, Share2, Clock, Star } from 'lucide-react';
+import { Plus, Edit2, Trash2, Mail, Phone, MapPin, Share2, Clock, Star, Building2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -144,6 +144,8 @@ const ContactForm = ({
 };
 
 export const ContactAdmin = () => {
+  const [selectedProduct, setSelectedProduct] = useState<'guilds' | 'doavya'>('guilds');
+  
   const {
     companySettings,
     contactItems,
@@ -156,7 +158,7 @@ export const ContactAdmin = () => {
     isUpdatingContact: updatingInProgress,
     isDeletingContact: deletingInProgress,
     isUpdatingSettings: updatingSettingsInProgress,
-  } = useContactInfo();
+  } = useContactInfo(selectedProduct);
 
   const [editingContact, setEditingContact] = useState<ContactInfoItem | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -186,11 +188,12 @@ export const ContactAdmin = () => {
     } else {
       addContact({
         ...data,
-        is_active: true
+        is_active: true,
+        business_unit: selectedProduct
       });
       setIsAddDialogOpen(false);
     }
-  }, [editingContact, updateContact, addContact]);
+  }, [editingContact, updateContact, addContact, selectedProduct]);
 
   const handleCancelContact = useCallback(() => {
     setEditingContact(null);
@@ -229,6 +232,42 @@ export const ContactAdmin = () => {
 
   return (
     <div className="space-y-6">
+      {/* Seletor de Produto */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center gap-4">
+            <Building2 className="h-5 w-5 text-muted-foreground" />
+            <div className="flex-1">
+              <Label htmlFor="product-selector-contact" className="text-base font-semibold">
+                Configurando contatos para:
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Selecione qual produto/projeto deseja configurar
+              </p>
+            </div>
+            <Select value={selectedProduct} onValueChange={(value) => setSelectedProduct(value as 'guilds' | 'doavya')}>
+              <SelectTrigger id="product-selector-contact" className="w-[200px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="guilds">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">Guilds</span>
+                    <Badge variant="outline">guilds.com.br</Badge>
+                  </div>
+                </SelectItem>
+                <SelectItem value="doavya">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">Doavya</span>
+                    <Badge variant="outline">doavya.com.br</Badge>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
       <Tabs defaultValue="contacts" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="contacts">Contatos</TabsTrigger>

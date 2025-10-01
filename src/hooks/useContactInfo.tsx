@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { BusinessUnit } from './useCurrentProduct';
 
 export interface ContactInfoItem {
   id?: string;
@@ -13,6 +14,7 @@ export interface ContactInfoItem {
   is_public: boolean;
   metadata?: any;
   display_order: number;
+  business_unit: string;
 }
 
 export interface CompanySettings {
@@ -29,7 +31,7 @@ export interface CompanySettings {
   auto_response_message: string;
 }
 
-export const useContactInfo = () => {
+export const useContactInfo = (selectedProduct?: BusinessUnit) => {
   const queryClient = useQueryClient();
 
   // Fetch company settings
@@ -46,15 +48,21 @@ export const useContactInfo = () => {
     },
   });
 
-  // Fetch contact info items
+  // Fetch contact info items - filter by product if provided (admin context)
   const { data: contactItems = [], isLoading: itemsLoading } = useQuery({
-    queryKey: ['contact-info'],
+    queryKey: ['contact-info', selectedProduct],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('contact_info')
         .select('*')
-        .eq('is_active', true)
-        .order('display_order');
+        .eq('is_active', true);
+      
+      // Filter by business_unit if in admin context
+      if (selectedProduct) {
+        query = query.eq('business_unit', selectedProduct);
+      }
+      
+      const { data, error } = await query.order('display_order');
       
       if (error) throw error;
       return data as ContactInfoItem[];
@@ -87,9 +95,15 @@ export const useContactInfo = () => {
   // Add contact info item
   const addContactMutation = useMutation({
     mutationFn: async (item: Omit<ContactInfoItem, 'id'>) => {
+      // Garantir que business_unit está definido
+      const itemWithUnit = {
+        ...item,
+        business_unit: item.business_unit || selectedProduct || 'guilds'
+      };
+
       const { data, error } = await supabase
         .from('contact_info')
-        .insert(item)
+        .insert(itemWithUnit)
         .select()
         .single();
       

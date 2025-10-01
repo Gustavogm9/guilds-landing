@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useCurrentProduct } from './useCurrentProduct';
 
 export interface PublicContactInfo {
   id: string;
@@ -7,18 +8,22 @@ export interface PublicContactInfo {
   label: string;
   value: string;
   display_order: number;
+  business_unit: string;
 }
 
 export const usePublicContactInfo = () => {
+  const currentProduct = useCurrentProduct();
+
   // Fetch only public contact info items - this query will only work for publicly accessible data
   const { data: publicContacts = [], isLoading } = useQuery({
-    queryKey: ['public-contact-info'],
+    queryKey: ['public-contact-info', currentProduct],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('contact_info')
-        .select('id, type, label, value, display_order')
+        .select('id, type, label, value, display_order, business_unit')
         .eq('is_active', true)
         .eq('is_public', true)
+        .eq('business_unit', currentProduct)
         .order('display_order');
       
       if (error) throw error;
