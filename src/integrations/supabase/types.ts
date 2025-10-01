@@ -769,6 +769,7 @@ export type Database = {
       }
       contact_info: {
         Row: {
+          business_unit: string
           created_at: string
           display_order: number | null
           id: string
@@ -782,6 +783,7 @@ export type Database = {
           value: string
         }
         Insert: {
+          business_unit?: string
           created_at?: string
           display_order?: number | null
           id?: string
@@ -795,6 +797,7 @@ export type Database = {
           value: string
         }
         Update: {
+          business_unit?: string
           created_at?: string
           display_order?: number | null
           id?: string
@@ -1551,6 +1554,7 @@ export type Database = {
       }
       custom_tags: {
         Row: {
+          business_unit: string
           content: string
           created_at: string
           id: string
@@ -1562,6 +1566,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          business_unit?: string
           content: string
           created_at?: string
           id?: string
@@ -1573,6 +1578,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          business_unit?: string
           content?: string
           created_at?: string
           id?: string
@@ -3120,6 +3126,7 @@ export type Database = {
       }
       page_seo: {
         Row: {
+          business_unit: string
           canonical_url: string | null
           created_at: string
           id: string
@@ -3139,6 +3146,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          business_unit?: string
           canonical_url?: string | null
           created_at?: string
           id?: string
@@ -3158,6 +3166,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          business_unit?: string
           canonical_url?: string | null
           created_at?: string
           id?: string
@@ -3835,6 +3844,7 @@ export type Database = {
           brand_accent_color: string
           brand_primary_color: string
           business_hours: Json | null
+          business_unit: string
           company_name: string
           created_at: string
           id: string
@@ -3847,6 +3857,7 @@ export type Database = {
           brand_accent_color?: string
           brand_primary_color?: string
           business_hours?: Json | null
+          business_unit?: string
           company_name?: string
           created_at?: string
           id?: string
@@ -3859,6 +3870,7 @@ export type Database = {
           brand_accent_color?: string
           brand_primary_color?: string
           business_hours?: Json | null
+          business_unit?: string
           company_name?: string
           created_at?: string
           id?: string
@@ -4026,6 +4038,7 @@ export type Database = {
       }
       seo_settings: {
         Row: {
+          business_unit: string
           canonical_base_url: string
           created_at: string
           facebook_pixel_id: string | null
@@ -4043,6 +4056,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          business_unit?: string
           canonical_base_url?: string
           created_at?: string
           facebook_pixel_id?: string | null
@@ -4060,6 +4074,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          business_unit?: string
           canonical_base_url?: string
           created_at?: string
           facebook_pixel_id?: string | null

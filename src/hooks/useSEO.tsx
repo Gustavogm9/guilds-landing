@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useCurrentProduct, BusinessUnit } from './useCurrentProduct';
 
 export interface SEOSettings {
   id: string;
   site_name: string;
+  business_unit: string;
   title_template: string;
   meta_description: string;
   og_image?: string;
@@ -34,6 +36,7 @@ export interface PageSEO {
   canonical_url?: string;
   no_index: boolean;
   no_follow: boolean;
+  business_unit: string;
 }
 
 export interface CustomTag {
@@ -44,9 +47,11 @@ export interface CustomTag {
   position: string;
   is_active: boolean;
   page_paths?: string[];
+  business_unit: string;
 }
 
-export function useSEO() {
+export function useSEO(isAdminContext: boolean = false, adminSelectedProduct?: BusinessUnit) {
+  const currentProduct = useCurrentProduct(isAdminContext, adminSelectedProduct);
   const [seoSettings, setSEOSettings] = useState<SEOSettings | null>(null);
   const [pageSEO, setPageSEO] = useState<PageSEO[]>([]);
   const [customTags, setCustomTags] = useState<CustomTag[]>([]);
@@ -58,9 +63,10 @@ export function useSEO() {
       const { data, error } = await supabase
         .from('seo_settings')
         .select('*')
-        .single();
+        .eq('business_unit', currentProduct)
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') throw error;
+      if (error) throw error;
       
       if (data) {
         setSEOSettings(data);
@@ -69,13 +75,14 @@ export function useSEO() {
       console.error('Error fetching SEO settings:', err);
       setError(err instanceof Error ? err.message : 'Unknown error');
     }
-  }, []);
+  }, [currentProduct]);
 
   const fetchPageSEO = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('page_seo')
         .select('*')
+        .eq('business_unit', currentProduct)
         .order('page_path');
 
       if (error) throw error;
@@ -84,7 +91,7 @@ export function useSEO() {
       console.error('Error fetching page SEO:', err);
       setError(err instanceof Error ? err.message : 'Unknown error');
     }
-  }, []);
+  }, [currentProduct]);
 
   const fetchCustomTags = useCallback(async () => {
     try {
@@ -92,6 +99,7 @@ export function useSEO() {
         .from('custom_tags')
         .select('*')
         .eq('is_active', true)
+        .eq('business_unit', currentProduct)
         .order('name');
 
       if (error) throw error;
@@ -100,7 +108,7 @@ export function useSEO() {
       console.error('Error fetching custom tags:', err);
       setError(err instanceof Error ? err.message : 'Unknown error');
     }
-  }, []);
+  }, [currentProduct]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -150,10 +158,16 @@ export function useSEO() {
 
   const upsertPageSEO = useCallback(async (pageSEOData: Omit<PageSEO, 'id'>) => {
     try {
+      // Garantir que o business_unit está definido
+      const dataWithUnit = {
+        ...pageSEOData,
+        business_unit: pageSEOData.business_unit || currentProduct
+      };
+
       const { data, error } = await supabase
         .from('page_seo')
-        .upsert(pageSEOData, { 
-          onConflict: 'page_path',
+        .upsert(dataWithUnit, { 
+          onConflict: 'page_path,business_unit',
           ignoreDuplicates: false 
         })
         .select()
@@ -168,13 +182,19 @@ export function useSEO() {
       console.error('Error upserting page SEO:', err);
       throw err;
     }
-  }, [fetchPageSEO]);
+  }, [fetchPageSEO, currentProduct]);
 
   const createCustomTag = useCallback(async (tagData: Omit<CustomTag, 'id'>) => {
     try {
+      // Garantir que o business_unit está definido
+      const dataWithUnit = {
+        ...tagData,
+        business_unit: tagData.business_unit || currentProduct
+      };
+
       const { data, error } = await supabase
         .from('custom_tags')
-        .insert(tagData)
+        .insert(dataWithUnit)
         .select()
         .single();
 
@@ -187,7 +207,7 @@ export function useSEO() {
       console.error('Error creating custom tag:', err);
       throw err;
     }
-  }, [fetchCustomTags]);
+  }, [fetchCustomTags, currentProduct]);
 
   const updateCustomTag = useCallback(async (id: string, updates: Partial<CustomTag>) => {
     try {
@@ -232,6 +252,7 @@ export function useSEO() {
     customTags,
     loading,
     error,
+    currentProduct,
     getPageSEOByPath,
     getCustomTagsForPage,
     updateSEOSettings,

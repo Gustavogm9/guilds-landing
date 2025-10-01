@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useCurrentProduct } from './useCurrentProduct';
 
 export interface PublicCompanySettings {
   id?: string;
@@ -10,17 +11,21 @@ export interface PublicCompanySettings {
   social_media: any;
   public_whatsapp_number?: string;
   public_support_email?: string;
+  business_unit: string;
 }
 
 export const usePublicCompanySettings = () => {
+  const currentProduct = useCurrentProduct();
+
   // Fetch only public company settings - safe for unauthenticated users
   const { data: publicSettings, isLoading } = useQuery({
-    queryKey: ['public-company-settings'],
+    queryKey: ['public-company-settings', currentProduct],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('public_company_settings')
         .select('*')
-        .single();
+        .eq('business_unit', currentProduct)
+        .maybeSingle();
       
       if (error) throw error;
       return data as PublicCompanySettings;

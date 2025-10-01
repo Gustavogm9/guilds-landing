@@ -13,20 +13,24 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useSEO, type SEOSettings, type PageSEO, type CustomTag } from '@/hooks/useSEO';
 import { useToast } from '@/hooks/use-toast';
-import { Globe, Settings, Tag, Code, Trash2, Edit, Plus, Eye, ExternalLink } from 'lucide-react';
+import { Globe, Settings, Tag, Code, Trash2, Edit, Plus, Eye, ExternalLink, Building2 } from 'lucide-react';
+import { BusinessUnit } from '@/hooks/useCurrentProduct';
 
 export function SEOAdmin() {
+  const [selectedProduct, setSelectedProduct] = useState<BusinessUnit>('guilds');
+  
   const { 
     seoSettings, 
     pageSEO, 
     customTags, 
-    loading, 
+    loading,
+    currentProduct,
     updateSEOSettings, 
     upsertPageSEO, 
     createCustomTag, 
     updateCustomTag, 
     deleteCustomTag 
-  } = useSEO();
+  } = useSEO(true, selectedProduct);
   
   const { toast } = useToast();
   
@@ -48,6 +52,11 @@ export function SEOAdmin() {
     position: 'head',
     is_active: true
   });
+
+  const productNames: Record<BusinessUnit, string> = {
+    guilds: 'Guilds',
+    doavya: 'Doavya'
+  };
 
   if (loading) {
     return <div className="flex items-center justify-center p-8">Carregando configurações de SEO...</div>;
@@ -87,7 +96,8 @@ export function SEOAdmin() {
         schema_org_data: newPageData.schema_org_data,
         canonical_url: newPageData.canonical_url,
         no_index: newPageData.no_index || false,
-        no_follow: newPageData.no_follow || false
+        no_follow: newPageData.no_follow || false,
+        business_unit: currentProduct
       });
       
       toast({ title: "Página SEO salva com sucesso!" });
@@ -174,6 +184,42 @@ export function SEOAdmin() {
           Gerencie todas as configurações de SEO do site, meta tags, Schema.org e ferramentas de análise.
         </p>
       </div>
+
+      {/* Seletor de Produto */}
+      <Card className="mb-6">
+        <CardContent className="pt-6">
+          <div className="flex items-center gap-4">
+            <Building2 className="h-5 w-5 text-muted-foreground" />
+            <div className="flex-1">
+              <Label htmlFor="product-selector" className="text-base font-semibold">
+                Configurando SEO para:
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Selecione qual produto/projeto deseja configurar
+              </p>
+            </div>
+            <Select value={selectedProduct} onValueChange={(value) => setSelectedProduct(value as BusinessUnit)}>
+              <SelectTrigger id="product-selector" className="w-[200px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="guilds">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">Guilds</span>
+                    <Badge variant="outline">guilds.com.br</Badge>
+                  </div>
+                </SelectItem>
+                <SelectItem value="doavya">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">Doavya</span>
+                    <Badge variant="outline">doavya.com.br</Badge>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
 
       <Tabs defaultValue="global" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
