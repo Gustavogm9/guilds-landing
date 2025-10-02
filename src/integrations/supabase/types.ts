@@ -1070,6 +1070,10 @@ export type Database = {
           description: string | null
           due_date: string | null
           id: string
+          is_recurring: boolean
+          modified_from_template: boolean
+          occurrence_date: string | null
+          recurrence_id: string | null
           title: string
           type: string
           updated_at: string
@@ -1084,6 +1088,10 @@ export type Database = {
           description?: string | null
           due_date?: string | null
           id?: string
+          is_recurring?: boolean
+          modified_from_template?: boolean
+          occurrence_date?: string | null
+          recurrence_id?: string | null
           title: string
           type?: string
           updated_at?: string
@@ -1098,11 +1106,110 @@ export type Database = {
           description?: string | null
           due_date?: string | null
           id?: string
+          is_recurring?: boolean
+          modified_from_template?: boolean
+          occurrence_date?: string | null
+          recurrence_id?: string | null
           title?: string
           type?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "crm_activities_recurrence_id_fkey"
+            columns: ["recurrence_id"]
+            isOneToOne: false
+            referencedRelation: "crm_activity_recurrence"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_activity_recurrence: {
+        Row: {
+          by_month_day: number[] | null
+          by_set_pos: number[] | null
+          by_weekday: number[] | null
+          contact_id: string | null
+          created_at: string
+          created_by: string | null
+          deal_id: string | null
+          default_time: string
+          description: string | null
+          end_date: string | null
+          frequency: Database["public"]["Enums"]["recurrence_frequency"]
+          id: string
+          interval: number
+          is_active: boolean
+          last_generated_date: string | null
+          max_occurrences: number | null
+          occurrences_generated: number
+          start_date: string
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          by_month_day?: number[] | null
+          by_set_pos?: number[] | null
+          by_weekday?: number[] | null
+          contact_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          default_time?: string
+          description?: string | null
+          end_date?: string | null
+          frequency?: Database["public"]["Enums"]["recurrence_frequency"]
+          id?: string
+          interval?: number
+          is_active?: boolean
+          last_generated_date?: string | null
+          max_occurrences?: number | null
+          occurrences_generated?: number
+          start_date: string
+          title: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          by_month_day?: number[] | null
+          by_set_pos?: number[] | null
+          by_weekday?: number[] | null
+          contact_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          default_time?: string
+          description?: string | null
+          end_date?: string | null
+          frequency?: Database["public"]["Enums"]["recurrence_frequency"]
+          id?: string
+          interval?: number
+          is_active?: boolean
+          last_generated_date?: string | null
+          max_occurrences?: number | null
+          occurrences_generated?: number
+          start_date?: string
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_activity_recurrence_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_activity_recurrence_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "crm_deals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       crm_contact_interactions: {
         Row: {
@@ -4776,6 +4883,16 @@ export type Database = {
       }
     }
     Functions: {
+      calculate_next_occurrence: {
+        Args: {
+          p_by_month_day: number[]
+          p_by_weekday: number[]
+          p_current_date: string
+          p_frequency: Database["public"]["Enums"]["recurrence_frequency"]
+          p_interval: number
+        }
+        Returns: string
+      }
       check_rate_limit: {
         Args: {
           identifier: string
@@ -4976,6 +5093,14 @@ export type Database = {
         | "approve"
         | "export"
         | "manage"
+      recurrence_frequency:
+        | "daily"
+        | "weekly"
+        | "biweekly"
+        | "monthly"
+        | "quarterly"
+        | "yearly"
+        | "custom"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -5124,6 +5249,15 @@ export const Constants = {
         "approve",
         "export",
         "manage",
+      ],
+      recurrence_frequency: [
+        "daily",
+        "weekly",
+        "biweekly",
+        "monthly",
+        "quarterly",
+        "yearly",
+        "custom",
       ],
     },
   },
