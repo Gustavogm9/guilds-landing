@@ -174,7 +174,14 @@ export function ActivityListView({
                               </p>
                             )}
                           </div>
-                          {activity.due_date && getUrgencyBadge(activity.due_date)}
+                          <div className="flex gap-2 items-center shrink-0">
+                            {activity.due_date && getUrgencyBadge(activity.due_date)}
+                            {activity.is_recurring && (
+                              <Badge variant="outline" className="text-xs">
+                                🔄
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                         
                         <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground mt-2">

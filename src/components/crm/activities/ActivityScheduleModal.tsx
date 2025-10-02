@@ -13,6 +13,7 @@ import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { useCRM } from '@/hooks/useCRM';
 import { useToast } from '@/hooks/use-toast';
+import { RecurrenceForm } from './RecurrenceForm';
 
 interface ActivityScheduleModalProps {
   open: boolean;
@@ -20,6 +21,17 @@ interface ActivityScheduleModalProps {
   dealId?: string;
   contactId?: string;
   activity?: any;
+}
+
+interface RecurrenceFormData {
+  isRecurring: boolean;
+  frequency: 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'quarterly' | 'yearly' | 'custom';
+  interval: number;
+  byWeekday: number[];
+  byMonthDay: number[];
+  endType: 'never' | 'date' | 'count';
+  endDate?: Date;
+  maxOccurrences?: number;
 }
 
 const ACTIVITY_TYPES = [
@@ -41,7 +53,14 @@ export function ActivityScheduleModal({
   contactId,
   activity 
 }: ActivityScheduleModalProps) {
-  const { createActivity, updateActivity, isCreatingActivity, isUpdatingActivity } = useCRM();
+  const { 
+    createActivity, 
+    updateActivity, 
+    isCreatingActivity, 
+    isUpdatingActivity,
+    createRecurringActivity,
+    isCreatingRecurringActivity 
+  } = useCRM();
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -50,6 +69,17 @@ export function ActivityScheduleModal({
     description: activity?.description || '',
     due_date: activity?.due_date ? new Date(activity.due_date) : undefined,
     due_time: activity?.due_date ? format(new Date(activity.due_date), 'HH:mm') : '09:00',
+  });
+
+  const [recurrenceData, setRecurrenceData] = useState<RecurrenceFormData>({
+    isRecurring: false,
+    frequency: 'weekly',
+    interval: 1,
+    byWeekday: [],
+    byMonthDay: [],
+    endType: 'never',
+    endDate: undefined,
+    maxOccurrences: undefined,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -64,7 +94,7 @@ export function ActivityScheduleModal({
       return;
     }
 
-    if (!formData.due_date) {
+    if (!formData.due_date && !recurrenceData.isRecurring) {
       toast({
         title: "Data obrigatória",
         description: "Por favor, selecione uma data para a atividade",
@@ -73,9 +103,34 @@ export function ActivityScheduleModal({
       return;
     }
 
-    // Combine date and time
+    // Handle recurring activity
+    if (recurrenceData.isRecurring) {
+      const recurrencePayload = {
+        title: formData.title,
+        description: formData.description,
+        type: formData.type,
+        frequency: recurrenceData.frequency,
+        interval: recurrenceData.interval,
+        by_weekday: recurrenceData.byWeekday.length > 0 ? recurrenceData.byWeekday : null,
+        by_month_day: recurrenceData.byMonthDay.length > 0 ? recurrenceData.byMonthDay : null,
+        default_time: formData.due_time,
+        start_date: formData.due_date?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
+        end_date: recurrenceData.endType === 'date' && recurrenceData.endDate
+          ? recurrenceData.endDate.toISOString().split('T')[0]
+          : null,
+        max_occurrences: recurrenceData.endType === 'count' ? recurrenceData.maxOccurrences : null,
+        deal_id: dealId || null,
+        contact_id: contactId || null,
+      };
+
+      createRecurringActivity(recurrencePayload);
+      handleClose();
+      return;
+    }
+
+    // Handle single activity
     const [hours, minutes] = formData.due_time.split(':');
-    const dueDateTime = new Date(formData.due_date);
+    const dueDateTime = new Date(formData.due_date!);
     dueDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
 
     const activityData = {
@@ -104,6 +159,16 @@ export function ActivityScheduleModal({
       description: '',
       due_date: undefined,
       due_time: '09:00',
+    });
+    setRecurrenceData({
+      isRecurring: false,
+      frequency: 'weekly',
+      interval: 1,
+      byWeekday: [],
+      byMonthDay: [],
+      endType: 'never',
+      endDate: undefined,
+      maxOccurrences: undefined,
     });
     onOpenChange(false);
   };
@@ -168,7 +233,7 @@ export function ActivityScheduleModal({
           {/* Data e Hora */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Data *</Label>
+              <Label>Data {!recurrenceData.isRecurring && '*'}</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -213,6 +278,9 @@ export function ActivityScheduleModal({
             </div>
           </div>
 
+          {/* Recurrence Configuration */}
+          <RecurrenceForm value={recurrenceData} onChange={setRecurrenceData} />
+
           {/* Actions */}
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={handleClose}>
@@ -220,9 +288,11 @@ export function ActivityScheduleModal({
             </Button>
             <Button 
               type="submit" 
-              disabled={isCreatingActivity || isUpdatingActivity}
+              disabled={isCreatingActivity || isUpdatingActivity || isCreatingRecurringActivity}
             >
-              {(isCreatingActivity || isUpdatingActivity) ? 'Salvando...' : (activity ? 'Atualizar' : 'Agendar')}
+              {(isCreatingActivity || isUpdatingActivity || isCreatingRecurringActivity) 
+                ? 'Salvando...' 
+                : (activity ? 'Atualizar' : (recurrenceData.isRecurring ? 'Criar Recorrência' : 'Agendar'))}
             </Button>
           </div>
         </form>

@@ -25,7 +25,7 @@ const WEEKDAYS = [
 
 interface RecurrenceFormData {
   isRecurring: boolean;
-  frequency: string;
+  frequency: 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'quarterly' | 'yearly' | 'custom';
   interval: number;
   byWeekday: number[];
   byMonthDay: number[];

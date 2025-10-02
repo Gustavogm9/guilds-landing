@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Calendar as CalendarIcon } from 'lucide-react';
+import { Plus, Calendar as CalendarIcon, RotateCw } from 'lucide-react';
 import { ActivityListView } from '@/components/crm/activities/ActivityListView';
 import { ActivityScheduleModal } from '@/components/crm/activities/ActivityScheduleModal';
+import { RecurringActivitiesList } from '@/components/crm/activities/RecurringActivitiesList';
 
 export function Agenda() {
   const [showActivityModal, setShowActivityModal] = useState(false);
@@ -46,6 +47,10 @@ export function Agenda() {
           <TabsTrigger value="today">Hoje</TabsTrigger>
           <TabsTrigger value="week">Próximos 7 dias</TabsTrigger>
           <TabsTrigger value="all">Todas</TabsTrigger>
+          <TabsTrigger value="recurring">
+            <RotateCw className="h-4 w-4 mr-2" />
+            Recorrências
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="today" className="mt-6">
@@ -67,6 +72,10 @@ export function Agenda() {
             daysAhead={365} 
             onEdit={handleEdit}
           />
+        </TabsContent>
+
+        <TabsContent value="recurring" className="mt-6">
+          <RecurringActivitiesList onEdit={handleEdit} />
         </TabsContent>
       </Tabs>
 

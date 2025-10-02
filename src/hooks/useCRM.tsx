@@ -587,6 +587,83 @@ export function useCRM() {
     return data;
   };
 
+  // Recurring Activities Mutations
+  const createRecurringActivity = useMutation({
+    mutationFn: async (recurrence: any) => {
+      const { error } = await supabase
+        .from('crm_activity_recurrence')
+        .insert([recurrence]);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['recurring-activities'] });
+      toast({
+        title: "Recorrência criada",
+        description: "Atividade recorrente criada com sucesso",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao criar recorrência",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateRecurringActivity = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: any }) => {
+      const { error } = await supabase
+        .from('crm_activity_recurrence')
+        .update(updates)
+        .eq('id', id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['recurring-activities'] });
+      queryClient.invalidateQueries({ queryKey: ['crm-activities'] });
+      toast({
+        title: "Recorrência atualizada",
+        description: "Atividade recorrente atualizada com sucesso",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao atualizar recorrência",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteRecurringActivity = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('crm_activity_recurrence')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['recurring-activities'] });
+      queryClient.invalidateQueries({ queryKey: ['crm-activities'] });
+      toast({
+        title: "Recorrência excluída",
+        description: "Atividade recorrente e suas ocorrências futuras foram removidas",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao excluir recorrência",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   return {
     // Data
     pipelines,
@@ -639,6 +716,16 @@ export function useCRM() {
     fetchActivitiesByDeal,
     fetchActivitiesByContact,
     fetchUpcomingActivities,
+    
+    // Recurring Activities
+    createRecurringActivity: createRecurringActivity.mutate,
+    isCreatingRecurringActivity: createRecurringActivity.isPending,
+    
+    updateRecurringActivity: updateRecurringActivity.mutate,
+    isUpdatingRecurringActivity: updateRecurringActivity.isPending,
+    
+    deleteRecurringActivity: deleteRecurringActivity.mutate,
+    isDeletingRecurringActivity: deleteRecurringActivity.isPending,
     
     // Errors
     pipelinesError
