@@ -115,7 +115,7 @@ export function DealCard({
             snapshot.isDragging ? 'shadow-lg rotate-2' : ''
           }`}
         >
-          <CardContent className="p-4 space-y-3">
+          <CardContent className="p-4 space-y-3 overflow-hidden">
             {/* Header */}
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
@@ -297,29 +297,29 @@ export function DealCard({
             )}
 
             {/* Action Buttons - Responsive */}
-            <div className="flex flex-col gap-2 pt-2 border-t sm:flex-row">
+            <div className="flex flex-col gap-2 pt-2 border-t sm:flex-row w-full">
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="w-full justify-center sm:flex-1"
+                className="w-full justify-center sm:flex-1 min-w-0 shrink"
                 onClick={(e) => {
                   e.stopPropagation();
                   onAddInteraction?.(deal);
                 }}
               >
-                <MessageSquare className="h-4 w-4 mr-2" />
-                Nova Interação
+                <MessageSquare className="h-4 w-4 mr-2 shrink-0" />
+                <span className="truncate">Nova Interação</span>
               </Button>
               <Button 
                 variant="default" 
                 size="sm" 
-                className="w-full justify-center sm:flex-1"
+                className="w-full justify-center sm:flex-1 min-w-0 shrink"
                 onClick={(e) => {
                   e.stopPropagation();
                   onViewDetails?.(deal);
                 }}
               >
-                Ver Detalhes
+                <span className="truncate">Ver Detalhes</span>
               </Button>
             </div>
           </CardContent>
