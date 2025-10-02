@@ -457,6 +457,136 @@ export function useCRM() {
     }
   });
 
+  // Activity mutations
+  const createActivity = useMutation({
+    mutationFn: async (activity: Omit<CRMActivity, 'id' | 'created_at' | 'updated_at'>) => {
+      const { data, error } = await supabase
+        .from('crm_activities')
+        .insert([activity])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-activities'] });
+      queryClient.invalidateQueries({ queryKey: ['activities'] });
+      queryClient.invalidateQueries({ queryKey: ['deal-activities'] });
+      toast({
+        title: "Atividade agendada",
+        description: "Atividade criada com sucesso!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao criar atividade",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
+  const updateActivity = useMutation({
+    mutationFn: async (activity: Partial<CRMActivity> & { id: string }) => {
+      const { id, created_at, updated_at, ...updateData } = activity;
+      const { data, error } = await supabase
+        .from('crm_activities')
+        .update(updateData)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-activities'] });
+      queryClient.invalidateQueries({ queryKey: ['activities'] });
+      queryClient.invalidateQueries({ queryKey: ['deal-activities'] });
+      toast({
+        title: "Atividade atualizada",
+        description: "Atividade atualizada com sucesso!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao atualizar atividade",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
+  const markActivityAsCompleted = useMutation({
+    mutationFn: async (activityId: string) => {
+      const { data, error } = await supabase
+        .from('crm_activities')
+        .update({ 
+          completed: true, 
+          completed_at: new Date().toISOString() 
+        })
+        .eq('id', activityId)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-activities'] });
+      queryClient.invalidateQueries({ queryKey: ['activities'] });
+      queryClient.invalidateQueries({ queryKey: ['deal-activities'] });
+      toast({
+        title: "Atividade concluída! 🎉",
+      });
+    }
+  });
+
+  // Activity fetch functions
+  const fetchActivitiesByDeal = async (dealId: string) => {
+    const { data, error } = await supabase
+      .from('crm_activities')
+      .select('*')
+      .eq('deal_id', dealId)
+      .order('due_date', { ascending: true, nullsFirst: false });
+    
+    if (error) throw error;
+    return data as CRMActivity[];
+  };
+
+  const fetchActivitiesByContact = async (contactId: string) => {
+    const { data, error } = await supabase
+      .from('crm_activities')
+      .select('*')
+      .eq('contact_id', contactId)
+      .order('due_date', { ascending: true, nullsFirst: false });
+    
+    if (error) throw error;
+    return data as CRMActivity[];
+  };
+
+  const fetchUpcomingActivities = async (daysAhead: number = 7) => {
+    const today = new Date();
+    const futureDate = new Date();
+    futureDate.setDate(today.getDate() + daysAhead);
+    
+    const { data, error } = await supabase
+      .from('crm_activities')
+      .select(`
+        *,
+        deal:crm_deals(*),
+        contact:crm_contacts(*)
+      `)
+      .eq('completed', false)
+      .gte('due_date', today.toISOString())
+      .lte('due_date', futureDate.toISOString())
+      .order('due_date', { ascending: true });
+    
+    if (error) throw error;
+    return data;
+  };
+
   return {
     // Data
     pipelines,
@@ -495,6 +625,20 @@ export function useCRM() {
     
     createInteraction: createInteraction.mutate,
     isCreatingInteraction: createInteraction.isPending,
+    
+    // Activities
+    createActivity: createActivity.mutate,
+    isCreatingActivity: createActivity.isPending,
+    
+    updateActivity: updateActivity.mutate,
+    isUpdatingActivity: updateActivity.isPending,
+    
+    markActivityAsCompleted: markActivityAsCompleted.mutate,
+    isCompletingActivity: markActivityAsCompleted.isPending,
+    
+    fetchActivitiesByDeal,
+    fetchActivitiesByContact,
+    fetchUpcomingActivities,
     
     // Errors
     pipelinesError

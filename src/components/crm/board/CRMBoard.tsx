@@ -20,6 +20,7 @@ import { DealInteractionModal } from '../deal/DealInteractionModal';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { ActivityScheduleModal } from '../activities/ActivityScheduleModal';
 
 export function CRMBoard() {
   const [selectedPipelineId, setSelectedPipelineId] = useState<string>('');
@@ -35,6 +36,8 @@ export function CRMBoard() {
   const [dealToEdit, setDealToEdit] = useState<CRMDeal | null>(null);
   const [dealToDelete, setDealToDelete] = useState<CRMDeal | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showActivityModal, setShowActivityModal] = useState(false);
+  const [activityForDeal, setActivityForDeal] = useState<CRMDeal | null>(null);
   
   const { pipelines, pipelinesLoading, fetchStagesByPipeline, fetchDealsByPipeline, moveDeal } = useCRM();
   const { notifications, markAsRead, markAllAsRead, archive: archiveNotification, handleAction } = useCRMNotifications();
@@ -223,6 +226,11 @@ export function CRMBoard() {
       console.error('Erro ao excluir deal:', error);
       toast.error('Erro ao excluir deal');
     }
+  };
+
+  const handleScheduleActivity = (deal: CRMDeal) => {
+    setActivityForDeal(deal);
+    setShowActivityModal(true);
   };
 
   const selectedPipeline = pipelines?.find(p => p.id === selectedPipelineId);
@@ -439,6 +447,7 @@ export function CRMBoard() {
                               onEdit={handleEditDeal}
                               onDuplicate={handleDuplicateDeal}
                               onDelete={handleDeleteDeal}
+                              onScheduleActivity={handleScheduleActivity}
                             />
                             {provided.placeholder}
                           </div>
@@ -516,6 +525,17 @@ export function CRMBoard() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Activity Schedule Modal */}
+      <ActivityScheduleModal
+        open={showActivityModal}
+        onOpenChange={(open) => {
+          setShowActivityModal(open);
+          if (!open) setActivityForDeal(null);
+        }}
+        dealId={activityForDeal?.id}
+        contactId={activityForDeal?.contact_id}
+      />
     </div>
   );
 }

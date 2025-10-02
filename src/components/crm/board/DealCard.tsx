@@ -24,10 +24,12 @@ import {
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { ActivityBadge } from '../activities/ActivityBadge';
 
 interface DealCardProps {
   deal: CRMDeal;
@@ -39,6 +41,7 @@ interface DealCardProps {
   onEdit?: (deal: CRMDeal) => void;
   onDuplicate?: (deal: CRMDeal) => void;
   onDelete?: (deal: CRMDeal) => void;
+  onScheduleActivity?: (deal: CRMDeal) => void;
 }
 
 export function DealCard({ 
@@ -50,7 +53,8 @@ export function DealCard({
   onPhoneInteraction,
   onEdit,
   onDuplicate,
-  onDelete
+  onDelete,
+  onScheduleActivity
 }: DealCardProps) {
   const { generateContractFromDeal, checkExistingContract, isGenerating } = useCRMContractIntegration();
   const [existingContractId, setExistingContractId] = useState<string | null>(null);
@@ -119,9 +123,12 @@ export function DealCard({
             {/* Header */}
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
-                <h4 className="font-medium text-sm line-clamp-2 mb-1">
-                  {deal.title}
-                </h4>
+                <div className="flex items-center gap-2 mb-1">
+                  <h4 className="font-medium text-sm line-clamp-2">
+                    {deal.title}
+                  </h4>
+                  <ActivityBadge dealId={deal.id} />
+                </div>
                 
                 {deal.description && (
                   <p className="text-xs text-muted-foreground line-clamp-2">
@@ -158,6 +165,16 @@ export function DealCard({
                       isGenerating ? 'Gerando...' : 'Gerar Contrato'
                     )}
                   </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onScheduleActivity?.(deal);
+                    }}
+                  >
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Agendar Atividade
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem 
                     onClick={(e) => {
                       e.stopPropagation();

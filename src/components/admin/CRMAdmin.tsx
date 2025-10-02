@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Settings, Users, FileText, Eye, ExternalLink } from 'lucide-react';
+import { Plus, Settings, Users, FileText, Eye, ExternalLink, Calendar as CalendarIcon } from 'lucide-react';
 import { useCRM } from '@/hooks/useCRM';
 import { PipelineForm } from './PipelineForm';
 import { StageForm } from './StageForm';
@@ -49,14 +49,24 @@ export default function CRMAdmin() {
             Gerencie pipelines, estágios e contatos do sistema CRM
           </p>
         </div>
-        <Button 
-          onClick={() => navigate('/admin/crm/kanban')} 
-          variant="outline"
-          className="gap-2"
-        >
-          <ExternalLink className="h-4 w-4" />
-          Ver Kanban
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={() => navigate('/admin/crm/agenda')} 
+            variant="outline"
+            className="gap-2"
+          >
+            <CalendarIcon className="h-4 w-4" />
+            Minha Agenda
+          </Button>
+          <Button 
+            onClick={() => navigate('/admin/crm/kanban')} 
+            variant="outline"
+            className="gap-2"
+          >
+            <ExternalLink className="h-4 w-4" />
+            Ver Kanban
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}

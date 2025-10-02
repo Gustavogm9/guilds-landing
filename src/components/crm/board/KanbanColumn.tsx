@@ -17,6 +17,7 @@ interface KanbanColumnProps {
   onEdit?: (deal: CRMDeal) => void;
   onDuplicate?: (deal: CRMDeal) => void;
   onDelete?: (deal: CRMDeal) => void;
+  onScheduleActivity?: (deal: CRMDeal) => void;
 }
 
 export function KanbanColumn({ 
@@ -29,7 +30,8 @@ export function KanbanColumn({
   onPhoneInteraction,
   onEdit,
   onDuplicate,
-  onDelete
+  onDelete,
+  onScheduleActivity
 }: KanbanColumnProps) {
   const totalValue = deals.reduce((sum, deal) => sum + (deal.value || 0), 0);
 
@@ -83,10 +85,11 @@ export function KanbanColumn({
                 onAddInteraction={onAddInteraction}
                 onEmailInteraction={onEmailInteraction}
                 onPhoneInteraction={onPhoneInteraction}
-                onEdit={onEdit}
-                onDuplicate={onDuplicate}
-                onDelete={onDelete}
-              />
+                  onEdit={onEdit}
+                  onDuplicate={onDuplicate}
+                  onDelete={onDelete}
+                  onScheduleActivity={onScheduleActivity}
+                />
             ))
           )}
         </div>
