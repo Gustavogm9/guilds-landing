@@ -46,7 +46,8 @@ import {
   Scale,
   Settings,
   Bell,
-  UserCog
+  UserCog,
+  Calendar
 } from 'lucide-react';
 
 import {
@@ -77,6 +78,7 @@ const menuItems: MenuItem[] = [
       { title: "CRM Dashboard", icon: Database, url: "/admin/crm" },
       { title: "Board Kanban", icon: Kanban, url: "/admin/crm/board" },
       { title: "Lead Scoring", icon: TrendingUp, url: "/admin/crm/scoring" },
+      { title: "Agenda", icon: Calendar, url: "/admin/crm/agenda" },
       { title: "Formulários", icon: FileText, url: "/admin/forms" },
       { title: "Campanhas", icon: Mail, url: "/admin/campaigns" },
       { title: "Automações", icon: Zap, url: "/admin/automation" }
