@@ -10,9 +10,27 @@ interface KanbanColumnProps {
   stage: CRMStage;
   deals: CRMDeal[];
   isLoading: boolean;
+  onViewDetails?: (deal: CRMDeal) => void;
+  onAddInteraction?: (deal: CRMDeal) => void;
+  onEmailInteraction?: (deal: CRMDeal) => void;
+  onPhoneInteraction?: (deal: CRMDeal) => void;
+  onEdit?: (deal: CRMDeal) => void;
+  onDuplicate?: (deal: CRMDeal) => void;
+  onDelete?: (deal: CRMDeal) => void;
 }
 
-export function KanbanColumn({ stage, deals, isLoading }: KanbanColumnProps) {
+export function KanbanColumn({ 
+  stage, 
+  deals, 
+  isLoading,
+  onViewDetails,
+  onAddInteraction,
+  onEmailInteraction,
+  onPhoneInteraction,
+  onEdit,
+  onDuplicate,
+  onDelete
+}: KanbanColumnProps) {
   const totalValue = deals.reduce((sum, deal) => sum + (deal.value || 0), 0);
 
   return (
@@ -57,7 +75,18 @@ export function KanbanColumn({ stage, deals, isLoading }: KanbanColumnProps) {
             </div>
           ) : (
             deals.map((deal, index) => (
-              <DealCard key={deal.id} deal={deal} index={index} />
+              <DealCard 
+                key={deal.id} 
+                deal={deal} 
+                index={index}
+                onViewDetails={onViewDetails}
+                onAddInteraction={onAddInteraction}
+                onEmailInteraction={onEmailInteraction}
+                onPhoneInteraction={onPhoneInteraction}
+                onEdit={onEdit}
+                onDuplicate={onDuplicate}
+                onDelete={onDelete}
+              />
             ))
           )}
         </div>

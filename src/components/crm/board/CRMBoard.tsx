@@ -15,6 +15,11 @@ import { CRMFilters, type CRMFilters as CRMFiltersType } from '../filters/CRMFil
 import { CRMDashboard } from '../dashboard/CRMDashboard';
 import { CRMNotifications, useCRMNotifications } from '../notifications/CRMNotifications';
 import { isAfter, isBefore, parseISO } from 'date-fns';
+import { DealDetailModal } from '../deal/DealDetailModal';
+import { DealInteractionModal } from '../deal/DealInteractionModal';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 export function CRMBoard() {
   const [selectedPipelineId, setSelectedPipelineId] = useState<string>('');
@@ -23,6 +28,13 @@ export function CRMBoard() {
   const [activeTab, setActiveTab] = useState<'board' | 'dashboard' | 'notifications'>('board');
   const [filters, setFilters] = useState<CRMFiltersType>({});
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedDeal, setSelectedDeal] = useState<CRMDeal | null>(null);
+  const [showDealDetails, setShowDealDetails] = useState(false);
+  const [showDealInteraction, setShowDealInteraction] = useState(false);
+  const [interactionType, setInteractionType] = useState<string>('note');
+  const [dealToEdit, setDealToEdit] = useState<CRMDeal | null>(null);
+  const [dealToDelete, setDealToDelete] = useState<CRMDeal | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   
   const { pipelines, pipelinesLoading, fetchStagesByPipeline, fetchDealsByPipeline, moveDeal } = useCRM();
   const { notifications, markAsRead, markAllAsRead, archive: archiveNotification, handleAction } = useCRMNotifications();
@@ -127,6 +139,90 @@ export function CRMBoard() {
 
   const clearFilters = () => {
     setFilters({});
+  };
+
+  const handleViewDetails = (deal: CRMDeal) => {
+    setSelectedDeal(deal);
+    setShowDealDetails(true);
+  };
+
+  const handleAddInteraction = (deal: CRMDeal) => {
+    setSelectedDeal(deal);
+    setInteractionType('note');
+    setShowDealInteraction(true);
+  };
+
+  const handleEmailInteraction = (deal: CRMDeal) => {
+    setSelectedDeal(deal);
+    setInteractionType('email');
+    setShowDealInteraction(true);
+  };
+
+  const handlePhoneInteraction = (deal: CRMDeal) => {
+    setSelectedDeal(deal);
+    setInteractionType('phone');
+    setShowDealInteraction(true);
+  };
+
+  const handleEditDeal = (deal: CRMDeal) => {
+    setDealToEdit(deal);
+    setShowDealForm(true);
+  };
+
+  const handleDuplicateDeal = async (deal: CRMDeal) => {
+    try {
+      const { data, error } = await supabase
+        .from('crm_deals')
+        .insert({
+          pipeline_id: deal.pipeline_id,
+          stage_id: deal.stage_id,
+          contact_id: deal.contact_id,
+          title: `${deal.title} (Cópia)`,
+          description: deal.description,
+          value: deal.value,
+          currency: deal.currency,
+          probability: deal.probability,
+          expected_close_date: deal.expected_close_date,
+          source: deal.source,
+          business_unit: deal.business_unit,
+          tags: deal.tags,
+          custom_fields: deal.custom_fields,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      
+      toast.success('Deal duplicado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao duplicar deal:', error);
+      toast.error('Erro ao duplicar deal');
+    }
+  };
+
+  const handleDeleteDeal = (deal: CRMDeal) => {
+    setDealToDelete(deal);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDeleteDeal = async () => {
+    if (!dealToDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from('crm_deals')
+        .update({ is_active: false })
+        .eq('id', dealToDelete.id);
+
+      if (error) throw error;
+      
+      toast.success('Deal excluído com sucesso!');
+      setShowDeleteDialog(false);
+      setDealToDelete(null);
+    } catch (error) {
+      console.error('Erro ao excluir deal:', error);
+      toast.error('Erro ao excluir deal');
+    }
   };
 
   const selectedPipeline = pipelines?.find(p => p.id === selectedPipelineId);
@@ -324,6 +420,13 @@ export function CRMBoard() {
                               stage={stage}
                               deals={filteredDeals.filter(deal => deal.stage_id === stage.id)}
                               isLoading={dealsLoading}
+                              onViewDetails={handleViewDetails}
+                              onAddInteraction={handleAddInteraction}
+                              onEmailInteraction={handleEmailInteraction}
+                              onPhoneInteraction={handlePhoneInteraction}
+                              onEdit={handleEditDeal}
+                              onDuplicate={handleDuplicateDeal}
+                              onDelete={handleDeleteDeal}
                             />
                             {provided.placeholder}
                           </div>
@@ -366,6 +469,41 @@ export function CRMBoard() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Deal Detail Modal */}
+      <DealDetailModal
+        deal={selectedDeal}
+        open={showDealDetails}
+        onOpenChange={setShowDealDetails}
+        onEdit={handleEditDeal}
+      />
+
+      {/* Deal Interaction Modal */}
+      <DealInteractionModal
+        deal={selectedDeal}
+        open={showDealInteraction}
+        onOpenChange={setShowDealInteraction}
+        defaultType={interactionType}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir o deal "{dealToDelete?.title}"?
+              Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteDeal} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

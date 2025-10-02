@@ -12,7 +12,11 @@ import {
   Phone, 
   User,
   Building2,
-  FileText
+  FileText,
+  MessageSquare,
+  Flame,
+  Snowflake,
+  Clock
 } from 'lucide-react';
 import { CRMDeal } from '@/hooks/useCRM';
 import { useCRMContractIntegration } from '@/hooks/useCRMContractIntegration';
@@ -28,9 +32,26 @@ import { ptBR } from 'date-fns/locale';
 interface DealCardProps {
   deal: CRMDeal;
   index: number;
+  onViewDetails?: (deal: CRMDeal) => void;
+  onAddInteraction?: (deal: CRMDeal) => void;
+  onEmailInteraction?: (deal: CRMDeal) => void;
+  onPhoneInteraction?: (deal: CRMDeal) => void;
+  onEdit?: (deal: CRMDeal) => void;
+  onDuplicate?: (deal: CRMDeal) => void;
+  onDelete?: (deal: CRMDeal) => void;
 }
 
-export function DealCard({ deal, index }: DealCardProps) {
+export function DealCard({ 
+  deal, 
+  index, 
+  onViewDetails,
+  onAddInteraction,
+  onEmailInteraction,
+  onPhoneInteraction,
+  onEdit,
+  onDuplicate,
+  onDelete
+}: DealCardProps) {
   const { generateContractFromDeal, checkExistingContract, isGenerating } = useCRMContractIntegration();
   const [existingContractId, setExistingContractId] = useState<string | null>(null);
   const [checkingContract, setCheckingContract] = useState(false);
@@ -117,7 +138,10 @@ export function DealCard({ deal, index }: DealCardProps) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem 
-                    onClick={handleContractAction}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleContractAction();
+                    }}
                     disabled={isGenerating || checkingContract}
                   >
                     <FileText className="h-4 w-4 mr-2" />
@@ -134,9 +158,29 @@ export function DealCard({ deal, index }: DealCardProps) {
                       isGenerating ? 'Gerando...' : 'Gerar Contrato'
                     )}
                   </DropdownMenuItem>
-                  <DropdownMenuItem>Editar</DropdownMenuItem>
-                  <DropdownMenuItem>Duplicar</DropdownMenuItem>
-                  <DropdownMenuItem className="text-destructive">
+                  <DropdownMenuItem 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit?.(deal);
+                    }}
+                  >
+                    Editar
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDuplicate?.(deal);
+                    }}
+                  >
+                    Duplicar
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    className="text-destructive"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete?.(deal);
+                    }}
+                  >
                     Excluir
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -188,13 +232,29 @@ export function DealCard({ deal, index }: DealCardProps) {
                 
                 <div className="flex gap-1">
                   {deal.contact.email && (
-                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-6 w-6 p-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEmailInteraction?.(deal);
+                      }}
+                    >
                       <Mail className="h-3 w-3" />
                     </Button>
                   )}
                   
                   {deal.contact.phone && (
-                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-6 w-6 p-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onPhoneInteraction?.(deal);
+                      }}
+                    >
                       <Phone className="h-3 w-3" />
                     </Button>
                   )}
@@ -235,6 +295,33 @@ export function DealCard({ deal, index }: DealCardProps) {
                 Origem: {deal.source}
               </div>
             )}
+
+            {/* Action Buttons */}
+            <div className="flex gap-2 pt-3 border-t">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex-1"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAddInteraction?.(deal);
+                }}
+              >
+                <MessageSquare className="h-4 w-4 mr-2" />
+                Nova Interação
+              </Button>
+              <Button 
+                variant="default" 
+                size="sm" 
+                className="flex-1"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onViewDetails?.(deal);
+                }}
+              >
+                Ver Detalhes
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}
