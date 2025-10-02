@@ -17,7 +17,7 @@ export function useCRMContractIntegration() {
       .from('legal_contracts')
       .select('id')
       .eq('deal_id', dealId)
-      .eq('is_active', true)
+      .in('status', ['draft', 'pending_review', 'pending_signature', 'active'])
       .maybeSingle();
 
     if (error) {

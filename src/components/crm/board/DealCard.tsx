@@ -296,30 +296,32 @@ export function DealCard({
               </div>
             )}
 
-            {/* Action Buttons */}
-            <div className="flex gap-2 pt-3 border-t">
+            {/* Action Buttons - Responsive */}
+            <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t">
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="flex-1"
+                className="flex-1 text-xs sm:text-sm"
                 onClick={(e) => {
                   e.stopPropagation();
                   onAddInteraction?.(deal);
                 }}
               >
-                <MessageSquare className="h-4 w-4 mr-2" />
-                Nova Interação
+                <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Nova Interação</span>
+                <span className="sm:hidden">Interação</span>
               </Button>
               <Button 
                 variant="default" 
                 size="sm" 
-                className="flex-1"
+                className="flex-1 text-xs sm:text-sm"
                 onClick={(e) => {
                   e.stopPropagation();
                   onViewDetails?.(deal);
                 }}
               >
-                Ver Detalhes
+                <span className="hidden sm:inline">Ver Detalhes</span>
+                <span className="sm:hidden">Detalhes</span>
               </Button>
             </div>
           </CardContent>

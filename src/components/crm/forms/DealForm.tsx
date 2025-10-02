@@ -20,7 +20,7 @@ import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import { useCRM, CRMStage } from '@/hooks/useCRM';
+import { useCRM, CRMStage, CRMDeal } from '@/hooks/useCRM';
 
 const dealSchema = z.object({
   title: z.string().min(1, 'Título é obrigatório'),
@@ -39,11 +39,13 @@ type DealFormData = z.infer<typeof dealSchema>;
 interface DealFormProps {
   pipelineId: string;
   stages: CRMStage[];
+  deal?: CRMDeal;
+  mode?: 'create' | 'edit';
   onSuccess?: () => void;
 }
 
-export function DealForm({ pipelineId, stages, onSuccess }: DealFormProps) {
-  const { createDeal, isCreatingDeal, contacts } = useCRM();
+export function DealForm({ pipelineId, stages, deal, mode = 'create', onSuccess }: DealFormProps) {
+  const { createDeal, isCreatingDeal, updateDeal, isUpdatingDeal, contacts } = useCRM();
 
   const form = useForm<DealFormData>({
     resolver: zodResolver(dealSchema),
@@ -59,6 +61,23 @@ export function DealForm({ pipelineId, stages, onSuccess }: DealFormProps) {
     }
   });
 
+  // Populate form when editing
+  React.useEffect(() => {
+    if (deal && mode === 'edit') {
+      form.reset({
+        title: deal.title,
+        description: deal.description || '',
+        stage_id: deal.stage_id,
+        contact_id: deal.contact_id || '',
+        value: deal.value?.toString() || '',
+        probability: deal.probability?.toString() || '50',
+        expected_close_date: deal.expected_close_date ? new Date(deal.expected_close_date) : undefined,
+        source: deal.source || '',
+        business_unit: deal.business_unit || '',
+      });
+    }
+  }, [deal, mode, form]);
+
   const onSubmit = (data: DealFormData) => {
     const dealData = {
       pipeline_id: pipelineId,
@@ -72,12 +91,16 @@ export function DealForm({ pipelineId, stages, onSuccess }: DealFormProps) {
       expected_close_date: data.expected_close_date?.toISOString().split('T')[0] || undefined,
       source: data.source || undefined,
       business_unit: data.business_unit as 'guilds' | 'guilds_lab' | 'guilds_craft' | 'doavya' | 'outros' | undefined,
-      tags: [],
-      custom_fields: {},
+      tags: deal?.tags || [],
+      custom_fields: deal?.custom_fields || {},
       is_active: true,
     };
 
-    createDeal(dealData);
+    if (mode === 'edit' && deal) {
+      updateDeal({ id: deal.id, ...dealData });
+    } else {
+      createDeal(dealData);
+    }
     
     if (onSuccess) {
       onSuccess();
@@ -327,8 +350,11 @@ export function DealForm({ pipelineId, stages, onSuccess }: DealFormProps) {
           <Button type="button" variant="outline" onClick={onSuccess}>
             Cancelar
           </Button>
-          <Button type="submit" disabled={isCreatingDeal}>
-            {isCreatingDeal ? 'Criando...' : 'Criar Oportunidade'}
+          <Button type="submit" disabled={isCreatingDeal || isUpdatingDeal}>
+            {mode === 'edit' 
+              ? (isUpdatingDeal ? 'Salvando...' : 'Salvar Alterações')
+              : (isCreatingDeal ? 'Criando...' : 'Criar Oportunidade')
+            }
           </Button>
         </div>
       </form>

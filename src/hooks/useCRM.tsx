@@ -374,6 +374,36 @@ export function useCRM() {
     }
   });
 
+  // Update deal mutation
+  const updateDeal = useMutation({
+    mutationFn: async (deal: Partial<CRMDeal> & { id: string }) => {
+      const { id, created_at, updated_at, contact, ...updateData } = deal as any;
+      const { data, error } = await supabase
+        .from('crm_deals')
+        .update(updateData)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-deals'] });
+      toast({
+        title: "Oportunidade atualizada",
+        description: "Oportunidade atualizada com sucesso!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao atualizar oportunidade",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
   // Move deal mutation
   const moveDeal = useMutation({
     mutationFn: async ({ dealId, stageId }: { dealId: string; stageId: string }) => {
@@ -456,6 +486,9 @@ export function useCRM() {
     
     createDeal: createDeal.mutate,
     isCreatingDeal: createDeal.isPending,
+    
+    updateDeal: updateDeal.mutate,
+    isUpdatingDeal: updateDeal.isPending,
     
     moveDeal: moveDeal.mutate,
     isMovingDeal: moveDeal.isPending,

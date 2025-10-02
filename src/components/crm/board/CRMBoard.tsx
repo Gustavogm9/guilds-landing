@@ -277,22 +277,34 @@ export function CRMBoard() {
         </div>
         
         <div className="flex items-center gap-2">
-          <Dialog open={showDealForm} onOpenChange={setShowDealForm}>
+          <Dialog open={showDealForm} onOpenChange={(open) => {
+            setShowDealForm(open);
+            if (!open) setDealToEdit(null);
+          }}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="h-4 w-4 mr-2" />
                 Nova Oportunidade
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Nova Oportunidade</DialogTitle>
+                <DialogTitle>
+                  {dealToEdit ? 'Editar Oportunidade' : 'Nova Oportunidade'}
+                </DialogTitle>
               </DialogHeader>
-              <DealForm
-                pipelineId={selectedPipelineId}
-                stages={stages || []}
-                onSuccess={() => setShowDealForm(false)}
-              />
+              {stages && stages.length > 0 && (
+                <DealForm 
+                  pipelineId={selectedPipelineId}
+                  stages={stages}
+                  deal={dealToEdit || undefined}
+                  mode={dealToEdit ? 'edit' : 'create'}
+                  onSuccess={() => {
+                    setShowDealForm(false);
+                    setDealToEdit(null);
+                  }}
+                />
+              )}
             </DialogContent>
           </Dialog>
           
