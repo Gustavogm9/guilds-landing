@@ -664,6 +664,141 @@ export function useCRM() {
     },
   });
 
+  // Pipeline mutations
+  const updatePipeline = useMutation({
+    mutationFn: async ({ pipelineId, updates }: { pipelineId: string; updates: Partial<CRMPipeline> }) => {
+      const { data, error } = await supabase
+        .from('crm_pipelines')
+        .update(updates)
+        .eq('id', pipelineId)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-pipelines'] });
+      toast({
+        title: "Pipeline atualizado",
+        description: "Pipeline atualizado com sucesso!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao atualizar pipeline",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
+  const deletePipeline = useMutation({
+    mutationFn: async (pipelineId: string) => {
+      const { error } = await supabase
+        .from('crm_pipelines')
+        .update({ is_active: false })
+        .eq('id', pipelineId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-pipelines'] });
+      toast({
+        title: "Pipeline excluído",
+        description: "Pipeline foi arquivado com sucesso",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao excluir pipeline",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Stage mutations
+  const updateStage = useMutation({
+    mutationFn: async ({ stageId, updates }: { stageId: string; updates: Partial<CRMStage> }) => {
+      const { data, error } = await supabase
+        .from('crm_stages')
+        .update(updates)
+        .eq('id', stageId)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-stages'] });
+      toast({
+        title: "Estágio atualizado",
+        description: "Estágio atualizado com sucesso!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao atualizar estágio",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
+  const deleteStage = useMutation({
+    mutationFn: async (stageId: string) => {
+      const { error } = await supabase
+        .from('crm_stages')
+        .update({ is_active: false })
+        .eq('id', stageId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-stages'] });
+      queryClient.invalidateQueries({ queryKey: ['crm-deals'] });
+      toast({
+        title: "Estágio excluído",
+        description: "Estágio foi desativado com sucesso",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao excluir estágio",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
+  const reorderStages = useMutation({
+    mutationFn: async (stageIds: string[]) => {
+      const updates = stageIds.map((stageId, index) => 
+        supabase
+          .from('crm_stages')
+          .update({ display_order: index })
+          .eq('id', stageId)
+      );
+      
+      const results = await Promise.all(updates);
+      const errors = results.filter(r => r.error);
+      
+      if (errors.length > 0) throw new Error('Erro ao reordenar estágios');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-stages'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao reordenar estágios",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
   return {
     // Data
     pipelines,
@@ -726,6 +861,22 @@ export function useCRM() {
     
     deleteRecurringActivity: deleteRecurringActivity.mutate,
     isDeletingRecurringActivity: deleteRecurringActivity.isPending,
+    
+    // Pipeline & Stage Management
+    updatePipeline: updatePipeline.mutate,
+    isUpdatingPipeline: updatePipeline.isPending,
+    
+    deletePipeline: deletePipeline.mutate,
+    isDeletingPipeline: deletePipeline.isPending,
+    
+    updateStage: updateStage.mutate,
+    isUpdatingStage: updateStage.isPending,
+    
+    deleteStage: deleteStage.mutate,
+    isDeletingStage: deleteStage.isPending,
+    
+    reorderStages: reorderStages.mutate,
+    isReorderingStages: reorderStages.isPending,
     
     // Errors
     pipelinesError

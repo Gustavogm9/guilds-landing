@@ -21,7 +21,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { ActivityScheduleModal } from '../activities/ActivityScheduleModal';
-
+import { CRMBoardSettings } from './CRMBoardSettings';
+ 
 export function CRMBoard() {
   const [selectedPipelineId, setSelectedPipelineId] = useState<string>('');
   const [viewMode, setViewMode] = useState<'kanban' | 'list'>('kanban');
@@ -38,8 +39,20 @@ export function CRMBoard() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [activityForDeal, setActivityForDeal] = useState<CRMDeal | null>(null);
+  const [showBoardSettings, setShowBoardSettings] = useState(false);
   
-  const { pipelines, pipelinesLoading, fetchStagesByPipeline, fetchDealsByPipeline, moveDeal } = useCRM();
+  const { 
+    pipelines, 
+    pipelinesLoading, 
+    fetchStagesByPipeline, 
+    fetchDealsByPipeline, 
+    moveDeal,
+    updatePipeline,
+    updateStage,
+    deleteStage,
+    reorderStages,
+    createStage,
+  } = useCRM();
   const { notifications, markAsRead, markAllAsRead, archive: archiveNotification, handleAction } = useCRMNotifications();
 
   // Set default pipeline when pipelines load
@@ -316,7 +329,11 @@ export function CRMBoard() {
             </DialogContent>
           </Dialog>
           
-          <Button type="button" variant="outline">
+          <Button 
+            type="button" 
+            variant="outline"
+            onClick={() => setShowBoardSettings(true)}
+          >
             <Settings className="h-4 w-4 mr-2" />
             Configurações
           </Button>
@@ -536,6 +553,21 @@ export function CRMBoard() {
         dealId={activityForDeal?.id}
         contactId={activityForDeal?.contact_id}
       />
+
+      {/* Board Settings */}
+      {selectedPipeline && stages && (
+        <CRMBoardSettings
+          open={showBoardSettings}
+          onOpenChange={setShowBoardSettings}
+          pipeline={selectedPipeline}
+          stages={stages}
+          onUpdatePipeline={(pipelineId, updates) => updatePipeline({ pipelineId, updates })}
+          onUpdateStage={(stageId, updates) => updateStage({ stageId, updates })}
+          onDeleteStage={deleteStage}
+          onReorderStages={reorderStages}
+          onCreateStage={(stage) => createStage(stage as any)}
+        />
+      )}
     </div>
   );
 }
