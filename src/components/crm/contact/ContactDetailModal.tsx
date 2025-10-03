@@ -29,12 +29,18 @@ import {
   Globe,
   Linkedin,
   Twitter,
-  Edit
+  Edit,
+  History,
+  Plus
 } from 'lucide-react';
 import { CRMContact, CRMContactInteraction, useCRM } from '@/hooks/useCRM';
+import { useCRMAuditLog, CRMAuditLog } from '@/hooks/useCRMAuditLog';
 import { formatDistanceToNow, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useQuery } from '@tanstack/react-query';
+import { AuditLogTimeline } from '../audit/AuditLogTimeline';
+import { EditHistoricalEventModal } from '../audit/EditHistoricalEventModal';
+import { AddManualEventModal } from '../audit/AddManualEventModal';
 
 interface ContactDetailModalProps {
   contact: CRMContact | null;
@@ -50,6 +56,9 @@ export function ContactDetailModal({
   onEdit 
 }: ContactDetailModalProps) {
   const { fetchContactInteractions, fetchProductInterests } = useCRM();
+  const { useContactAuditLogs } = useCRMAuditLog();
+  const [editingLog, setEditingLog] = useState<CRMAuditLog | null>(null);
+  const [showAddEventModal, setShowAddEventModal] = useState(false);
 
   const { data: interactions = [] } = useQuery({
     queryKey: ['contact-interactions', contact?.id],
@@ -62,6 +71,8 @@ export function ContactDetailModal({
     queryFn: () => contact ? fetchProductInterests(contact.id) : Promise.resolve([]),
     enabled: !!contact
   });
+
+  const { data: auditLogs = [], isLoading: auditLogsLoading } = useContactAuditLogs(contact?.id || '');
 
   if (!contact) return null;
 
@@ -162,10 +173,14 @@ export function ContactDetailModal({
         </DialogHeader>
 
         <Tabs defaultValue="overview" className="flex-1">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Visão Geral</TabsTrigger>
             <TabsTrigger value="interactions">Interações ({interactions.length})</TabsTrigger>
             <TabsTrigger value="interests">Produtos</TabsTrigger>
+            <TabsTrigger value="history">
+              <History className="h-4 w-4 mr-2" />
+              Histórico
+            </TabsTrigger>
             <TabsTrigger value="details">Detalhes</TabsTrigger>
           </TabsList>
 
@@ -413,6 +428,26 @@ export function ContactDetailModal({
               )}
             </TabsContent>
 
+            <TabsContent value="history" className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-medium">Histórico de Alterações</h3>
+                <Button variant="outline" size="sm" onClick={() => setShowAddEventModal(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Adicionar Evento Manual
+                </Button>
+              </div>
+              {auditLogsLoading ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Carregando histórico...</p>
+                </div>
+              ) : (
+                <AuditLogTimeline 
+                  logs={auditLogs} 
+                  onEditEvent={(log) => setEditingLog(log)}
+                />
+              )}
+            </TabsContent>
+
             <TabsContent value="details" className="space-y-4">
               {/* Next Action */}
               {contact.next_action && (
@@ -478,6 +513,20 @@ export function ContactDetailModal({
           </ScrollArea>
         </Tabs>
       </DialogContent>
+
+      {/* Modals */}
+      <EditHistoricalEventModal
+        log={editingLog}
+        open={!!editingLog}
+        onOpenChange={(open) => !open && setEditingLog(null)}
+      />
+      
+      <AddManualEventModal
+        open={showAddEventModal}
+        onOpenChange={setShowAddEventModal}
+        defaultEntityType="contact"
+        defaultEntityId={contact.id}
+      />
     </Dialog>
   );
 }

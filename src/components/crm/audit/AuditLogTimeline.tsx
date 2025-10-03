@@ -19,6 +19,7 @@ import { CRMAuditLog } from '@/hooks/useCRMAuditLog';
 interface AuditLogTimelineProps {
   logs: CRMAuditLog[];
   onEditEvent?: (log: CRMAuditLog) => void;
+  showFilters?: boolean;
 }
 
 const getActionIcon = (actionType: string) => {

@@ -4,6 +4,7 @@ import { CRMBoard } from '@/components/crm/board/CRMBoard';
 import CRMAdmin from '@/components/admin/CRMAdmin';
 import { LeadScoringDashboard } from '@/components/crm/lead-scoring/LeadScoringDashboard';
 import { Agenda } from '@/pages/Agenda';
+import { CRMHistoryAdmin } from '@/components/crm/audit/CRMHistoryAdmin';
 
 export default function CRMRoutes() {
   return (
@@ -13,6 +14,7 @@ export default function CRMRoutes() {
       <Route path="kanban" element={<CRMBoard />} />
       <Route path="scoring" element={<LeadScoringDashboard />} />
       <Route path="agenda" element={<Agenda />} />
+      <Route path="history" element={<CRMHistoryAdmin />} />
     </Routes>
   );
 }

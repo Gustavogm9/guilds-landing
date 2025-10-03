@@ -79,6 +79,7 @@ const menuItems: MenuItem[] = [
       { title: "Board Kanban", icon: Kanban, url: "/admin/crm/board" },
       { title: "Lead Scoring", icon: TrendingUp, url: "/admin/crm/scoring" },
       { title: "Agenda", icon: Calendar, url: "/admin/crm/agenda" },
+      { title: "Histórico Global", icon: Activity, url: "/admin/crm/history" },
       { title: "Formulários", icon: FileText, url: "/admin/forms" },
       { title: "Campanhas", icon: Mail, url: "/admin/campaigns" },
       { title: "Automações", icon: Zap, url: "/admin/automation" }

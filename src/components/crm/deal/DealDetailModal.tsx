@@ -23,7 +23,8 @@ import {
   Edit,
   FileText,
   Activity,
-  History
+  History,
+  Plus
 } from 'lucide-react';
 import { CRMDeal, useCRM } from '@/hooks/useCRM';
 import { useCRMAuditLog, CRMAuditLog } from '@/hooks/useCRMAuditLog';
@@ -32,6 +33,7 @@ import { ptBR } from 'date-fns/locale';
 import { useQuery } from '@tanstack/react-query';
 import { AuditLogTimeline } from '../audit/AuditLogTimeline';
 import { EditHistoricalEventModal } from '../audit/EditHistoricalEventModal';
+import { AddManualEventModal } from '../audit/AddManualEventModal';
 
 interface DealDetailModalProps {
   deal: CRMDeal | null;
@@ -49,6 +51,7 @@ export function DealDetailModal({
   const { fetchContactInteractions } = useCRM();
   const { useDealAuditLogs } = useCRMAuditLog();
   const [editingLog, setEditingLog] = useState<CRMAuditLog | null>(null);
+  const [showAddEventModal, setShowAddEventModal] = useState(false);
 
   const { data: interactions = [] } = useQuery({
     queryKey: ['deal-interactions', deal?.contact?.id],
@@ -260,6 +263,13 @@ export function DealDetailModal({
             </TabsContent>
 
             <TabsContent value="history" className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-medium">Histórico de Alterações</h3>
+                <Button variant="outline" size="sm" onClick={() => setShowAddEventModal(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Adicionar Evento Manual
+                </Button>
+              </div>
               {auditLogsLoading ? (
                 <div className="text-center py-8">
                   <p className="text-muted-foreground">Carregando histórico...</p>
@@ -293,10 +303,18 @@ export function DealDetailModal({
         </Tabs>
       </DialogContent>
 
+      {/* Modals */}
       <EditHistoricalEventModal
         log={editingLog}
         open={!!editingLog}
         onOpenChange={(open) => !open && setEditingLog(null)}
+      />
+      
+      <AddManualEventModal
+        open={showAddEventModal}
+        onOpenChange={setShowAddEventModal}
+        defaultEntityType="deal"
+        defaultEntityId={deal.id}
       />
     </Dialog>
   );
