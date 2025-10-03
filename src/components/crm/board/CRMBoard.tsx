@@ -52,13 +52,15 @@ export function CRMBoard() {
     deleteStage,
     reorderStages,
     createStage,
+    setDefaultPipeline,
   } = useCRM();
   const { notifications, markAsRead, markAllAsRead, archive: archiveNotification, handleAction } = useCRMNotifications();
 
-  // Set default pipeline when pipelines load
+  // Select default pipeline or first pipeline
   React.useEffect(() => {
     if (pipelines && pipelines.length > 0 && !selectedPipelineId) {
-      setSelectedPipelineId(pipelines[0].id);
+      const defaultPipeline = pipelines.find(p => p.is_default);
+      setSelectedPipelineId(defaultPipeline?.id || pipelines[0].id);
     }
   }, [pipelines, selectedPipelineId]);
 
@@ -293,6 +295,9 @@ export function CRMBoard() {
               style={{ backgroundColor: `${selectedPipeline.color}20`, color: selectedPipeline.color }}
             >
               {selectedPipeline.name}
+              {selectedPipeline.is_default && (
+                <span className="ml-1">⭐</span>
+              )}
             </Badge>
           )}
         </div>
@@ -566,6 +571,7 @@ export function CRMBoard() {
           onDeleteStage={deleteStage}
           onReorderStages={reorderStages}
           onCreateStage={(stage) => createStage(stage as any)}
+          onSetDefaultPipeline={setDefaultPipeline}
         />
       )}
     </div>

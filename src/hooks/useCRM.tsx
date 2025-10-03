@@ -10,6 +10,7 @@ export interface CRMPipeline {
   type: 'sales' | 'support' | 'projects';
   color: string;
   is_active: boolean;
+  is_default?: boolean;
   display_order: number;
   created_at: string;
   updated_at: string;
@@ -718,6 +719,31 @@ export function useCRM() {
     }
   });
 
+  const setDefaultPipeline = useMutation({
+    mutationFn: async (pipelineId: string) => {
+      const { error } = await supabase
+        .from('crm_pipelines')
+        .update({ is_default: true })
+        .eq('id', pipelineId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-pipelines'] });
+      toast({
+        title: "Pipeline padrão definido",
+        description: "Pipeline marcado como padrão com sucesso!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao definir pipeline padrão",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
   // Stage mutations
   const updateStage = useMutation({
     mutationFn: async ({ stageId, updates }: { stageId: string; updates: Partial<CRMStage> }) => {
@@ -868,6 +894,9 @@ export function useCRM() {
     
     deletePipeline: deletePipeline.mutate,
     isDeletingPipeline: deletePipeline.isPending,
+    
+    setDefaultPipeline: setDefaultPipeline.mutate,
+    isSettingDefaultPipeline: setDefaultPipeline.isPending,
     
     updateStage: updateStage.mutate,
     isUpdatingStage: updateStage.isPending,

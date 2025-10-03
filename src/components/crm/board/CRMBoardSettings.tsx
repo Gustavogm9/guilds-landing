@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { Palette, GripVertical, Pencil, Trash2, Plus, Save, X } from 'lucide-react';
+import { Palette, GripVertical, Pencil, Trash2, Plus, Save, X, Star } from 'lucide-react';
 import { CRMPipeline, CRMStage } from '@/hooks/useCRM';
 import { toast } from 'sonner';
 
@@ -26,6 +26,7 @@ interface CRMBoardSettingsProps {
   onDeleteStage: (stageId: string) => void;
   onReorderStages: (stageIds: string[]) => void;
   onCreateStage: (stage: Partial<CRMStage>) => void;
+  onSetDefaultPipeline: (pipelineId: string) => void;
 }
 
 export function CRMBoardSettings({
@@ -38,6 +39,7 @@ export function CRMBoardSettings({
   onDeleteStage,
   onReorderStages,
   onCreateStage,
+  onSetDefaultPipeline,
 }: CRMBoardSettingsProps) {
   const [activeTab, setActiveTab] = useState<'pipeline' | 'stages' | 'view'>('pipeline');
   
@@ -201,6 +203,13 @@ export function CRMBoardSettings({
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {pipeline.is_default && (
+                    <Badge variant="secondary" className="flex items-center gap-1 w-fit">
+                      <Star className="h-3 w-3 fill-current" />
+                      Pipeline Padrão
+                    </Badge>
+                  )}
+                  
                   <div className="space-y-2">
                     <Label htmlFor="pipeline-name">Nome</Label>
                     <Input
@@ -267,6 +276,30 @@ export function CRMBoardSettings({
                     <Switch
                       checked={pipelineActive}
                       onCheckedChange={setPipelineActive}
+                    />
+                  </div>
+
+                  <Separator />
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label htmlFor="pipeline-default" className="flex items-center gap-2">
+                        <Star className="h-4 w-4" />
+                        Pipeline Padrão
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Exibir este pipeline ao abrir a página do CRM
+                      </p>
+                    </div>
+                    <Switch
+                      id="pipeline-default"
+                      checked={pipeline.is_default || false}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          onSetDefaultPipeline(pipeline.id);
+                        }
+                      }}
+                      disabled={pipeline.is_default}
                     />
                   </div>
 
