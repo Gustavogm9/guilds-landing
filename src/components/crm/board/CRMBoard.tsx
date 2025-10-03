@@ -5,10 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Settings, List, Grid3X3, BarChart3, Bell, Filter } from 'lucide-react';
+import { Plus, Settings, List, Grid3X3, BarChart3, Bell, Filter, Star, User, Clock } from 'lucide-react';
 import { KanbanColumn } from './KanbanColumn';
 import { DealForm } from '../forms/DealForm';
 import { useCRM, CRMDeal } from '@/hooks/useCRM';
+import { useUserCRMPreferences } from '@/hooks/useUserCRMPreferences';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CRMFilters, type CRMFilters as CRMFiltersType } from '../filters/CRMFilters';
@@ -55,14 +56,52 @@ export function CRMBoard() {
     setDefaultPipeline,
   } = useCRM();
   const { notifications, markAsRead, markAllAsRead, archive: archiveNotification, handleAction } = useCRMNotifications();
+  
+  // User preferences
+  const { 
+    preferences: userPreferences, 
+    updateLastViewedPipeline 
+  } = useUserCRMPreferences();
 
-  // Select default pipeline or first pipeline
+  // Cascading pipeline selection logic
   React.useEffect(() => {
     if (pipelines && pipelines.length > 0 && !selectedPipelineId) {
-      const defaultPipeline = pipelines.find(p => p.is_default);
-      setSelectedPipelineId(defaultPipeline?.id || pipelines[0].id);
+      let targetPipeline;
+      
+      // 1. User's default preference
+      if (userPreferences?.default_pipeline_id) {
+        targetPipeline = pipelines.find(p => p.id === userPreferences.default_pipeline_id);
+      }
+      
+      // 2. Last viewed by user
+      if (!targetPipeline && userPreferences?.last_viewed_pipeline_id) {
+        targetPipeline = pipelines.find(p => p.id === userPreferences.last_viewed_pipeline_id);
+      }
+      
+      // 3. Global default
+      if (!targetPipeline) {
+        targetPipeline = pipelines.find(p => p.is_default);
+      }
+      
+      // 4. First pipeline
+      if (!targetPipeline) {
+        targetPipeline = pipelines[0];
+      }
+      
+      setSelectedPipelineId(targetPipeline.id);
     }
-  }, [pipelines, selectedPipelineId]);
+  }, [pipelines, selectedPipelineId, userPreferences]);
+
+  // Auto-save last viewed pipeline (debounced)
+  React.useEffect(() => {
+    if (selectedPipelineId && userPreferences !== undefined) {
+      const timer = setTimeout(() => {
+        updateLastViewedPipeline(selectedPipelineId);
+      }, 1500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [selectedPipelineId, updateLastViewedPipeline, userPreferences]);
 
   // Fetch stages for selected pipeline
   const { data: stages, isLoading: stagesLoading } = useQuery({
@@ -293,11 +332,20 @@ export function CRMBoard() {
             <Badge 
               variant="secondary" 
               style={{ backgroundColor: `${selectedPipeline.color}20`, color: selectedPipeline.color }}
+              className="flex items-center gap-1"
             >
-              {selectedPipeline.name}
-              {selectedPipeline.is_default && (
-                <span className="ml-1">⭐</span>
+              {userPreferences?.default_pipeline_id === selectedPipeline.id && (
+                <User className="h-3 w-3" />
               )}
+              {selectedPipeline.is_default && !userPreferences?.default_pipeline_id && (
+                <Star className="h-3 w-3 fill-current" />
+              )}
+              {userPreferences?.last_viewed_pipeline_id === selectedPipeline.id && 
+               userPreferences?.default_pipeline_id !== selectedPipeline.id && 
+               !selectedPipeline.is_default && (
+                <Clock className="h-3 w-3" />
+              )}
+              {selectedPipeline.name}
             </Badge>
           )}
         </div>

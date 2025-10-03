@@ -16,6 +16,20 @@ export interface CRMPipeline {
   updated_at: string;
 }
 
+export interface UserCRMPreferences {
+  id: string;
+  user_id: string;
+  default_pipeline_id?: string | null;
+  last_viewed_pipeline_id?: string | null;
+  board_density: 'compact' | 'comfortable' | 'spacious';
+  show_card_value: boolean;
+  show_card_probability: boolean;
+  show_card_close_date: boolean;
+  show_stage_metrics: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface CRMStage {
   id: string;
   pipeline_id: string;

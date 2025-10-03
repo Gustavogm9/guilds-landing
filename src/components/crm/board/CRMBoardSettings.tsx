@@ -10,10 +10,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { Palette, GripVertical, Pencil, Trash2, Plus, Save, X, Star } from 'lucide-react';
+import { Palette, GripVertical, Pencil, Trash2, Plus, Save, X, Star, User } from 'lucide-react';
 import { CRMPipeline, CRMStage } from '@/hooks/useCRM';
+import { useUserCRMPreferences } from '@/hooks/useUserCRMPreferences';
 import { toast } from 'sonner';
 
 interface CRMBoardSettingsProps {
@@ -41,6 +43,12 @@ export function CRMBoardSettings({
   onCreateStage,
   onSetDefaultPipeline,
 }: CRMBoardSettingsProps) {
+  const { 
+    preferences: userPreferences, 
+    updateDefaultPipeline,
+    isUpdatingDefault 
+  } = useUserCRMPreferences();
+  
   const [activeTab, setActiveTab] = useState<'pipeline' | 'stages' | 'view'>('pipeline');
   
   // Pipeline editing state
@@ -301,6 +309,57 @@ export function CRMBoardSettings({
                       }}
                       disabled={pipeline.is_default}
                     />
+                  </div>
+
+                  {pipeline.is_default && (
+                    <Badge variant="secondary" className="flex items-center gap-1">
+                      <Star className="h-3 w-3 fill-current" />
+                      Pipeline Padrão Global
+                    </Badge>
+                  )}
+
+                  <Separator />
+
+                  {/* User Personal Preferences */}
+                  <div className="space-y-4">
+                    <Label className="text-sm font-semibold">Minhas Preferências</Label>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label htmlFor="user-default-pipeline">
+                          Meu Pipeline Padrão
+                        </Label>
+                        <p className="text-sm text-muted-foreground">
+                          Este pipeline será exibido quando você abrir o CRM
+                        </p>
+                      </div>
+                      <Switch
+                        id="user-default-pipeline"
+                        checked={userPreferences?.default_pipeline_id === pipeline.id}
+                        onCheckedChange={(checked) => {
+                          updateDefaultPipeline(checked ? pipeline.id : null);
+                        }}
+                        disabled={isUpdatingDefault}
+                      />
+                    </div>
+                    
+                    {userPreferences?.default_pipeline_id === pipeline.id && (
+                      <Alert>
+                        <User className="h-4 w-4" />
+                        <AlertDescription>
+                          Este é seu pipeline padrão pessoal
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                    
+                    {userPreferences?.last_viewed_pipeline_id === pipeline.id && 
+                     userPreferences?.default_pipeline_id !== pipeline.id && (
+                      <Alert variant="default">
+                        <AlertDescription className="text-sm text-muted-foreground">
+                          💡 Último pipeline visualizado
+                        </AlertDescription>
+                      </Alert>
+                    )}
                   </div>
 
                   <Button onClick={handleSavePipeline} className="w-full">

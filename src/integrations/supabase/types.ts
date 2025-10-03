@@ -4416,6 +4416,63 @@ export type Database = {
         }
         Relationships: []
       }
+      user_crm_preferences: {
+        Row: {
+          board_density: string | null
+          created_at: string
+          default_pipeline_id: string | null
+          id: string
+          last_viewed_pipeline_id: string | null
+          show_card_close_date: boolean | null
+          show_card_probability: boolean | null
+          show_card_value: boolean | null
+          show_stage_metrics: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          board_density?: string | null
+          created_at?: string
+          default_pipeline_id?: string | null
+          id?: string
+          last_viewed_pipeline_id?: string | null
+          show_card_close_date?: boolean | null
+          show_card_probability?: boolean | null
+          show_card_value?: boolean | null
+          show_stage_metrics?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          board_density?: string | null
+          created_at?: string
+          default_pipeline_id?: string | null
+          id?: string
+          last_viewed_pipeline_id?: string | null
+          show_card_close_date?: boolean | null
+          show_card_probability?: boolean | null
+          show_card_value?: boolean | null
+          show_stage_metrics?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_crm_preferences_default_pipeline_id_fkey"
+            columns: ["default_pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "crm_pipelines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_crm_preferences_last_viewed_pipeline_id_fkey"
+            columns: ["last_viewed_pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "crm_pipelines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_permissions: {
         Row: {
           action: Database["public"]["Enums"]["permission_action"]
