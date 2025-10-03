@@ -1211,6 +1211,54 @@ export type Database = {
           },
         ]
       }
+      crm_audit_log: {
+        Row: {
+          action_type: string
+          change_description: string | null
+          changed_by: string | null
+          created_at: string
+          entity_id: string
+          entity_type: string
+          event_timestamp: string
+          field_name: string | null
+          id: string
+          is_manual_edit: boolean | null
+          metadata: Json | null
+          new_value: string | null
+          old_value: string | null
+        }
+        Insert: {
+          action_type: string
+          change_description?: string | null
+          changed_by?: string | null
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          event_timestamp?: string
+          field_name?: string | null
+          id?: string
+          is_manual_edit?: boolean | null
+          metadata?: Json | null
+          new_value?: string | null
+          old_value?: string | null
+        }
+        Update: {
+          action_type?: string
+          change_description?: string | null
+          changed_by?: string | null
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          event_timestamp?: string
+          field_name?: string | null
+          id?: string
+          is_manual_edit?: boolean | null
+          metadata?: Json | null
+          new_value?: string | null
+          old_value?: string | null
+        }
+        Relationships: []
+      }
       crm_contact_interactions: {
         Row: {
           channel_data: Json | null

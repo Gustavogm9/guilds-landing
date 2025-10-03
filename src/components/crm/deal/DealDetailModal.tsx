@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -22,12 +22,16 @@ import {
   User,
   Edit,
   FileText,
-  Activity
+  Activity,
+  History
 } from 'lucide-react';
 import { CRMDeal, useCRM } from '@/hooks/useCRM';
+import { useCRMAuditLog, CRMAuditLog } from '@/hooks/useCRMAuditLog';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useQuery } from '@tanstack/react-query';
+import { AuditLogTimeline } from '../audit/AuditLogTimeline';
+import { EditHistoricalEventModal } from '../audit/EditHistoricalEventModal';
 
 interface DealDetailModalProps {
   deal: CRMDeal | null;
@@ -43,12 +47,16 @@ export function DealDetailModal({
   onEdit 
 }: DealDetailModalProps) {
   const { fetchContactInteractions } = useCRM();
+  const { useDealAuditLogs } = useCRMAuditLog();
+  const [editingLog, setEditingLog] = useState<CRMAuditLog | null>(null);
 
   const { data: interactions = [] } = useQuery({
     queryKey: ['deal-interactions', deal?.contact?.id],
     queryFn: () => deal?.contact ? fetchContactInteractions(deal.contact.id) : Promise.resolve([]),
     enabled: !!deal?.contact
   });
+
+  const { data: auditLogs = [], isLoading: auditLogsLoading } = useDealAuditLogs(deal?.id || '');
 
   if (!deal) return null;
 
@@ -112,9 +120,13 @@ export function DealDetailModal({
         </DialogHeader>
 
         <Tabs defaultValue="overview" className="flex-1">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Visão Geral</TabsTrigger>
             <TabsTrigger value="interactions">Interações ({interactions.length})</TabsTrigger>
+            <TabsTrigger value="history">
+              <History className="h-4 w-4 mr-2" />
+              Histórico
+            </TabsTrigger>
             <TabsTrigger value="details">Detalhes</TabsTrigger>
           </TabsList>
 
@@ -247,6 +259,19 @@ export function DealDetailModal({
               )}
             </TabsContent>
 
+            <TabsContent value="history" className="space-y-4">
+              {auditLogsLoading ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Carregando histórico...</p>
+                </div>
+              ) : (
+                <AuditLogTimeline 
+                  logs={auditLogs} 
+                  onEditEvent={(log) => setEditingLog(log)}
+                />
+              )}
+            </TabsContent>
+
             <TabsContent value="details" className="space-y-4">
               <Card>
                 <CardHeader>
@@ -267,6 +292,12 @@ export function DealDetailModal({
           </ScrollArea>
         </Tabs>
       </DialogContent>
+
+      <EditHistoricalEventModal
+        log={editingLog}
+        open={!!editingLog}
+        onOpenChange={(open) => !open && setEditingLog(null)}
+      />
     </Dialog>
   );
 }
