@@ -158,40 +158,83 @@ const handler = async (req: Request): Promise<Response> => {
 
 // Função para aplicar regras de lead scoring
 async function applyLeadScoringRule(contact: any, rule: any, formData: any, behavioralData: any) {
-  const { condition_field, condition_operator, condition_value, score_points, score_multiplier } = rule;
+  const { condition_field, condition_operator, condition_value, points } = rule;
   
   // Combinar dados do contato, formulário e comportamental
-  const allData = { ...contact, ...formData, ...behavioralData };
+  const allData = { 
+    ...contact, 
+    ...formData,
+    ...behavioralData,
+    // Mapear campos do formulário para os campos esperados
+    job_title: formData.cargo || contact.job_title,
+    company_size: formData.tamanho_empresa || contact.company_size,
+    budget_range: formData.orcamento || contact.budget_range,
+    decision_timeline: formData.prazo || contact.decision_timeline,
+    // Calcular campos derivados
+    products_interest_count: contact.products_interest?.length || 0,
+    pain_points_count: contact.pain_points?.length || 0,
+    interaction_count: behavioralData.interaction_count || 0,
+    last_interaction_days: contact.last_interaction_date 
+      ? Math.floor((new Date().getTime() - new Date(contact.last_interaction_date).getTime()) / (1000 * 60 * 60 * 24))
+      : 999
+  };
+  
   const fieldValue = allData[condition_field];
-
   let applied = false;
   
-  switch (condition_operator) {
-    case 'equals':
-      applied = fieldValue === condition_value;
-      break;
-    case 'contains':
-      applied = fieldValue && fieldValue.toString().toLowerCase().includes(condition_value.toLowerCase());
-      break;
-    case 'greater_than':
-      applied = parseFloat(fieldValue) > parseFloat(condition_value);
-      break;
-    case 'less_than':
-      applied = parseFloat(fieldValue) < parseFloat(condition_value);
-      break;
-    case 'in_list':
-      const list = condition_value.split(',').map((s: string) => s.trim());
-      applied = list.includes(fieldValue);
-      break;
-    case 'regex':
-      const regex = new RegExp(condition_value, 'i');
-      applied = regex.test(fieldValue);
-      break;
+  try {
+    const conditionValues = Array.isArray(condition_value) ? condition_value : 
+                          typeof condition_value === 'string' ? JSON.parse(condition_value) : 
+                          [condition_value];
+    
+    switch (condition_operator) {
+      case 'equals':
+        applied = conditionValues.some(val => fieldValue === val);
+        break;
+      case 'not_equals':
+        applied = !conditionValues.some(val => fieldValue === val);
+        break;
+      case 'contains':
+        if (Array.isArray(fieldValue)) {
+          applied = conditionValues.some(val => fieldValue.includes(val));
+        } else if (typeof fieldValue === 'string') {
+          applied = conditionValues.some(val => 
+            fieldValue.toLowerCase().includes(String(val).toLowerCase())
+          );
+        }
+        break;
+      case 'not_contains':
+        if (Array.isArray(fieldValue)) {
+          applied = !conditionValues.some(val => fieldValue.includes(val));
+        } else if (typeof fieldValue === 'string') {
+          applied = !conditionValues.some(val => 
+            fieldValue.toLowerCase().includes(String(val).toLowerCase())
+          );
+        }
+        break;
+      case 'greater_than':
+        const numValue = parseFloat(fieldValue);
+        const numCondition = parseFloat(conditionValues[0]);
+        applied = !isNaN(numValue) && !isNaN(numCondition) && numValue > numCondition;
+        break;
+      case 'less_than':
+        const numValue2 = parseFloat(fieldValue);
+        const numCondition2 = parseFloat(conditionValues[0]);
+        applied = !isNaN(numValue2) && !isNaN(numCondition2) && numValue2 < numCondition2;
+        break;
+      case 'in_list':
+        applied = conditionValues.some(val => 
+          String(fieldValue).toLowerCase() === String(val).toLowerCase()
+        );
+        break;
+    }
+  } catch (error) {
+    console.error('Erro ao aplicar regra:', rule.rule_name, error);
   }
 
-  const points = applied ? Math.round(score_points * (score_multiplier || 1)) : 0;
+  const pointsAwarded = applied ? points : 0;
   
-  return { applied, points };
+  return { applied, points: pointsAwarded };
 }
 
 // Função para avaliar condições de trigger

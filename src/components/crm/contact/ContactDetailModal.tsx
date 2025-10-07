@@ -37,10 +37,12 @@ import { CRMContact, CRMContactInteraction, useCRM } from '@/hooks/useCRM';
 import { useCRMAuditLog, CRMAuditLog } from '@/hooks/useCRMAuditLog';
 import { formatDistanceToNow, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AuditLogTimeline } from '../audit/AuditLogTimeline';
 import { EditHistoricalEventModal } from '../audit/EditHistoricalEventModal';
 import { AddManualEventModal } from '../audit/AddManualEventModal';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface ContactDetailModalProps {
   contact: CRMContact | null;
@@ -59,6 +61,8 @@ export function ContactDetailModal({
   const { useContactAuditLogs } = useCRMAuditLog();
   const [editingLog, setEditingLog] = useState<CRMAuditLog | null>(null);
   const [showAddEventModal, setShowAddEventModal] = useState(false);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { data: interactions = [] } = useQuery({
     queryKey: ['contact-interactions', contact?.id],
@@ -220,38 +224,63 @@ export function ContactDetailModal({
               </Card>
 
               {/* Scores */}
-              <div className="grid grid-cols-3 gap-4">
-                <Card>
-                  <CardContent className="pt-6">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">Scores de Qualificação</CardTitle>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={async () => {
+                        try {
+                          await supabase.functions.invoke('advanced-lead-processor', {
+                            body: {
+                              contact_id: contact.id,
+                              source: 'manual_recalculation'
+                            }
+                          });
+                          toast({
+                            title: "Score recalculado",
+                            description: "Os scores foram atualizados com sucesso!",
+                          });
+                          queryClient.invalidateQueries({ queryKey: ['crm-contacts'] });
+                        } catch (error) {
+                          toast({
+                            title: "Erro",
+                            description: "Não foi possível recalcular o score.",
+                            variant: "destructive",
+                          });
+                        }
+                      }}
+                    >
+                      <TrendingUp className="h-4 w-4 mr-2" />
+                      Recalcular Score
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 gap-4">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-primary">
                         {contact.engagement_score || 0}
                       </div>
                       <div className="text-sm text-muted-foreground">Score de Engajamento</div>
                     </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-secondary">
                         {contact.icp_score || 0}%
                       </div>
                       <div className="text-sm text-muted-foreground">ICP Match</div>
                     </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-accent">
                         {contact.lead_score || 0}
                       </div>
                       <div className="text-sm text-muted-foreground">Lead Score</div>
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
+                  </div>
+                </CardContent>
+              </Card>
 
               {/* Business Info */}
               <Card>

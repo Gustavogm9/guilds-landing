@@ -432,8 +432,35 @@ export function useCRM() {
       if (error) throw error;
       return data;
     },
-    onSuccess: () => {
+    onSuccess: async (data) => {
       queryClient.invalidateQueries({ queryKey: ['crm-deals'] });
+      
+      // Verificar se moveu para stage de "Qualificação" e processar lead scoring
+      const { data: stage } = await supabase
+        .from('crm_stages')
+        .select('name')
+        .eq('id', data.stage_id)
+        .single();
+      
+      if (stage?.name?.toLowerCase().includes('qualif')) {
+        // Processar lead scoring automaticamente
+        if (data.contact_id) {
+          try {
+            await supabase.functions.invoke('advanced-lead-processor', {
+              body: {
+                contact_id: data.contact_id,
+                source: 'pipeline_qualification',
+                behavioral_data: {
+                  deal_id: data.id,
+                  moved_to_qualification: new Date().toISOString()
+                }
+              }
+            });
+          } catch (error) {
+            console.error('Erro ao processar lead scoring:', error);
+          }
+        }
+      }
     },
     onError: (error) => {
       toast({

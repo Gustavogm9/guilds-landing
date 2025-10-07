@@ -54,7 +54,7 @@ export const QualificationModal = ({ isOpen, onClose, sourcePage }: Qualificatio
   const { t } = useTranslation();
   const { getLocalizedPath } = useLocalizedNavigation();
 
-  // Create dynamic schema based on form fields
+  // Create dynamic schema based on form fields + strategic fields
   const createFormSchema = () => {
     const schemaFields: Record<string, any> = {};
 
@@ -82,15 +82,31 @@ export const QualificationModal = ({ isOpen, onClose, sourcePage }: Qualificatio
       schemaFields[field.field_name] = fieldSchema;
     });
 
+    // Adicionar campos estratégicos de qualificação
+    schemaFields.cargo = z.string().optional().or(z.literal(''));
+    schemaFields.tamanho_empresa = z.string().optional().or(z.literal(''));
+    schemaFields.orcamento = z.string().optional().or(z.literal(''));
+    schemaFields.prazo = z.string().optional().or(z.literal(''));
+    schemaFields.autoridade_decisao = z.string().optional().or(z.literal(''));
+
     return z.object(schemaFields);
   };
 
-  const form = useForm({
+  type FormValues = z.infer<ReturnType<typeof createFormSchema>>;
+
+  const form = useForm<FormValues>({
     resolver: zodResolver(createFormSchema()),
-    defaultValues: formFields.reduce((acc, field) => {
-      acc[field.field_name] = '';
-      return acc;
-    }, {} as Record<string, string>)
+    defaultValues: {
+      ...formFields.reduce((acc, field) => {
+        acc[field.field_name] = '';
+        return acc;
+      }, {} as Record<string, string>),
+      cargo: '',
+      tamanho_empresa: '',
+      orcamento: '',
+      prazo: '',
+      autoridade_decisao: ''
+    }
   });
 
   const onSubmit = async (data: Record<string, any>) => {
@@ -178,53 +194,170 @@ export const QualificationModal = ({ isOpen, onClose, sourcePage }: Qualificatio
             </DialogHeader>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {formFields.map((field) => (
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                {/* Campos dinâmicos do formulário */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-medium text-muted-foreground">Informações de Contato</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {formFields.map((field) => (
+                      <FormField
+                        key={field.id}
+                        control={form.control}
+                        name={field.field_name}
+                        render={({ field: formField }) => (
+                          <FormItem className={field.field_type === 'textarea' ? 'md:col-span-2' : ''}>
+                            <FormLabel>
+                              {field.field_label}
+                              {field.is_required && <span className="text-destructive ml-1">*</span>}
+                            </FormLabel>
+                            <FormControl>
+                              {field.field_type === 'select' ? (
+                                <Select onValueChange={formField.onChange} value={formField.value}>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder={field.placeholder_text || `Selecione ${field.field_label.toLowerCase()}`} />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {field.options?.map((option) => (
+                                      <SelectItem key={option} value={option}>
+                                        {option}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              ) : field.field_type === 'textarea' ? (
+                                <Textarea
+                                  {...formField}
+                                  placeholder={field.placeholder_text}
+                                  rows={4}
+                                  className="resize-none"
+                                />
+                              ) : (
+                                <Input
+                                  {...formField}
+                                  type={field.field_type}
+                                  placeholder={field.placeholder_text}
+                                />
+                              )}
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Campos estratégicos de qualificação */}
+                <div className="space-y-4 pt-4 border-t">
+                  <h3 className="text-sm font-medium text-muted-foreground">Informações do Projeto (Opcional)</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
-                      key={field.id}
                       control={form.control}
-                      name={field.field_name}
-                      render={({ field: formField }) => (
-                        <FormItem className={field.field_type === 'textarea' ? 'md:col-span-2' : ''}>
-                          <FormLabel>
-                            {field.field_label}
-                            {field.is_required && <span className="text-destructive ml-1">*</span>}
-                          </FormLabel>
-                          <FormControl>
-                            {field.field_type === 'select' ? (
-                              <Select onValueChange={formField.onChange} value={formField.value}>
-                                <SelectTrigger>
-                                  <SelectValue placeholder={field.placeholder_text || `Selecione ${field.field_label.toLowerCase()}`} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {field.options?.map((option) => (
-                                    <SelectItem key={option} value={option}>
-                                      {option}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            ) : field.field_type === 'textarea' ? (
-                              <Textarea
-                                {...formField}
-                                placeholder={field.placeholder_text}
-                                rows={4}
-                                className="resize-none"
-                              />
-                            ) : (
-                              <Input
-                                {...formField}
-                                type={field.field_type}
-                                placeholder={field.placeholder_text}
-                              />
-                            )}
-                          </FormControl>
-                          <FormMessage />
+                      name="cargo"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Cargo</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione seu cargo" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="ceo">CEO / Presidente</SelectItem>
+                              <SelectItem value="cto">CTO / Diretor de TI</SelectItem>
+                              <SelectItem value="diretor">Diretor</SelectItem>
+                              <SelectItem value="gerente">Gerente</SelectItem>
+                              <SelectItem value="coordenador">Coordenador</SelectItem>
+                              <SelectItem value="analista">Analista</SelectItem>
+                              <SelectItem value="outro">Outro</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </FormItem>
                       )}
                     />
-                  ))}
+
+                    <FormField
+                      control={form.control}
+                      name="tamanho_empresa"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Tamanho da Empresa</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Número de funcionários" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1-10">1-10 funcionários</SelectItem>
+                              <SelectItem value="10-50">10-50 funcionários</SelectItem>
+                              <SelectItem value="50-500">50-500 funcionários</SelectItem>
+                              <SelectItem value="500+">500+ funcionários</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="orcamento"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Faixa de Orçamento</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Orçamento disponível" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="<10k">Até R$ 10.000</SelectItem>
+                              <SelectItem value="10-50k">R$ 10.000 - R$ 50.000</SelectItem>
+                              <SelectItem value="50-100k">R$ 50.000 - R$ 100.000</SelectItem>
+                              <SelectItem value=">100k">Acima de R$ 100.000</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="prazo"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Prazo Desejado</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Quando precisa?" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="imediato">Imediato (urgente)</SelectItem>
+                              <SelectItem value="1-3_meses">1-3 meses</SelectItem>
+                              <SelectItem value="3-6_meses">3-6 meses</SelectItem>
+                              <SelectItem value="6+_meses">Mais de 6 meses</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="autoridade_decisao"
+                      render={({ field }) => (
+                        <FormItem className="md:col-span-2">
+                          <FormLabel>Você é o decisor do projeto?</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="sim_decisor">Sim, sou o decisor final</SelectItem>
+                              <SelectItem value="influenciador">Influencio a decisão</SelectItem>
+                              <SelectItem value="preciso_aprovacao">Preciso de aprovação</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
 
                 <div className="flex gap-3 pt-4">
