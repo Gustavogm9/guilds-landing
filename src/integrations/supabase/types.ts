@@ -2738,61 +2738,49 @@ export type Database = {
       }
       lead_scoring_rules: {
         Row: {
-          category: string
           condition_field: string
           condition_operator: string
-          condition_value: string
-          created_at: string
-          created_by: string | null
-          decay_days: number | null
+          condition_value: Json
+          created_at: string | null
           description: string | null
           id: string
           is_active: boolean
-          max_times_applicable: number | null
-          name: string
+          points: number
           priority: number | null
+          rule_name: string
           rule_type: string
-          score_multiplier: number | null
-          score_points: number
-          updated_at: string
+          score_type: string
+          updated_at: string | null
         }
         Insert: {
-          category: string
           condition_field: string
           condition_operator: string
-          condition_value: string
-          created_at?: string
-          created_by?: string | null
-          decay_days?: number | null
+          condition_value: Json
+          created_at?: string | null
           description?: string | null
           id?: string
           is_active?: boolean
-          max_times_applicable?: number | null
-          name: string
+          points?: number
           priority?: number | null
+          rule_name: string
           rule_type: string
-          score_multiplier?: number | null
-          score_points: number
-          updated_at?: string
+          score_type?: string
+          updated_at?: string | null
         }
         Update: {
-          category?: string
           condition_field?: string
           condition_operator?: string
-          condition_value?: string
-          created_at?: string
-          created_by?: string | null
-          decay_days?: number | null
+          condition_value?: Json
+          created_at?: string | null
           description?: string | null
           id?: string
           is_active?: boolean
-          max_times_applicable?: number | null
-          name?: string
+          points?: number
           priority?: number | null
+          rule_name?: string
           rule_type?: string
-          score_multiplier?: number | null
-          score_points?: number
-          updated_at?: string
+          score_type?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
