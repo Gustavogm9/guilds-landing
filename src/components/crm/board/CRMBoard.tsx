@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Settings, List, Grid3X3, BarChart3, Bell, Filter, Star, User, Clock, History as HistoryIcon } from 'lucide-react';
+import { Plus, Settings, List, Grid3X3, BarChart3, Bell, Filter, Star, User, Clock, History as HistoryIcon, Target } from 'lucide-react';
 import { KanbanColumn } from './KanbanColumn';
 import { DealForm } from '../forms/DealForm';
 import { useCRM, CRMDeal } from '@/hooks/useCRM';
@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { CRMFilters, type CRMFilters as CRMFiltersType } from '../filters/CRMFilters';
 import { CRMDashboard } from '../dashboard/CRMDashboard';
 import { CRMNotifications, useCRMNotifications } from '../notifications/CRMNotifications';
+import { LeadScoringDashboard } from '../lead-scoring/LeadScoringDashboard';
 import { isAfter, isBefore, parseISO } from 'date-fns';
 import { DealDetailModal } from '../deal/DealDetailModal';
 import { DealInteractionModal } from '../deal/DealInteractionModal';
@@ -29,7 +30,7 @@ export function CRMBoard() {
   const [selectedPipelineId, setSelectedPipelineId] = useState<string>('');
   const [viewMode, setViewMode] = useState<'kanban' | 'list'>('kanban');
   const [showDealForm, setShowDealForm] = useState(false);
-  const [activeTab, setActiveTab] = useState<'board' | 'dashboard' | 'notifications'>('board');
+  const [activeTab, setActiveTab] = useState<'board' | 'dashboard' | 'notifications' | 'scoring'>('board');
   const [filters, setFilters] = useState<CRMFiltersType>({});
   const [showFilters, setShowFilters] = useState(false);
   const [selectedDeal, setSelectedDeal] = useState<CRMDeal | null>(null);
@@ -425,7 +426,7 @@ export function CRMBoard() {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="board" className="flex items-center gap-2">
             <Grid3X3 className="h-4 w-4" />
             Kanban
@@ -433,6 +434,10 @@ export function CRMBoard() {
           <TabsTrigger value="dashboard" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
             Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="scoring" className="flex items-center gap-2">
+            <Target className="h-4 w-4" />
+            Lead Scoring
           </TabsTrigger>
           <TabsTrigger value="notifications" className="flex items-center gap-2">
             <Bell className="h-4 w-4" />
@@ -553,6 +558,10 @@ export function CRMBoard() {
               selectedPipelineId={selectedPipelineId}
             />
           )}
+        </TabsContent>
+
+        <TabsContent value="scoring" className="mt-6">
+          <LeadScoringDashboard />
         </TabsContent>
 
         <TabsContent value="notifications" className="mt-6">

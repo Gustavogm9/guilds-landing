@@ -14,7 +14,9 @@ import {
   Tag
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 
 interface LeadScore {
   contact_id: string;
@@ -154,6 +156,25 @@ export const LeadScoringDashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Header with refresh button */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">Lead Scoring Dashboard</h2>
+          <p className="text-muted-foreground">
+            Análise de qualificação e pontuação de leads
+          </p>
+        </div>
+        <Button
+          onClick={loadScoringData}
+          variant="outline"
+          size="sm"
+          disabled={loading}
+        >
+          <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          Atualizar
+        </Button>
+      </div>
+
       {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
