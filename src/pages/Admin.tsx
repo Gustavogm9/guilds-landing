@@ -31,6 +31,7 @@ import { MultiProductAutomation } from '@/components/admin/automation/MultiProdu
 import { MultiProductCRM } from '@/components/admin/crm/MultiProductCRM';
 import { LegalAdmin } from '@/components/admin/LegalAdmin';
 import { ContractsAdmin } from '@/components/admin/ContractsAdmin';
+import { NurturingSequenceAdmin } from '@/components/admin/NurturingSequenceAdmin';
 
 export default function Admin() {
   return (
@@ -66,6 +67,7 @@ export default function Admin() {
         <Route path="audit" element={<AuditLog />} />
         <Route path="legal" element={<LegalAdmin />} />
         <Route path="contracts" element={<ContractsAdmin />} />
+        <Route path="nurturing" element={<NurturingSequenceAdmin />} />
       </Routes>
     </AdminLayout>
   );
