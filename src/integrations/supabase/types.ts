@@ -3270,6 +3270,325 @@ export type Database = {
         }
         Relationships: []
       }
+      nurturing_enrollments: {
+        Row: {
+          completed_at: string | null
+          contact_id: string
+          created_at: string
+          current_step_id: string | null
+          emails_clicked: number | null
+          emails_opened: number | null
+          engagement_score: number | null
+          enrolled_at: string
+          enrollment_data: Json | null
+          id: string
+          last_activity_at: string | null
+          next_action_at: string | null
+          paused_at: string | null
+          replies_received: number | null
+          sequence_id: string
+          status: string
+          steps_completed: number | null
+          total_steps: number
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          contact_id: string
+          created_at?: string
+          current_step_id?: string | null
+          emails_clicked?: number | null
+          emails_opened?: number | null
+          engagement_score?: number | null
+          enrolled_at?: string
+          enrollment_data?: Json | null
+          id?: string
+          last_activity_at?: string | null
+          next_action_at?: string | null
+          paused_at?: string | null
+          replies_received?: number | null
+          sequence_id: string
+          status?: string
+          steps_completed?: number | null
+          total_steps: number
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          contact_id?: string
+          created_at?: string
+          current_step_id?: string | null
+          emails_clicked?: number | null
+          emails_opened?: number | null
+          engagement_score?: number | null
+          enrolled_at?: string
+          enrollment_data?: Json | null
+          id?: string
+          last_activity_at?: string | null
+          next_action_at?: string | null
+          paused_at?: string | null
+          replies_received?: number | null
+          sequence_id?: string
+          status?: string
+          steps_completed?: number | null
+          total_steps?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nurturing_enrollments_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nurturing_enrollments_current_step_id_fkey"
+            columns: ["current_step_id"]
+            isOneToOne: false
+            referencedRelation: "nurturing_sequence_steps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nurturing_enrollments_sequence_id_fkey"
+            columns: ["sequence_id"]
+            isOneToOne: false
+            referencedRelation: "nurturing_sequences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nurturing_sequence_steps: {
+        Row: {
+          clicked_count: number | null
+          completed_count: number | null
+          created_at: string
+          delay_days: number
+          delay_hours: number
+          email_content: string | null
+          email_subject: string | null
+          email_template_id: string | null
+          failed_count: number | null
+          id: string
+          is_active: boolean
+          opened_count: number | null
+          replied_count: number | null
+          sent_count: number | null
+          sequence_id: string
+          skip_conditions: Json | null
+          step_order: number
+          step_type: string
+          success_criteria: Json | null
+          task_description: string | null
+          task_title: string | null
+          task_type: string | null
+          updated_at: string
+          webhook_payload: Json | null
+          webhook_url: string | null
+          whatsapp_message: string | null
+          whatsapp_template_id: string | null
+        }
+        Insert: {
+          clicked_count?: number | null
+          completed_count?: number | null
+          created_at?: string
+          delay_days?: number
+          delay_hours?: number
+          email_content?: string | null
+          email_subject?: string | null
+          email_template_id?: string | null
+          failed_count?: number | null
+          id?: string
+          is_active?: boolean
+          opened_count?: number | null
+          replied_count?: number | null
+          sent_count?: number | null
+          sequence_id: string
+          skip_conditions?: Json | null
+          step_order: number
+          step_type: string
+          success_criteria?: Json | null
+          task_description?: string | null
+          task_title?: string | null
+          task_type?: string | null
+          updated_at?: string
+          webhook_payload?: Json | null
+          webhook_url?: string | null
+          whatsapp_message?: string | null
+          whatsapp_template_id?: string | null
+        }
+        Update: {
+          clicked_count?: number | null
+          completed_count?: number | null
+          created_at?: string
+          delay_days?: number
+          delay_hours?: number
+          email_content?: string | null
+          email_subject?: string | null
+          email_template_id?: string | null
+          failed_count?: number | null
+          id?: string
+          is_active?: boolean
+          opened_count?: number | null
+          replied_count?: number | null
+          sent_count?: number | null
+          sequence_id?: string
+          skip_conditions?: Json | null
+          step_order?: number
+          step_type?: string
+          success_criteria?: Json | null
+          task_description?: string | null
+          task_title?: string | null
+          task_type?: string | null
+          updated_at?: string
+          webhook_payload?: Json | null
+          webhook_url?: string | null
+          whatsapp_message?: string | null
+          whatsapp_template_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nurturing_sequence_steps_email_template_id_fkey"
+            columns: ["email_template_id"]
+            isOneToOne: false
+            referencedRelation: "email_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nurturing_sequence_steps_sequence_id_fkey"
+            columns: ["sequence_id"]
+            isOneToOne: false
+            referencedRelation: "nurturing_sequences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nurturing_sequences: {
+        Row: {
+          avg_engagement_score: number | null
+          completion_rate: number | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          enrollment_count: number | null
+          id: string
+          is_active: boolean
+          max_score: number | null
+          min_score: number | null
+          name: string
+          priority: number | null
+          target_lifecycle_stages: string[] | null
+          target_tags: string[] | null
+          trigger_conditions: Json
+          trigger_type: string
+          updated_at: string
+        }
+        Insert: {
+          avg_engagement_score?: number | null
+          completion_rate?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          enrollment_count?: number | null
+          id?: string
+          is_active?: boolean
+          max_score?: number | null
+          min_score?: number | null
+          name: string
+          priority?: number | null
+          target_lifecycle_stages?: string[] | null
+          target_tags?: string[] | null
+          trigger_conditions?: Json
+          trigger_type: string
+          updated_at?: string
+        }
+        Update: {
+          avg_engagement_score?: number | null
+          completion_rate?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          enrollment_count?: number | null
+          id?: string
+          is_active?: boolean
+          max_score?: number | null
+          min_score?: number | null
+          name?: string
+          priority?: number | null
+          target_lifecycle_stages?: string[] | null
+          target_tags?: string[] | null
+          trigger_conditions?: Json
+          trigger_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      nurturing_step_executions: {
+        Row: {
+          clicked_at: string | null
+          created_at: string
+          enrollment_id: string
+          error_message: string | null
+          executed_at: string | null
+          execution_data: Json | null
+          id: string
+          opened_at: string | null
+          replied_at: string | null
+          retry_count: number | null
+          scheduled_at: string
+          status: string
+          step_id: string
+          updated_at: string
+        }
+        Insert: {
+          clicked_at?: string | null
+          created_at?: string
+          enrollment_id: string
+          error_message?: string | null
+          executed_at?: string | null
+          execution_data?: Json | null
+          id?: string
+          opened_at?: string | null
+          replied_at?: string | null
+          retry_count?: number | null
+          scheduled_at: string
+          status?: string
+          step_id: string
+          updated_at?: string
+        }
+        Update: {
+          clicked_at?: string | null
+          created_at?: string
+          enrollment_id?: string
+          error_message?: string | null
+          executed_at?: string | null
+          execution_data?: Json | null
+          id?: string
+          opened_at?: string | null
+          replied_at?: string | null
+          retry_count?: number | null
+          scheduled_at?: string
+          status?: string
+          step_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nurturing_step_executions_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "nurturing_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nurturing_step_executions_step_id_fkey"
+            columns: ["step_id"]
+            isOneToOne: false
+            referencedRelation: "nurturing_sequence_steps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       page_seo: {
         Row: {
           business_unit: string
