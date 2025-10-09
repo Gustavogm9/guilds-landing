@@ -5482,6 +5482,10 @@ export type Database = {
         Args: { p_metadata?: Json; p_operation_type: string }
         Returns: string
       }
+      manual_enroll_contact: {
+        Args: { p_contact_id: string; p_sequence_id: string }
+        Returns: string
+      }
       refresh_project_statistics: {
         Args: Record<PropertyKey, never>
         Returns: undefined
