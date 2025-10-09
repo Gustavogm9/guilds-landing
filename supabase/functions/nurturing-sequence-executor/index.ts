@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.56.0';
+import { Resend } from 'npm:resend@4.0.0';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -38,7 +39,10 @@ const handler = async (req: Request): Promise<Response> => {
     const url = new URL(req.url);
     const action = url.searchParams.get('action') || 'execute';
 
-    if (action === 'create') {
+    if (action === 'cron') {
+      // Ação chamada pelo cron job - processar enrollments pendentes
+      return await handleCronExecution(supabase);
+    } else if (action === 'create') {
       return await handleSequenceCreation(req, supabase);
     } else if (action === 'status') {
       return await handleSequenceStatus(req, supabase);
@@ -200,6 +204,206 @@ async function handleSequenceExecution(req: Request, supabase: any) {
   }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
+}
+
+// Processar enrollments pendentes (chamado pelo cron)
+async function handleCronExecution(supabase: any) {
+  console.log('🔄 Cron: Processando enrollments pendentes...');
+  
+  try {
+    // Buscar enrollments ativos com next_action_at vencido
+    const { data: enrollments, error } = await supabase
+      .from('nurturing_enrollments')
+      .select(`
+        *,
+        nurturing_sequences(
+          *,
+          nurturing_steps(*)
+        ),
+        crm_contacts(*)
+      `)
+      .eq('status', 'active')
+      .lte('next_action_at', new Date().toISOString())
+      .order('next_action_at', { ascending: true })
+      .limit(50); // Processar até 50 por vez
+
+    if (error) throw error;
+
+    if (!enrollments || enrollments.length === 0) {
+      console.log('✅ Nenhum enrollment pendente para processar');
+      return new Response(JSON.stringify({
+        success: true,
+        processed: 0,
+        message: 'Nenhum enrollment pendente'
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const results = [];
+    
+    for (const enrollment of enrollments) {
+      try {
+        const sequence = enrollment.nurturing_sequences;
+        const contact = enrollment.crm_contacts;
+        const steps = sequence.nurturing_steps || [];
+        
+        // Pegar o step atual
+        const currentStep = steps.find((s: any) => s.step_order === enrollment.current_step_index);
+        
+        if (!currentStep) {
+          console.log(`⚠️ Step ${enrollment.current_step_index} não encontrado para enrollment ${enrollment.id}`);
+          continue;
+        }
+
+        // Executar o step
+        const stepResult = await executeNurturingStep(currentStep, contact, supabase);
+        
+        // Calcular próximo step
+        const nextStepIndex = enrollment.current_step_index + 1;
+        const nextStep = steps.find((s: any) => s.step_order === nextStepIndex);
+        
+        if (nextStep) {
+          // Há mais steps - agendar próximo
+          const nextActionAt = new Date(Date.now() + nextStep.delay_hours * 60 * 60 * 1000);
+          
+          await supabase
+            .from('nurturing_enrollments')
+            .update({
+              current_step_index: nextStepIndex,
+              next_action_at: nextActionAt.toISOString(),
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', enrollment.id);
+          
+          results.push({
+            enrollment_id: enrollment.id,
+            contact: contact.name,
+            step_executed: currentStep.step_order,
+            next_step: nextStepIndex,
+            next_action_at: nextActionAt.toISOString(),
+            result: stepResult
+          });
+        } else {
+          // Sequência completa
+          await supabase
+            .from('nurturing_enrollments')
+            .update({
+              status: 'completed',
+              completed_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', enrollment.id);
+          
+          results.push({
+            enrollment_id: enrollment.id,
+            contact: contact.name,
+            step_executed: currentStep.step_order,
+            completed: true,
+            result: stepResult
+          });
+        }
+      } catch (error) {
+        console.error(`Erro ao processar enrollment ${enrollment.id}:`, error);
+        results.push({
+          enrollment_id: enrollment.id,
+          error: error instanceof Error ? error.message : String(error)
+        });
+      }
+    }
+
+    console.log(`✅ Cron: ${results.length} enrollments processados`);
+    
+    return new Response(JSON.stringify({
+      success: true,
+      processed: results.length,
+      results
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+
+  } catch (error) {
+    console.error('❌ Erro no cron execution:', error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: error instanceof Error ? error.message : String(error)
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+}
+
+// Executar step de nurturing (diferente de sequence, steps são da tabela nurturing_steps)
+async function executeNurturingStep(step: any, contact: any, supabase: any) {
+  console.log(`Executando nurturing step ${step.step_order} para ${contact.name}`);
+  
+  let result;
+  
+  switch (step.channel) {
+    case 'email':
+      result = await sendNurturingEmail(step, contact, supabase);
+      break;
+    case 'whatsapp':
+      result = await sendNurturingWhatsApp(step, contact, supabase);
+      break;
+    default:
+      console.log(`Canal ${step.channel} ainda não implementado`);
+      result = { success: true, simulated: true };
+  }
+  
+  return result;
+}
+
+// Enviar email de nurturing step
+async function sendNurturingEmail(step: any, contact: any, supabase: any) {
+  const resendApiKey = Deno.env.get('RESEND_API_KEY');
+  
+  if (!resendApiKey) {
+    console.warn('RESEND_API_KEY não configurada - email simulado');
+    return { success: true, simulated: true, message_id: `email_sim_${Date.now()}` };
+  }
+
+  const resend = new Resend(resendApiKey);
+  
+  // Personalizar conteúdo
+  let subject = step.subject || 'Mensagem da Guilds';
+  let content = step.content || '';
+  
+  const variables = {
+    name: contact.name,
+    company: contact.company || 'sua empresa',
+    email: contact.email
+  };
+
+  for (const [key, value] of Object.entries(variables)) {
+    const regex = new RegExp(`{{${key}}}`, 'g');
+    subject = subject.replace(regex, String(value));
+    content = content.replace(regex, String(value));
+  }
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: 'Guilds <onboarding@resend.dev>',
+      to: [contact.email],
+      subject: subject,
+      html: content,
+    });
+
+    if (error) throw new Error(error.message);
+
+    console.log(`✅ Email enviado para ${contact.email}: ${subject}`);
+    return { success: true, message_id: data?.id };
+  } catch (error) {
+    console.error('Erro ao enviar email:', error);
+    throw error;
+  }
+}
+
+// Enviar WhatsApp de nurturing step (placeholder)
+async function sendNurturingWhatsApp(step: any, contact: any, supabase: any) {
+  console.log(`📱 WhatsApp simulado para ${contact.phone || contact.name}`);
+  return { success: true, simulated: true, message_id: `whatsapp_sim_${Date.now()}` };
 }
 
 // Criar nova sequência
@@ -400,6 +604,16 @@ async function evaluateSequenceConditions(sequence: any, contact: any, supabase:
 
 // Enviar email da sequência
 async function sendEmailSequence(sequence: any, contact: any, supabase: any) {
+  const resendApiKey = Deno.env.get('RESEND_API_KEY');
+  
+  if (!resendApiKey) {
+    console.warn('RESEND_API_KEY não configurada - email simulado');
+    const messageId = `email_simulated_${Date.now()}_${contact.id}`;
+    return { message_id: messageId };
+  }
+
+  const resend = new Resend(resendApiKey);
+
   // Se tem template específico, usar ele
   let emailContent;
   
@@ -421,16 +635,30 @@ async function sendEmailSequence(sequence: any, contact: any, supabase: any) {
     emailContent = generateBasicEmailContent(sequence, contact);
   }
 
-  // Chamar serviço de email (simulado por agora)
-  const messageId = `email_${Date.now()}_${contact.id}`;
-  
-  console.log(`Email enviado para ${contact.email}:`, {
-    subject: emailContent.subject,
-    content_length: emailContent.content.length,
-    message_id: messageId
-  });
+  try {
+    // Enviar email via Resend
+    const { data, error } = await resend.emails.send({
+      from: 'Guilds <onboarding@resend.dev>',
+      to: [contact.email],
+      subject: emailContent.subject,
+      html: emailContent.content,
+    });
 
-  return { message_id: messageId };
+    if (error) {
+      console.error('Erro ao enviar email via Resend:', error);
+      throw new Error(error.message || 'Erro ao enviar email');
+    }
+
+    console.log(`✅ Email enviado via Resend para ${contact.email}:`, {
+      subject: emailContent.subject,
+      message_id: data?.id
+    });
+
+    return { message_id: data?.id || `email_${Date.now()}` };
+  } catch (error) {
+    console.error('Falha no envio de email:', error);
+    throw error;
+  }
 }
 
 // Enviar WhatsApp da sequência  
