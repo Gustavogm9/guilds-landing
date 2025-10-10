@@ -41,6 +41,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AuditLogTimeline } from '../audit/AuditLogTimeline';
 import { EditHistoricalEventModal } from '../audit/EditHistoricalEventModal';
 import { AddManualEventModal } from '../audit/AddManualEventModal';
+import { NurturingEnrollmentsTab } from './NurturingEnrollmentsTab';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -177,10 +178,11 @@ export function ContactDetailModal({
         </DialogHeader>
 
         <Tabs defaultValue="overview" className="flex-1">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="overview">Visão Geral</TabsTrigger>
             <TabsTrigger value="interactions">Interações ({interactions.length})</TabsTrigger>
             <TabsTrigger value="interests">Produtos</TabsTrigger>
+            <TabsTrigger value="nurturing">Nurturing</TabsTrigger>
             <TabsTrigger value="history">
               <History className="h-4 w-4 mr-2" />
               Histórico
@@ -455,6 +457,10 @@ export function ContactDetailModal({
                   </Card>
                 ))
               )}
+            </TabsContent>
+
+            <TabsContent value="nurturing" className="space-y-4">
+              <NurturingEnrollmentsTab contactId={contact.id} />
             </TabsContent>
 
             <TabsContent value="history" className="space-y-4">
