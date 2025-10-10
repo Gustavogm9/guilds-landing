@@ -1312,6 +1312,50 @@ export type Database = {
           },
         ]
       }
+      crm_contact_score_history: {
+        Row: {
+          change_reason: string | null
+          changed_by: string | null
+          contact_id: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          new_value: number
+          old_value: number | null
+          score_type: string
+        }
+        Insert: {
+          change_reason?: string | null
+          changed_by?: string | null
+          contact_id: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          new_value: number
+          old_value?: number | null
+          score_type: string
+        }
+        Update: {
+          change_reason?: string | null
+          changed_by?: string | null
+          contact_id?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          new_value?: number
+          old_value?: number | null
+          score_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_contact_score_history_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crm_contacts: {
         Row: {
           budget_range: string | null
@@ -1841,6 +1885,66 @@ export type Database = {
           variables?: Json | null
         }
         Relationships: []
+      }
+      email_tracking_events: {
+        Row: {
+          contact_id: string | null
+          created_at: string
+          email_subject: string | null
+          enrollment_id: string | null
+          event_type: string
+          id: string
+          ip_address: unknown | null
+          link_clicked: string | null
+          metadata: Json | null
+          resend_event_id: string | null
+          step_index: number
+          user_agent: string | null
+        }
+        Insert: {
+          contact_id?: string | null
+          created_at?: string
+          email_subject?: string | null
+          enrollment_id?: string | null
+          event_type: string
+          id?: string
+          ip_address?: unknown | null
+          link_clicked?: string | null
+          metadata?: Json | null
+          resend_event_id?: string | null
+          step_index: number
+          user_agent?: string | null
+        }
+        Update: {
+          contact_id?: string | null
+          created_at?: string
+          email_subject?: string | null
+          enrollment_id?: string | null
+          event_type?: string
+          id?: string
+          ip_address?: unknown | null
+          link_clicked?: string | null
+          metadata?: Json | null
+          resend_event_id?: string | null
+          step_index?: number
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_tracking_events_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_tracking_events_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "nurturing_enrollments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       employees: {
         Row: {
@@ -3274,8 +3378,12 @@ export type Database = {
         Row: {
           completed_at: string | null
           contact_id: string
+          conversion_value: number | null
+          converted_to_deal_id: string | null
           created_at: string
           current_step_id: string | null
+          email_clicks: number | null
+          email_opens: number | null
           emails_clicked: number | null
           emails_opened: number | null
           engagement_score: number | null
@@ -3291,12 +3399,19 @@ export type Database = {
           steps_completed: number | null
           total_steps: number
           updated_at: string
+          whatsapp_delivered: number | null
+          whatsapp_read: number | null
+          whatsapp_replied: number | null
         }
         Insert: {
           completed_at?: string | null
           contact_id: string
+          conversion_value?: number | null
+          converted_to_deal_id?: string | null
           created_at?: string
           current_step_id?: string | null
+          email_clicks?: number | null
+          email_opens?: number | null
           emails_clicked?: number | null
           emails_opened?: number | null
           engagement_score?: number | null
@@ -3312,12 +3427,19 @@ export type Database = {
           steps_completed?: number | null
           total_steps: number
           updated_at?: string
+          whatsapp_delivered?: number | null
+          whatsapp_read?: number | null
+          whatsapp_replied?: number | null
         }
         Update: {
           completed_at?: string | null
           contact_id?: string
+          conversion_value?: number | null
+          converted_to_deal_id?: string | null
           created_at?: string
           current_step_id?: string | null
+          email_clicks?: number | null
+          email_opens?: number | null
           emails_clicked?: number | null
           emails_opened?: number | null
           engagement_score?: number | null
@@ -3333,6 +3455,9 @@ export type Database = {
           steps_completed?: number | null
           total_steps?: number
           updated_at?: string
+          whatsapp_delivered?: number | null
+          whatsapp_read?: number | null
+          whatsapp_replied?: number | null
         }
         Relationships: [
           {
@@ -3343,11 +3468,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "nurturing_enrollments_converted_to_deal_id_fkey"
+            columns: ["converted_to_deal_id"]
+            isOneToOne: false
+            referencedRelation: "crm_deals"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "nurturing_enrollments_current_step_id_fkey"
             columns: ["current_step_id"]
             isOneToOne: false
             referencedRelation: "nurturing_sequence_steps"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nurturing_enrollments_sequence_id_fkey"
+            columns: ["sequence_id"]
+            isOneToOne: false
+            referencedRelation: "nurturing_sequence_metrics"
+            referencedColumns: ["sequence_id"]
           },
           {
             foreignKeyName: "nurturing_enrollments_sequence_id_fkey"
@@ -3453,6 +3592,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "email_templates"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nurturing_sequence_steps_sequence_id_fkey"
+            columns: ["sequence_id"]
+            isOneToOne: false
+            referencedRelation: "nurturing_sequence_metrics"
+            referencedColumns: ["sequence_id"]
           },
           {
             foreignKeyName: "nurturing_sequence_steps_sequence_id_fkey"
@@ -5279,6 +5425,26 @@ export type Database = {
       }
     }
     Views: {
+      nurturing_sequence_metrics: {
+        Row: {
+          active_enrollments: number | null
+          avg_opens_per_enrollment: number | null
+          click_through_rate: number | null
+          completed_enrollments: number | null
+          completion_rate: number | null
+          conversion_rate: number | null
+          failed_enrollments: number | null
+          last_activity: string | null
+          sequence_id: string | null
+          sequence_name: string | null
+          total_conversion_value: number | null
+          total_conversions: number | null
+          total_email_clicks: number | null
+          total_email_opens: number | null
+          total_enrollments: number | null
+        }
+        Relationships: []
+      }
       project_statistics: {
         Row: {
           active_projects: number | null
@@ -5485,6 +5651,10 @@ export type Database = {
       manual_enroll_contact: {
         Args: { p_contact_id: string; p_sequence_id: string }
         Returns: string
+      }
+      refresh_nurturing_metrics: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       refresh_project_statistics: {
         Args: Record<PropertyKey, never>

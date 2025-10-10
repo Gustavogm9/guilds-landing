@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { NurturingSequenceForm } from "./NurturingSequenceForm";
 import { NurturingEnrollmentsList } from "./NurturingEnrollmentsList";
+import { NurturingMetricsDashboard } from "./NurturingMetricsDashboard";
 
 export function NurturingSequenceAdmin() {
   const { toast } = useToast();
@@ -115,6 +116,9 @@ export function NurturingSequenceAdmin() {
 
   return (
     <div className="space-y-6">
+      {/* Metrics Dashboard */}
+      <NurturingMetricsDashboard />
+
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">

@@ -256,8 +256,9 @@ async function handleCronExecution(supabase: any) {
           continue;
         }
 
-        // Executar o step
-        const stepResult = await executeNurturingStep(currentStep, contact, supabase);
+        // Executar o step (passando enrollment_id para tracking)
+        const stepWithEnrollmentId = { ...currentStep, enrollment_id: enrollment.id };
+        const stepResult = await executeNurturingStep(stepWithEnrollmentId, contact, supabase);
         
         // Calcular próximo step
         const nextStepIndex = enrollment.current_step_index + 1;
@@ -382,11 +383,19 @@ async function sendNurturingEmail(step: any, contact: any, supabase: any) {
     content = content.replace(regex, String(value));
   }
 
+  // Get enrollment_id from context (must be passed to this function)
+  const enrollmentId = (step as any).enrollment_id;
+  
+  // Add tracking to subject
+  const subjectWithTracking = enrollmentId 
+    ? `[ENROLLMENT:${enrollmentId}] ${subject}`
+    : subject;
+
   try {
     const { data, error } = await resend.emails.send({
       from: 'Guilds <onboarding@resend.dev>',
       to: [contact.email],
-      subject: subject,
+      subject: subjectWithTracking,
       html: content,
     });
 

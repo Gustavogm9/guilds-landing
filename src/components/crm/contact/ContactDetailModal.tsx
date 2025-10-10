@@ -42,6 +42,7 @@ import { AuditLogTimeline } from '../audit/AuditLogTimeline';
 import { EditHistoricalEventModal } from '../audit/EditHistoricalEventModal';
 import { AddManualEventModal } from '../audit/AddManualEventModal';
 import { NurturingEnrollmentsTab } from './NurturingEnrollmentsTab';
+import { ContactScoreTimeline } from '@/components/admin/ContactScoreTimeline';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -461,6 +462,10 @@ export function ContactDetailModal({
 
             <TabsContent value="nurturing" className="space-y-4">
               <NurturingEnrollmentsTab contactId={contact.id} />
+            </TabsContent>
+
+            <TabsContent value="score" className="space-y-4">
+              <ContactScoreTimeline contactId={contact.id} />
             </TabsContent>
 
             <TabsContent value="history" className="space-y-4">
