@@ -5456,6 +5456,7 @@ export type Database = {
           on_hold_projects: number | null
           projects_last_30_days: number | null
           projects_last_7_days: number | null
+          stats_id: number | null
           total_budget: number | null
           total_projects: number | null
           unique_clients: number | null
