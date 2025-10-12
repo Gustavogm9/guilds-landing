@@ -23,7 +23,10 @@ export const QualificationButton = ({
   const { trackCTAClick } = useAnalytics();
 
   const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
+    // Only prevent default if not using asChild (which would make it a link)
+    if (!props.asChild) {
+      e.preventDefault();
+    }
     
     // Track CTA click with context
     trackCTAClick(children?.toString() || 'Qualification CTA', {
