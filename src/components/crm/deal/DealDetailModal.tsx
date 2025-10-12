@@ -266,6 +266,68 @@ export function DealDetailModal({
               )}
             </TabsContent>
 
+            <TabsContent value="proposals" className="space-y-4">
+              {proposalsLoading ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Carregando propostas...</p>
+                </div>
+              ) : proposals.length === 0 ? (
+                <Card>
+                  <CardContent className="pt-6 text-center">
+                    <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground mb-4">Nenhuma proposta criada para este deal</p>
+                    <Button variant="outline">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Criar Proposta
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                proposals.map((proposal: any) => (
+                  <Card key={proposal.id}>
+                    <CardContent className="pt-4">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <FileText className="h-4 w-4 text-primary" />
+                            <h4 className="font-medium">{proposal.title}</h4>
+                            <Badge variant={
+                              proposal.status === 'approved' ? 'default' :
+                              proposal.status === 'sent' ? 'secondary' :
+                              proposal.status === 'rejected' ? 'destructive' :
+                              'outline'
+                            }>
+                              {proposal.status === 'draft' && 'Rascunho'}
+                              {proposal.status === 'internal_review' && 'Revisão'}
+                              {proposal.status === 'sent' && 'Enviada'}
+                              {proposal.status === 'negotiation' && 'Negociação'}
+                              {proposal.status === 'approved' && 'Aprovada'}
+                              {proposal.status === 'rejected' && 'Rejeitada'}
+                              {proposal.status === 'expired' && 'Expirada'}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <span>{proposal.proposal_number}</span>
+                            <span>•</span>
+                            <span>Versão {proposal.current_version}</span>
+                            <span>•</span>
+                            <span>
+                              Válida até {format(new Date(proposal.valid_until), 'dd/MM/yyyy', { locale: ptBR })}
+                            </span>
+                          </div>
+                        </div>
+                        <Button variant="outline" size="sm" asChild>
+                          <a href={`/admin/propostas/${proposal.id}`} target="_blank">
+                            Ver Detalhes
+                          </a>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </TabsContent>
+
             <TabsContent value="history" className="space-y-4">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-medium">Histórico de Alterações</h3>
