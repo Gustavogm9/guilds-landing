@@ -57,6 +57,9 @@ const CraftPortfolio = React.lazy(() => import("./pages/CraftPortfolio"));
 // Client Portal - secure client access
 const ClientPortal = React.lazy(() => import("./pages/ClientPortal"));
 
+// Proposal Public View - token-based proposal access
+const ProposalPublicView = React.lazy(() => import("./pages/ProposalPublicView"));
+
 // Loading fallback component
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -129,6 +132,13 @@ const App = () => {
                       <Route path="/portal/cliente" element={
                         <Suspense fallback={<PageLoader />}>
                           <ClientPortal />
+                        </Suspense>
+                      } />
+                      
+                      {/* Proposal Public View - WITHOUT site layout */}
+                      <Route path="/propostas/visualizar" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <ProposalPublicView />
                         </Suspense>
                       } />
                       

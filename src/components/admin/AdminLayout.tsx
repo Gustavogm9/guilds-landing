@@ -108,6 +108,9 @@ const menuItems: MenuItem[] = [
     title: "Jurídico & Contratos",
     icon: Scale,
     items: [
+      { title: "Propostas", icon: FileText, url: "/admin/propostas" },
+      { title: "Templates", icon: FileSignature, url: "/admin/propostas/templates" },
+      { title: "Catálogo Preços", icon: DollarSign, url: "/admin/propostas/catalogo" },
       { title: "Documentos Legais", icon: FileSignature, url: "/admin/legal" },
       { title: "Contratos", icon: FileText, url: "/admin/contracts" }
     ]

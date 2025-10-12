@@ -20,7 +20,8 @@ import {
 } from 'lucide-react';
 import { CRMDeal } from '@/hooks/useCRM';
 import { useCRMContractIntegration } from '@/hooks/useCRMContractIntegration';
-import { 
+import { ProposalButton } from './ProposalButton';
+import {
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
@@ -315,6 +316,12 @@ export function DealCard({
 
             {/* Action Buttons - Responsive */}
             <div className="flex flex-col gap-2 pt-2 border-t sm:flex-row w-full">
+              <div className="w-full sm:flex-1">
+                <ProposalButton 
+                  dealId={deal.id} 
+                  onCreateProposal={() => onViewDetails?.(deal)}
+                />
+              </div>
               <Button 
                 variant="outline" 
                 size="sm" 

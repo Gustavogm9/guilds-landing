@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { CRMDeal, useCRM } from '@/hooks/useCRM';
 import { useCRMAuditLog, CRMAuditLog } from '@/hooks/useCRMAuditLog';
+import { useProposals } from '@/hooks/useProposals';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useQuery } from '@tanstack/react-query';
@@ -50,6 +51,7 @@ export function DealDetailModal({
 }: DealDetailModalProps) {
   const { fetchContactInteractions } = useCRM();
   const { useDealAuditLogs } = useCRMAuditLog();
+  const { useProposalsByDeal } = useProposals();
   const [editingLog, setEditingLog] = useState<CRMAuditLog | null>(null);
   const [showAddEventModal, setShowAddEventModal] = useState(false);
 
@@ -60,6 +62,7 @@ export function DealDetailModal({
   });
 
   const { data: auditLogs = [], isLoading: auditLogsLoading } = useDealAuditLogs(deal?.id || '');
+  const { data: proposals = [], isLoading: proposalsLoading } = useProposalsByDeal(deal?.id || '');
 
   if (!deal) return null;
 
@@ -123,8 +126,9 @@ export function DealDetailModal({
         </DialogHeader>
 
         <Tabs defaultValue="overview" className="flex-1">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+            <TabsTrigger value="proposals">Propostas</TabsTrigger>
             <TabsTrigger value="interactions">Interações ({interactions.length})</TabsTrigger>
             <TabsTrigger value="history">
               <History className="h-4 w-4 mr-2" />
