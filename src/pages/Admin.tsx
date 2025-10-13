@@ -71,9 +71,13 @@ export default function Admin() {
         <Route path="legal" element={<LegalAdmin />} />
         <Route path="contracts" element={<ContractsAdmin />} />
         <Route path="nurturing" element={<NurturingSequenceAdmin />} />
-        <Route path="propostas" element={<ProposalAdmin />} />
-        <Route path="propostas/templates" element={<ProposalTemplateEditor />} />
-        <Route path="propostas/catalogo" element={<ProposalPricingCatalog />} />
+              <Route path="propostas" element={<ProposalAdmin />} />
+              <Route path="propostas/nova" element={<ProposalForm />} />
+              <Route path="propostas/:id" element={<ProposalForm />} />
+              <Route path="propostas/:id/versoes/:versionNumber" element={<ProposalVersionEditor />} />
+              <Route path="propostas/:id/diff" element={<ProposalDiffViewer />} />
+              <Route path="propostas/templates" element={<ProposalTemplateEditor />} />
+              <Route path="propostas/catalogo" element={<ProposalPricingCatalog />} />
       </Routes>
     </AdminLayout>
   );
