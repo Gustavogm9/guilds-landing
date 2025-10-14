@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { useProposals } from '@/hooks/useProposals';
-import { FileText, Plus, Search, Eye, Edit, Send, CheckCircle } from 'lucide-react';
+import { FileText, Plus, Search, Eye, Edit, Send, CheckCircle, GitCompare } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom';
@@ -46,7 +46,7 @@ export const ProposalAdmin = () => {
           <h2 className="text-3xl font-bold">Propostas Comerciais</h2>
           <p className="text-muted-foreground">Gerencie propostas modulares e versionadas</p>
         </div>
-        <Button onClick={() => navigate('/admin/proposals/new')}>
+        <Button onClick={() => navigate('/admin/propostas/nova')}>
           <Plus className="h-4 w-4 mr-2" />
           Nova Proposta
         </Button>
@@ -129,27 +129,19 @@ export const ProposalAdmin = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => navigate(`/admin/proposals/${proposal.id}`)}
+                        onClick={() => navigate(`/admin/propostas/${proposal.id}`)}
+                        title="Editar"
                       >
-                        <Eye className="h-4 w-4" />
+                        <Edit className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => navigate(`/admin/proposals/${proposal.id}/edit`)}
+                        onClick={() => navigate(`/admin/propostas/${proposal.id}/diff`)}
+                        title="Comparar versões"
                       >
-                        <Edit className="h-4 w-4" />
+                        <GitCompare className="h-4 w-4" />
                       </Button>
-                      {proposal.status === 'draft' && (
-                        <Button variant="ghost" size="icon">
-                          <Send className="h-4 w-4" />
-                        </Button>
-                      )}
-                      {proposal.status === 'sent' && (
-                        <Button variant="ghost" size="icon">
-                          <CheckCircle className="h-4 w-4" />
-                        </Button>
-                      )}
                     </div>
                   </div>
                 </div>

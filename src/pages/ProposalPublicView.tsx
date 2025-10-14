@@ -4,6 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, MessageCircle, Download, FileText, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
@@ -64,45 +66,66 @@ export default function ProposalPublicView() {
     }
   };
 
+  const [approverEmail, setApproverEmail] = useState('');
+
   const handleApprove = async () => {
-    if (!version || !proposal) return;
+    if (!version || !proposal || !approverEmail) return;
 
     setApproving(true);
     try {
-      // Registrar aprovação
-      const { error: approvalError } = await supabase
-        .from('proposal_approvals')
-        .insert({
-          proposal_id: proposal.id,
-          version_number: version.version_number,
-          approver_type: 'client',
-          approver_email: 'cliente@example.com', // TODO: Pegar do contexto
+      const { data, error } = await supabase.functions.invoke('proposal-approval-webhook', {
+        body: {
+          token,
+          approverEmail,
           comments,
-          metadata: {
-            user_agent: navigator.userAgent,
-          },
-        });
+          action: 'approve'
+        }
+      });
 
-      if (approvalError) throw approvalError;
-
-      // Atualizar status da proposta
-      const { error: updateError } = await supabase
-        .from('proposals')
-        .update({ status: 'approved' })
-        .eq('id', proposal.id);
-
-      if (updateError) throw updateError;
+      if (error) throw error;
 
       toast({
         title: 'Proposta aprovada!',
         description: 'Em breve entraremos em contato para os próximos passos.',
       });
 
-      // Recarregar
       await loadProposal();
     } catch (err: any) {
       toast({
         title: 'Erro ao aprovar proposta',
+        description: err.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setApproving(false);
+    }
+  };
+
+  const handleRequestChange = async () => {
+    if (!version || !proposal) return;
+
+    setApproving(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('proposal-approval-webhook', {
+        body: {
+          token,
+          approverEmail: approverEmail || 'cliente@example.com',
+          comments,
+          action: 'request_change'
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Solicitação enviada',
+        description: 'Entraremos em contato em breve para discutir os ajustes.',
+      });
+
+      await loadProposal();
+    } catch (err: any) {
+      toast({
+        title: 'Erro ao enviar solicitação',
         description: err.message,
         variant: 'destructive',
       });
@@ -227,10 +250,21 @@ export default function ProposalPublicView() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">
-                    Comentários (opcional)
-                  </label>
+                  <Label htmlFor="approver-email">Seu e-mail</Label>
+                  <Input
+                    id="approver-email"
+                    type="email"
+                    placeholder="seu@email.com"
+                    value={approverEmail}
+                    onChange={(e) => setApproverEmail(e.target.value)}
+                    disabled={!canApprove}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="comments">Comentários (opcional)</Label>
                   <Textarea
+                    id="comments"
                     placeholder="Adicione comentários ou dúvidas..."
                     value={comments}
                     onChange={(e) => setComments(e.target.value)}
@@ -242,12 +276,17 @@ export default function ProposalPublicView() {
                   <Button
                     className="flex-1"
                     onClick={handleApprove}
-                    disabled={!canApprove || approving}
+                    disabled={!canApprove || approving || !approverEmail}
                   >
                     <CheckCircle className="h-4 w-4 mr-2" />
                     {approving ? 'Aprovando...' : 'Aprovar Proposta'}
                   </Button>
-                  <Button variant="outline" className="flex-1" disabled={!canApprove}>
+                  <Button 
+                    variant="outline" 
+                    className="flex-1" 
+                    disabled={!canApprove || approving}
+                    onClick={handleRequestChange}
+                  >
                     <MessageCircle className="h-4 w-4 mr-2" />
                     Solicitar Ajuste
                   </Button>

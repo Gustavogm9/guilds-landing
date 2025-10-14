@@ -51,3 +51,6 @@ verify_jwt = true
 
 [functions.proposal-publisher]
 verify_jwt = true
+
+[functions.proposal-approval-webhook]
+verify_jwt = false

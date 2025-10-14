@@ -35,6 +35,9 @@ import { NurturingSequenceAdmin } from '@/components/admin/NurturingSequenceAdmi
 import { ProposalAdmin } from '@/components/admin/ProposalAdmin';
 import { ProposalTemplateEditor } from '@/components/admin/ProposalTemplateEditor';
 import { ProposalPricingCatalog } from '@/components/admin/ProposalPricingCatalog';
+import { ProposalForm } from '@/components/admin/ProposalForm';
+import { ProposalVersionEditor } from '@/components/admin/ProposalVersionEditor';
+import { ProposalDiffViewer } from '@/components/admin/ProposalDiffViewer';
 
 export default function Admin() {
   return (
