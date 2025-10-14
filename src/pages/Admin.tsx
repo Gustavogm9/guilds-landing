@@ -38,6 +38,7 @@ import { ProposalPricingCatalog } from '@/components/admin/ProposalPricingCatalo
 import { ProposalForm } from '@/components/admin/ProposalForm';
 import { ProposalVersionEditor } from '@/components/admin/ProposalVersionEditor';
 import { ProposalDiffViewer } from '@/components/admin/ProposalDiffViewer';
+import { ChangeRequestsAdmin } from '@/components/admin/proposal/ChangeRequestsAdmin';
 
 export default function Admin() {
   return (

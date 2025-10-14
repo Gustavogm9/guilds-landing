@@ -117,6 +117,20 @@ export default function ProposalPublicView() {
 
       if (error) throw error;
 
+      // Enviar e-mail de notificação ao admin
+      await supabase.functions.invoke('proposal-email-templates', {
+        body: {
+          type: 'proposal_change_requested',
+          proposalId: proposal.id,
+          recipientEmail: 'admin@guilds.com.br',
+          metadata: {
+            requesterEmail: approverEmail || 'cliente@example.com',
+            comments,
+            adminUrl: `${window.location.origin}/admin/propostas/change-requests`,
+          },
+        },
+      });
+
       toast({
         title: 'Solicitação enviada',
         description: 'Entraremos em contato em breve para discutir os ajustes.',

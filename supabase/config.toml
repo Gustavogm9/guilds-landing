@@ -54,3 +54,6 @@ verify_jwt = true
 
 [functions.proposal-approval-webhook]
 verify_jwt = false
+
+[functions.proposal-email-templates]
+verify_jwt = false

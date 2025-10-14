@@ -47,10 +47,25 @@ export const PublishProposalModal = ({
 
       if (error) throw error;
 
+      // Enviar e-mail se solicitado
+      if (sendEmail && data.publicUrl) {
+        await supabase.functions.invoke('proposal-email-templates', {
+          body: {
+            type: 'proposal_published',
+            proposalId,
+            recipientEmail: data.clientEmail || 'cliente@email.com', // TODO: get from proposal
+            metadata: {
+              publicUrl: data.publicUrl,
+              validUntil: data.expiresAt,
+            },
+          },
+        });
+      }
+
       setPublishedUrl(data.publicUrl);
       toast({
         title: 'Proposta publicada com sucesso!',
-        description: 'Link público gerado.',
+        description: sendEmail ? 'E-mail enviado ao cliente.' : 'Link público gerado.',
       });
 
       onPublished?.(data.publicUrl);
