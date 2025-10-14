@@ -77,8 +77,9 @@ export default function Admin() {
               <Route path="propostas" element={<ProposalAdmin />} />
               <Route path="propostas/nova" element={<ProposalForm />} />
               <Route path="propostas/:id" element={<ProposalForm />} />
-              <Route path="propostas/:id/versoes/:versionNumber" element={<ProposalVersionEditor />} />
+              <Route path="propostas/:id/versao/:versionNumber" element={<ProposalVersionEditor />} />
               <Route path="propostas/:id/diff" element={<ProposalDiffViewer />} />
+              <Route path="propostas/change-requests" element={<ChangeRequestsAdmin />} />
               <Route path="propostas/templates" element={<ProposalTemplateEditor />} />
               <Route path="propostas/catalogo" element={<ProposalPricingCatalog />} />
       </Routes>

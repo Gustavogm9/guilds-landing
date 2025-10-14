@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -31,10 +31,14 @@ type ProposalFormData = z.infer<typeof proposalSchema>;
 
 export const ProposalForm = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { useProposal, templates, createProposal, updateProposal } = useProposals();
+  const { useProposal, templates, createProposal, updateProposal, createVersion } = useProposals();
   const { contacts } = useCRM();
+  
+  const dealIdFromQuery = searchParams.get('dealId');
+  const contactIdFromQuery = searchParams.get('contactId');
   
   const { data: proposal, isLoading } = useProposal(id || '');
 
@@ -64,8 +68,21 @@ export const ProposalForm = () => {
         valid_until: new Date(proposal.valid_until).toISOString().split('T')[0],
         flags: proposal.flags as any,
       });
+    } else if (dealIdFromQuery && contactIdFromQuery) {
+      form.reset({
+        title: `Proposta - Deal ${dealIdFromQuery.substring(0, 8)}`,
+        contact_id: contactIdFromQuery,
+        deal_id: dealIdFromQuery,
+        template_id: templates?.find(t => t.is_default)?.id || '',
+        valid_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        flags: {
+          partnership: false,
+          whitelabel: false,
+          maintenanceEnabled: true,
+        },
+      });
     }
-  }, [proposal]);
+  }, [proposal, dealIdFromQuery, contactIdFromQuery, templates, form]);
 
   const onSubmit = async (data: ProposalFormData) => {
     try {
@@ -80,11 +97,27 @@ export const ProposalForm = () => {
         });
       } else {
         const newProposal = await createProposal.mutateAsync(data);
+        
+        // Auto-criar v1
+        await createVersion.mutateAsync({
+          proposal_id: newProposal.id,
+          version_number: 1,
+          variables: {
+            cliente: {},
+            projeto: {},
+            prazos: { sprints: [] },
+            investimento: { valor: 0, moeda: 'BRL' },
+            pagamento: { modelo: '30-20-20-30' },
+          },
+          sections: {},
+          pricing: {},
+        });
+
         toast({
           title: "Proposta criada",
           description: "A proposta foi criada com sucesso.",
         });
-        navigate(`/admin/propostas/${newProposal.id}/versoes/1`);
+        navigate(`/admin/propostas/${newProposal.id}/versao/1`);
       }
     } catch (error: any) {
       toast({
@@ -100,17 +133,12 @@ export const ProposalForm = () => {
   }
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
-      <div className="flex items-center gap-4">
+    <div className="p-6">
+      <div className="flex items-center gap-4 mb-6">
         <Button variant="ghost" size="icon" onClick={() => navigate('/admin/propostas')}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <div>
-          <h1 className="text-3xl font-bold">{id ? 'Editar Proposta' : 'Nova Proposta'}</h1>
-          <p className="text-muted-foreground">
-            {id ? 'Atualize as informações da proposta' : 'Crie uma nova proposta comercial'}
-          </p>
-        </div>
+        <h1 className="text-2xl font-bold">{id ? 'Editar Proposta' : 'Nova Proposta'}</h1>
       </div>
 
       <Form {...form}>
@@ -127,7 +155,7 @@ export const ProposalForm = () => {
                   <FormItem>
                     <FormLabel>Título da Proposta</FormLabel>
                     <FormControl>
-                      <Input placeholder="Proposta: Sistema de Gestão" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -143,13 +171,13 @@ export const ProposalForm = () => {
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione o cliente" />
+                          <SelectValue placeholder="Selecione um cliente" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {contacts?.map((contact: any) => (
+                        {contacts?.map((contact) => (
                           <SelectItem key={contact.id} value={contact.id}>
-                            {contact.name} - {contact.company || contact.email}
+                            {contact.name} {contact.company ? `- ${contact.company}` : ''}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -164,9 +192,9 @@ export const ProposalForm = () => {
                 name="deal_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Deal ID (Opcional)</FormLabel>
+                    <FormLabel>Deal (Opcional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="UUID do deal" {...field} />
+                      <Input {...field} placeholder="ID do Deal" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -182,13 +210,13 @@ export const ProposalForm = () => {
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione o template" />
+                          <SelectValue placeholder="Selecione um template" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {templates?.map((template: any) => (
+                        {templates?.map((template) => (
                           <SelectItem key={template.id} value={template.id}>
-                            {template.name} {template.is_default && '(Padrão)'}
+                            {template.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -203,7 +231,7 @@ export const ProposalForm = () => {
                 name="valid_until"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Válida Até</FormLabel>
+                    <FormLabel>Válido Até</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
@@ -221,33 +249,10 @@ export const ProposalForm = () => {
             <CardContent className="space-y-4">
               <FormField
                 control={form.control}
-                name="flags.maintenanceEnabled"
-                render={({ field }) => (
-                  <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                    <div>
-                      <FormLabel>Habilitar Manutenção</FormLabel>
-                      <p className="text-sm text-muted-foreground">
-                        Incluir planos de manutenção na proposta
-                      </p>
-                    </div>
-                    <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
                 name="flags.partnership"
                 render={({ field }) => (
-                  <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                    <div>
-                      <FormLabel>Modo Parceria</FormLabel>
-                      <p className="text-sm text-muted-foreground">
-                        Ativar cálculos de RevShare
-                      </p>
-                    </div>
+                  <FormItem className="flex items-center justify-between">
+                    <FormLabel>Parceria</FormLabel>
                     <FormControl>
                       <Switch checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
@@ -259,13 +264,21 @@ export const ProposalForm = () => {
                 control={form.control}
                 name="flags.whitelabel"
                 render={({ field }) => (
-                  <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                    <div>
-                      <FormLabel>Whitelabel</FormLabel>
-                      <p className="text-sm text-muted-foreground">
-                        Remover branding Guilds
-                      </p>
-                    </div>
+                  <FormItem className="flex items-center justify-between">
+                    <FormLabel>Whitelabel</FormLabel>
+                    <FormControl>
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="flags.maintenanceEnabled"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between">
+                    <FormLabel>Manutenção Habilitada</FormLabel>
                     <FormControl>
                       <Switch checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
@@ -275,13 +288,11 @@ export const ProposalForm = () => {
             </CardContent>
           </Card>
 
-          <div className="flex justify-end gap-4">
+          <div className="flex gap-4">
             <Button type="button" variant="outline" onClick={() => navigate('/admin/propostas')}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={createProposal.isPending || updateProposal.isPending}>
-              {id ? 'Atualizar' : 'Criar'} Proposta
-            </Button>
+            <Button type="submit">{id ? 'Atualizar' : 'Criar'} Proposta</Button>
           </div>
         </form>
       </Form>

@@ -319,7 +319,7 @@ export function DealCard({
               <div className="w-full sm:flex-1">
                 <ProposalButton 
                   dealId={deal.id} 
-                  onCreateProposal={() => onViewDetails?.(deal)}
+                  contactId={deal.contact_id}
                 />
               </div>
               <Button 

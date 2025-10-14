@@ -11,6 +11,8 @@ import { ArrowLeft, Save, Eye, FileText } from "lucide-react";
 import { calculatePaymentSchedule, calculateMaintenancePlans, formatCurrency, generateChangelog } from "@/lib/proposalCalculations";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { PublishProposalModal } from "./proposal/PublishProposalModal";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ProposalVersionEditor = () => {
   const { id, versionNumber } = useParams();
@@ -37,6 +39,8 @@ export const ProposalVersionEditor = () => {
 
   const [sections, setSections] = useState<string>('');
   const [autoSaving, setAutoSaving] = useState(false);
+  const [publishModalOpen, setPublishModalOpen] = useState(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
   // Load existing version or initialize
   useEffect(() => {
@@ -211,6 +215,32 @@ export const ProposalVersionEditor = () => {
     }
   };
 
+  const handleGeneratePdf = async () => {
+    if (!id || !versionNumber) return;
+    
+    setIsGeneratingPdf(true);
+    try {
+      const { error } = await supabase.functions.invoke('proposal-generator', {
+        body: { proposalId: id, versionNumber: Number(versionNumber) },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'PDF gerado com sucesso!',
+        description: 'O arquivo está disponível para download.',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Erro ao gerar PDF',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
+
   if (!proposal) {
     return <div className="p-8 text-center">Carregando...</div>;
   }
@@ -313,6 +343,16 @@ export const ProposalVersionEditor = () => {
           </Card>
         </div>
       </div>
+
+      <PublishProposalModal
+        open={publishModalOpen}
+        onOpenChange={setPublishModalOpen}
+        proposalId={id!}
+        versionNumber={Number(versionNumber)}
+        onPublished={(url) => {
+          toast({ title: 'Link copiado!', description: url });
+        }}
+      />
     </div>
   );
 };
