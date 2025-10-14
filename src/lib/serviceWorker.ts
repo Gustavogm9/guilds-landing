@@ -30,23 +30,7 @@ export const registerServiceWorker = async () => {
 
 // Preload critical resources
 export const preloadCriticalResources = () => {
-  // Preload critical fonts
-  const fonts = [
-    '/fonts/inter-var.woff2',
-    '/fonts/inter-latin.woff2'
-  ];
-  
-  fonts.forEach(font => {
-    const link = document.createElement('link');
-    link.rel = 'preload';
-    link.as = 'font';
-    link.type = 'font/woff2';
-    link.crossOrigin = 'anonymous';
-    link.href = font;
-    document.head.appendChild(link);
-  });
-
-  // Preload critical images
+  // Preload critical images only (fonts are loaded via Google Fonts)
   const criticalImages = [
     '/assets/hero-image.jpg',
     '/assets/guilds-logo-full.svg'

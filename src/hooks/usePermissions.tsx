@@ -46,14 +46,16 @@ export const usePermissions = () => {
     }
 
     try {
-      // Fetch user profile
-      const { data: profile } = await supabase
+      // Fetch user profile (silently fail if table doesn't exist or RLS blocks)
+      const { data: profile, error: profileError } = await supabase
         .from('user_profiles')
         .select('*')
         .eq('user_id', user.id)
         .single();
 
-      setUserProfile(profile);
+      if (!profileError) {
+        setUserProfile(profile);
+      }
 
       // Fetch user roles
       const { data: roles } = await supabase
