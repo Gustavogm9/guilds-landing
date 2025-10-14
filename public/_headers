@@ -64,15 +64,6 @@
   Cache-Control: public, max-age=31536000, immutable
   Expires: Thu, 31 Dec 2025 23:59:59 GMT
 
-# Direct asset files (30 days)
-/assets/hero-image.jpg
-  Cache-Control: public, max-age=2592000
-  Expires: Fri, 28 Feb 2025 23:59:59 GMT
-
-/assets/guilds-logo-full.svg
-  Cache-Control: public, max-age=2592000
-  Expires: Fri, 28 Feb 2025 23:59:59 GMT
-
 # General patterns (after specific ones)
 /assets/images/*
   Cache-Control: public, max-age=31536000

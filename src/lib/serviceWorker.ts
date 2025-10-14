@@ -28,22 +28,8 @@ export const registerServiceWorker = async () => {
   }
 };
 
-// Preload critical resources
-export const preloadCriticalResources = () => {
-  // Preload critical images only (fonts are loaded via Google Fonts)
-  const criticalImages = [
-    '/assets/hero-image.jpg',
-    '/assets/guilds-logo-full.svg'
-  ];
-  
-  criticalImages.forEach(src => {
-    const link = document.createElement('link');
-    link.rel = 'preload';
-    link.as = 'image';
-    link.href = src;
-    document.head.appendChild(link);
-  });
-};
+// Note: Preload of critical resources is now handled by AdvancedOptimizations hook
+// to avoid duplication and ensure correct bundled URLs
 
 // Resource hints for better performance
 export const addResourceHints = () => {
@@ -76,9 +62,6 @@ export const initializePerformanceOptimizations = () => {
     
     // Add resource hints immediately
     addResourceHints();
-    
-    // Preload critical resources after initial paint
-    setTimeout(preloadCriticalResources, 100);
     
     // Optimize scrolling performance
     if ('scrollBehavior' in document.documentElement.style) {

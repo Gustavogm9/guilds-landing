@@ -1,5 +1,7 @@
 import { useEffect, useCallback, useMemo } from 'react';
 import { useMobilePerformance } from './MobileOptimizations';
+import heroImageUrl from '@/assets/hero-image.jpg';
+import logoFullUrl from '@/assets/guilds-logo-full.svg';
 
 // PHASE 4: Advanced performance optimizations
 
@@ -62,10 +64,10 @@ export const useCriticalResourcePreloader = () => {
         document.head.appendChild(link);
       });
 
-      // Preload critical images for LCP optimization
+      // Preload critical images for LCP optimization (using bundled URLs)
       const criticalImages = [
-        '/assets/hero-image.jpg',
-        '/assets/guilds-logo-full.svg'
+        heroImageUrl,
+        logoFullUrl
       ];
 
       criticalImages.forEach(src => {

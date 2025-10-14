@@ -1,13 +1,12 @@
 // Service Worker for caching and offline support - ENHANCED FOR SEO
-const CACHE_NAME = 'guilds-v2';
-const STATIC_CACHE = 'guilds-static-v2';
-const DYNAMIC_CACHE = 'guilds-dynamic-v2';
+const CACHE_NAME = 'guilds-v3';
+const STATIC_CACHE = 'guilds-static-v3';
+const DYNAMIC_CACHE = 'guilds-dynamic-v3';
 
-// Files to cache immediately with long-term caching strategy
+// Files to cache immediately - only guaranteed resources
 const STATIC_FILES = [
   '/',
-  '/assets/hero-image.jpg',
-  '/assets/guilds-logo-full.svg'
+  '/favicon.ico'
 ];
 
 // Cache strategy for different asset types
@@ -22,12 +21,14 @@ const CACHE_STRATEGIES = {
   API: /\/api\//,
 };
 
-// Install event - cache static resources
+// Install event - cache static resources (resilient to failures)
 self.addEventListener('install', (event) => {
   event.waitUntil(
     Promise.all([
       caches.open(STATIC_CACHE).then((cache) => {
-        return cache.addAll(STATIC_FILES);
+        return cache.addAll(STATIC_FILES).catch(err => {
+          console.warn('SW precache skipped:', err);
+        });
       }),
       self.skipWaiting()
     ])

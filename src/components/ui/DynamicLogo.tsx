@@ -1,6 +1,8 @@
 import React from 'react';
 import { useLogos } from '@/hooks/useLogos';
 import { cn } from '@/lib/utils';
+import fallbackShield from '@/assets/guilds-logo-shield.svg';
+import fallbackFull from '@/assets/guilds-logo-full.svg';
 
 interface DynamicLogoProps {
   type?: 'symbol' | 'full' | 'text';
@@ -60,11 +62,11 @@ export function DynamicLogo({
       return <>{fallback}</>;
     }
     
-    // Default fallback - use existing SVG logos as backup
+    // Default fallback - use imported SVG logos as backup
     if (type === 'symbol') {
       return (
         <img 
-          src="/src/assets/guilds-logo-shield.svg"
+          src={fallbackShield}
           alt={alt}
           className={className}
           width={width || 32}
@@ -77,7 +79,7 @@ export function DynamicLogo({
     
     return (
       <img 
-        src="/src/assets/guilds-logo-full.svg"
+        src={fallbackFull}
         alt={alt}
         className={className}
         width={width || 120}
