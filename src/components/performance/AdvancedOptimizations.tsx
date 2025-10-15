@@ -49,21 +49,6 @@ export const useSmartPrefetching = () => {
 export const useCriticalResourcePreloader = () => {
   useEffect(() => {
     const preloadCriticalAssets = () => {
-      // Preload critical fonts
-      const criticalFonts = [
-        'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2'
-      ];
-
-      criticalFonts.forEach(fontUrl => {
-        const link = document.createElement('link');
-        link.rel = 'preload';
-        link.as = 'font';
-        link.type = 'font/woff2';
-        link.crossOrigin = 'anonymous';
-        link.href = fontUrl;
-        document.head.appendChild(link);
-      });
-
       // Preload critical images for LCP optimization (using bundled URLs)
       const criticalImages = [
         heroImageUrl,
