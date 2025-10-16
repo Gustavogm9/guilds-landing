@@ -5812,6 +5812,15 @@ export type Database = {
         }
         Returns: string
       }
+      create_first_superadmin: {
+        Args: { p_display_name?: string; p_email: string }
+        Returns: {
+          message: string
+          role: Database["public"]["Enums"]["app_role"]
+          success: boolean
+          user_id: string
+        }[]
+      }
       generate_client_access_token: {
         Args: {
           p_access_level?: string
