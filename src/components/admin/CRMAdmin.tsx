@@ -2,9 +2,27 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Settings, Users, FileText, Eye, ExternalLink, Calendar as CalendarIcon } from 'lucide-react';
+import { Plus, Settings, Users, FileText, Eye, ExternalLink, Calendar as CalendarIcon, MoreVertical, Edit, Trash2, Power } from 'lucide-react';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { useCRM } from '@/hooks/useCRM';
 import { PipelineForm } from './PipelineForm';
+import { PipelineEditForm } from './PipelineEditForm';
 import { StageForm } from './StageForm';
 import { ContactForm } from './ContactForm';
 import { EnhancedContactCard } from '@/components/crm/contact/EnhancedContactCard';
@@ -21,13 +39,18 @@ export default function CRMAdmin() {
     createPipeline,
     isCreatingPipeline,
     createContact,
-    isCreatingContact
+    isCreatingContact,
+    updatePipeline,
+    deletePipeline,
+    isDeletingPipeline
   } = useCRM();
 
   const [showPipelineForm, setShowPipelineForm] = useState(false);
+  const [showPipelineEditForm, setShowPipelineEditForm] = useState(false);
   const [showStageForm, setShowStageForm] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
-  const [selectedPipeline, setSelectedPipeline] = useState<string | null>(null);
+  const [selectedPipeline, setSelectedPipeline] = useState<any>(null);
+  const [pipelineToDelete, setPipelineToDelete] = useState<string | null>(null);
   const [selectedContact, setSelectedContact] = useState(null);
   const [showContactDetail, setShowContactDetail] = useState(false);
 
@@ -157,35 +180,71 @@ export default function CRMAdmin() {
                         />
                         {pipeline.name}
                       </CardTitle>
-                      <Badge 
-                        variant={pipeline.is_active ? "default" : "secondary"}
-                        className="text-xs"
-                      >
-                        {pipeline.is_active ? "Ativo" : "Inativo"}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge 
+                          variant={pipeline.is_active ? "default" : "secondary"}
+                          className="text-xs"
+                        >
+                          {pipeline.is_active ? "Ativo" : "Inativo"}
+                        </Badge>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setSelectedPipeline(pipeline);
+                                setShowPipelineEditForm(true);
+                              }}
+                            >
+                              <Edit className="h-4 w-4 mr-2" />
+                              Editar Pipeline
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setSelectedPipeline(pipeline);
+                                setShowStageForm(true);
+                              }}
+                            >
+                              <Settings className="h-4 w-4 mr-2" />
+                              Gerenciar Estágios
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => {
+                                updatePipeline({ 
+                                  pipelineId: pipeline.id, 
+                                  updates: { is_active: !pipeline.is_active } 
+                                });
+                              }}
+                            >
+                              <Power className="h-4 w-4 mr-2" />
+                              {pipeline.is_active ? 'Desativar' : 'Ativar'}
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              className="text-destructive"
+                              onClick={() => setPipelineToDelete(pipeline.id)}
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Excluir
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground mb-3">
                       {pipeline.description || 'Sem descrição'}
                     </p>
-                    <div className="flex justify-between items-center">
-                      <Badge variant="outline" className="text-xs">
-                        {pipeline.type === 'sales' ? 'Vendas' : 
-                         pipeline.type === 'support' ? 'Suporte' : 'Projetos'}
-                      </Badge>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => {
-                          setSelectedPipeline(pipeline.id);
-                          setShowStageForm(true);
-                        }}
-                      >
-                        <Settings className="h-4 w-4 mr-1" />
-                        Estágios
-                      </Button>
-                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      {pipeline.type === 'sales' ? 'Vendas' : 
+                       pipeline.type === 'support' ? 'Suporte' : 'Projetos'}
+                    </Badge>
                   </CardContent>
                 </Card>
               ))}
@@ -295,14 +354,25 @@ export default function CRMAdmin() {
       />
 
       {selectedPipeline && (
-        <StageForm
-          pipelineId={selectedPipeline}
-          open={showStageForm}
-          onOpenChange={(open) => {
-            setShowStageForm(open);
-            if (!open) setSelectedPipeline(null);
-          }}
-        />
+        <>
+          <PipelineEditForm
+            pipeline={selectedPipeline}
+            open={showPipelineEditForm}
+            onOpenChange={(open) => {
+              setShowPipelineEditForm(open);
+              if (!open) setSelectedPipeline(null);
+            }}
+          />
+          
+          <StageForm
+            pipelineId={typeof selectedPipeline === 'string' ? selectedPipeline : selectedPipeline.id}
+            open={showStageForm}
+            onOpenChange={(open) => {
+              setShowStageForm(open);
+              if (!open) setSelectedPipeline(null);
+            }}
+          />
+        </>
       )}
 
       <ContactForm
@@ -320,6 +390,34 @@ export default function CRMAdmin() {
           console.log('Edit contact:', contact.name);
         }}
       />
+
+      {/* Delete Pipeline Confirmation */}
+      <AlertDialog open={!!pipelineToDelete} onOpenChange={(open) => !open && setPipelineToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir este pipeline? Esta ação irá desativá-lo permanentemente.
+              Todos os deals e estágios associados permanecerão no sistema mas este pipeline não estará mais visível.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                if (pipelineToDelete) {
+                  deletePipeline(pipelineToDelete);
+                  setPipelineToDelete(null);
+                }
+              }}
+              disabled={isDeletingPipeline}
+            >
+              {isDeletingPipeline ? 'Excluindo...' : 'Excluir'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

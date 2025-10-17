@@ -85,12 +85,10 @@
     <!-- DNS prefetch for additional performance -->
     <link rel="dns-prefetch" href="https://itvruukwhgttnjpvghzq.supabase.co" />
     
-    <!-- Critical font preload with font-display swap for faster FCP -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'" />
+    <!-- Critical fonts loaded with proper async pattern -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" />
     
-    <!-- Additional fonts loaded non-blocking after critical fonts -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <!-- Additional fonts loaded non-blocking -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'" />
     
     <!-- Fallback for fonts if JS disabled -->
