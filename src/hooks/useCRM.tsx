@@ -141,7 +141,7 @@ export interface CRMActivity {
   updated_at: string;
 }
 
-export function useCRM() {
+export function useCRM(includeInactive: boolean = false) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -151,13 +151,17 @@ export function useCRM() {
     isLoading: pipelinesLoading,
     error: pipelinesError
   } = useQuery({
-    queryKey: ['crm-pipelines'],
+    queryKey: ['crm-pipelines', includeInactive],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('crm_pipelines')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order');
+        .select('*');
+      
+      if (!includeInactive) {
+        query = query.eq('is_active', true);
+      }
+      
+      const { data, error } = await query.order('display_order');
       
       if (error) throw error;
       return data as CRMPipeline[];

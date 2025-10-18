@@ -3,6 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Settings, Users, FileText, Eye, ExternalLink, Calendar as CalendarIcon, MoreVertical, Edit, Trash2, Power } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +33,8 @@ import { useNavigate } from 'react-router-dom';
 
 export default function CRMAdmin() {
   const navigate = useNavigate();
+  const [showInactive, setShowInactive] = useState(false);
+  
   const { 
     pipelines, 
     contacts, 
@@ -43,7 +47,7 @@ export default function CRMAdmin() {
     updatePipeline,
     deletePipeline,
     isDeletingPipeline
-  } = useCRM();
+  } = useCRM(showInactive);
 
   const [showPipelineForm, setShowPipelineForm] = useState(false);
   const [showPipelineEditForm, setShowPipelineEditForm] = useState(false);
@@ -153,13 +157,25 @@ export default function CRMAdmin() {
             <div>
               <CardTitle>Pipelines</CardTitle>
               <CardDescription>
-                {pipelinesLoading ? 'Carregando...' : `${pipelines?.length || 0} pipelines configurados`}
+                {pipelinesLoading ? 'Carregando...' : `${pipelines?.filter(p => p.is_active).length || 0} ativos • ${pipelines?.filter(p => !p.is_active).length || 0} inativos`}
               </CardDescription>
             </div>
-            <Button onClick={() => setShowPipelineForm(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Novo Pipeline
-            </Button>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Switch 
+                  id="show-inactive"
+                  checked={showInactive}
+                  onCheckedChange={setShowInactive}
+                />
+                <Label htmlFor="show-inactive" className="text-sm cursor-pointer">
+                  Mostrar inativos
+                </Label>
+              </div>
+              <Button onClick={() => setShowPipelineForm(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Novo Pipeline
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -170,7 +186,11 @@ export default function CRMAdmin() {
           ) : pipelines && pipelines.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {pipelines.map((pipeline) => (
-                <Card key={pipeline.id} className="relative">
+                <Card 
+                  key={pipeline.id} 
+                  className={`relative cursor-pointer hover:shadow-lg transition-all ${!pipeline.is_active ? 'opacity-60' : ''}`}
+                  onClick={() => navigate(`/admin/crm/board?pipeline=${pipeline.id}`)}
+                >
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg flex items-center gap-2">
@@ -189,13 +209,19 @@ export default function CRMAdmin() {
                         </Badge>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-8 w-8 p-0"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               <MoreVertical className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-48">
                             <DropdownMenuItem
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 setSelectedPipeline(pipeline);
                                 setShowPipelineEditForm(true);
                               }}
@@ -204,7 +230,8 @@ export default function CRMAdmin() {
                               Editar Pipeline
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 setSelectedPipeline(pipeline);
                                 setShowStageForm(true);
                               }}
@@ -214,7 +241,8 @@ export default function CRMAdmin() {
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 updatePipeline({ 
                                   pipelineId: pipeline.id, 
                                   updates: { is_active: !pipeline.is_active } 
@@ -227,7 +255,10 @@ export default function CRMAdmin() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               className="text-destructive"
-                              onClick={() => setPipelineToDelete(pipeline.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPipelineToDelete(pipeline.id);
+                              }}
                             >
                               <Trash2 className="h-4 w-4 mr-2" />
                               Excluir

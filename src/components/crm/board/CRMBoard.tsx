@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -27,6 +27,9 @@ import { ActivityScheduleModal } from '../activities/ActivityScheduleModal';
 import { CRMBoardSettings } from './CRMBoardSettings';
  
 export function CRMBoard() {
+  const [searchParams] = useSearchParams();
+  const pipelineFromUrl = searchParams.get('pipeline');
+  
   const [selectedPipelineId, setSelectedPipelineId] = useState<string>('');
   const [viewMode, setViewMode] = useState<'kanban' | 'list'>('kanban');
   const [showDealForm, setShowDealForm] = useState(false);
@@ -70,8 +73,13 @@ export function CRMBoard() {
     if (pipelines && pipelines.length > 0 && !selectedPipelineId) {
       let targetPipeline;
       
+      // 0. Pipeline from URL (highest priority)
+      if (pipelineFromUrl) {
+        targetPipeline = pipelines.find(p => p.id === pipelineFromUrl);
+      }
+      
       // 1. User's default preference
-      if (userPreferences?.default_pipeline_id) {
+      if (!targetPipeline && userPreferences?.default_pipeline_id) {
         targetPipeline = pipelines.find(p => p.id === userPreferences.default_pipeline_id);
       }
       
@@ -92,7 +100,7 @@ export function CRMBoard() {
       
       setSelectedPipelineId(targetPipeline.id);
     }
-  }, [pipelines, selectedPipelineId, userPreferences]);
+  }, [pipelines, selectedPipelineId, userPreferences, pipelineFromUrl]);
 
   // Auto-save last viewed pipeline (debounced)
   React.useEffect(() => {
