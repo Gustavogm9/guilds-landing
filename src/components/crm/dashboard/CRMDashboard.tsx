@@ -57,14 +57,35 @@ export function CRMDashboard({ deals, pipelines, stages, selectedPipelineId }: C
   const calculateMetrics = (): PipelineMetrics => {
     const pipelineDeals = deals.filter(deal => deal.pipeline_id === selectedPipelineId);
     
+    // Real Win Rate calculation
+    const closedDeals = pipelineDeals.filter(d => d.is_won !== null && d.is_won !== undefined);
+    const wonDeals = pipelineDeals.filter(d => d.is_won === true);
+    const winRate = closedDeals.length > 0 
+      ? Math.round((wonDeals.length / closedDeals.length) * 100) 
+      : 0;
+    
+    // Real Average Time to Close calculation
+    const closedDealsWithDates = pipelineDeals.filter(d => 
+      d.closed_at && d.created_at
+    );
+    const avgTime = closedDealsWithDates.length > 0
+      ? Math.round(closedDealsWithDates.reduce((sum, deal) => {
+          const days = Math.floor(
+            (new Date(deal.closed_at!).getTime() - new Date(deal.created_at).getTime()) 
+            / (1000 * 60 * 60 * 24)
+          );
+          return sum + days;
+        }, 0) / closedDealsWithDates.length)
+      : 0;
+    
     return {
       totalDeals: pipelineDeals.length,
       totalValue: pipelineDeals.reduce((sum, deal) => sum + (deal.value || 0), 0),
       averageValue: pipelineDeals.length > 0 ? 
         pipelineDeals.reduce((sum, deal) => sum + (deal.value || 0), 0) / pipelineDeals.length : 0,
-      winRate: 85, // Mock data - would calculate from closed deals
-      averageTime: 32, // Mock data - days to close
-      conversionRates: {} // Would calculate stage-to-stage conversion
+      winRate,
+      averageTime: avgTime,
+      conversionRates: {}
     };
   };
 
@@ -81,8 +102,8 @@ export function CRMDashboard({ deals, pipelines, stages, selectedPipelineId }: C
         dealCount: stageDeals.length,
         totalValue,
         averageValue: stageDeals.length > 0 ? totalValue / stageDeals.length : 0,
-        conversionRate: Math.random() * 100, // Mock - would calculate actual conversion
-        avgTimeInStage: Math.floor(Math.random() * 15) + 5 // Mock - would calculate from timestamps
+        conversionRate: 0, // Requires audit log analysis - keeping at 0 for now
+        avgTimeInStage: 0 // Requires audit log analysis - keeping at 0 for now
       };
     });
   };
@@ -186,13 +207,37 @@ export function CRMDashboard({ deals, pipelines, stages, selectedPipelineId }: C
   const businessUnitAnalysis = analyzeByBusinessUnit();
   const forecast = analyzeForecast();
   const selectedPipeline = pipelines.find(p => p.id === selectedPipelineId);
+  
+  const pipelineDeals = deals.filter(deal => deal.pipeline_id === selectedPipelineId);
+  const closedDeals = pipelineDeals.filter(d => d.is_won !== null && d.is_won !== undefined);
+  const closedDealsWithDates = pipelineDeals.filter(d => d.closed_at && d.created_at);
 
-  // Mock data for trends (would come from time-series analysis)
+  // Real trend calculations
+  const now = new Date();
+  const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+  
+  const currentMonthDeals = pipelineDeals.filter(d => 
+    new Date(d.created_at) >= currentMonthStart
+  );
+  const lastMonthDeals = pipelineDeals.filter(d => 
+    new Date(d.created_at) >= lastMonthStart &&
+    new Date(d.created_at) <= lastMonthEnd
+  );
+  
+  const currentMonthValue = currentMonthDeals.reduce((sum, d) => sum + (d.value || 0), 0);
+  const lastMonthValue = lastMonthDeals.reduce((sum, d) => sum + (d.value || 0), 0);
+  
   const trendData = {
-    dealsGrowth: 12.5,
-    valueGrowth: 8.3,
-    winRateChange: -2.1,
-    avgTimeChange: 5.2
+    dealsGrowth: lastMonthDeals.length > 0 
+      ? ((currentMonthDeals.length - lastMonthDeals.length) / lastMonthDeals.length) * 100 
+      : 0,
+    valueGrowth: lastMonthValue > 0 
+      ? ((currentMonthValue - lastMonthValue) / lastMonthValue) * 100 
+      : 0,
+    winRateChange: 0, // Requires historical data
+    avgTimeChange: 0 // Requires historical data
   };
 
   const formatCurrency = (value: number) => {
@@ -333,12 +378,25 @@ export function CRMDashboard({ deals, pipelines, stages, selectedPipelineId }: C
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatPercentage(metrics.winRate)}</div>
+            <div className="text-2xl font-bold">
+              {formatPercentage(metrics.winRate)}
+              {closedDeals.length < 5 && closedDeals.length > 0 && (
+                <span className="text-xs text-muted-foreground ml-2">
+                  ({closedDeals.length} fechados)
+                </span>
+              )}
+            </div>
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              {getTrendIcon(trendData.winRateChange)}
-              <span className={getTrendColor(trendData.winRateChange)}>
-                {formatPercentage(Math.abs(trendData.winRateChange))} vs mês anterior
-              </span>
+              {closedDeals.length === 0 ? (
+                <span className="text-amber-600">Sem dados de fechamento</span>
+              ) : (
+                <>
+                  {getTrendIcon(trendData.winRateChange)}
+                  <span className={getTrendColor(trendData.winRateChange)}>
+                    {formatPercentage(Math.abs(trendData.winRateChange))} vs mês anterior
+                  </span>
+                </>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -349,12 +407,25 @@ export function CRMDashboard({ deals, pipelines, stages, selectedPipelineId }: C
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.averageTime}d</div>
+            <div className="text-2xl font-bold">
+              {metrics.averageTime > 0 ? `${metrics.averageTime} dias` : '-'}
+              {closedDealsWithDates.length > 0 && closedDealsWithDates.length < 5 && (
+                <span className="text-xs text-muted-foreground ml-2">
+                  ({closedDealsWithDates.length} amostras)
+                </span>
+              )}
+            </div>
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              {getTrendIcon(-trendData.avgTimeChange)}
-              <span className={getTrendColor(-trendData.avgTimeChange)}>
-                {formatPercentage(Math.abs(trendData.avgTimeChange))} vs mês anterior
-              </span>
+              {closedDealsWithDates.length === 0 ? (
+                <span className="text-amber-600">Sem dados de fechamento</span>
+              ) : (
+                <>
+                  {getTrendIcon(trendData.avgTimeChange)}
+                  <span className={getTrendColor(trendData.avgTimeChange)}>
+                    {formatPercentage(Math.abs(trendData.avgTimeChange))} vs mês anterior
+                  </span>
+                </>
+              )}
             </div>
           </CardContent>
         </Card>

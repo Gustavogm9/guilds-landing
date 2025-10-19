@@ -16,9 +16,11 @@ import {
   MessageSquare,
   Flame,
   Snowflake,
-  Clock
+  Clock,
+  CheckCircle2,
+  XCircle
 } from 'lucide-react';
-import { CRMDeal } from '@/hooks/useCRM';
+import { CRMDeal, useCRM } from '@/hooks/useCRM';
 import { useCRMContractIntegration } from '@/hooks/useCRMContractIntegration';
 import { ProposalButton } from './ProposalButton';
 import {
@@ -58,6 +60,7 @@ export function DealCard({
   onScheduleActivity
 }: DealCardProps) {
   const { generateContractFromDeal, checkExistingContract, isGenerating } = useCRMContractIntegration();
+  const { markDealAsClosed, isMarkingDealAsClosed } = useCRM();
   const [existingContractId, setExistingContractId] = useState<string | null>(null);
   const [checkingContract, setCheckingContract] = useState(false);
 
@@ -176,7 +179,34 @@ export function DealCard({
                     Agendar Atividade
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem 
+                  {deal.is_won === null && (
+                    <>
+                      <DropdownMenuItem 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          markDealAsClosed({ dealId: deal.id, isWon: true });
+                        }}
+                        disabled={isMarkingDealAsClosed}
+                        className="text-green-600"
+                      >
+                        <CheckCircle2 className="h-4 w-4 mr-2" />
+                        Marcar como Ganho
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          markDealAsClosed({ dealId: deal.id, isWon: false });
+                        }}
+                        disabled={isMarkingDealAsClosed}
+                        className="text-red-600"
+                      >
+                        <XCircle className="h-4 w-4 mr-2" />
+                        Marcar como Perdido
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
+                  <DropdownMenuItem
                     onClick={(e) => {
                       e.stopPropagation();
                       onEdit?.(deal);

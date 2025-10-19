@@ -1498,6 +1498,7 @@ export type Database = {
         Row: {
           assigned_to: string | null
           business_unit: string | null
+          closed_at: string | null
           contact_id: string | null
           created_at: string
           currency: string | null
@@ -1506,6 +1507,7 @@ export type Database = {
           expected_close_date: string | null
           id: string
           is_active: boolean
+          is_won: boolean | null
           pipeline_id: string
           probability: number | null
           source: string | null
@@ -1518,6 +1520,7 @@ export type Database = {
         Insert: {
           assigned_to?: string | null
           business_unit?: string | null
+          closed_at?: string | null
           contact_id?: string | null
           created_at?: string
           currency?: string | null
@@ -1526,6 +1529,7 @@ export type Database = {
           expected_close_date?: string | null
           id?: string
           is_active?: boolean
+          is_won?: boolean | null
           pipeline_id: string
           probability?: number | null
           source?: string | null
@@ -1538,6 +1542,7 @@ export type Database = {
         Update: {
           assigned_to?: string | null
           business_unit?: string | null
+          closed_at?: string | null
           contact_id?: string | null
           created_at?: string
           currency?: string | null
@@ -1546,6 +1551,7 @@ export type Database = {
           expected_close_date?: string | null
           id?: string
           is_active?: boolean
+          is_won?: boolean | null
           pipeline_id?: string
           probability?: number | null
           source?: string | null

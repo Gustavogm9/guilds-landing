@@ -123,6 +123,8 @@ export interface CRMDeal {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  closed_at?: string;
+  is_won?: boolean | null;
   contact?: CRMContact;
 }
 
@@ -471,6 +473,39 @@ export function useCRM(includeInactive: boolean = false) {
         title: "Erro ao mover oportunidade",
         description: error.message,
         variant: "destructive",
+      });
+    }
+  });
+
+  // Mark deal as closed mutation
+  const markDealAsClosed = useMutation({
+    mutationFn: async ({ dealId, isWon }: { dealId: string; isWon: boolean }) => {
+      const { data, error } = await supabase
+        .from('crm_deals')
+        .update({
+          is_won: isWon,
+          closed_at: new Date().toISOString()
+        })
+        .eq('id', dealId)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['crm-deals'] });
+      toast({
+        title: variables.isWon ? 'Deal marcado como Ganho!' : 'Deal marcado como Perdido',
+        description: 'Status de fechamento atualizado com sucesso.',
+        variant: variables.isWon ? 'default' : 'destructive'
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Erro ao atualizar deal',
+        description: error.message,
+        variant: 'destructive'
       });
     }
   });
@@ -905,6 +940,9 @@ export function useCRM(includeInactive: boolean = false) {
     
     moveDeal: moveDeal.mutate,
     isMovingDeal: moveDeal.isPending,
+    
+    markDealAsClosed: markDealAsClosed.mutate,
+    isMarkingDealAsClosed: markDealAsClosed.isPending,
     
     createInteraction: createInteraction.mutate,
     isCreatingInteraction: createInteraction.isPending,

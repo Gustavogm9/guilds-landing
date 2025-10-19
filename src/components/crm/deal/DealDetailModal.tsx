@@ -24,7 +24,9 @@ import {
   FileText,
   Activity,
   History,
-  Plus
+  Plus,
+  CheckCircle2,
+  XCircle
 } from 'lucide-react';
 import { CRMDeal, useCRM } from '@/hooks/useCRM';
 import { useCRMAuditLog, CRMAuditLog } from '@/hooks/useCRMAuditLog';
@@ -49,7 +51,7 @@ export function DealDetailModal({
   onOpenChange, 
   onEdit 
 }: DealDetailModalProps) {
-  const { fetchContactInteractions } = useCRM();
+  const { fetchContactInteractions, markDealAsClosed, isMarkingDealAsClosed } = useCRM();
   const { useDealAuditLogs } = useCRMAuditLog();
   const { useProposalsByDeal } = useProposals();
   const [editingLog, setEditingLog] = useState<CRMAuditLog | null>(null);
@@ -118,10 +120,52 @@ export function DealDetailModal({
                 )}
               </div>
             </div>
-            <Button variant="outline" onClick={() => onEdit?.(deal)}>
-              <Edit className="h-4 w-4 mr-2" />
-              Editar
-            </Button>
+            <div className="flex gap-2">
+              {deal.is_won === null && (
+                <>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => markDealAsClosed({ dealId: deal.id, isWon: true })}
+                    disabled={isMarkingDealAsClosed}
+                    className="text-green-600 hover:text-green-700"
+                  >
+                    <CheckCircle2 className="h-4 w-4 mr-2" />
+                    Ganho
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => markDealAsClosed({ dealId: deal.id, isWon: false })}
+                    disabled={isMarkingDealAsClosed}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <XCircle className="h-4 w-4 mr-2" />
+                    Perdido
+                  </Button>
+                </>
+              )}
+              {deal.is_won !== null && (
+                <Badge 
+                  variant={deal.is_won ? "default" : "destructive"}
+                  className="px-3 py-1"
+                >
+                  {deal.is_won ? (
+                    <>
+                      <CheckCircle2 className="h-3 w-3 mr-1" />
+                      Deal Ganho
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="h-3 w-3 mr-1" />
+                      Deal Perdido
+                    </>
+                  )}
+                </Badge>
+              )}
+              <Button variant="outline" onClick={() => onEdit?.(deal)}>
+                <Edit className="h-4 w-4 mr-2" />
+                Editar
+              </Button>
+            </div>
           </div>
         </DialogHeader>
 
