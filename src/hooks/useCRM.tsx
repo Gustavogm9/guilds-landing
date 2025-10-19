@@ -1,3 +1,4 @@
+// CRM Hook - Updated with deal closing functionality
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';

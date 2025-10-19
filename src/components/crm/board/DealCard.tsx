@@ -60,7 +60,7 @@ export function DealCard({
   onScheduleActivity
 }: DealCardProps) {
   const { generateContractFromDeal, checkExistingContract, isGenerating } = useCRMContractIntegration();
-  const { markDealAsClosed, isMarkingDealAsClosed } = useCRM();
+  const { markDealAsClosed, isMarkingDealAsClosed } = useCRM(); // Deal closing actions
   const [existingContractId, setExistingContractId] = useState<string | null>(null);
   const [checkingContract, setCheckingContract] = useState(false);
 

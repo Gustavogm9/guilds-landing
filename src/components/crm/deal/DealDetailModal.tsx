@@ -51,7 +51,7 @@ export function DealDetailModal({
   onOpenChange, 
   onEdit 
 }: DealDetailModalProps) {
-  const { fetchContactInteractions, markDealAsClosed, isMarkingDealAsClosed } = useCRM();
+  const { fetchContactInteractions, markDealAsClosed, isMarkingDealAsClosed } = useCRM(); // Deal closing
   const { useDealAuditLogs } = useCRMAuditLog();
   const { useProposalsByDeal } = useProposals();
   const [editingLog, setEditingLog] = useState<CRMAuditLog | null>(null);
