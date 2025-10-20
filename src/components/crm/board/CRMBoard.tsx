@@ -450,9 +450,9 @@ export function CRMBoard() {
           <TabsTrigger value="notifications" className="flex items-center gap-2">
             <Bell className="h-4 w-4" />
             Notificações
-            {notifications.filter(n => !n.isRead && !n.isArchived).length > 0 && (
+            {notifications.filter(n => !n.is_read && !n.is_archived).length > 0 && (
               <Badge variant="destructive" className="text-xs h-5 w-5 p-0 flex items-center justify-center">
-                {notifications.filter(n => !n.isRead && !n.isArchived).length}
+                {notifications.filter(n => !n.is_read && !n.is_archived).length}
               </Badge>
             )}
           </TabsTrigger>

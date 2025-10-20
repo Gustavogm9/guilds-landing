@@ -4,6 +4,9 @@ project_id = "itvruukwhgttnjpvghzq"
 enabled = true
 site_url = "http://localhost:3000"
 
+[functions.crm-notification-processor]
+verify_jwt = false
+
 [functions.advanced-lead-processor]
 verify_jwt = false
 

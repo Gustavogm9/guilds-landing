@@ -1632,6 +1632,63 @@ export type Database = {
           },
         ]
       }
+      crm_notifications: {
+        Row: {
+          action_label: string | null
+          action_url: string | null
+          archived_at: string | null
+          created_at: string | null
+          entity_id: string
+          entity_type: string
+          id: string
+          is_archived: boolean | null
+          is_read: boolean | null
+          message: string
+          metadata: Json | null
+          notification_type: string
+          priority: string
+          read_at: string | null
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          action_label?: string | null
+          action_url?: string | null
+          archived_at?: string | null
+          created_at?: string | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          is_archived?: boolean | null
+          is_read?: boolean | null
+          message: string
+          metadata?: Json | null
+          notification_type: string
+          priority?: string
+          read_at?: string | null
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          action_label?: string | null
+          action_url?: string | null
+          archived_at?: string | null
+          created_at?: string | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          is_archived?: boolean | null
+          is_read?: boolean | null
+          message?: string
+          metadata?: Json | null
+          notification_type?: string
+          priority?: string
+          read_at?: string | null
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       crm_pipelines: {
         Row: {
           color: string
@@ -5960,6 +6017,18 @@ export type Database = {
       manual_enroll_contact: {
         Args: { p_contact_id: string; p_sequence_id: string }
         Returns: string
+      }
+      notify_hot_leads: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      notify_overdue_follow_ups: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      notify_stale_deals: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       refresh_nurturing_metrics: {
         Args: Record<PropertyKey, never>

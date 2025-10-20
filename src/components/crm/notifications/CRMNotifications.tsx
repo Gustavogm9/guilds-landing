@@ -21,16 +21,20 @@ import { ptBR } from 'date-fns/locale';
 
 export interface CRMNotification {
   id: string;
-  type: 'follow_up' | 'hot_lead' | 'stale_deal' | 'new_lead' | 'milestone' | 'reminder';
+  entity_type: 'deal' | 'contact' | 'activity';
+  entity_id: string;
+  notification_type: string;
   priority: 'low' | 'medium' | 'high' | 'urgent';
   title: string;
   message: string;
-  actionUrl?: string;
-  actionLabel?: string;
+  action_url?: string;
+  action_label?: string;
+  is_read: boolean;
+  is_archived: boolean;
+  created_at: string;
+  read_at?: string;
+  archived_at?: string;
   metadata?: Record<string, any>;
-  createdAt: Date;
-  isRead: boolean;
-  isArchived: boolean;
 }
 
 interface CRMNotificationsProps {
@@ -41,13 +45,18 @@ interface CRMNotificationsProps {
   onAction: (notification: CRMNotification) => void;
 }
 
-const NOTIFICATION_ICONS = {
-  follow_up: Clock,
-  hot_lead: TrendingUp,
-  stale_deal: AlertTriangle,
-  new_lead: Users,
-  milestone: Star,
-  reminder: Calendar
+const getNotificationIcon = (type: string) => {
+  const icons: Record<string, any> = {
+    follow_up: Clock,
+    hot_lead: TrendingUp,
+    stale_deal: AlertTriangle,
+    new_deal: Users,
+    deal_moved: Target,
+    deal_won: Star,
+    deal_lost: X,
+    reminder: Calendar
+  };
+  return icons[type] || Bell;
 };
 
 const NOTIFICATION_COLORS = {
@@ -74,11 +83,11 @@ export function CRMNotifications({
   const [filter, setFilter] = useState<'all' | 'unread' | 'high_priority'>('unread');
   
   const filteredNotifications = notifications.filter(notification => {
-    if (notification.isArchived) return false;
+    if (notification.is_archived) return false;
     
     switch (filter) {
       case 'unread':
-        return !notification.isRead;
+        return !notification.is_read;
       case 'high_priority':
         return notification.priority === 'high' || notification.priority === 'urgent';
       default:
@@ -86,29 +95,17 @@ export function CRMNotifications({
     }
   });
 
-  const unreadCount = notifications.filter(n => !n.isRead && !n.isArchived).length;
+  const unreadCount = notifications.filter(n => !n.is_read && !n.is_archived).length;
   const highPriorityCount = notifications.filter(n => 
-    (n.priority === 'high' || n.priority === 'urgent') && !n.isArchived
+    (n.priority === 'high' || n.priority === 'urgent') && !n.is_archived
   ).length;
 
-  const getNotificationIcon = (type: CRMNotification['type']) => {
-    const Icon = NOTIFICATION_ICONS[type];
-    return Icon || Bell;
-  };
-
-  const formatRelativeTime = (date: Date) => {
-    return formatDistanceToNow(date, { 
-      addSuffix: true, 
-      locale: ptBR 
-    });
-  };
-
   const handleNotificationClick = (notification: CRMNotification) => {
-    if (!notification.isRead) {
+    if (!notification.is_read) {
       onMarkAsRead(notification.id);
     }
     
-    if (notification.actionUrl) {
+    if (notification.action_url) {
       onAction(notification);
     }
   };
@@ -192,14 +189,14 @@ export function CRMNotifications({
           ) : (
             <div className="space-y-1">
               {filteredNotifications.map(notification => {
-                const Icon = getNotificationIcon(notification.type);
+                const Icon = getNotificationIcon(notification.notification_type);
                 const priorityColor = NOTIFICATION_COLORS[notification.priority];
                 
                 return (
                   <div
                     key={notification.id}
                     className={`p-4 border-b border-border hover:bg-muted/50 transition-colors cursor-pointer group ${
-                      !notification.isRead ? 'bg-primary/5' : ''
+                      !notification.is_read ? 'bg-primary/5' : ''
                     }`}
                     onClick={() => handleNotificationClick(notification)}
                   >
@@ -216,7 +213,7 @@ export function CRMNotifications({
                       
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
-                          <h4 className={`text-sm font-medium ${!notification.isRead ? 'text-foreground' : 'text-muted-foreground'}`}>
+                          <h4 className={`text-sm font-medium ${!notification.is_read ? 'text-foreground' : 'text-muted-foreground'}`}>
                             {notification.title}
                           </h4>
                           <div className="flex items-center gap-2">
@@ -250,22 +247,25 @@ export function CRMNotifications({
                         
                         <div className="flex items-center justify-between">
                           <span className="text-xs text-muted-foreground">
-                            {formatRelativeTime(notification.createdAt)}
+                            {formatDistanceToNow(new Date(notification.created_at), { 
+                              addSuffix: true, 
+                              locale: ptBR 
+                            })}
                           </span>
                           
-                          {notification.actionLabel && (
+                          {notification.action_label && (
                             <Button 
                               variant="outline" 
                               size="sm" 
                               className="h-6 text-xs"
                             >
-                              {notification.actionLabel}
+                              {notification.action_label}
                             </Button>
                           )}
                         </div>
                       </div>
                       
-                      {!notification.isRead && (
+                      {!notification.is_read && (
                         <div className="w-2 h-2 rounded-full bg-primary mt-2" />
                       )}
                     </div>
@@ -280,114 +280,5 @@ export function CRMNotifications({
   );
 }
 
-// Hook for managing notifications
-export function useCRMNotifications() {
-  const [notifications, setNotifications] = useState<CRMNotification[]>([]);
-
-  // Generate mock notifications (would be replaced with real data)
-  useEffect(() => {
-    const mockNotifications: CRMNotification[] = [
-      {
-        id: '1',
-        type: 'follow_up',
-        priority: 'high',
-        title: 'Follow-up pendente',
-        message: 'João Silva está aguardando retorno há 3 dias sobre proposta de automação.',
-        actionUrl: '/crm/contact/123',
-        actionLabel: 'Ver contato',
-        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-        isRead: false,
-        isArchived: false
-      },
-      {
-        id: '2',
-        type: 'hot_lead',
-        priority: 'urgent',
-        title: 'Lead quente identificado',
-        message: 'Maria Santos tem score 95 e visitou a página de preços 5 vezes hoje.',
-        actionUrl: '/crm/contact/456',
-        actionLabel: 'Entrar em contato',
-        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
-        isRead: false,
-        isArchived: false
-      },
-      {
-        id: '3',
-        type: 'stale_deal',
-        priority: 'medium',
-        title: 'Oportunidade parada',
-        message: 'Deal "Software para e-commerce" está no mesmo estágio há 15 dias.',
-        actionUrl: '/crm/deal/789',
-        actionLabel: 'Ver oportunidade',
-        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-        isRead: false,
-        isArchived: false
-      },
-      {
-        id: '4',
-        type: 'new_lead',
-        priority: 'medium',
-        title: 'Novo lead qualificado',
-        message: 'Carlos Oliveira se inscreveu no workshop e preencheu formulário de qualificação.',
-        actionUrl: '/crm/contact/321',
-        actionLabel: 'Ver perfil',
-        createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
-        isRead: true,
-        isArchived: false
-      },
-      {
-        id: '5',
-        type: 'milestone',
-        priority: 'low',
-        title: 'Meta atingida',
-        message: 'Parabéns! Você atingiu 120% da meta mensal de oportunidades.',
-        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-        isRead: true,
-        isArchived: false
-      }
-    ];
-
-    setNotifications(mockNotifications);
-  }, []);
-
-  const markAsRead = (id: string) => {
-    setNotifications(prev => 
-      prev.map(notification => 
-        notification.id === id 
-          ? { ...notification, isRead: true }
-          : notification
-      )
-    );
-  };
-
-  const markAllAsRead = () => {
-    setNotifications(prev => 
-      prev.map(notification => ({ ...notification, isRead: true }))
-    );
-  };
-
-  const archive = (id: string) => {
-    setNotifications(prev => 
-      prev.map(notification => 
-        notification.id === id 
-          ? { ...notification, isArchived: true }
-          : notification
-      )
-    );
-  };
-
-  const handleAction = (notification: CRMNotification) => {
-    // Navigate to the action URL
-    if (notification.actionUrl) {
-      window.location.href = notification.actionUrl;
-    }
-  };
-
-  return {
-    notifications,
-    markAsRead,
-    markAllAsRead,
-    archive,
-    handleAction
-  };
-}
+// Re-export the hook from the dedicated file
+export { useCRMNotifications } from '@/hooks/useCRMNotifications';
