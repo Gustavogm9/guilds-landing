@@ -1,8 +1,7 @@
 import React from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,8 +14,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { 
   LogOut, 
   User, 
-  Settings, 
-  Bell,
+  Settings,
   Home
 } from 'lucide-react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
@@ -29,7 +27,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { useCRMNotifications } from '@/hooks/useCRMNotifications';
-import { cn } from '@/lib/utils';
+import { NotificationsPopover } from '@/components/crm/notifications/NotificationsPopover';
 
 const getBreadcrumbs = (pathname: string) => {
   const segments = pathname.split('/').filter(Boolean);
@@ -66,7 +64,8 @@ const getBreadcrumbs = (pathname: string) => {
 export const AdminTopHeader: React.FC = () => {
   const { user, signOut } = useAuth();
   const location = useLocation();
-  const { notifications } = useCRMNotifications();
+  const navigate = useNavigate();
+  const { notifications, markAsRead, markAllAsRead, archive } = useCRMNotifications();
   
   const unreadCount = notifications?.filter(n => !n.is_read && !n.is_archived).length || 0;
   const breadcrumbs = getBreadcrumbs(location.pathname);
@@ -113,27 +112,14 @@ export const AdminTopHeader: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="relative h-8 w-8 p-0" 
-            asChild
-          >
-            <Link to="/admin/crm?tab=notifications">
-              <Bell className="h-4 w-4" />
-              {unreadCount > 0 && (
-                <Badge 
-                  variant="destructive" 
-                  className={cn(
-                    "absolute -top-1 -right-1 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] font-bold",
-                    "animate-in zoom-in-50"
-                  )}
-                >
-                  {unreadCount > 9 ? '9+' : unreadCount}
-                </Badge>
-              )}
-            </Link>
-          </Button>
+          <NotificationsPopover
+            notifications={notifications || []}
+            unreadCount={unreadCount}
+            onMarkAsRead={markAsRead}
+            onMarkAllAsRead={markAllAsRead}
+            onArchive={archive}
+            onNavigateToFull={() => navigate('/admin/crm?tab=notifications')}
+          />
           
           <Button variant="ghost" size="sm" className="h-8 w-8 p-0" asChild>
             <Link to="/">
