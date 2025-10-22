@@ -569,7 +569,7 @@ export function CRMBoard() {
         </TabsContent>
 
         <TabsContent value="scoring" className="mt-6">
-          <LeadScoringDashboard />
+          <LeadScoringDashboard pipelineId={selectedPipelineId} />
         </TabsContent>
 
         <TabsContent value="notifications" className="mt-6">

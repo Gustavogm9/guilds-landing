@@ -35,7 +35,11 @@ interface ScoreDistribution {
   percentage: number;
 }
 
-export const LeadScoringDashboard: React.FC = () => {
+interface LeadScoringDashboardProps {
+  pipelineId?: string;
+}
+
+export const LeadScoringDashboard: React.FC<LeadScoringDashboardProps> = ({ pipelineId }) => {
   const [topLeads, setTopLeads] = useState<LeadScore[]>([]);
   const [distribution, setDistribution] = useState<ScoreDistribution[]>([]);
   const [stats, setStats] = useState({
@@ -49,19 +53,36 @@ export const LeadScoringDashboard: React.FC = () => {
 
   useEffect(() => {
     loadScoringData();
-  }, []);
+  }, [pipelineId]);
 
   const loadScoringData = async () => {
     try {
       setLoading(true);
 
-      // Buscar top leads por score
-      const { data: leads, error: leadsError } = await supabase
-        .from('crm_contacts')
-        .select('id, name, lead_score, icp_score, engagement_score, tags, lifecycle_stage')
-        .not('lead_score', 'is', null)
-        .order('lead_score', { ascending: false })
-        .limit(10);
+      // Buscar top leads por score (com ou sem filtro de pipeline)
+      let leadsQuery;
+      if (pipelineId) {
+        leadsQuery = supabase
+          .from('crm_contacts')
+          .select(`
+            id, name, lead_score, icp_score, engagement_score, tags, lifecycle_stage,
+            deals:crm_deals!inner(id)
+          `)
+          .eq('deals.pipeline_id', pipelineId)
+          .eq('deals.is_active', true)
+          .not('lead_score', 'is', null)
+          .order('lead_score', { ascending: false })
+          .limit(10);
+      } else {
+        leadsQuery = supabase
+          .from('crm_contacts')
+          .select('id, name, lead_score, icp_score, engagement_score, tags, lifecycle_stage')
+          .not('lead_score', 'is', null)
+          .order('lead_score', { ascending: false })
+          .limit(10);
+      }
+
+      const { data: leads, error: leadsError } = await leadsQuery;
 
       if (leadsError) throw leadsError;
 
@@ -79,13 +100,28 @@ export const LeadScoringDashboard: React.FC = () => {
 
       setTopLeads(processedLeads);
 
-      // Calcular distribuição de scores
-      const { data: allLeads } = await supabase
-        .from('crm_contacts')
-        .select('lead_score')
-        .not('lead_score', 'is', null);
+      // Calcular distribuição de scores (com ou sem filtro de pipeline)
+      let allLeadsQuery;
+      if (pipelineId) {
+        allLeadsQuery = supabase
+          .from('crm_contacts')
+          .select(`
+            lead_score,
+            deals:crm_deals!inner(id)
+          `)
+          .eq('deals.pipeline_id', pipelineId)
+          .eq('deals.is_active', true)
+          .not('lead_score', 'is', null);
+      } else {
+        allLeadsQuery = supabase
+          .from('crm_contacts')
+          .select('lead_score')
+          .not('lead_score', 'is', null);
+      }
 
-      if (allLeads) {
+      const { data: allLeads } = await allLeadsQuery;
+
+      if (allLeads && allLeads.length > 0) {
         const tiers = ['hot', 'warm', 'cool', 'cold'];
         const dist: ScoreDistribution[] = tiers.map(tier => {
           const count = allLeads.filter(l => getScoreTier(l.lead_score || 0) === tier).length;
@@ -106,9 +142,18 @@ export const LeadScoringDashboard: React.FC = () => {
           hotLeads: hotCount,
           avgScore: Math.round(avgScore),
           avgICP: Math.round(
-            processedLeads.reduce((sum, l) => sum + l.icp_score, 0) / processedLeads.length
+            processedLeads.reduce((sum, l) => sum + l.icp_score, 0) / (processedLeads.length || 1)
           )
         });
+      } else {
+        // Reset stats quando não há leads
+        setStats({
+          totalLeads: 0,
+          hotLeads: 0,
+          avgScore: 0,
+          avgICP: 0
+        });
+        setDistribution([]);
       }
 
     } catch (error) {
@@ -154,15 +199,47 @@ export const LeadScoringDashboard: React.FC = () => {
     );
   }
 
+  // Estado vazio quando filtrado por pipeline
+  if (pipelineId && stats.totalLeads === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Nenhum lead encontrado</CardTitle>
+          <CardDescription>
+            Não há leads com score cadastrados neste pipeline
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground mb-4">
+            Leads aparecem aqui quando têm deals ativos neste pipeline e possuem lead_score calculado.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Para ver todos os leads do sistema, acesse a aba "Lead Scoring" global.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header with refresh button */}
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Lead Scoring Dashboard</h2>
-          <p className="text-muted-foreground">
-            Análise de qualificação e pontuação de leads
-          </p>
+        <div className="flex items-center gap-2">
+          <div>
+            <h2 className="text-2xl font-bold">Lead Scoring Dashboard</h2>
+            <p className="text-muted-foreground">
+              {pipelineId 
+                ? 'Análise de leads com deals neste pipeline'
+                : 'Análise de qualificação de todos os leads do sistema'
+              }
+            </p>
+          </div>
+          {pipelineId ? (
+            <Badge variant="outline">Pipeline Específico</Badge>
+          ) : (
+            <Badge variant="secondary">Global</Badge>
+          )}
         </div>
         <Button
           onClick={loadScoringData}
