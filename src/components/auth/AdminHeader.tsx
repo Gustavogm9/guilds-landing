@@ -1,5 +1,7 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useCRMNotifications } from '@/hooks/useCRMNotifications';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,9 +13,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { LogOut, User, Settings } from 'lucide-react';
+import { NotificationsPopover } from '@/components/crm/notifications/NotificationsPopover';
 
 export const AdminHeader: React.FC = () => {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const { notifications, markAsRead, markAllAsRead, archive } = useCRMNotifications();
+
+  const unreadCount = notifications?.filter(n => !n.is_read && !n.is_archived).length || 0;
 
   const getUserInitials = (email: string) => {
     return email.charAt(0).toUpperCase();
@@ -37,16 +44,26 @@ export const AdminHeader: React.FC = () => {
           </p>
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-              <Avatar className="h-10 w-10">
-                <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
-                  {getUserInitials(user.email || '')}
-                </AvatarFallback>
-              </Avatar>
-            </Button>
-          </DropdownMenuTrigger>
+        <div className="flex items-center gap-2">
+          <NotificationsPopover
+            notifications={notifications || []}
+            unreadCount={unreadCount}
+            onMarkAsRead={markAsRead}
+            onMarkAllAsRead={markAllAsRead}
+            onArchive={archive}
+            onNavigateToFull={() => navigate('/admin/crm?tab=notifications')}
+          />
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                <Avatar className="h-10 w-10">
+                  <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+                    {getUserInitials(user.email || '')}
+                  </AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
           
           <DropdownMenuContent className="w-56" align="end" forceMount>
             <DropdownMenuLabel className="font-normal">
@@ -81,6 +98,7 @@ export const AdminHeader: React.FC = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </div>
     </div>
   );
