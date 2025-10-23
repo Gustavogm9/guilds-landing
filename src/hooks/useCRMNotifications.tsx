@@ -79,7 +79,7 @@ export const useCRMNotifications = () => {
     };
   }, [queryClient, toast, navigate]);
 
-  // Mark as read mutation
+  // Mark as read mutation with optimistic update
   const markAsReadMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
@@ -88,12 +88,39 @@ export const useCRMNotifications = () => {
         .eq('id', id);
       if (error) throw error;
     },
+    onMutate: async (id: string) => {
+      // Cancel outgoing queries
+      await queryClient.cancelQueries({ queryKey: ['crm-notifications'] });
+      
+      // Snapshot previous value
+      const previousNotifications = queryClient.getQueryData<CRMNotification[]>(['crm-notifications']);
+      
+      // Optimistically update
+      queryClient.setQueryData<CRMNotification[]>(['crm-notifications'], (old) =>
+        old?.map(n => n.id === id ? { ...n, is_read: true, read_at: new Date().toISOString() } : n) || []
+      );
+      
+      return { previousNotifications };
+    },
+    onError: (err, id, context) => {
+      // Rollback on error
+      if (context?.previousNotifications) {
+        queryClient.setQueryData(['crm-notifications'], context.previousNotifications);
+      }
+      toast({
+        title: 'Erro ao marcar como lida',
+        description: 'Tente novamente.',
+        variant: 'destructive',
+      });
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['crm-notifications'] });
       toast({
         title: 'Notificação marcada como lida',
         duration: 2000,
       });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-notifications'] });
     },
   });
 
@@ -116,7 +143,7 @@ export const useCRMNotifications = () => {
     },
   });
 
-  // Archive mutation
+  // Archive mutation with optimistic update
   const archiveMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
@@ -125,19 +152,70 @@ export const useCRMNotifications = () => {
         .eq('id', id);
       if (error) throw error;
     },
+    onMutate: async (id: string) => {
+      // Cancel outgoing queries
+      await queryClient.cancelQueries({ queryKey: ['crm-notifications'] });
+      
+      // Snapshot previous value
+      const previousNotifications = queryClient.getQueryData<CRMNotification[]>(['crm-notifications']);
+      
+      // Optimistically update (remove from list since we filter is_archived: false)
+      queryClient.setQueryData<CRMNotification[]>(['crm-notifications'], (old) =>
+        old?.filter(n => n.id !== id) || []
+      );
+      
+      return { previousNotifications };
+    },
+    onError: (err, id, context) => {
+      // Rollback on error
+      if (context?.previousNotifications) {
+        queryClient.setQueryData(['crm-notifications'], context.previousNotifications);
+      }
+      toast({
+        title: 'Erro ao arquivar',
+        description: 'Tente novamente.',
+        variant: 'destructive',
+      });
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['crm-notifications'] });
       toast({
         title: 'Notificação arquivada',
         duration: 2000,
       });
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-notifications'] });
+    },
   });
 
   const handleAction = (notification: CRMNotification) => {
-    markAsReadMutation.mutate(notification.id);
-    if (notification.action_url) {
-      navigate(notification.action_url);
+    // Mark as read first
+    if (!notification.is_read) {
+      markAsReadMutation.mutate(notification.id);
+    }
+    
+    // Fix old URLs and build fallbacks
+    let targetUrl = notification.action_url;
+    
+    // Rewrite old URLs from /admin/crm?deal= to /admin/crm/board?deal=
+    if (targetUrl?.startsWith('/admin/crm?deal=')) {
+      targetUrl = targetUrl.replace('/admin/crm?deal=', '/admin/crm/board?deal=');
+    }
+    
+    // Fallback: build URL from entity info if action_url is missing
+    if (!targetUrl) {
+      if (notification.entity_type === 'deal' && notification.entity_id) {
+        targetUrl = `/admin/crm/board?deal=${notification.entity_id}`;
+      } else if (notification.entity_type === 'contact' && notification.entity_id) {
+        targetUrl = `/admin/crm/board?contact=${notification.entity_id}`;
+      } else if (notification.entity_type === 'activity' && notification.metadata?.deal_id) {
+        targetUrl = `/admin/crm/board?deal=${notification.metadata.deal_id}`;
+      }
+    }
+    
+    // Navigate if we have a URL
+    if (targetUrl) {
+      navigate(targetUrl);
     }
   };
 

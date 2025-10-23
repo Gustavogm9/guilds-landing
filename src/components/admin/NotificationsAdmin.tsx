@@ -14,7 +14,8 @@ import {
   CheckCircle, 
   Clock,
   Settings,
-  Bell
+  Bell,
+  Check
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -37,7 +38,9 @@ export const NotificationsAdmin = () => {
   const {
     notifications: crmNotifications,
     markAsRead,
+    markAllAsRead,
     archive,
+    handleAction,
   } = useCRMNotifications();
 
   const emailStats = getNotificationStats();
@@ -164,10 +167,24 @@ export const NotificationsAdmin = () => {
         <TabsContent value="crm" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Notificações do CRM</CardTitle>
-              <CardDescription>
-                Todas as notificações relacionadas a oportunidades, contatos e atividades
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Notificações do CRM</CardTitle>
+                  <CardDescription>
+                    Todas as notificações relacionadas a oportunidades, contatos e atividades
+                  </CardDescription>
+                </div>
+                {crmNotifications && crmNotifications.some(n => !n.is_read) && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => markAllAsRead()}
+                  >
+                    <Check className="h-4 w-4 mr-2" />
+                    Marcar todas como lidas
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[600px] pr-4">
@@ -176,10 +193,19 @@ export const NotificationsAdmin = () => {
                     crmNotifications.map((notification) => (
                       <div 
                         key={notification.id}
+                        role="button"
+                        tabIndex={0}
                         className={cn(
-                          "p-4 border rounded-lg hover:bg-muted/50 transition-colors",
+                          "p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer",
                           !notification.is_read && "bg-primary/5 border-primary/20"
                         )}
+                        onClick={() => handleAction(notification)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleAction(notification);
+                          }
+                        }}
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex-1 space-y-2">
@@ -220,7 +246,7 @@ export const NotificationsAdmin = () => {
                               )}
                             </div>
                           </div>
-                          <div className="flex gap-2">
+                          <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                             {!notification.is_read && (
                               <Button
                                 variant="ghost"

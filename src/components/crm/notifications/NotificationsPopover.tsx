@@ -22,6 +22,7 @@ interface NotificationsPopoverProps {
   onMarkAllAsRead: () => void;
   onArchive: (id: string) => void;
   onNavigateToFull: () => void;
+  onItemClick?: (notification: CRMNotification) => void;
 }
 
 const getNotificationIcon = (type: string, priority: string) => {
@@ -59,6 +60,7 @@ export const NotificationsPopover: React.FC<NotificationsPopoverProps> = ({
   onMarkAllAsRead,
   onArchive,
   onNavigateToFull,
+  onItemClick,
 }) => {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
@@ -66,12 +68,27 @@ export const NotificationsPopover: React.FC<NotificationsPopoverProps> = ({
   const recentNotifications = notifications.slice(0, 5);
   
   const handleNotificationClick = (notification: CRMNotification) => {
+    // Use onItemClick if provided (centralized logic)
+    if (onItemClick) {
+      onItemClick(notification);
+      setOpen(false);
+      return;
+    }
+    
+    // Fallback: mark as read and navigate (with URL rewrite)
     if (!notification.is_read) {
       onMarkAsRead(notification.id);
     }
     
-    if (notification.action_url) {
-      navigate(notification.action_url);
+    let targetUrl = notification.action_url;
+    
+    // Rewrite old URLs
+    if (targetUrl?.startsWith('/admin/crm?deal=')) {
+      targetUrl = targetUrl.replace('/admin/crm?deal=', '/admin/crm/board?deal=');
+    }
+    
+    if (targetUrl) {
+      navigate(targetUrl);
     }
     
     setOpen(false);
