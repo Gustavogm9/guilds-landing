@@ -90,6 +90,10 @@ export const useCRMNotifications = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['crm-notifications'] });
+      toast({
+        title: 'Notificação marcada como lida',
+        duration: 2000,
+      });
     },
   });
 
@@ -125,7 +129,7 @@ export const useCRMNotifications = () => {
       queryClient.invalidateQueries({ queryKey: ['crm-notifications'] });
       toast({
         title: 'Notificação arquivada',
-        description: 'A notificação foi arquivada com sucesso.',
+        duration: 2000,
       });
     },
   });

@@ -29,8 +29,10 @@ import { CRMBoardSettings } from './CRMBoardSettings';
 export function CRMBoard() {
   const [searchParams] = useSearchParams();
   const pipelineFromUrl = searchParams.get('pipeline');
+  const dealFromUrl = searchParams.get('deal');
   
   const [selectedPipelineId, setSelectedPipelineId] = useState<string>('');
+  const [autoOpenDealId, setAutoOpenDealId] = useState<string | null>(dealFromUrl);
   const [viewMode, setViewMode] = useState<'kanban' | 'list'>('kanban');
   const [showDealForm, setShowDealForm] = useState(false);
   const [activeTab, setActiveTab] = useState<'board' | 'dashboard' | 'notifications' | 'scoring'>('board');
@@ -194,6 +196,18 @@ export function CRMBoard() {
       return true;
     });
   }, [deals, filters]);
+
+  // Auto-open deal from notification URL
+  React.useEffect(() => {
+    if (autoOpenDealId && filteredDeals.length > 0) {
+      const deal = filteredDeals.find(d => d.id === autoOpenDealId);
+      if (deal) {
+        setSelectedDeal(deal);
+        setShowDealDetails(true);
+        setAutoOpenDealId(null);
+      }
+    }
+  }, [autoOpenDealId, filteredDeals]);
 
   const handleDragEnd = (result: DropResult) => {
     const { destination, draggableId } = result;

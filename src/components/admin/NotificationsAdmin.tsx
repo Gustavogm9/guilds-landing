@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNotifications } from '@/hooks/useNotifications';
+import { useCRMNotifications } from '@/hooks/useCRMNotifications';
 import { 
   Mail, 
   Webhook, 
@@ -12,10 +13,13 @@ import {
   AlertCircle, 
   CheckCircle, 
   Clock,
-  Settings
+  Settings,
+  Bell
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { cn } from '@/lib/utils';
 
 export const NotificationsAdmin = () => {
   const {
@@ -29,6 +33,12 @@ export const NotificationsAdmin = () => {
     getNotificationStats,
     getWebhookStats,
   } = useNotifications();
+
+  const {
+    notifications: crmNotifications,
+    markAsRead,
+    archive,
+  } = useCRMNotifications();
 
   const emailStats = getNotificationStats();
   const webhookStats = getWebhookStats();
@@ -143,12 +153,105 @@ export const NotificationsAdmin = () => {
         </Card>
       </div>
 
-      <Tabs defaultValue="emails" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+      <Tabs defaultValue="crm" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="crm">CRM</TabsTrigger>
           <TabsTrigger value="emails">Emails</TabsTrigger>
           <TabsTrigger value="webhooks">Webhooks</TabsTrigger>
           <TabsTrigger value="preferences">Preferências</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="crm" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Notificações do CRM</CardTitle>
+              <CardDescription>
+                Todas as notificações relacionadas a oportunidades, contatos e atividades
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[600px] pr-4">
+                <div className="space-y-3">
+                  {crmNotifications && crmNotifications.length > 0 ? (
+                    crmNotifications.map((notification) => (
+                      <div 
+                        key={notification.id}
+                        className={cn(
+                          "p-4 border rounded-lg hover:bg-muted/50 transition-colors",
+                          !notification.is_read && "bg-primary/5 border-primary/20"
+                        )}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1 space-y-2">
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-center gap-2">
+                                <Bell className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                <h4 className={cn(
+                                  "font-medium text-sm",
+                                  !notification.is_read && "font-semibold"
+                                )}>
+                                  {notification.title}
+                                </h4>
+                              </div>
+                              {notification.priority === 'urgent' && (
+                                <Badge variant="destructive" className="text-xs">URGENTE</Badge>
+                              )}
+                              {notification.priority === 'high' && (
+                                <Badge variant="secondary" className="text-xs bg-orange-500/10 text-orange-600">ALTA</Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              {notification.message}
+                            </p>
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                              <span>Tipo: {notification.notification_type}</span>
+                              <span>•</span>
+                              <span>
+                                {formatDistanceToNow(new Date(notification.created_at), {
+                                  addSuffix: true,
+                                  locale: ptBR,
+                                })}
+                              </span>
+                              {!notification.is_read && (
+                                <>
+                                  <span>•</span>
+                                  <Badge variant="secondary" className="text-xs">Não lida</Badge>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            {!notification.is_read && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => markAsRead(notification.id)}
+                              >
+                                Marcar como lida
+                              </Button>
+                            )}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => archive(notification.id)}
+                            >
+                              Arquivar
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-12">
+                      <Bell className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
+                      <p className="text-muted-foreground">Nenhuma notificação do CRM</p>
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="emails" className="space-y-4">
           <Card>

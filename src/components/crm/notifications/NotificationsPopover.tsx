@@ -13,20 +13,10 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-
-interface Notification {
-  id: string;
-  notification_type: string;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  title: string;
-  message: string;
-  action_url?: string;
-  is_read: boolean;
-  created_at: string;
-}
+import { CRMNotification } from '@/hooks/useCRMNotifications';
 
 interface NotificationsPopoverProps {
-  notifications: Notification[];
+  notifications: CRMNotification[];
   unreadCount: number;
   onMarkAsRead: (id: string) => void;
   onMarkAllAsRead: () => void;
@@ -75,7 +65,7 @@ export const NotificationsPopover: React.FC<NotificationsPopoverProps> = ({
   
   const recentNotifications = notifications.slice(0, 5);
   
-  const handleNotificationClick = (notification: Notification) => {
+  const handleNotificationClick = (notification: CRMNotification) => {
     if (!notification.is_read) {
       onMarkAsRead(notification.id);
     }

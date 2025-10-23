@@ -51,7 +51,7 @@ export const AdminHeader: React.FC = () => {
             onMarkAsRead={markAsRead}
             onMarkAllAsRead={markAllAsRead}
             onArchive={archive}
-            onNavigateToFull={() => navigate('/admin/crm?tab=notifications')}
+            onNavigateToFull={() => navigate('/admin/notifications')}
           />
 
           <DropdownMenu>
