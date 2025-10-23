@@ -951,7 +951,7 @@ export type Database = {
           id: string
           idea_id: string | null
           investment_capacity: string | null
-          ip_address: unknown | null
+          ip_address: unknown
           message: string
           partner_email: string
           partner_name: string
@@ -973,7 +973,7 @@ export type Database = {
           id?: string
           idea_id?: string | null
           investment_capacity?: string | null
-          ip_address?: unknown | null
+          ip_address?: unknown
           message: string
           partner_email: string
           partner_name: string
@@ -995,7 +995,7 @@ export type Database = {
           id?: string
           idea_id?: string | null
           investment_capacity?: string | null
-          ip_address?: unknown | null
+          ip_address?: unknown
           message?: string
           partner_email?: string
           partner_name?: string
@@ -1957,7 +1957,7 @@ export type Database = {
           enrollment_id: string | null
           event_type: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           link_clicked: string | null
           metadata: Json | null
           resend_event_id: string | null
@@ -1971,7 +1971,7 @@ export type Database = {
           enrollment_id?: string | null
           event_type: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           link_clicked?: string | null
           metadata?: Json | null
           resend_event_id?: string | null
@@ -1985,7 +1985,7 @@ export type Database = {
           enrollment_id?: string | null
           event_type?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           link_clicked?: string | null
           metadata?: Json | null
           resend_event_id?: string | null
@@ -2248,7 +2248,7 @@ export type Database = {
           context: Json | null
           created_at: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           locale: string | null
           module_id: string | null
           persona: string
@@ -2281,7 +2281,7 @@ export type Database = {
           context?: Json | null
           created_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           locale?: string | null
           module_id?: string | null
           persona: string
@@ -2314,7 +2314,7 @@ export type Database = {
           context?: Json | null
           created_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           locale?: string | null
           module_id?: string | null
           persona?: string
@@ -3393,7 +3393,7 @@ export type Database = {
           created_at: string
           email: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           source_page: string | null
           status: string
           unsubscribed_at: string | null
@@ -3409,7 +3409,7 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           source_page?: string | null
           status?: string
           unsubscribed_at?: string | null
@@ -3425,7 +3425,7 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           source_page?: string | null
           status?: string
           unsubscribed_at?: string | null
@@ -3916,7 +3916,7 @@ export type Database = {
           action_type: string
           created_at: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           new_value: Json | null
           old_value: Json | null
           permission: Database["public"]["Enums"]["permission_action"] | null
@@ -3929,7 +3929,7 @@ export type Database = {
           action_type: string
           created_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           new_value?: Json | null
           old_value?: Json | null
           permission?: Database["public"]["Enums"]["permission_action"] | null
@@ -3942,7 +3942,7 @@ export type Database = {
           action_type?: string
           created_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           new_value?: Json | null
           old_value?: Json | null
           permission?: Database["public"]["Enums"]["permission_action"] | null
@@ -4520,7 +4520,7 @@ export type Database = {
           approver_type: string | null
           comments: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           metadata: Json | null
           proposal_id: string
           user_agent: string | null
@@ -4532,7 +4532,7 @@ export type Database = {
           approver_type?: string | null
           comments?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           proposal_id: string
           user_agent?: string | null
@@ -4544,7 +4544,7 @@ export type Database = {
           approver_type?: string | null
           comments?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           proposal_id?: string
           user_agent?: string | null
@@ -4895,7 +4895,7 @@ export type Database = {
           form_data: Json
           form_id: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           source_page: string | null
           status: string
           updated_at: string
@@ -4909,7 +4909,7 @@ export type Database = {
           form_data: Json
           form_id: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           source_page?: string | null
           status?: string
           updated_at?: string
@@ -4923,7 +4923,7 @@ export type Database = {
           form_data?: Json
           form_id?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           source_page?: string | null
           status?: string
           updated_at?: string
@@ -4975,7 +4975,7 @@ export type Database = {
           details: Json | null
           event_type: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           user_agent: string | null
           user_id: string | null
         }
@@ -4984,7 +4984,7 @@ export type Database = {
           details?: Json | null
           event_type: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id?: string | null
         }
@@ -4993,7 +4993,7 @@ export type Database = {
           details?: Json | null
           event_type?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id?: string | null
         }
@@ -5499,7 +5499,7 @@ export type Database = {
           experience_level: string | null
           honeypot_field: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           name: string
           phone: string | null
           preferred_modality: string | null
@@ -5520,7 +5520,7 @@ export type Database = {
           experience_level?: string | null
           honeypot_field?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           name: string
           phone?: string | null
           preferred_modality?: string | null
@@ -5541,7 +5541,7 @@ export type Database = {
           experience_level?: string | null
           honeypot_field?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           name?: string
           phone?: string | null
           preferred_modality?: string | null
@@ -5845,14 +5845,8 @@ export type Database = {
         Args: { email_param: string; ip_param: unknown }
         Returns: boolean
       }
-      cleanup_old_data: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_old_enrollments: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      cleanup_old_data: { Args: never; Returns: undefined }
+      cleanup_old_enrollments: { Args: never; Returns: undefined }
       complete_system_operation: {
         Args: {
           p_error_count?: number
@@ -5892,16 +5886,10 @@ export type Database = {
         }
         Returns: string
       }
-      generate_contract_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      generate_proposal_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_contract_number: { Args: never; Returns: string }
+      generate_proposal_number: { Args: never; Returns: string }
       get_admin_dashboard_summary: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           active_projects: number
           avg_email_processing_time: number
@@ -5917,7 +5905,7 @@ export type Database = {
         }[]
       }
       get_all_newsletter_subscriptions: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           confirmed_at: string
           created_at: string
@@ -5932,7 +5920,7 @@ export type Database = {
         }[]
       }
       get_newsletter_stats: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           active_count: number
           pending_count: number
@@ -5941,7 +5929,7 @@ export type Database = {
         }[]
       }
       get_project_statistics: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           active_projects: number
           avg_budget: number
@@ -5986,10 +5974,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_superadmin: {
-        Args: { p_user_id?: string }
-        Returns: boolean
-      }
+      is_superadmin: { Args: { p_user_id?: string }; Returns: boolean }
       log_security_event: {
         Args: {
           details?: Json
@@ -6018,26 +6003,11 @@ export type Database = {
         Args: { p_contact_id: string; p_sequence_id: string }
         Returns: string
       }
-      notify_hot_leads: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      notify_overdue_follow_ups: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      notify_stale_deals: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      refresh_nurturing_metrics: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      refresh_project_statistics: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      notify_hot_leads: { Args: never; Returns: undefined }
+      notify_overdue_follow_ups: { Args: never; Returns: undefined }
+      notify_stale_deals: { Args: never; Returns: undefined }
+      refresh_nurturing_metrics: { Args: never; Returns: undefined }
+      refresh_project_statistics: { Args: never; Returns: undefined }
     }
     Enums: {
       app_resource:
