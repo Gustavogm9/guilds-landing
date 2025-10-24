@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -8,12 +8,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useSEO, type SEOSettings, type PageSEO, type CustomTag } from '@/hooks/useSEO';
 import { useToast } from '@/hooks/use-toast';
-import { Globe, Settings, Tag, Code, Trash2, Edit, Plus, Eye, ExternalLink, Building2 } from 'lucide-react';
+import { Globe, Settings, Tag, Code, Trash2, Edit, Plus, Eye, ExternalLink, Building2, AlertTriangle, Info } from 'lucide-react';
 import { BusinessUnit } from '@/hooks/useCurrentProduct';
 
 export function SEOAdmin() {
@@ -174,6 +175,77 @@ export function SEOAdmin() {
     setEditingTag(tag);
     setNewTagData(tag);
     setIsTagDialogOpen(true);
+  };
+
+  // Validação e preview de tags customizadas
+  const tagValidation = useMemo(() => {
+    if (!newTagData.content || !newTagData.tag_type) return null;
+
+    const content = newTagData.content.trim();
+    const tagType = newTagData.tag_type;
+
+    // Detecta se o usuário colocou tags completas quando deveria colocar apenas atributos
+    if (tagType === 'meta' && (content.includes('<meta') || content.includes('</meta>') || content.includes('/>'))) {
+      return {
+        type: 'error' as const,
+        message: 'Para tipo "Meta Tag", coloque apenas os ATRIBUTOS (sem <meta> ou </>). Exemplo: name="description" content="..."'
+      };
+    }
+
+    if (tagType === 'link' && (content.includes('<link') || content.includes('</link>') || content.includes('/>'))) {
+      return {
+        type: 'error' as const,
+        message: 'Para tipo "Link Tag", coloque apenas os ATRIBUTOS (sem <link> ou </>). Exemplo: rel="canonical" href="..."'
+      };
+    }
+
+    if (tagType === 'script' && !content.includes('<script')) {
+      return {
+        type: 'warning' as const,
+        message: 'Para tipo "Script", geralmente você precisa incluir as tags <script>...</script> completas.'
+      };
+    }
+
+    return null;
+  }, [newTagData.content, newTagData.tag_type]);
+
+  // Gera preview da tag final
+  const tagPreview = useMemo(() => {
+    if (!newTagData.content || !newTagData.tag_type) return '';
+
+    const content = newTagData.content.trim();
+    const tagType = newTagData.tag_type;
+
+    switch (tagType) {
+      case 'meta':
+        return `<meta ${content}>`;
+      case 'link':
+        return `<link ${content}>`;
+      case 'script':
+        return content.includes('<script') ? content : `<script>${content}</script>`;
+      case 'head':
+      case 'body_start':
+      case 'body_end':
+        return content;
+      default:
+        return content;
+    }
+  }, [newTagData.content, newTagData.tag_type]);
+
+  // Exemplos por tipo de tag
+  const getTagExample = (tagType: string) => {
+    switch (tagType) {
+      case 'meta':
+        return 'name="facebook-domain-verification" content="seu_codigo_aqui"';
+      case 'link':
+        return 'rel="canonical" href="https://guilds.com.br"';
+      case 'script':
+        return '<script src="https://cdn.example.com/script.js" async></script>';
+      case 'head':
+        return '<meta property="custom" content="value" />';
+      default:
+        return '';
+    }
   };
 
   return (
@@ -505,7 +577,7 @@ export function SEOAdmin() {
                   Nova Tag
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl">
+              <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>{editingTag ? 'Editar' : 'Nova'} Tag Customizada</DialogTitle>
                   <DialogDescription>
@@ -527,32 +599,88 @@ export function SEOAdmin() {
                     <Label htmlFor="tag_type">Tipo de Tag</Label>
                     <Select 
                       value={newTagData.tag_type} 
-                      onValueChange={(value) => setNewTagData({...newTagData, tag_type: value as any})}
+                      onValueChange={(value) => setNewTagData({...newTagData, tag_type: value as any, content: ''})}
                     >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="head">Head</SelectItem>
+                        <SelectItem value="meta">
+                          <div className="flex flex-col items-start">
+                            <span className="font-medium">Meta Tag</span>
+                            <span className="text-xs text-muted-foreground">Apenas atributos, sem &lt;meta&gt;</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="link">
+                          <div className="flex flex-col items-start">
+                            <span className="font-medium">Link Tag</span>
+                            <span className="text-xs text-muted-foreground">Apenas atributos, sem &lt;link&gt;</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="script">
+                          <div className="flex flex-col items-start">
+                            <span className="font-medium">Script</span>
+                            <span className="text-xs text-muted-foreground">Tag completa com &lt;script&gt;</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="head">
+                          <div className="flex flex-col items-start">
+                            <span className="font-medium">Head (Custom)</span>
+                            <span className="text-xs text-muted-foreground">Qualquer HTML no &lt;head&gt;</span>
+                          </div>
+                        </SelectItem>
                         <SelectItem value="body_start">Body Start</SelectItem>
                         <SelectItem value="body_end">Body End</SelectItem>
-                        <SelectItem value="script">Script</SelectItem>
-                        <SelectItem value="meta">Meta Tag</SelectItem>
-                        <SelectItem value="link">Link Tag</SelectItem>
                       </SelectContent>
                     </Select>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      <Info className="h-3 w-3 inline mr-1" />
+                      {newTagData.tag_type === 'meta' && 'Coloque apenas os atributos (name, content, property, etc.)'}
+                      {newTagData.tag_type === 'link' && 'Coloque apenas os atributos (rel, href, type, etc.)'}
+                      {newTagData.tag_type === 'script' && 'Coloque a tag <script> completa ou o código JavaScript'}
+                      {newTagData.tag_type === 'head' && 'Coloque qualquer HTML que será inserido no <head>'}
+                    </p>
                   </div>
 
                   <div>
-                    <Label htmlFor="tag_content">Conteúdo HTML</Label>
+                    <Label htmlFor="tag_content">Conteúdo</Label>
                     <Textarea
                       id="tag_content"
                       value={newTagData.content || ''}
                       onChange={(e) => setNewTagData({...newTagData, content: e.target.value})}
-                      rows={8}
-                      placeholder="<script>...</script>"
+                      rows={6}
+                      placeholder={getTagExample(newTagData.tag_type || 'head')}
+                      className={tagValidation?.type === 'error' ? 'border-destructive' : ''}
                     />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Exemplo: {getTagExample(newTagData.tag_type || 'head')}
+                    </p>
                   </div>
+
+                  {/* Validação */}
+                  {tagValidation && (
+                    <Alert variant={tagValidation.type === 'error' ? 'destructive' : 'default'}>
+                      <AlertTriangle className="h-4 w-4" />
+                      <AlertDescription>{tagValidation.message}</AlertDescription>
+                    </Alert>
+                  )}
+
+                  {/* Preview da tag final */}
+                  {tagPreview && !tagValidation && (
+                    <Card className="bg-muted/50">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <Eye className="h-4 w-4" />
+                          Preview - Como a tag será injetada no HTML
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <pre className="text-xs bg-background p-3 rounded border overflow-x-auto">
+                          <code className="text-foreground">{tagPreview}</code>
+                        </pre>
+                      </CardContent>
+                    </Card>
+                  )}
 
                   <div className="flex items-center space-x-2">
                     <Switch
@@ -567,7 +695,10 @@ export function SEOAdmin() {
                   <Button variant="outline" onClick={() => setIsTagDialogOpen(false)}>
                     Cancelar
                   </Button>
-                  <Button onClick={handleTagSave}>
+                  <Button 
+                    onClick={handleTagSave}
+                    disabled={!!tagValidation && tagValidation.type === 'error'}
+                  >
                     {editingTag ? 'Atualizar' : 'Criar'}
                   </Button>
                 </DialogFooter>
