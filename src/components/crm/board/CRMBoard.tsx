@@ -10,6 +10,7 @@ import { Plus, Settings, List, Grid3X3, BarChart3, Bell, Filter, Star, User, Clo
 import { KanbanColumn } from './KanbanColumn';
 import { DealForm } from '../forms/DealForm';
 import { useCRM, CRMDeal } from '@/hooks/useCRM';
+import { DealListView } from './DealListView';
 import { useUserCRMPreferences } from '@/hooks/useUserCRMPreferences';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -561,11 +562,19 @@ export function CRMBoard() {
                   </div>
                 </DragDropContext>
               ) : (
-                <div className="p-6">
-                  <div className="text-center text-muted-foreground py-12">
-                    Vista em lista em desenvolvimento...
-                  </div>
-                </div>
+                <DealListView
+                  deals={filteredDeals}
+                  stages={stages || []}
+                  isLoading={dealsLoading}
+                  onViewDetails={handleViewDetails}
+                  onAddInteraction={handleAddInteraction}
+                  onEmailInteraction={handleEmailInteraction}
+                  onPhoneInteraction={handlePhoneInteraction}
+                  onEdit={handleEditDeal}
+                  onDuplicate={handleDuplicateDeal}
+                  onDelete={handleDeleteDeal}
+                  onScheduleActivity={handleScheduleActivity}
+                />
               )}
             </div>
           )}
