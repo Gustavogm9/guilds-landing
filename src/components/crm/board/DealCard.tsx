@@ -18,7 +18,8 @@ import {
   Snowflake,
   Clock,
   CheckCircle2,
-  XCircle
+  XCircle,
+  Sparkles
 } from 'lucide-react';
 import { CRMDeal, useCRM } from '@/hooks/useCRM';
 import { useCRMContractIntegration } from '@/hooks/useCRMContractIntegration';
@@ -109,10 +110,19 @@ export function DealCard({
             {/* Header */}
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <h4 className="font-medium text-sm line-clamp-2">
                     {deal.title}
                   </h4>
+                  {deal.contact?.icp_score && deal.contact.icp_score > 0 && (
+                    <Badge 
+                      variant={deal.contact.icp_score >= 80 ? 'default' : deal.contact.icp_score >= 60 ? 'secondary' : 'outline'}
+                      className="text-xs"
+                    >
+                      <Sparkles className="h-3 w-3 mr-1" />
+                      ICP {deal.contact.icp_score}%
+                    </Badge>
+                  )}
                   <ActivityBadge dealId={deal.id} />
                 </div>
                 

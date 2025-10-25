@@ -13,13 +13,14 @@ import { ptBR } from 'date-fns/locale';
 export interface CRMFilters {
   source?: string;
   leadScoreRange?: [number, number];
+  icpScoreRange?: [number, number];
   productInterests?: string[];
   assignedTo?: string;
   valueRange?: [number, number];
   dateRange?: [Date | null, Date | null];
   lifecycleStage?: string;
   businessUnit?: string;
-  quickView?: 'hot' | 'cold' | 'my_leads' | 'follow_ups' | null;
+  quickView?: 'hot' | 'cold' | 'my_leads' | 'follow_ups' | 'high_icp' | null;
   searchTerm?: string;
 }
 
@@ -67,6 +68,13 @@ const LIFECYCLE_STAGES = [
 ];
 
 const QUICK_VIEWS = [
+  { 
+    value: 'high_icp', 
+    label: 'High ICP Fit', 
+    icon: Target, 
+    description: 'ICP Score ≥ 80%',
+    color: 'hsl(var(--primary))'
+  },
   { 
     value: 'hot', 
     label: 'Leads Quentes', 
@@ -175,7 +183,7 @@ export function CRMFilters({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Search */}
             <div className="space-y-2">
               <label className="text-xs font-medium">Buscar</label>
@@ -185,6 +193,39 @@ export function CRMFilters({
                 onChange={(e) => updateFilter('searchTerm', e.target.value || undefined)}
                 className="h-9"
               />
+            </div>
+
+            {/* ICP Score Range */}
+            <div className="space-y-2">
+              <label className="text-xs font-medium">Score ICP</label>
+              <div className="grid grid-cols-2 gap-2">
+                <Input
+                  type="number"
+                  placeholder="Mín %"
+                  min="0"
+                  max="100"
+                  value={filters.icpScoreRange?.[0] || ''}
+                  onChange={(e) => {
+                    const min = e.target.value ? parseInt(e.target.value) : undefined;
+                    const max = filters.icpScoreRange?.[1];
+                    updateFilter('icpScoreRange', min !== undefined || max !== undefined ? [min || 0, max || 100] : undefined);
+                  }}
+                  className="h-9 text-xs"
+                />
+                <Input
+                  type="number"
+                  placeholder="Máx %"
+                  min="0"
+                  max="100"
+                  value={filters.icpScoreRange?.[1] || ''}
+                  onChange={(e) => {
+                    const max = e.target.value ? parseInt(e.target.value) : undefined;
+                    const min = filters.icpScoreRange?.[0];
+                    updateFilter('icpScoreRange', min !== undefined || max !== undefined ? [min || 0, max || 100] : undefined);
+                  }}
+                  className="h-9 text-xs"
+                />
+              </div>
             </div>
 
             {/* Lead Source */}

@@ -201,7 +201,7 @@ export function EnhancedContactCard({
           <>
             <Separator className="my-4" />
             <div className="space-y-4">
-              {/* ICP Profile Section */}
+              {/* ICP Profile Section with Breakdown */}
               {contact.icp_score !== null && contact.icp_score !== undefined && (
                 <div className="p-4 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg border-2 border-primary/20">
                   <div className="flex items-center justify-between mb-3">
@@ -221,7 +221,7 @@ export function EnhancedContactCard({
 
                   <div className="flex items-center gap-4 mb-3">
                     <div className="flex-1">
-                      <div className="text-xs text-muted-foreground mb-1">Score ICP</div>
+                      <div className="text-xs text-muted-foreground mb-1">Score ICP Total</div>
                       <Progress value={contact.icp_score} className="h-2" />
                     </div>
                     <div className="text-2xl font-bold text-primary">
@@ -229,45 +229,85 @@ export function EnhancedContactCard({
                     </div>
                   </div>
 
-                  {/* ICP Fields Display */}
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    {contact.company_size && (
-                      <div className="flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3 text-green-500" />
-                        <span>Porte: {contact.company_size}</span>
-                      </div>
-                    )}
-                    {contact.industry && (
-                      <div className="flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3 text-green-500" />
-                        <span>Indústria: {contact.industry}</span>
-                      </div>
-                    )}
-                    {contact.budget_range && (
-                      <div className="flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3 text-green-500" />
-                        <span>Orçamento: {contact.budget_range}</span>
-                      </div>
-                    )}
-                    {contact.decision_timeline && (
-                      <div className="flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3 text-green-500" />
-                        <span>Timeline: {contact.decision_timeline}</span>
-                      </div>
-                    )}
-                    {!contact.company_size && (
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <XCircle className="h-3 w-3" />
-                        <span>Porte não informado</span>
-                      </div>
-                    )}
-                    {!contact.industry && (
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <XCircle className="h-3 w-3" />
-                        <span>Indústria não informada</span>
-                      </div>
-                    )}
-                  </div>
+                  {/* ICP Breakdown from custom_fields */}
+                  {contact.custom_fields?.icp_breakdown && (
+                    <div className="space-y-2 mt-4">
+                      {Object.entries(contact.custom_fields.icp_breakdown as Record<string, any>).map(([field, data]: [string, any]) => (
+                        <div key={field} className="flex items-center justify-between p-2 bg-background/50 rounded">
+                          <div className="flex items-center gap-2">
+                            {data.matched ? (
+                              <CheckCircle2 className="h-4 w-4 text-green-600" />
+                            ) : (
+                              <XCircle className="h-4 w-4 text-muted-foreground" />
+                            )}
+                            <div>
+                              <p className="text-sm font-medium">{data.criterion_name}</p>
+                              {data.contact_value && (
+                                <p className="text-xs text-muted-foreground">
+                                  {Array.isArray(data.contact_value) ? data.contact_value.join(', ') : data.contact_value}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <Badge variant={data.matched ? 'default' : 'outline'} className="text-xs">
+                            {data.points > 0 ? `+${data.points}` : '0'} pts
+                          </Badge>
+                        </div>
+                      ))}
+
+                      {/* Suggestions */}
+                      {(() => {
+                        const missingCriteria = Object.entries(contact.custom_fields.icp_breakdown as Record<string, any>)
+                          .filter(([_, data]: [string, any]) => !data.matched && data.max_points > 0)
+                          .sort((a: any, b: any) => b[1].max_points - a[1].max_points);
+                        
+                        if (missingCriteria.length > 0) {
+                          const topMissing = missingCriteria[0];
+                          return (
+                            <div className="flex items-start gap-2 p-3 bg-blue-500/10 rounded-lg mt-3">
+                              <Sparkles className="h-4 w-4 text-blue-600 mt-0.5" />
+                              <div className="flex-1">
+                                <p className="text-sm font-medium">Oportunidade</p>
+                                <p className="text-xs text-muted-foreground">
+                                  Complete "{topMissing[1].criterion_name}" para ganhar +{topMissing[1].max_points} pontos
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        }
+                      })()}
+                    </div>
+                  )}
+
+                  {/* Fallback: Display basic ICP Fields if no breakdown */}
+                  {!contact.custom_fields?.icp_breakdown && (
+                    <div className="grid grid-cols-2 gap-2 text-xs mt-3">
+                      {contact.company_size && (
+                        <div className="flex items-center gap-1">
+                          <CheckCircle2 className="h-3 w-3 text-green-500" />
+                          <span>Porte: {contact.company_size}</span>
+                        </div>
+                      )}
+                      {contact.industry && (
+                        <div className="flex items-center gap-1">
+                          <CheckCircle2 className="h-3 w-3 text-green-500" />
+                          <span>Indústria: {contact.industry}</span>
+                        </div>
+                      )}
+                      {contact.budget_range && (
+                        <div className="flex items-center gap-1">
+                          <CheckCircle2 className="h-3 w-3 text-green-500" />
+                          <span>Orçamento: {contact.budget_range}</span>
+                        </div>
+                      )}
+                      {contact.decision_timeline && (
+                        <div className="flex items-center gap-1">
+                          <CheckCircle2 className="h-3 w-3 text-green-500" />
+                          <span>Timeline: {contact.decision_timeline}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
 

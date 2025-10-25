@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Pencil, Trash2, Power, PowerOff, Lightbulb } from "lucide-react";
+import { Plus, Pencil, Trash2, Power, PowerOff, Lightbulb, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -13,6 +13,7 @@ import { useLeadScoring, type ICPCriteria } from "@/hooks/useLeadScoring";
 import { FieldSelector } from "./icp/FieldSelector";
 import { TargetValuesBuilder } from "./icp/TargetValuesBuilder";
 import { CriteriaTemplates } from "./icp/CriteriaTemplates";
+import { ScoreSimulator } from "./icp/ScoreSimulator";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -108,15 +109,25 @@ export function ICPCriteriaManager() {
   const totalWeight = icpCriteria?.reduce((sum, c) => c.is_active ? sum + c.weight : sum, 0) || 0;
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Critérios de ICP (Ideal Customer Profile)</CardTitle>
-            <CardDescription>
-              Defina os critérios do perfil de cliente ideal e seus pesos na pontuação
-            </CardDescription>
-          </div>
+    <Tabs defaultValue="manage" className="space-y-6">
+      <TabsList>
+        <TabsTrigger value="manage">Gerenciar Critérios</TabsTrigger>
+        <TabsTrigger value="simulate">
+          <Sparkles className="h-4 w-4 mr-2" />
+          Simulador
+        </TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="manage">
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Critérios de ICP (Ideal Customer Profile)</CardTitle>
+                <CardDescription>
+                  Defina os critérios do perfil de cliente ideal e seus pesos na pontuação
+                </CardDescription>
+              </div>
           <div className="flex items-center gap-4">
             <div className="text-right">
               <div className="text-sm text-muted-foreground">Peso Total</div>
@@ -226,7 +237,8 @@ export function ICPCriteriaManager() {
             </TableBody>
           </Table>
         )}
-      </CardContent>
+        </CardContent>
+      </Card>
 
       {/* Dialog para criar/editar critério */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -349,6 +361,11 @@ export function ICPCriteriaManager() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </Card>
+      </TabsContent>
+
+      <TabsContent value="simulate">
+        <ScoreSimulator criteria={icpCriteria || []} />
+      </TabsContent>
+    </Tabs>
   );
 }

@@ -8,7 +8,7 @@ const corsHeaders = {
 
 interface EnrichmentRequest {
   contact_id: string;
-  enrichment_sources?: string[]; // 'clearbit', 'hunter', 'internal', 'social'
+  enrichment_sources?: string[];
   fields_to_enrich?: string[];
 }
 
@@ -68,9 +68,9 @@ const handler = async (req: Request): Promise<Response> => {
       enrichmentLog.push(...socialData.log);
     }
 
-    // 5. Calcular ICP Score baseado nos dados enriquecidos
-    const icpScore = calculateICPScore(contact, enrichedData);
-    enrichedData.icp_score = icpScore;
+    // 5. Calcular ICP Score DINAMICAMENTE baseado em critérios configurados
+    const icpResult = await calculateDynamicICPScore(supabase, contact, enrichedData);
+    enrichedData.icp_score = icpResult.score;
 
     // 6. Gerar tags automáticas baseadas nos dados
     const autoTags = generateAutoTags(contact, enrichedData);
@@ -96,7 +96,8 @@ const handler = async (req: Request): Promise<Response> => {
           custom_fields: {
             ...contact.custom_fields,
             enrichment_date: new Date().toISOString(),
-            enrichment_sources: enrichment_sources
+            enrichment_sources: enrichment_sources,
+            icp_breakdown: icpResult.breakdown // NOVO: armazenar breakdown
           }
         })
         .eq('id', contact_id);
@@ -109,6 +110,7 @@ const handler = async (req: Request): Promise<Response> => {
         fields_enriched: Object.keys(fieldsToUpdate),
         new_data: fieldsToUpdate,
         icp_score: enrichedData.icp_score,
+        icp_breakdown: icpResult.breakdown,
         auto_tags: autoTags,
         enrichmentLog,
         data_quality_score: calculateDataQualityScore(contact, enrichedData)
@@ -138,7 +140,6 @@ async function enrichFromInternalData(supabase: any, contact: any) {
   const log = [];
   const data: Record<string, any> = {};
 
-  // Analisar interações para inferir informações
   const { data: interactions } = await supabase
     .from('crm_contact_interactions')
     .select('*')
@@ -147,7 +148,6 @@ async function enrichFromInternalData(supabase: any, contact: any) {
     .limit(50);
 
   if (interactions && interactions.length > 0) {
-    // Inferir interesse em produtos baseado em interações
     const mentionedProducts = new Set<string>();
     interactions.forEach((interaction: any) => {
       const text = (interaction.description || '').toLowerCase();
@@ -167,7 +167,6 @@ async function enrichFromInternalData(supabase: any, contact: any) {
     }
   }
 
-  // Calcular engagement score baseado em interações
   if (interactions && interactions.length > 0) {
     const engagementScore = Math.min(100, interactions.length * 5 + (contact.engagement_score || 0));
     if (engagementScore > (contact.engagement_score || 0)) {
@@ -188,7 +187,6 @@ async function enrichFromDomain(domain: string) {
   const log = [];
   const data: Record<string, any> = {};
 
-  // Inferir tamanho da empresa baseado em padrões de domínio
   if (!data.company) {
     data.company = domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1);
     log.push({
@@ -198,7 +196,6 @@ async function enrichFromDomain(domain: string) {
     });
   }
 
-  // Inferir indústria baseada em extensões de domínio comuns
   const industryPatterns: Record<string, string> = {
     'tech': 'technology',
     'soft': 'technology',
@@ -232,7 +229,6 @@ async function enrichFromSocialPatterns(contact: any) {
   const log = [];
   const data: Record<string, any> = {};
 
-  // Inferir nível hierárquico baseado em job title
   const jobTitle = (contact.job_title || '').toLowerCase();
   
   const seniorityPatterns: Record<string, string> = {
@@ -265,7 +261,6 @@ async function enrichFromSocialPatterns(contact: any) {
     }
   }
 
-  // Inferir budget range baseado em seniority
   if (data.custom_fields?.seniority_level === 'c_level' && !contact.budget_range) {
     data.budget_range = '50k-100k';
     log.push({
@@ -278,61 +273,80 @@ async function enrichFromSocialPatterns(contact: any) {
   return { data, log };
 }
 
-// Calcular ICP Score (Ideal Customer Profile)
-function calculateICPScore(contact: any, enrichedData: any): number {
-  let score = 0;
+// NOVO: Calcular ICP Score DINAMICAMENTE
+async function calculateDynamicICPScore(supabase: any, contact: any, enrichedData: any) {
+  // Buscar critérios ativos
+  const { data: criteria, error } = await supabase
+    .from('icp_criteria')
+    .select('*')
+    .eq('is_active', true);
 
-  // Tem empresa (B2B) = +20
-  if (contact.company || enrichedData.company) score += 20;
+  if (error || !criteria || criteria.length === 0) {
+    console.log('Nenhum critério ICP ativo encontrado, usando score padrão');
+    return {
+      score: 0,
+      breakdown: {}
+    };
+  }
 
-  // Cargo sênior = +25
-  const seniorityLevel = enrichedData.custom_fields?.seniority_level;
-  if (seniorityLevel === 'c_level') score += 25;
-  else if (seniorityLevel === 'director') score += 20;
-  else if (seniorityLevel === 'manager') score += 15;
+  let totalScore = 0;
+  const breakdown: Record<string, any> = {};
 
-  // Empresa média/grande = +20
-  if (contact.company_size === 'large') score += 20;
-  else if (contact.company_size === 'medium') score += 15;
+  for (const criterion of criteria) {
+    const field = criterion.criterion_field;
+    const contactValue = contact[field] || enrichedData[field];
+    const targetValues = criterion.target_values || [];
+    
+    let matched = false;
 
-  // Indústria alvo = +15
-  const targetIndustries = ['technology', 'finance', 'healthcare', 'education'];
-  if (targetIndustries.includes(contact.industry || enrichedData.industry)) score += 15;
+    // Verificar match baseado no tipo de dados
+    if (Array.isArray(contactValue)) {
+      // Para arrays (ex: products_interest), verificar se há interseção
+      matched = contactValue.some(val => targetValues.includes(val));
+    } else if (contactValue !== null && contactValue !== undefined) {
+      // Para valores simples
+      matched = targetValues.includes(contactValue);
+    }
 
-  // Budget definido = +10
-  if (contact.budget_range || enrichedData.budget_range) score += 10;
+    const pointsEarned = matched ? (criterion.weight || 0) : 0;
+    totalScore += pointsEarned;
 
-  // Timeline definido = +10
-  if (contact.decision_timeline) score += 10;
+    breakdown[field] = {
+      criterion_name: criterion.criterion_name,
+      matched,
+      points: pointsEarned,
+      max_points: criterion.weight || 0,
+      contact_value: contactValue,
+      target_values: targetValues
+    };
+  }
 
-  return Math.min(100, score);
+  return {
+    score: Math.min(100, Math.round(totalScore)),
+    breakdown
+  };
 }
 
 // Gerar tags automáticas
 function generateAutoTags(contact: any, enrichedData: any): string[] {
   const tags: string[] = [];
 
-  // Tags de qualificação
   if (enrichedData.icp_score >= 80) tags.push('high_icp_fit');
   else if (enrichedData.icp_score >= 60) tags.push('medium_icp_fit');
 
-  // Tags de seniority
   const seniorityLevel = enrichedData.custom_fields?.seniority_level;
   if (seniorityLevel === 'c_level') tags.push('decision_maker');
   else if (seniorityLevel === 'director') tags.push('influencer');
 
-  // Tags de engagement
   if ((contact.engagement_score || 0) >= 70) tags.push('highly_engaged');
   else if ((contact.engagement_score || 0) >= 40) tags.push('engaged');
 
-  // Tags de produto
   if (enrichedData.products_interest) {
     enrichedData.products_interest.forEach((product: string) => {
       tags.push(`interest_${product}`);
     });
   }
 
-  // Tags de comportamento
   if (contact.last_interaction_date) {
     const daysSince = Math.floor(
       (Date.now() - new Date(contact.last_interaction_date).getTime()) / (1000 * 60 * 60 * 24)

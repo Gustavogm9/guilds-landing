@@ -60,3 +60,6 @@ verify_jwt = false
 
 [functions.proposal-email-templates]
 verify_jwt = false
+
+[functions.recalculate-icp-scores]
+verify_jwt = false
