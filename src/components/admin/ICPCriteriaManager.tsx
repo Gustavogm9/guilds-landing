@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Pencil, Trash2, Power, PowerOff, Lightbulb, Sparkles } from "lucide-react";
+import { Plus, Pencil, Trash2, Power, PowerOff, Lightbulb, Sparkles, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -9,13 +9,16 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLeadScoring, type ICPCriteria } from "@/hooks/useLeadScoring";
 import { FieldSelector } from "./icp/FieldSelector";
 import { TargetValuesBuilder } from "./icp/TargetValuesBuilder";
 import { CriteriaTemplates } from "./icp/CriteriaTemplates";
 import { ScoreSimulator } from "./icp/ScoreSimulator";
+import { ICPGuidedTour } from "./icp/ICPGuidedTour";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { validateCriterionField, suggestWeightRebalance } from "@/lib/icpValidation";
 
 export function ICPCriteriaManager() {
   const { icpCriteria, criteriaLoading, createCriteria, updateCriteria, deleteCriteria, isCreatingCriteria, isUpdatingCriteria, isDeletingCriteria } = useLeadScoring();
@@ -23,6 +26,11 @@ export function ICPCriteriaManager() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCriteria, setEditingCriteria] = useState<ICPCriteria | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [showTour, setShowTour] = useState(() => {
+    const hasSeenTour = localStorage.getItem('icp_tour_completed');
+    return !hasSeenTour && (!icpCriteria || icpCriteria.length === 0);
+  });
+  const [fieldValidation, setFieldValidation] = useState<ReturnType<typeof validateCriterionField> | null>(null);
   
   const [formData, setFormData] = useState({
     criterion_name: "",
@@ -46,8 +54,11 @@ export function ICPCriteriaManager() {
         description: criteria.description || "",
         is_active: criteria.is_active,
       });
+      // Validate field when editing
+      setFieldValidation(validateCriterionField(criteria.criterion_field));
     } else {
       setEditingCriteria(null);
+      setFieldValidation(null);
       setFormData({
         criterion_name: "",
         criterion_type: "company_size",
@@ -59,6 +70,16 @@ export function ICPCriteriaManager() {
       });
     }
     setIsDialogOpen(true);
+  };
+
+  const handleFieldChange = (newField: string) => {
+    setFormData(prev => ({ ...prev, criterion_field: newField }));
+    setFieldValidation(validateCriterionField(newField));
+  };
+
+  const handleCompleteTour = () => {
+    localStorage.setItem('icp_tour_completed', 'true');
+    setShowTour(false);
   };
 
   const handleSubmit = () => {
@@ -109,7 +130,45 @@ export function ICPCriteriaManager() {
   const totalWeight = icpCriteria?.reduce((sum, c) => c.is_active ? sum + c.weight : sum, 0) || 0;
 
   return (
-    <Tabs defaultValue="manage" className="space-y-6">
+    <>
+      {showTour && (
+        <ICPGuidedTour
+          onComplete={handleCompleteTour}
+          onSkip={handleCompleteTour}
+        />
+      )}
+      
+      <Tabs defaultValue="manage" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="manage">Gerenciar Critérios</TabsTrigger>
+          <TabsTrigger value="simulate">
+            <Sparkles className="h-4 w-4 mr-2" />
+            Simulador
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="manage">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Critérios de ICP (Ideal Customer Profile)</CardTitle>
+                  <CardDescription>
+                    Defina os critérios do perfil de cliente ideal e seus pesos na pontuação
+                  </CardDescription>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <div className="text-sm text-muted-foreground">Peso Total</div>
+                    <div className="text-2xl font-bold">{totalWeight}%</div>
+                  </div>
+                  <Button onClick={() => handleOpenDialog()} disabled={isCreatingCriteria}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Novo Critério
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
       <TabsList>
         <TabsTrigger value="manage">Gerenciar Critérios</TabsTrigger>
         <TabsTrigger value="simulate">
@@ -237,8 +296,13 @@ export function ICPCriteriaManager() {
             </TableBody>
           </Table>
         )}
-        </CardContent>
-      </Card>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="simulate">
+          <ScoreSimulator criteria={icpCriteria || []} />
+        </TabsContent>
+      </Tabs>
 
       {/* Dialog para criar/editar critério */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -361,11 +425,8 @@ export function ICPCriteriaManager() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      </TabsContent>
-
-      <TabsContent value="simulate">
-        <ScoreSimulator criteria={icpCriteria || []} />
-      </TabsContent>
-    </Tabs>
+    </>
+  );
+}
   );
 }

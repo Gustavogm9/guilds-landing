@@ -62,6 +62,40 @@ export function useLeadScoring() {
     },
   });
 
+  // Fetch ICP Health Statistics
+  const { data: icpHealthData, isLoading: healthLoading } = useQuery({
+    queryKey: ["icp-health"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_icp_health_stats");
+      
+      if (error) throw error;
+      
+      // Get missing fields from criteria
+      const missingFields: string[] = [];
+      if (icpCriteria) {
+        const CONTACT_FORM_FIELDS = [
+          'name', 'email', 'phone', 'company', 'role', 'company_size',
+          'budget_range', 'timeline', 'source', 'product_interest'
+        ];
+        
+        icpCriteria.forEach(c => {
+          if (!CONTACT_FORM_FIELDS.includes(c.criterion_field) && 
+              !c.criterion_field.startsWith('custom_fields.')) {
+            missingFields.push(c.criterion_field);
+          }
+        });
+      }
+      
+      return {
+        incompleteContactsPercent: data?.[0]?.incomplete_percent || 0,
+        totalContacts: data?.[0]?.total_contacts || 0,
+        incompleteContacts: data?.[0]?.incomplete_contacts || 0,
+        missingFields: [...new Set(missingFields)]
+      };
+    },
+    enabled: !!icpCriteria,
+  });
+
   // ==================== MUTATIONS ====================
 
   // Create Lead Scoring Rule
@@ -217,10 +251,12 @@ export function useLeadScoring() {
     // Data
     rules,
     icpCriteria,
+    icpHealthData,
     
     // Loading states
     rulesLoading,
     criteriaLoading,
+    healthLoading,
     
     // Mutations
     createRule: createRule.mutate,

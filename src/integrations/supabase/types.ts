@@ -5958,6 +5958,14 @@ export type Database = {
           utm_source: string
         }[]
       }
+      get_icp_health_stats: {
+        Args: never
+        Returns: {
+          incomplete_contacts: number
+          incomplete_percent: number
+          total_contacts: number
+        }[]
+      }
       get_newsletter_stats: {
         Args: never
         Returns: {

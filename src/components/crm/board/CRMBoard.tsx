@@ -49,6 +49,7 @@ export function CRMBoard() {
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [activityForDeal, setActivityForDeal] = useState<CRMDeal | null>(null);
   const [showBoardSettings, setShowBoardSettings] = useState(false);
+  const [sortBy, setSortBy] = useState<string>('created_at_desc');
   
   const { 
     pipelines, 
@@ -195,8 +196,20 @@ export function CRMBoard() {
       }
       
       return true;
+    }).sort((a, b) => {
+      // Apply sorting
+      if (sortBy === 'icp_score_desc') {
+        return (b.contact?.icp_score || 0) - (a.contact?.icp_score || 0);
+      } else if (sortBy === 'icp_score_asc') {
+        return (a.contact?.icp_score || 0) - (b.contact?.icp_score || 0);
+      } else if (sortBy === 'value_desc') {
+        return (b.value || 0) - (a.value || 0);
+      } else if (sortBy === 'value_asc') {
+        return (a.value || 0) - (b.value || 0);
+      }
+      return 0; // created_at sorting handled by default query
     });
-  }, [deals, filters]);
+  }, [deals, filters, sortBy]);
 
   // Auto-open deal from notification URL
   React.useEffect(() => {
