@@ -18,11 +18,15 @@ import {
   DollarSign,
   Star,
   Activity,
-  ChevronRight
+  ChevronRight,
+  Sparkles,
+  CheckCircle2,
+  XCircle
 } from 'lucide-react';
 import { CRMContact } from '@/hooks/useCRM';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { ICPQuickEditModal } from '@/components/admin/icp/ICPQuickEditModal';
 
 interface EnhancedContactCardProps {
   contact: CRMContact;
@@ -36,6 +40,7 @@ export function EnhancedContactCard({
   onAddInteraction 
 }: EnhancedContactCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showICPModal, setShowICPModal] = useState(false);
 
   const getInitials = (name: string) => {
     return name
@@ -196,21 +201,107 @@ export function EnhancedContactCard({
           <>
             <Separator className="my-4" />
             <div className="space-y-4">
-              {/* Timeline & Budget */}
-              {(contact.decision_timeline || contact.budget_range) && (
-                <div className="grid grid-cols-2 gap-4">
-                  {contact.decision_timeline && (
-                    <div>
-                      <div className="text-xs font-medium text-muted-foreground mb-1">Timeline</div>
-                      <div className="text-sm">{contact.decision_timeline}</div>
+              {/* ICP Profile Section */}
+              {contact.icp_score !== null && contact.icp_score !== undefined && (
+                <div className="p-4 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg border-2 border-primary/20">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <Target className="h-5 w-5 text-primary" />
+                      <span className="font-semibold">Perfil ICP</span>
                     </div>
-                  )}
-                  {contact.budget_range && (
-                    <div>
-                      <div className="text-xs font-medium text-muted-foreground mb-1">Orçamento</div>
-                      <div className="text-sm">{contact.budget_range}</div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowICPModal(true)}
+                    >
+                      <Sparkles className="h-3 w-3 mr-1" />
+                      Completar Dados
+                    </Button>
+                  </div>
+
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className="flex-1">
+                      <div className="text-xs text-muted-foreground mb-1">Score ICP</div>
+                      <Progress value={contact.icp_score} className="h-2" />
                     </div>
-                  )}
+                    <div className="text-2xl font-bold text-primary">
+                      {contact.icp_score}%
+                    </div>
+                  </div>
+
+                  {/* ICP Fields Display */}
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    {contact.company_size && (
+                      <div className="flex items-center gap-1">
+                        <CheckCircle2 className="h-3 w-3 text-green-500" />
+                        <span>Porte: {contact.company_size}</span>
+                      </div>
+                    )}
+                    {contact.industry && (
+                      <div className="flex items-center gap-1">
+                        <CheckCircle2 className="h-3 w-3 text-green-500" />
+                        <span>Indústria: {contact.industry}</span>
+                      </div>
+                    )}
+                    {contact.budget_range && (
+                      <div className="flex items-center gap-1">
+                        <CheckCircle2 className="h-3 w-3 text-green-500" />
+                        <span>Orçamento: {contact.budget_range}</span>
+                      </div>
+                    )}
+                    {contact.decision_timeline && (
+                      <div className="flex items-center gap-1">
+                        <CheckCircle2 className="h-3 w-3 text-green-500" />
+                        <span>Timeline: {contact.decision_timeline}</span>
+                      </div>
+                    )}
+                    {!contact.company_size && (
+                      <div className="flex items-center gap-1 text-muted-foreground">
+                        <XCircle className="h-3 w-3" />
+                        <span>Porte não informado</span>
+                      </div>
+                    )}
+                    {!contact.industry && (
+                      <div className="flex items-center gap-1 text-muted-foreground">
+                        <XCircle className="h-3 w-3" />
+                        <span>Indústria não informada</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Qualification Data */}
+              {(contact.job_title || contact.company_size || contact.industry || contact.decision_timeline || contact.budget_range) && (
+                <div>
+                  <div className="text-xs font-medium text-muted-foreground mb-2">Dados de Qualificação</div>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    {contact.job_title && (
+                      <div>
+                        <span className="text-muted-foreground">Cargo:</span> {contact.job_title}
+                      </div>
+                    )}
+                    {contact.company_size && (
+                      <div>
+                        <span className="text-muted-foreground">Porte:</span> {contact.company_size}
+                      </div>
+                    )}
+                    {contact.industry && (
+                      <div>
+                        <span className="text-muted-foreground">Indústria:</span> {contact.industry}
+                      </div>
+                    )}
+                    {contact.budget_range && (
+                      <div>
+                        <span className="text-muted-foreground">Orçamento:</span> {contact.budget_range}
+                      </div>
+                    )}
+                    {contact.decision_timeline && (
+                      <div>
+                        <span className="text-muted-foreground">Timeline:</span> {contact.decision_timeline}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -279,6 +370,25 @@ export function EnhancedContactCard({
           </Button>
         </div>
       </CardContent>
+
+      {/* ICP Quick Edit Modal */}
+      <ICPQuickEditModal
+        open={showICPModal}
+        onOpenChange={setShowICPModal}
+        contactId={contact.id}
+        contactName={contact.name}
+        currentData={{
+          job_title: contact.job_title,
+          company_size: contact.company_size,
+          industry: contact.industry,
+          budget_range: contact.budget_range,
+          decision_timeline: contact.decision_timeline,
+        }}
+        onSuccess={() => {
+          // Refresh contact data would be handled by parent component
+          setShowICPModal(false);
+        }}
+      />
     </Card>
   );
 }

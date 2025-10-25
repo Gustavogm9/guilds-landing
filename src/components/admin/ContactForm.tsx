@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Dialog,
@@ -30,6 +31,11 @@ const contactSchema = z.object({
   email: z.string().email('Email inválido').optional().or(z.literal('')),
   phone: z.string().optional(),
   company: z.string().optional(),
+  job_title: z.string().optional(),
+  company_size: z.string().optional(),
+  industry: z.string().optional(),
+  budget_range: z.string().optional(),
+  decision_timeline: z.string().optional(),
   source: z.string().optional(),
   business_unit: z.string().optional(),
   referred_by: z.string().optional(),
@@ -55,6 +61,11 @@ export function ContactForm({ open, onOpenChange }: ContactFormProps) {
       email: '',
       phone: '',
       company: '',
+      job_title: '',
+      company_size: '',
+      industry: '',
+      budget_range: '',
+      decision_timeline: '',
       source: '',
       business_unit: '',
       referred_by: '',
@@ -74,6 +85,11 @@ export function ContactForm({ open, onOpenChange }: ContactFormProps) {
           email: data.email || undefined,
           phone: data.phone || undefined,
           company: data.company || undefined,
+          job_title: data.job_title || undefined,
+          company_size: data.company_size || undefined,
+          industry: data.industry || undefined,
+          budget_range: data.budget_range || undefined,
+          decision_timeline: data.decision_timeline || undefined,
           source: data.source || undefined,
           tags: [],
           custom_fields: {
@@ -324,6 +340,133 @@ export function ContactForm({ open, onOpenChange }: ContactFormProps) {
                 )}
               />
             )}
+
+            {/* ICP Fields Section */}
+            <div className="border-t pt-4 mt-4">
+              <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+                Dados de Qualificação (ICP)
+                <Badge variant="outline" className="text-xs">Opcional</Badge>
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="job_title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cargo</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ex: Diretor de TI" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="company_size"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tamanho da Empresa</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o porte" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="1-10">1-10 funcionários</SelectItem>
+                          <SelectItem value="11-50">11-50 funcionários</SelectItem>
+                          <SelectItem value="51-200">51-200 funcionários</SelectItem>
+                          <SelectItem value="201-500">201-500 funcionários</SelectItem>
+                          <SelectItem value="500+">500+ funcionários</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="industry"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Indústria</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione a indústria" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Tecnologia">Tecnologia</SelectItem>
+                          <SelectItem value="Saúde">Saúde</SelectItem>
+                          <SelectItem value="Educação">Educação</SelectItem>
+                          <SelectItem value="Financeiro">Financeiro</SelectItem>
+                          <SelectItem value="E-commerce">E-commerce</SelectItem>
+                          <SelectItem value="Indústria">Indústria</SelectItem>
+                          <SelectItem value="Serviços">Serviços</SelectItem>
+                          <SelectItem value="Varejo">Varejo</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="budget_range"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Orçamento Estimado</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione a faixa" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Até R$ 10k">Até R$ 10k</SelectItem>
+                          <SelectItem value="R$ 10k - R$ 30k">R$ 10k - R$ 30k</SelectItem>
+                          <SelectItem value="R$ 30k - R$ 50k">R$ 30k - R$ 50k</SelectItem>
+                          <SelectItem value="R$ 50k - R$ 100k">R$ 50k - R$ 100k</SelectItem>
+                          <SelectItem value="R$ 100k+">R$ 100k+</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="decision_timeline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Timeline de Decisão</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o prazo" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Imediato">Imediato</SelectItem>
+                          <SelectItem value="1-3 meses">1-3 meses</SelectItem>
+                          <SelectItem value="3-6 meses">3-6 meses</SelectItem>
+                          <SelectItem value="6-12 meses">6-12 meses</SelectItem>
+                          <SelectItem value="12+ meses">12+ meses</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
 
             <div className="flex justify-end gap-3 pt-4">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

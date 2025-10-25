@@ -1,17 +1,20 @@
 import { useState } from "react";
-import { Plus, Pencil, Trash2, Power, PowerOff } from "lucide-react";
+import { Plus, Pencil, Trash2, Power, PowerOff, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Slider } from "@/components/ui/slider";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLeadScoring, type ICPCriteria } from "@/hooks/useLeadScoring";
+import { FieldSelector } from "./icp/FieldSelector";
+import { TargetValuesBuilder } from "./icp/TargetValuesBuilder";
+import { CriteriaTemplates } from "./icp/CriteriaTemplates";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 export function ICPCriteriaManager() {
   const { icpCriteria, criteriaLoading, createCriteria, updateCriteria, deleteCriteria, isCreatingCriteria, isUpdatingCriteria, isDeletingCriteria } = useLeadScoring();
@@ -227,7 +230,7 @@ export function ICPCriteriaManager() {
 
       {/* Dialog para criar/editar critério */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingCriteria ? "Editar Critério" : "Novo Critério de ICP"}</DialogTitle>
             <DialogDescription>
@@ -235,91 +238,88 @@ export function ICPCriteriaManager() {
             </DialogDescription>
           </DialogHeader>
           
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="criterion_name">Nome do Critério *</Label>
-              <Input
-                id="criterion_name"
-                value={formData.criterion_name}
-                onChange={(e) => setFormData({ ...formData, criterion_name: e.target.value })}
-                placeholder="Ex: Empresas de Porte Médio"
-              />
-            </div>
+          <Tabs defaultValue="builder" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="builder">
+                <Lightbulb className="h-4 w-4 mr-2" />
+                Construtor Visual
+              </TabsTrigger>
+              <TabsTrigger value="templates">
+                Templates
+              </TabsTrigger>
+            </TabsList>
 
-            <div className="grid grid-cols-2 gap-4">
+            <TabsContent value="builder" className="space-y-4 mt-4">
               <div className="grid gap-2">
-                <Label htmlFor="criterion_type">Tipo de Critério</Label>
-                <Select value={formData.criterion_type} onValueChange={(value) => setFormData({ ...formData, criterion_type: value })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="company_size">Tamanho da Empresa</SelectItem>
-                    <SelectItem value="industry">Indústria</SelectItem>
-                    <SelectItem value="job_title">Cargo</SelectItem>
-                    <SelectItem value="budget">Orçamento</SelectItem>
-                    <SelectItem value="timeline">Timeline</SelectItem>
-                    <SelectItem value="location">Localização</SelectItem>
-                    <SelectItem value="custom">Personalizado</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="criterion_field">Campo no CRM *</Label>
+                <Label htmlFor="criterion_name">Nome do Critério *</Label>
                 <Input
-                  id="criterion_field"
-                  value={formData.criterion_field}
-                  onChange={(e) => setFormData({ ...formData, criterion_field: e.target.value })}
-                  placeholder="Ex: company_size"
+                  id="criterion_name"
+                  value={formData.criterion_name}
+                  onChange={(e) => setFormData({ ...formData, criterion_name: e.target.value })}
+                  placeholder="Ex: Empresas de Porte Médio"
                 />
               </div>
-            </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="target_values">Valores-Alvo (JSON Array) *</Label>
-              <Textarea
-                id="target_values"
+              <FieldSelector
+                value={formData.criterion_field}
+                onChange={(field) => setFormData({ ...formData, criterion_field: field })}
+                usedFields={icpCriteria?.filter(c => c.id !== editingCriteria?.id).map(c => c.criterion_field)}
+              />
+
+              <TargetValuesBuilder
+                fieldName={formData.criterion_field}
+                fieldType={formData.criterion_type}
                 value={formData.target_values}
-                onChange={(e) => setFormData({ ...formData, target_values: e.target.value })}
-                placeholder='["11-50", "51-200", "201-500"]'
-                rows={3}
+                onChange={(value) => setFormData({ ...formData, target_values: value })}
               />
-              <p className="text-xs text-muted-foreground">
-                Liste os valores que caracterizam seu cliente ideal em formato JSON array
-              </p>
-            </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="weight">Peso no Score ICP: {formData.weight}%</Label>
-              <Slider
-                id="weight"
-                value={[formData.weight]}
-                onValueChange={([value]) => setFormData({ ...formData, weight: value })}
-                min={0}
-                max={100}
-                step={5}
-                className="py-4"
-              />
-              <p className="text-xs text-muted-foreground">
-                Peso total de todos os critérios ativos: {totalWeight}%
-                {totalWeight !== 100 && totalWeight > 0 && (
-                  <span className="text-warning ml-1">(⚠️ Ideal: 100%)</span>
-                )}
-              </p>
-            </div>
+              <div className="grid gap-2">
+                <Label htmlFor="weight">Peso no Score ICP: {formData.weight}%</Label>
+                <Slider
+                  id="weight"
+                  value={[formData.weight]}
+                  onValueChange={([value]) => setFormData({ ...formData, weight: value })}
+                  min={0}
+                  max={100}
+                  step={5}
+                  className="py-4"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Peso total de todos os critérios ativos: {totalWeight}%
+                  {totalWeight !== 100 && totalWeight > 0 && (
+                    <span className="text-orange-600 ml-1">(⚠️ Ideal: 100%)</span>
+                  )}
+                </p>
+              </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="description">Descrição</Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Descreva por que este critério é importante..."
-                rows={3}
+              <div className="grid gap-2">
+                <Label htmlFor="description">Descrição</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Descreva por que este critério é importante..."
+                  rows={3}
+                />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="templates" className="mt-4">
+              <CriteriaTemplates
+                onApplyTemplate={(template) => {
+                  setFormData({
+                    criterion_name: template.criterion_name,
+                    criterion_type: template.criterion_type,
+                    criterion_field: template.criterion_field,
+                    target_values: JSON.stringify(template.target_values),
+                    weight: template.weight,
+                    description: template.description,
+                    is_active: true,
+                  });
+                }}
               />
-            </div>
-          </div>
+            </TabsContent>
+          </Tabs>
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>

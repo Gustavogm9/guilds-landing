@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LeadScoringRulesManager } from "./LeadScoringRulesManager";
 import { ICPCriteriaManager } from "./ICPCriteriaManager";
 import { LeadScoringDashboard } from "../crm/lead-scoring/LeadScoringDashboard";
+import { ICPHealthPanel } from "./icp/ICPHealthPanel";
 import { useLeadScoring } from "@/hooks/useLeadScoring";
 
 export function LeadScoringAdmin() {
@@ -85,7 +86,17 @@ export function LeadScoringAdmin() {
         </TabsList>
 
         <TabsContent value="dashboard" className="space-y-4">
-          <LeadScoringDashboard />
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="md:col-span-2">
+              <LeadScoringDashboard />
+            </div>
+            <div>
+              <ICPHealthPanel
+                activeCriteriaCount={activeCriteriaCount}
+                totalWeight={totalWeight}
+              />
+            </div>
+          </div>
         </TabsContent>
 
         <TabsContent value="rules" className="space-y-4">
