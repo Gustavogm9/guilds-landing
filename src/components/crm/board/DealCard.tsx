@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Draggable } from '@hello-pangea/dnd';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -59,27 +59,11 @@ export function DealCard({
   onDelete,
   onScheduleActivity
 }: DealCardProps) {
-  const { generateContractFromDeal, checkExistingContract, isGenerating } = useCRMContractIntegration();
-  const { markDealAsClosed, isMarkingDealAsClosed } = useCRM(); // Deal closing actions
-  const [existingContractId, setExistingContractId] = useState<string | null>(null);
-  const [checkingContract, setCheckingContract] = useState(false);
-
-  // Check if contract already exists for this deal
-  useEffect(() => {
-    const checkContract = async () => {
-      setCheckingContract(true);
-      try {
-        const contractId = await checkExistingContract(deal.id);
-        setExistingContractId(contractId);
-      } catch (error) {
-        console.error('Erro ao verificar contrato:', error);
-      } finally {
-        setCheckingContract(false);
-      }
-    };
-
-    checkContract();
-  }, [deal.id, checkExistingContract]);
+  const { generateContractFromDeal, isGenerating } = useCRMContractIntegration();
+  const { markDealAsClosed, isMarkingDealAsClosed } = useCRM();
+  
+  // Use contract data from server-side join
+  const existingContractId = deal.legal_contract?.id || null;
 
   const getInitials = (name: string) => {
     return name
@@ -99,10 +83,8 @@ export function DealCard({
 
   const handleContractAction = async () => {
     if (existingContractId) {
-      // Navigate to existing contract
       window.location.href = `/admin/contratos?id=${existingContractId}`;
     } else {
-      // Generate new contract
       try {
         const contractId = await generateContractFromDeal(deal.id);
         window.location.href = `/admin/contratos?id=${contractId}`;
@@ -153,12 +135,10 @@ export function DealCard({
                       e.stopPropagation();
                       handleContractAction();
                     }}
-                    disabled={isGenerating || checkingContract}
+                    disabled={isGenerating}
                   >
                     <FileText className="h-4 w-4 mr-2" />
-                    {checkingContract ? (
-                      'Verificando...'
-                    ) : existingContractId ? (
+                    {existingContractId ? (
                       <>
                         <Badge variant="secondary" className="mr-2">
                           Existente

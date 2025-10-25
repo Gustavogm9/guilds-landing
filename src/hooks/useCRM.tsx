@@ -127,6 +127,10 @@ export interface CRMDeal {
   closed_at?: string;
   is_won?: boolean | null;
   contact?: CRMContact;
+  legal_contract?: {
+    id: string;
+    status: string;
+  } | null;
 }
 
 export interface CRMActivity {
@@ -184,14 +188,15 @@ export function useCRM(includeInactive: boolean = false) {
     return data as CRMStage[];
   };
 
-  // Fetch deals by pipeline with contacts
+  // Fetch deals by pipeline with contacts and contracts (server-side join)
   const fetchDealsByPipeline = async (pipelineId: string) => {
     try {
       const { data, error } = await supabase
         .from('crm_deals')
         .select(`
           *,
-          contact:crm_contacts(*)
+          contact:crm_contacts(*),
+          legal_contract:legal_contracts!legal_contracts_deal_id_fkey(id, status)
         `)
         .eq('pipeline_id', pipelineId)
         .eq('is_active', true)
