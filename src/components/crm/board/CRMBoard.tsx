@@ -179,6 +179,9 @@ export function CRMBoard() {
       // Quick view filters
       if (filters.quickView) {
         switch (filters.quickView) {
+          case 'high_icp':
+            const icpScore = deal.contact?.icp_score || 0;
+            return icpScore >= 80;
           case 'hot':
             return (deal.contact?.lead_score || 0) >= 80;
           case 'cold':
@@ -491,21 +494,36 @@ export function CRMBoard() {
           {selectedPipelineId && (
             <>
               <div className="flex items-center justify-between">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center gap-2"
-                >
-                  <Filter className="h-4 w-4" />
-                  Filtros
-                  {Object.values(filters).some(f => f !== undefined && f !== null && (Array.isArray(f) ? f.length > 0 : true)) && (
-                    <Badge variant="secondary" className="text-xs">
-                      {Object.values(filters).filter(f => f !== undefined && f !== null && (Array.isArray(f) ? f.length > 0 : true)).length}
-                    </Badge>
-                  )}
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="flex items-center gap-2"
+                  >
+                    <Filter className="h-4 w-4" />
+                    Filtros
+                    {Object.values(filters).some(f => f !== undefined && f !== null && (Array.isArray(f) ? f.length > 0 : true)) && (
+                      <Badge variant="secondary" className="text-xs">
+                        {Object.values(filters).filter(f => f !== undefined && f !== null && (Array.isArray(f) ? f.length > 0 : true)).length}
+                      </Badge>
+                    )}
+                  </Button>
+
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Ordenar por..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="created_at_desc">Mais Recentes</SelectItem>
+                      <SelectItem value="icp_score_desc">ICP Score ↓</SelectItem>
+                      <SelectItem value="icp_score_asc">ICP Score ↑</SelectItem>
+                      <SelectItem value="value_desc">Valor ↓</SelectItem>
+                      <SelectItem value="value_asc">Valor ↑</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
                 {/* View Mode Toggle */}
                 <div className="flex rounded-lg border bg-card p-1">

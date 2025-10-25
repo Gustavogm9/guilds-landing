@@ -9,7 +9,14 @@ import { ICPHealthPanel } from "./icp/ICPHealthPanel";
 import { useLeadScoring } from "@/hooks/useLeadScoring";
 
 export function LeadScoringAdmin() {
-  const { rules, icpCriteria, recalculateScores, isRecalculating } = useLeadScoring();
+  const { 
+    rules, 
+    icpCriteria, 
+    icpHealthData, 
+    healthLoading, 
+    recalculateScores, 
+    isRecalculating 
+  } = useLeadScoring();
 
   const activeRulesCount = rules?.filter(r => r.is_active).length || 0;
   const activeCriteriaCount = icpCriteria?.filter(c => c.is_active).length || 0;
@@ -94,6 +101,8 @@ export function LeadScoringAdmin() {
               <ICPHealthPanel
                 activeCriteriaCount={activeCriteriaCount}
                 totalWeight={totalWeight}
+                missingFields={icpHealthData?.missingFields}
+                incompleteContactsPercent={icpHealthData?.incompleteContactsPercent}
               />
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Pencil, Trash2, Power, PowerOff, Lightbulb, Sparkles, AlertCircle } from "lucide-react";
+import { Plus, Pencil, Trash2, Power, PowerOff, Lightbulb, Sparkles, AlertCircle, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -18,7 +18,7 @@ import { ScoreSimulator } from "./icp/ScoreSimulator";
 import { ICPGuidedTour } from "./icp/ICPGuidedTour";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { validateCriterionField, suggestWeightRebalance } from "@/lib/icpValidation";
+import { validateCriterionField } from "@/lib/icpValidation";
 
 export function ICPCriteriaManager() {
   const { icpCriteria, criteriaLoading, createCriteria, updateCriteria, deleteCriteria, isCreatingCriteria, isUpdatingCriteria, isDeletingCriteria } = useLeadScoring();
@@ -54,7 +54,6 @@ export function ICPCriteriaManager() {
         description: criteria.description || "",
         is_active: criteria.is_active,
       });
-      // Validate field when editing
       setFieldValidation(validateCriterionField(criteria.criterion_field));
     } else {
       setEditingCriteria(null);
@@ -169,133 +168,104 @@ export function ICPCriteriaManager() {
                 </div>
               </div>
             </CardHeader>
-      <TabsList>
-        <TabsTrigger value="manage">Gerenciar Critérios</TabsTrigger>
-        <TabsTrigger value="simulate">
-          <Sparkles className="h-4 w-4 mr-2" />
-          Simulador
-        </TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="manage">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>Critérios de ICP (Ideal Customer Profile)</CardTitle>
-                <CardDescription>
-                  Defina os critérios do perfil de cliente ideal e seus pesos na pontuação
-                </CardDescription>
-              </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <div className="text-sm text-muted-foreground">Peso Total</div>
-              <div className="text-2xl font-bold">{totalWeight}%</div>
-            </div>
-            <Button onClick={() => handleOpenDialog()} disabled={isCreatingCriteria}>
-              <Plus className="mr-2 h-4 w-4" />
-              Novo Critério
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {criteriaLoading ? (
-          <div className="text-center py-8 text-muted-foreground">Carregando critérios...</div>
-        ) : !icpCriteria || icpCriteria.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            Nenhum critério configurado. Crie o primeiro critério para definir seu ICP.
-          </div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nome do Critério</TableHead>
-                <TableHead>Tipo</TableHead>
-                <TableHead>Campo</TableHead>
-                <TableHead>Valores-Alvo</TableHead>
-                <TableHead>Peso</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {icpCriteria.map((criteria) => (
-                <TableRow key={criteria.id}>
-                  <TableCell className="font-medium">{criteria.criterion_name}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{getCriterionTypeLabel(criteria.criterion_type)}</Badge>
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{criteria.criterion_field}</TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1 max-w-xs">
-                      {criteria.target_values?.slice(0, 3).map((value, idx) => (
-                        <Badge key={idx} variant="secondary" className="text-xs">
-                          {typeof value === 'string' ? value : JSON.stringify(value)}
-                        </Badge>
-                      ))}
-                      {criteria.target_values?.length > 3 && (
-                        <Badge variant="secondary" className="text-xs">
-                          +{criteria.target_values.length - 3}
-                        </Badge>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <div className="w-20 bg-secondary rounded-full h-2">
-                        <div
-                          className="bg-primary h-2 rounded-full"
-                          style={{ width: `${criteria.weight}%` }}
-                        />
-                      </div>
-                      <span className="text-sm font-medium">{criteria.weight}%</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {criteria.is_active ? (
-                      <Badge variant="default" className="gap-1">
-                        <Power className="h-3 w-3" /> Ativo
-                      </Badge>
-                    ) : (
-                      <Badge variant="secondary" className="gap-1">
-                        <PowerOff className="h-3 w-3" /> Inativo
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleToggleActive(criteria)}
-                        disabled={isUpdatingCriteria}
-                      >
-                        {criteria.is_active ? <PowerOff className="h-4 w-4" /> : <Power className="h-4 w-4" />}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleOpenDialog(criteria)}
-                        disabled={isUpdatingCriteria}
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setDeleteConfirmId(criteria.id)}
-                        disabled={isDeletingCriteria}
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
+            <CardContent>
+              {criteriaLoading ? (
+                <div className="text-center py-8 text-muted-foreground">Carregando critérios...</div>
+              ) : !icpCriteria || icpCriteria.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  Nenhum critério configurado. Crie o primeiro critério para definir seu ICP.
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nome do Critério</TableHead>
+                      <TableHead>Tipo</TableHead>
+                      <TableHead>Campo</TableHead>
+                      <TableHead>Valores-Alvo</TableHead>
+                      <TableHead>Peso</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {icpCriteria.map((criteria) => (
+                      <TableRow key={criteria.id}>
+                        <TableCell className="font-medium">{criteria.criterion_name}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{getCriterionTypeLabel(criteria.criterion_type)}</Badge>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{criteria.criterion_field}</TableCell>
+                        <TableCell>
+                          <div className="flex flex-wrap gap-1 max-w-xs">
+                            {criteria.target_values?.slice(0, 3).map((value, idx) => (
+                              <Badge key={idx} variant="secondary" className="text-xs">
+                                {typeof value === 'string' ? value : JSON.stringify(value)}
+                              </Badge>
+                            ))}
+                            {criteria.target_values?.length > 3 && (
+                              <Badge variant="secondary" className="text-xs">
+                                +{criteria.target_values.length - 3}
+                              </Badge>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <div className="w-20 bg-secondary rounded-full h-2">
+                              <div
+                                className="bg-primary h-2 rounded-full"
+                                style={{ width: `${criteria.weight}%` }}
+                              />
+                            </div>
+                            <span className="text-sm font-medium">{criteria.weight}%</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {criteria.is_active ? (
+                            <Badge variant="default" className="gap-1">
+                              <Power className="h-3 w-3" /> Ativo
+                            </Badge>
+                          ) : (
+                            <Badge variant="secondary" className="gap-1">
+                              <PowerOff className="h-3 w-3" /> Inativo
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleToggleActive(criteria)}
+                              disabled={isUpdatingCriteria}
+                            >
+                              {criteria.is_active ? <PowerOff className="h-4 w-4" /> : <Power className="h-4 w-4" />}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleOpenDialog(criteria)}
+                              disabled={isUpdatingCriteria}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setDeleteConfirmId(criteria.id)}
+                              disabled={isDeletingCriteria}
+                            >
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
           </Card>
         </TabsContent>
 
@@ -336,11 +306,39 @@ export function ICPCriteriaManager() {
                 />
               </div>
 
-              <FieldSelector
-                value={formData.criterion_field}
-                onChange={(field) => setFormData({ ...formData, criterion_field: field })}
-                usedFields={icpCriteria?.filter(c => c.id !== editingCriteria?.id).map(c => c.criterion_field)}
-              />
+              <div>
+                <Label>Campo de Dados *</Label>
+                <FieldSelector
+                  value={formData.criterion_field}
+                  onChange={handleFieldChange}
+                  usedFields={icpCriteria?.filter(c => c.id !== editingCriteria?.id).map(c => c.criterion_field)}
+                />
+                
+                {/* Field Validation Alerts */}
+                {fieldValidation && (
+                  <div className="mt-2 space-y-2">
+                    {!fieldValidation.exists && (
+                      <Alert variant="destructive">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription className="text-xs">
+                          {fieldValidation.warnings[0]}
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                    {fieldValidation.exists && !fieldValidation.inForm && !fieldValidation.isCustomField && (
+                      <Alert>
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertDescription className="text-xs">
+                          {fieldValidation.warnings[0]}
+                          <div className="mt-1 text-xs text-muted-foreground">
+                            {fieldValidation.suggestions[0]}
+                          </div>
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                  </div>
+                )}
+              </div>
 
               <TargetValuesBuilder
                 fieldName={formData.criterion_field}
@@ -426,7 +424,5 @@ export function ICPCriteriaManager() {
         </AlertDialogContent>
       </AlertDialog>
     </>
-  );
-}
   );
 }
