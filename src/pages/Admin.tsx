@@ -39,6 +39,7 @@ import { ProposalForm } from '@/components/admin/ProposalForm';
 import { ProposalVersionEditor } from '@/components/admin/ProposalVersionEditor';
 import { ProposalDiffViewer } from '@/components/admin/ProposalDiffViewer';
 import { ChangeRequestsAdmin } from '@/components/admin/proposal/ChangeRequestsAdmin';
+import { LeadScoringAdmin } from '@/components/admin/LeadScoringAdmin';
 
 export default function Admin() {
   return (
@@ -75,6 +76,7 @@ export default function Admin() {
         <Route path="legal" element={<LegalAdmin />} />
         <Route path="contracts" element={<ContractsAdmin />} />
         <Route path="nurturing" element={<NurturingSequenceAdmin />} />
+        <Route path="crm/scoring" element={<LeadScoringAdmin />} />
               <Route path="propostas" element={<ProposalAdmin />} />
               <Route path="propostas/nova" element={<ProposalForm />} />
               <Route path="propostas/:id" element={<ProposalForm />} />

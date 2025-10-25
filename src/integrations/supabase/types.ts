@@ -2796,6 +2796,45 @@ export type Database = {
           },
         ]
       }
+      icp_criteria: {
+        Row: {
+          created_at: string | null
+          criterion_field: string
+          criterion_name: string
+          criterion_type: string
+          description: string | null
+          id: string
+          is_active: boolean
+          target_values: Json
+          updated_at: string | null
+          weight: number
+        }
+        Insert: {
+          created_at?: string | null
+          criterion_field: string
+          criterion_name: string
+          criterion_type: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          target_values?: Json
+          updated_at?: string | null
+          weight?: number
+        }
+        Update: {
+          created_at?: string | null
+          criterion_field?: string
+          criterion_name?: string
+          criterion_type?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          target_values?: Json
+          updated_at?: string | null
+          weight?: number
+        }
+        Relationships: []
+      }
       job_positions: {
         Row: {
           created_at: string
