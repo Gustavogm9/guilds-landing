@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bell, Check, Archive, ExternalLink } from 'lucide-react';
+import { Bell, Check, Archive, ExternalLink, Loader2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom';
@@ -23,6 +23,9 @@ interface NotificationsPopoverProps {
   onArchive: (id: string) => void;
   onNavigateToFull: () => void;
   onItemClick?: (notification: CRMNotification) => void;
+  isMarkingAsRead?: boolean;
+  isArchiving?: boolean;
+  isMarkingAllAsRead?: boolean;
 }
 
 const getNotificationIcon = (type: string, priority: string) => {
@@ -61,6 +64,9 @@ export const NotificationsPopover: React.FC<NotificationsPopoverProps> = ({
   onArchive,
   onNavigateToFull,
   onItemClick,
+  isMarkingAsRead = false,
+  isArchiving = false,
+  isMarkingAllAsRead = false,
 }) => {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
@@ -142,8 +148,13 @@ export const NotificationsPopover: React.FC<NotificationsPopoverProps> = ({
               size="sm" 
               className="h-7 text-xs"
               onClick={onMarkAllAsRead}
+              disabled={isMarkingAllAsRead}
             >
-              <Check className="h-3 w-3 mr-1" />
+              {isMarkingAllAsRead ? (
+                <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+              ) : (
+                <Check className="h-3 w-3 mr-1" />
+              )}
               Marcar todas como lidas
             </Button>
           )}
@@ -217,8 +228,13 @@ export const NotificationsPopover: React.FC<NotificationsPopoverProps> = ({
                           size="sm"
                           className="h-6 w-6 p-0"
                           onClick={(e) => handleMarkAsRead(e, notification.id)}
+                          disabled={isMarkingAsRead}
                         >
-                          <Check className="h-3 w-3" />
+                          {isMarkingAsRead ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          ) : (
+                            <Check className="h-3 w-3" />
+                          )}
                         </Button>
                       )}
                       <Button
@@ -226,8 +242,13 @@ export const NotificationsPopover: React.FC<NotificationsPopoverProps> = ({
                         size="sm"
                         className="h-6 w-6 p-0"
                         onClick={(e) => handleArchive(e, notification.id)}
+                        disabled={isArchiving}
                       >
-                        <Archive className="h-3 w-3" />
+                        {isArchiving ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <Archive className="h-3 w-3" />
+                        )}
                       </Button>
                     </div>
                   </div>

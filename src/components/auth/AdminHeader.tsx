@@ -18,7 +18,16 @@ import { NotificationsPopover } from '@/components/crm/notifications/Notificatio
 export const AdminHeader: React.FC = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const { notifications, markAsRead, markAllAsRead, archive, handleAction } = useCRMNotifications();
+  const { 
+    notifications, 
+    markAsRead, 
+    markAllAsRead, 
+    archive, 
+    handleAction,
+    isMarkingAsRead,
+    isArchiving,
+    isMarkingAllAsRead,
+  } = useCRMNotifications();
 
   const unreadCount = notifications?.filter(n => !n.is_read && !n.is_archived).length || 0;
 
@@ -53,6 +62,9 @@ export const AdminHeader: React.FC = () => {
             onArchive={archive}
             onNavigateToFull={() => navigate('/admin/notifications')}
             onItemClick={handleAction}
+            isMarkingAsRead={isMarkingAsRead}
+            isArchiving={isArchiving}
+            isMarkingAllAsRead={isMarkingAllAsRead}
           />
 
           <DropdownMenu>

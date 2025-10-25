@@ -103,6 +103,7 @@ export const useCRMNotifications = () => {
       return { previousNotifications };
     },
     onError: (err, id, context) => {
+      console.error('❌ Erro ao marcar notificação como lida:', err);
       // Rollback on error
       if (context?.previousNotifications) {
         queryClient.setQueryData(['crm-notifications'], context.previousNotifications);
@@ -167,6 +168,7 @@ export const useCRMNotifications = () => {
       return { previousNotifications };
     },
     onError: (err, id, context) => {
+      console.error('❌ Erro ao arquivar notificação:', err);
       // Rollback on error
       if (context?.previousNotifications) {
         queryClient.setQueryData(['crm-notifications'], context.previousNotifications);
@@ -226,5 +228,8 @@ export const useCRMNotifications = () => {
     markAllAsRead: markAllAsReadMutation.mutate,
     archive: archiveMutation.mutate,
     handleAction,
+    isMarkingAsRead: markAsReadMutation.isPending,
+    isArchiving: archiveMutation.isPending,
+    isMarkingAllAsRead: markAllAsReadMutation.isPending,
   };
 };
