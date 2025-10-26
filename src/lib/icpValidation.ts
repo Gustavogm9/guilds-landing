@@ -56,8 +56,13 @@ export function validateCriterionField(fieldName: string): FieldValidation {
   const warnings: string[] = [];
   const suggestions: string[] = [];
   
-  // Check if it's a custom field (in custom_fields JSON)
-  const isCustomField = fieldName.startsWith('custom_fields.');
+  // Check if it's a custom field (in custom_fields JSON) with proper validation
+  const isValidCustomField = 
+    fieldName.startsWith('custom_fields.') && 
+    /^custom_fields\.[a-zA-Z_][a-zA-Z0-9_]*$/.test(fieldName) &&
+    fieldName.split('.').length === 2;
+  
+  const isCustomField = isValidCustomField;
   const actualFieldName = isCustomField ? fieldName.replace('custom_fields.', '') : fieldName;
   
   // Check if field exists in CRM schema

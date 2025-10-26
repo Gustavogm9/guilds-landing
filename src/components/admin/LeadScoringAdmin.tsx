@@ -108,16 +108,30 @@ export function LeadScoringAdmin() {
                 missingFields={missingFields}
                 incompleteContactsPercent={icpHealthData?.incompleteContactsPercent}
                 allCriteria={icpCriteria || []}
-                onAutoFix={(fixes) => {
+                onAutoFix={async (fixes) => {
                   // Apply automatic fixes
-                  fixes.forEach(fix => {
+                  for (const fix of fixes) {
                     if (fix.type === 'update_weight') {
-                      updateCriteria({ 
+                      await updateCriteria({ 
                         id: fix.criterionId, 
                         updates: { weight: fix.newWeight } 
                       });
                     }
-                  });
+                  }
+                  
+                  // Re-validate total weight after all fixes
+                  const updatedCriteria = icpCriteria?.filter(c => c.is_active) || [];
+                  const finalTotal = updatedCriteria.reduce((sum, c) => sum + (c.weight || 0), 0);
+                  
+                  if (Math.abs(finalTotal - 100) > 0.01 && updatedCriteria.length > 0) {
+                    // Adjust first criterion to compensate for rounding
+                    const adjustment = 100 - finalTotal;
+                    await updateCriteria({
+                      id: updatedCriteria[0].id,
+                      updates: { weight: updatedCriteria[0].weight + adjustment }
+                    });
+                  }
+                  
                   toast.success('Pesos ajustados automaticamente para 100%');
                 }}
               />
