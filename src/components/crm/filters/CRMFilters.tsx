@@ -198,34 +198,32 @@ export function CRMFilters({
             {/* ICP Score Range */}
             <div className="space-y-2">
               <label className="text-xs font-medium">Score ICP</label>
-              <div className="grid grid-cols-2 gap-2">
-                <Input
-                  type="number"
-                  placeholder="Mín %"
-                  min="0"
-                  max="100"
-                  value={filters.icpScoreRange?.[0] || ''}
-                  onChange={(e) => {
-                    const min = e.target.value ? parseInt(e.target.value) : undefined;
-                    const max = filters.icpScoreRange?.[1];
-                    updateFilter('icpScoreRange', min !== undefined || max !== undefined ? [min || 0, max || 100] : undefined);
-                  }}
-                  className="h-9 text-xs"
-                />
-                <Input
-                  type="number"
-                  placeholder="Máx %"
-                  min="0"
-                  max="100"
-                  value={filters.icpScoreRange?.[1] || ''}
-                  onChange={(e) => {
-                    const max = e.target.value ? parseInt(e.target.value) : undefined;
-                    const min = filters.icpScoreRange?.[0];
-                    updateFilter('icpScoreRange', min !== undefined || max !== undefined ? [min || 0, max || 100] : undefined);
-                  }}
-                  className="h-9 text-xs"
-                />
-              </div>
+              <Select
+                value={
+                  filters.icpScoreRange 
+                    ? `${filters.icpScoreRange[0]}-${filters.icpScoreRange[1]}`
+                    : 'all'
+                }
+                onValueChange={(value) => {
+                  if (value === 'all') {
+                    updateFilter('icpScoreRange', undefined);
+                  } else {
+                    const [min, max] = value.split('-').map(Number);
+                    updateFilter('icpScoreRange', [min, max]);
+                  }
+                }}
+              >
+                <SelectTrigger className="h-9">
+                  <SelectValue placeholder="Todos os scores" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os scores</SelectItem>
+                  <SelectItem value="0-39">0-39% (Baixo Fit)</SelectItem>
+                  <SelectItem value="40-69">40-69% (Médio Fit)</SelectItem>
+                  <SelectItem value="70-89">70-89% (Bom Fit)</SelectItem>
+                  <SelectItem value="90-100">90-100% (Excelente Fit)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Lead Source */}

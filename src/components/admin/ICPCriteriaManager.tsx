@@ -329,9 +329,24 @@ export function ICPCriteriaManager() {
                       <Alert>
                         <AlertTriangle className="h-4 w-4" />
                         <AlertDescription className="text-xs">
-                          {fieldValidation.warnings[0]}
-                          <div className="mt-1 text-xs text-muted-foreground">
-                            {fieldValidation.suggestions[0]}
+                          <div className="flex items-center justify-between">
+                            <div>
+                              {fieldValidation.warnings[0]}
+                              <div className="mt-1 text-xs text-muted-foreground">
+                                {fieldValidation.suggestions[0]}
+                              </div>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="ml-2 h-7 text-xs"
+                              onClick={() => {
+                                window.open('/admin', '_blank');
+                                alert(`Para adicionar o campo "${formData.criterion_field}" ao formulário de contato:\n\n1. Vá até Admin → Configurações Públicas\n2. Ou edite src/components/forms/ContactForm.tsx\n3. Adicione um campo para: ${formData.criterion_field}`);
+                              }}
+                            >
+                              Como Adicionar?
+                            </Button>
                           </div>
                         </AlertDescription>
                       </Alert>

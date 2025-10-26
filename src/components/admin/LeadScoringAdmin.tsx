@@ -7,6 +7,8 @@ import { ICPCriteriaManager } from "./ICPCriteriaManager";
 import { LeadScoringDashboard } from "../crm/lead-scoring/LeadScoringDashboard";
 import { ICPHealthPanel } from "./icp/ICPHealthPanel";
 import { useLeadScoring } from "@/hooks/useLeadScoring";
+import { getMissingFieldsFromCriteria } from "@/lib/icpValidation";
+import { toast } from "sonner";
 
 export function LeadScoringAdmin() {
   const { 
@@ -15,12 +17,14 @@ export function LeadScoringAdmin() {
     icpHealthData, 
     healthLoading, 
     recalculateScores, 
-    isRecalculating 
+    isRecalculating,
+    updateCriteria
   } = useLeadScoring();
 
   const activeRulesCount = rules?.filter(r => r.is_active).length || 0;
   const activeCriteriaCount = icpCriteria?.filter(c => c.is_active).length || 0;
   const totalWeight = icpCriteria?.reduce((sum, c) => c.is_active ? sum + c.weight : sum, 0) || 0;
+  const missingFields = getMissingFieldsFromCriteria(icpCriteria || []);
 
   return (
     <div className="space-y-6">
@@ -101,8 +105,21 @@ export function LeadScoringAdmin() {
               <ICPHealthPanel
                 activeCriteriaCount={activeCriteriaCount}
                 totalWeight={totalWeight}
-                missingFields={icpHealthData?.missingFields}
+                missingFields={missingFields}
                 incompleteContactsPercent={icpHealthData?.incompleteContactsPercent}
+                allCriteria={icpCriteria || []}
+                onAutoFix={(fixes) => {
+                  // Apply automatic fixes
+                  fixes.forEach(fix => {
+                    if (fix.type === 'update_weight') {
+                      updateCriteria({ 
+                        id: fix.criterionId, 
+                        updates: { weight: fix.newWeight } 
+                      });
+                    }
+                  });
+                  toast.success('Pesos ajustados automaticamente para 100%');
+                }}
               />
             </div>
           </div>

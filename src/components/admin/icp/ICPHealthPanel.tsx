@@ -6,12 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { suggestWeightRebalance } from "@/lib/icpValidation";
 
 interface ICPHealthPanelProps {
   activeCriteriaCount: number;
   totalWeight: number;
   missingFields?: string[];
   incompleteContactsPercent?: number;
+  allCriteria?: any[];
   onAutoFix?: (fixes: any[]) => void;
 }
 
@@ -20,9 +22,11 @@ export function ICPHealthPanel({
   totalWeight,
   missingFields = [],
   incompleteContactsPercent = 0,
+  allCriteria = [],
   onAutoFix
 }: ICPHealthPanelProps) {
   const [showFixDialog, setShowFixDialog] = useState(false);
+  const [weightSuggestions, setWeightSuggestions] = useState<Map<string, number>>(new Map());
   const issues: { type: 'error' | 'warning' | 'info'; message: string }[] = [];
 
   // Check criteria count
@@ -170,7 +174,14 @@ export function ICPHealthPanel({
             <Button 
               variant="outline" 
               className="w-full"
-              onClick={() => setShowFixDialog(true)}
+              onClick={() => {
+                // Calculate weight suggestions when opening dialog
+                if (totalWeight !== 100 && allCriteria.length > 0) {
+                  const suggestions = suggestWeightRebalance(allCriteria);
+                  setWeightSuggestions(suggestions);
+                }
+                setShowFixDialog(true);
+              }}
             >
               <Wrench className="h-4 w-4 mr-2" />
               Corrigir Problemas
@@ -192,7 +203,7 @@ export function ICPHealthPanel({
           <div className="space-y-4 max-h-[400px] overflow-y-auto">
             {/* Weight Adjustment */}
             {totalWeight !== 100 && activeCriteriaCount > 0 && (
-              <div className="p-4 border rounded-lg space-y-2">
+              <div className="p-4 border rounded-lg space-y-3">
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="h-4 w-4 text-yellow-500" />
                   <div className="font-medium">Ajustar Peso Total</div>
@@ -200,6 +211,23 @@ export function ICPHealthPanel({
                 <p className="text-sm text-muted-foreground">
                   O peso total está em {totalWeight}%. Podemos ajustar proporcionalmente para 100%.
                 </p>
+                {weightSuggestions.size > 0 && (
+                  <div className="space-y-2">
+                    <div className="text-xs font-medium">Pesos sugeridos:</div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {allCriteria
+                        .filter(c => c.is_active)
+                        .map(criterion => (
+                          <div key={criterion.id} className="flex items-center justify-between text-xs p-2 bg-muted rounded">
+                            <span className="truncate mr-2">{criterion.criterion_name}</span>
+                            <Badge variant="secondary">
+                              {criterion.weight}% → {weightSuggestions.get(criterion.id)}%
+                            </Badge>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                )}
                 <div className="text-xs text-muted-foreground">
                   Isso distribuirá o peso de forma proporcional entre todos os critérios ativos.
                 </div>
@@ -264,12 +292,18 @@ export function ICPHealthPanel({
             <Button variant="outline" onClick={() => setShowFixDialog(false)}>
               Fechar
             </Button>
-            {(totalWeight !== 100 || activeCriteriaCount === 0) && onAutoFix && (
+            {totalWeight !== 100 && activeCriteriaCount > 0 && onAutoFix && weightSuggestions.size > 0 && (
               <Button onClick={() => {
-                onAutoFix([{ type: 'rebalance_weights' }]);
+                // Apply weight rebalancing
+                const fixes = Array.from(weightSuggestions.entries()).map(([id, weight]) => ({
+                  type: 'update_weight',
+                  criterionId: id,
+                  newWeight: weight
+                }));
+                onAutoFix(fixes);
                 setShowFixDialog(false);
               }}>
-                Aplicar Correções
+                Aplicar Correções Automáticas
               </Button>
             )}
           </DialogFooter>
