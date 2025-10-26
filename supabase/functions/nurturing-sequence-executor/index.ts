@@ -218,7 +218,7 @@ async function handleCronExecution(supabase: any) {
         *,
         nurturing_sequences(
           *,
-          nurturing_steps(*)
+          nurturing_sequence_steps(*)
         ),
         crm_contacts(*)
       `)
