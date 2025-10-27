@@ -198,9 +198,27 @@ export const useQualificationForm = () => {
       const utmMedium = urlParams.get('utm_medium');
       const utmCampaign = urlParams.get('utm_campaign');
 
+      // Map field names from QualificationModal to CRM contact fields
+      const fieldMapping: Record<string, string> = {
+        'cargo': 'job_title',
+        'tamanho_empresa': 'company_size',
+        'orcamento': 'budget_range',
+        'prazo': 'decision_timeline',
+        'autoridade_decisao': 'decision_authority'
+      };
+
+      // Apply field mapping
+      const mappedFormData = { ...formData };
+      Object.entries(fieldMapping).forEach(([oldKey, newKey]) => {
+        if (mappedFormData[oldKey] !== undefined) {
+          mappedFormData[newKey] = mappedFormData[oldKey];
+          delete mappedFormData[oldKey];
+        }
+      });
+
       const submissionData = {
         form_id: activeForm.id,
-        form_data: formData,
+        form_data: mappedFormData,
         source_page: sourcePage || window.location.pathname,
         utm_source: utmSource,
         utm_medium: utmMedium,

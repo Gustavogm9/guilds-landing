@@ -1,15 +1,20 @@
 import { supabase } from "@/integrations/supabase/client";
 
-// Known fields from ContactForm that can be used for ICP criteria
+// Known fields from ContactForm and QualificationModal that can be used for ICP criteria
+// Includes both original field names and their aliases from public forms
 export const CONTACT_FORM_FIELDS = [
   'name',
   'email',
   'phone',
   'company',
   'role',
-  'company_size',
-  'budget_range',
+  'job_title', // Mapped from 'cargo' in QualificationModal
+  'industry', // Added to QualificationModal
+  'company_size', // Mapped from 'tamanho_empresa' in QualificationModal
+  'budget_range', // Mapped from 'orcamento' in QualificationModal
   'timeline',
+  'decision_timeline', // Mapped from 'prazo' in QualificationModal
+  'decision_authority', // Mapped from 'autoridade_decisao' in QualificationModal
   'source',
   'product_interest',
   'message',

@@ -82,12 +82,13 @@ export const QualificationModal = ({ isOpen, onClose, sourcePage }: Qualificatio
       schemaFields[field.field_name] = fieldSchema;
     });
 
-    // Adicionar campos estratégicos de qualificação
-    schemaFields.cargo = z.string().optional().or(z.literal(''));
-    schemaFields.tamanho_empresa = z.string().optional().or(z.literal(''));
-    schemaFields.orcamento = z.string().optional().or(z.literal(''));
-    schemaFields.prazo = z.string().optional().or(z.literal(''));
-    schemaFields.autoridade_decisao = z.string().optional().or(z.literal(''));
+    // Adicionar campos estratégicos de qualificação (mapped to CRM fields)
+    schemaFields.cargo = z.string().optional().or(z.literal('')); // → job_title
+    schemaFields.industry = z.string().optional().or(z.literal('')); // → industry
+    schemaFields.tamanho_empresa = z.string().optional().or(z.literal('')); // → company_size
+    schemaFields.orcamento = z.string().optional().or(z.literal('')); // → budget_range
+    schemaFields.prazo = z.string().optional().or(z.literal('')); // → decision_timeline
+    schemaFields.autoridade_decisao = z.string().optional().or(z.literal('')); // → decision_authority
 
     return z.object(schemaFields);
   };
@@ -102,6 +103,7 @@ export const QualificationModal = ({ isOpen, onClose, sourcePage }: Qualificatio
         return acc;
       }, {} as Record<string, string>),
       cargo: '',
+      industry: '',
       tamanho_empresa: '',
       orcamento: '',
       prazo: '',
@@ -269,6 +271,31 @@ export const QualificationModal = ({ isOpen, onClose, sourcePage }: Qualificatio
                               <SelectItem value="coordenador">Coordenador</SelectItem>
                               <SelectItem value="analista">Analista</SelectItem>
                               <SelectItem value="outro">Outro</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="industry"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Segmento/Indústria</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione o segmento" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="technology">Tecnologia</SelectItem>
+                              <SelectItem value="finance">Finanças</SelectItem>
+                              <SelectItem value="healthcare">Saúde</SelectItem>
+                              <SelectItem value="education">Educação</SelectItem>
+                              <SelectItem value="retail">Varejo</SelectItem>
+                              <SelectItem value="manufacturing">Indústria</SelectItem>
+                              <SelectItem value="services">Serviços</SelectItem>
+                              <SelectItem value="other">Outro</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormItem>
