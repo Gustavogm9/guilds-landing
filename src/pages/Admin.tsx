@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { PermissionsProvider } from '@/contexts/PermissionsContext';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { LogosAdmin } from '@/components/admin/LogosAdmin';
 import { SEOAdmin } from '@/components/seo/SEOAdmin';
@@ -43,7 +44,8 @@ import { LeadScoringAdmin } from '@/components/admin/LeadScoringAdmin';
 
 export default function Admin() {
   return (
-    <AdminLayout>
+    <PermissionsProvider>
+      <AdminLayout>
       <Routes>
         <Route index element={<AdminDashboard />} />
         <Route path="logos" element={<LogosAdmin />} />
@@ -86,6 +88,7 @@ export default function Admin() {
               <Route path="propostas/templates" element={<ProposalTemplateEditor />} />
               <Route path="propostas/catalogo" element={<ProposalPricingCatalog />} />
       </Routes>
-    </AdminLayout>
+      </AdminLayout>
+    </PermissionsProvider>
   );
 }

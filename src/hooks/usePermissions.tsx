@@ -37,12 +37,13 @@ export const usePermissions = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchUserData = async () => {
+    // ✅ GUARD: Se não há usuário, retornar imediatamente sem fazer requests
     if (!user) {
       setUserProfile(null);
       setUserRoles([]);
       setPermissions({});
       setLoading(false);
-      return;
+      return; // ← PARA AQUI, sem fazer requests ao Supabase!
     }
 
     try {

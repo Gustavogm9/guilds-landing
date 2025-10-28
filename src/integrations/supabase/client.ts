@@ -13,5 +13,29 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     storage: localStorage,
     persistSession: true,
     autoRefreshToken: true,
+  },
+  global: {
+    fetch: (url, options?: RequestInit) => {
+      return fetch(url, options).then(async (response) => {
+        // 🔍 Log detalhado apenas para erros 400 (Bad Request)
+        if (response.status === 400) {
+          const errorBody = await response.clone().text();
+          console.group('❌ Supabase 400 Bad Request');
+          console.error('URL:', url);
+          console.error('Status:', response.status, response.statusText);
+          console.error('Response:', errorBody);
+          if (options?.body) {
+            try {
+              const bodyParsed = JSON.parse(options.body as string);
+              console.error('Request Body:', bodyParsed);
+            } catch {
+              console.error('Request Body (raw):', options.body);
+            }
+          }
+          console.groupEnd();
+        }
+        return response;
+      });
+    }
   }
 });

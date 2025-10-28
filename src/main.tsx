@@ -7,7 +7,6 @@ import './lib/initLogos.ts' // Initialize logos system
 import { useDynamicFavicon } from './hooks/useDynamicFavicon'
 import { initializePerformanceOptimizations } from '@/lib/serviceWorker'
 import { AuthProvider } from '@/contexts/AuthContext';
-import { PermissionsProvider } from '@/contexts/PermissionsContext';
 import { MultiProductProvider } from '@/contexts/MultiProductContext';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -23,13 +22,11 @@ function AppWithFavicon() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <AuthProvider>
-          <PermissionsProvider>
-            <MultiProductProvider>
-              <Toaster />
-              <Sonner />
-              <App />
-            </MultiProductProvider>
-          </PermissionsProvider>
+          <MultiProductProvider>
+            <Toaster />
+            <Sonner />
+            <App />
+          </MultiProductProvider>
         </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
