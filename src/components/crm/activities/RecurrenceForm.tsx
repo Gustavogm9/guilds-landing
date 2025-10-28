@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -7,11 +7,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, ChevronDown, ChevronUp } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 const WEEKDAYS = [
   { value: 1, label: 'Seg' },
@@ -40,6 +41,9 @@ interface RecurrenceFormProps {
 }
 
 export function RecurrenceForm({ value, onChange }: RecurrenceFormProps) {
+  const [showEndOptions, setShowEndOptions] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+
   const updateField = (field: keyof RecurrenceFormData, newValue: any) => {
     onChange({ ...value, [field]: newValue });
   };
@@ -69,7 +73,7 @@ export function RecurrenceForm({ value, onChange }: RecurrenceFormProps) {
 
     const increment = (frequencyMap[value.frequency] || 7) * value.interval;
     
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
       const date = new Date(start);
       date.setDate(date.getDate() + (increment * i));
       dates.push(format(date, 'dd/MM/yyyy', { locale: ptBR }));
@@ -202,11 +206,24 @@ export function RecurrenceForm({ value, onChange }: RecurrenceFormProps) {
         </TabsContent>
       </Tabs>
 
-      {/* Término da Recorrência */}
-      <div className="space-y-3">
-        <Label>Término</Label>
+      {/* Término da Recorrência - Collapsible */}
+      <Collapsible open={showEndOptions} onOpenChange={setShowEndOptions}>
+        <CollapsibleTrigger asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            className="w-full justify-between p-2 hover:bg-accent"
+          >
+            <Label className="cursor-pointer">Término</Label>
+            {showEndOptions ? (
+              <ChevronUp className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            )}
+          </Button>
+        </CollapsibleTrigger>
         
-        <div className="space-y-2">
+        <CollapsibleContent className="space-y-2 pt-2 animate-accordion-down">
           <div className="flex items-center gap-2">
             <input
               type="radio"
@@ -235,6 +252,7 @@ export function RecurrenceForm({ value, onChange }: RecurrenceFormProps) {
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
+                    type="button"
                     variant="outline"
                     className={cn(
                       'justify-start text-left font-normal',
@@ -286,20 +304,36 @@ export function RecurrenceForm({ value, onChange }: RecurrenceFormProps) {
               </div>
             )}
           </div>
-        </div>
-      </div>
+        </CollapsibleContent>
+      </Collapsible>
 
-      {/* Preview */}
-      <div className="space-y-2">
-        <Label>Próximas Ocorrências (preview)</Label>
-        <div className="flex flex-wrap gap-2">
-          {getPreviewDates().map((date, i) => (
-            <Badge key={i} variant="secondary">
-              {date}
-            </Badge>
-          ))}
-        </div>
-      </div>
+      {/* Preview - Collapsible */}
+      <Collapsible open={showPreview} onOpenChange={setShowPreview}>
+        <CollapsibleTrigger asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            className="w-full justify-between p-2 hover:bg-accent"
+          >
+            <Label className="cursor-pointer">Próximas Ocorrências (preview)</Label>
+            {showPreview ? (
+              <ChevronUp className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            )}
+          </Button>
+        </CollapsibleTrigger>
+        
+        <CollapsibleContent className="pt-2 animate-accordion-down">
+          <div className="flex flex-wrap gap-2">
+            {getPreviewDates().map((date, i) => (
+              <Badge key={i} variant="secondary">
+                {date}
+              </Badge>
+            ))}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 }
