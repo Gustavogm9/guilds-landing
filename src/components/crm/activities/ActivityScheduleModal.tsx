@@ -14,6 +14,8 @@ import { cn } from '@/lib/utils';
 import { useCRM } from '@/hooks/useCRM';
 import { useToast } from '@/hooks/use-toast';
 import { RecurrenceForm } from './RecurrenceForm';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ActivityScheduleModalProps {
   open: boolean;
@@ -71,6 +73,27 @@ export function ActivityScheduleModal({
     due_time: activity?.due_date ? format(new Date(activity.due_date), 'HH:mm') : '09:00',
   });
 
+  const [selectedDealId, setSelectedDealId] = useState<string | undefined>(dealId);
+  const [selectedContactId, setSelectedContactId] = useState<string | undefined>(contactId);
+
+  // Fetch deals for selector
+  const { data: deals } = useQuery({
+    queryKey: ['deals-for-activities'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('crm_deals')
+        .select('id, title')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Fetch contacts for selector
+  const { contacts } = useCRM();
+
   const [recurrenceData, setRecurrenceData] = useState<RecurrenceFormData>({
     isRecurring: false,
     frequency: 'weekly',
@@ -119,8 +142,8 @@ export function ActivityScheduleModal({
           ? recurrenceData.endDate.toISOString().split('T')[0]
           : null,
         max_occurrences: recurrenceData.endType === 'count' ? recurrenceData.maxOccurrences : null,
-        deal_id: dealId || null,
-        contact_id: contactId || null,
+        deal_id: selectedDealId || null,
+        contact_id: selectedContactId || null,
       };
 
       createRecurringActivity(recurrencePayload);
@@ -139,8 +162,8 @@ export function ActivityScheduleModal({
       description: formData.description,
       due_date: dueDateTime.toISOString(),
       completed: false,
-      deal_id: dealId || null,
-      contact_id: contactId || null,
+      deal_id: selectedDealId || null,
+      contact_id: selectedContactId || null,
     };
 
     if (activity?.id) {
@@ -200,6 +223,50 @@ export function ActivityScheduleModal({
                 {ACTIVITY_TYPES.map((type) => (
                   <SelectItem key={type.value} value={type.value}>
                     {type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Oportunidade */}
+          <div className="space-y-2">
+            <Label htmlFor="deal">Oportunidade (Opcional)</Label>
+            <Select
+              value={selectedDealId || "none"}
+              onValueChange={(value) => setSelectedDealId(value === "none" ? undefined : value)}
+              disabled={!!dealId}
+            >
+              <SelectTrigger id="deal">
+                <SelectValue placeholder="Selecionar oportunidade" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Nenhuma oportunidade</SelectItem>
+                {deals?.map((deal) => (
+                  <SelectItem key={deal.id} value={deal.id}>
+                    {deal.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Cliente/Lead */}
+          <div className="space-y-2">
+            <Label htmlFor="contact">Cliente/Lead (Opcional)</Label>
+            <Select
+              value={selectedContactId || "none"}
+              onValueChange={(value) => setSelectedContactId(value === "none" ? undefined : value)}
+              disabled={!!contactId}
+            >
+              <SelectTrigger id="contact">
+                <SelectValue placeholder="Selecionar cliente/lead" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Nenhum cliente/lead</SelectItem>
+                {contacts?.map((contact) => (
+                  <SelectItem key={contact.id} value={contact.id}>
+                    {contact.name} {contact.company && `(${contact.company})`}
                   </SelectItem>
                 ))}
               </SelectContent>
