@@ -49,6 +49,9 @@ verify_jwt = false
 [functions.generate-recurring-activities]
 verify_jwt = false
 
+[[functions.generate-recurring-activities.cron]]
+schedule = "0 * * * *"
+
 [functions.proposal-generator]
 verify_jwt = true
 
