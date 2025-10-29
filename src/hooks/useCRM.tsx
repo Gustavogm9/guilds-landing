@@ -683,11 +683,17 @@ export function useCRM(includeInactive: boolean = false) {
       
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      // Gerar atividades automaticamente
+      await supabase.functions.invoke('generate-recurring-activities');
+      
+      // Invalidar queries
       queryClient.invalidateQueries({ queryKey: ['recurring-activities'] });
+      queryClient.invalidateQueries({ queryKey: ['activities'] });
+      
       toast({
         title: "Recorrência criada",
-        description: "Atividade recorrente criada com sucesso",
+        description: "As próximas ocorrências foram agendadas automaticamente.",
       });
     },
     onError: (error) => {

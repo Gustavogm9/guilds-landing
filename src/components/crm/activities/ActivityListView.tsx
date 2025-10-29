@@ -45,6 +45,12 @@ export function ActivityListView({
   const { data: activities, isLoading, refetch } = useQuery({
     queryKey: ['activities', filterDealId, filterContactId, daysAhead],
     queryFn: async () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const endDate = new Date(today);
+      endDate.setDate(endDate.getDate() + daysAhead);
+
       let query = supabase
         .from('crm_activities')
         .select(`
@@ -53,6 +59,13 @@ export function ActivityListView({
           contact:crm_contacts(id, name, email)
         `)
         .order('due_date', { ascending: true, nullsFirst: false });
+
+      // Aplicar filtro de data apenas se não for "Todas" (daysAhead < 365)
+      if (daysAhead < 365) {
+        query = query
+          .gte('due_date', today.toISOString())
+          .lte('due_date', endDate.toISOString());
+      }
 
       if (filterDealId) {
         query = query.eq('deal_id', filterDealId);
