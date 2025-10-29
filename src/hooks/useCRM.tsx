@@ -694,8 +694,16 @@ export function useCRM(includeInactive: boolean = false) {
       }
       
       // Invalidar queries (sempre executa)
-      queryClient.invalidateQueries({ queryKey: ['recurring-activities'] });
-      queryClient.invalidateQueries({ queryKey: ['activities'] });
+      await queryClient.invalidateQueries({ 
+        queryKey: ['recurring-activities'],
+        exact: false,
+        refetchType: 'active'
+      });
+      await queryClient.invalidateQueries({ 
+        queryKey: ['activities'],
+        exact: false,
+        refetchType: 'active'
+      });
       
       toast({
         title: "Recorrência criada",

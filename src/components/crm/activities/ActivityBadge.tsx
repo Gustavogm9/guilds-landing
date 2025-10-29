@@ -15,6 +15,11 @@ export function ActivityBadge({ dealId }: ActivityBadgeProps) {
   const { data: activities, isLoading } = useQuery({
     queryKey: ['deal-activities', dealId],
     queryFn: async () => {
+      // Validação extra antes de executar query
+      if (!dealId || dealId === '') {
+        return [];
+      }
+      
       const { data, error } = await supabase
         .from('crm_activities')
         .select('*')
@@ -25,7 +30,7 @@ export function ActivityBadge({ dealId }: ActivityBadgeProps) {
       if (error) throw error;
       return data;
     },
-    enabled: !!dealId,
+    enabled: !!dealId && dealId !== '',
   });
 
   if (isLoading || !activities || activities.length === 0) {
