@@ -4885,6 +4885,7 @@ export type Database = {
       }
       qualification_forms: {
         Row: {
+          business_unit: string
           created_at: string
           description: string
           id: string
@@ -4899,6 +4900,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          business_unit?: string
           created_at?: string
           description?: string
           id?: string
@@ -4913,6 +4915,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          business_unit?: string
           created_at?: string
           description?: string
           id?: string

@@ -38,7 +38,7 @@ export interface CompanySettings {
   brand_accent_color: string;
 }
 
-export const useQualificationForm = () => {
+export const useQualificationForm = (businessUnit: 'guilds' | 'doavya' = 'guilds') => {
   const [forms, setForms] = useState<QualificationForm[]>([]);
   const [activeForm, setActiveForm] = useState<QualificationForm | null>(null);
   const [formFields, setFormFields] = useState<FormField[]>([]);
@@ -55,6 +55,7 @@ export const useQualificationForm = () => {
         .from('qualification_forms')
         .select('*')
         .eq('is_active', true)
+        .eq('business_unit', businessUnit)
         .order('created_at', { ascending: true });
 
       if (error) throw error;
@@ -105,22 +106,31 @@ export const useQualificationForm = () => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
-        // Try to get full company settings for authenticated users
+        // Try to get public settings filtered by business unit
         const { data, error } = await supabase
-          .from('company_settings')
+          .from('public_company_settings')
           .select('*')
+          .eq('business_unit', businessUnit)
           .maybeSingle();
         
         if (data && !error) {
-          setCompanySettings(data);
+          setCompanySettings({
+            id: data.id,
+            whatsapp_number: data.public_whatsapp_number || '+5511999999999',
+            company_name: data.company_name,
+            support_email: data.public_support_email || (businessUnit === 'guilds' ? 'contato@guilds.com.br' : 'parceiros@guilds.com.br'),
+            brand_primary_color: data.brand_primary_color,
+            brand_accent_color: data.brand_accent_color
+          });
           return;
         }
       }
       
-      // Fallback to public company settings for unauthenticated users or if private settings fail
+      // Fallback to public company settings for unauthenticated users
       const { data: publicData, error: publicError } = await supabase
         .from('public_company_settings')
         .select('*')
+        .eq('business_unit', businessUnit)
         .maybeSingle();
       
       if (publicData && !publicError) {
@@ -129,19 +139,19 @@ export const useQualificationForm = () => {
           id: publicData.id,
           whatsapp_number: publicData.public_whatsapp_number || '+5511999999999',
           company_name: publicData.company_name,
-          support_email: publicData.public_support_email || 'contato@guilds.com.br',
+          support_email: publicData.public_support_email || (businessUnit === 'guilds' ? 'contato@guilds.com.br' : 'parceiros@guilds.com.br'),
           brand_primary_color: publicData.brand_primary_color,
           brand_accent_color: publicData.brand_accent_color
         });
       } else {
-        // Final fallback with default values
+        // Final fallback with default values based on business unit
         setCompanySettings({
           id: 'default',
           whatsapp_number: '+5511999999999',
-          company_name: 'Guilds',
-          support_email: 'contato@guilds.com.br',
-          brand_primary_color: 'hsl(240, 85%, 55%)',
-          brand_accent_color: 'hsl(165, 85%, 45%)'
+          company_name: businessUnit === 'guilds' ? 'Guilds' : 'Doavya',
+          support_email: businessUnit === 'guilds' ? 'contato@guilds.com.br' : 'parceiros@guilds.com.br',
+          brand_primary_color: businessUnit === 'guilds' ? 'hsl(240, 85%, 55%)' : 'hsl(290, 85%, 55%)',
+          brand_accent_color: businessUnit === 'guilds' ? 'hsl(165, 85%, 45%)' : 'hsl(320, 85%, 45%)'
         });
       }
     } catch (error) {
@@ -161,10 +171,10 @@ export const useQualificationForm = () => {
       setCompanySettings({
         id: 'default',
         whatsapp_number: '+5511999999999',
-        company_name: 'Guilds',
-        support_email: 'contato@guilds.com.br',
-        brand_primary_color: 'hsl(240, 85%, 55%)',
-        brand_accent_color: 'hsl(165, 85%, 45%)'
+        company_name: businessUnit === 'guilds' ? 'Guilds' : 'Doavya',
+        support_email: businessUnit === 'guilds' ? 'contato@guilds.com.br' : 'parceiros@guilds.com.br',
+        brand_primary_color: businessUnit === 'guilds' ? 'hsl(240, 85%, 55%)' : 'hsl(290, 85%, 55%)',
+        brand_accent_color: businessUnit === 'guilds' ? 'hsl(165, 85%, 45%)' : 'hsl(320, 85%, 45%)'
       });
     }
   };
@@ -295,6 +305,22 @@ export const useQualificationForm = () => {
       fetchFormFields(activeForm.id);
     }
   }, [activeForm?.id]);
+
+  // Reload data when business unit changes
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      await Promise.all([
+        fetchForms(),
+        fetchCompanySettings()
+      ]);
+      setIsLoading(false);
+    };
+
+    if (businessUnit) {
+      loadData();
+    }
+  }, [businessUnit]);
 
   return {
     forms,

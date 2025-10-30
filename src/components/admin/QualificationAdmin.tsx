@@ -41,6 +41,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { useMultiProduct } from '@/contexts/MultiProductContext';
+import { ProductFilter } from '@/components/admin/filters/ProductFilter';
 
 interface FormSubmission {
   id: string;
@@ -51,7 +53,11 @@ interface FormSubmission {
 }
 
 export const QualificationAdmin = () => {
-  const { forms, companySettings, fetchForms, fetchCompanySettings } = useQualificationForm();
+  const { activeProduct } = useMultiProduct();
+  // activeProduct is ProductLine ('guilds' | 'doavya' | 'all')
+  // Convert to BusinessUnit ('guilds' | 'doavya') for qualification forms
+  const businessUnit: 'guilds' | 'doavya' = activeProduct === 'doavya' ? 'doavya' : 'guilds';
+  const { forms, companySettings, fetchForms, fetchCompanySettings } = useQualificationForm(businessUnit);
   const { toast } = useToast();
   const [submissions, setSubmissions] = useState<FormSubmission[]>([]);
   const [selectedSubmission, setSelectedSubmission] = useState<FormSubmission | null>(null);
@@ -88,13 +94,28 @@ export const QualificationAdmin = () => {
         brand_accent_color: companySettings.brand_accent_color
       });
     }
-  }, [companySettings]);
+  }, [companySettings, businessUnit]);
 
   const fetchSubmissions = async () => {
     try {
+      // Get form IDs for the current business unit
+      const { data: productForms } = await supabase
+        .from('qualification_forms')
+        .select('id')
+        .eq('business_unit', businessUnit)
+        .eq('is_active', true);
+      
+      const formIds = productForms?.map(f => f.id) || [];
+      
+      if (formIds.length === 0) {
+        setSubmissions([]);
+        return;
+      }
+      
       const { data, error } = await supabase
         .from('qualification_submissions')
         .select('*')
+        .in('form_id', formIds)
         .order('created_at', { ascending: false })
         .limit(50);
 
@@ -112,10 +133,30 @@ export const QualificationAdmin = () => {
 
   const fetchStats = async () => {
     try {
+      // Get form IDs for the current business unit
+      const { data: productForms } = await supabase
+        .from('qualification_forms')
+        .select('id')
+        .eq('business_unit', businessUnit)
+        .eq('is_active', true);
+      
+      const formIds = productForms?.map(f => f.id) || [];
+      
+      if (formIds.length === 0) {
+        setStats({
+          totalSubmissions: 0,
+          thisWeekSubmissions: 0,
+          conversionRate: 0,
+          avgResponseTime: 0
+        });
+        return;
+      }
+      
       // Get total submissions
       const { count: totalSubmissions } = await supabase
         .from('qualification_submissions')
-        .select('*', { count: 'exact', head: true });
+        .select('*', { count: 'exact', head: true })
+        .in('form_id', formIds);
 
       // Get this week's submissions
       const oneWeekAgo = new Date();
@@ -124,6 +165,7 @@ export const QualificationAdmin = () => {
       const { count: thisWeekSubmissions } = await supabase
         .from('qualification_submissions')
         .select('*', { count: 'exact', head: true })
+        .in('form_id', formIds)
         .gte('created_at', oneWeekAgo.toISOString());
 
       setStats({
@@ -140,9 +182,15 @@ export const QualificationAdmin = () => {
   const updateCompanySettings = async () => {
     try {
       const { error } = await supabase
-        .from('company_settings')
-        .update(settingsForm)
-        .eq('id', companySettings?.id);
+        .from('public_company_settings')
+        .update({
+          company_name: settingsForm.company_name,
+          public_support_email: settingsForm.support_email,
+          public_whatsapp_number: settingsForm.whatsapp_number,
+          brand_primary_color: settingsForm.brand_primary_color,
+          brand_accent_color: settingsForm.brand_accent_color
+        })
+        .eq('business_unit', businessUnit);
 
       if (error) throw error;
 
@@ -212,6 +260,8 @@ export const QualificationAdmin = () => {
             Gerencie formulários, leads e configurações do sistema
           </p>
         </div>
+        
+        <ProductFilter compact={true} />
       </div>
 
       <Tabs defaultValue="analytics" className="space-y-6">
