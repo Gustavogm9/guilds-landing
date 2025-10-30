@@ -80,6 +80,9 @@ export function ActivityListView({
       if (error) throw error;
       return data;
     },
+    staleTime: 30000, // Cache de 30 segundos
+    refetchOnMount: true,
+    refetchOnWindowFocus: false, // Evita refetch ao voltar para janela
   });
 
   const filteredActivities = activities?.filter(activity => {

@@ -54,28 +54,36 @@ export function Agenda() {
         </TabsList>
 
         <TabsContent value="today" className="mt-6">
-          <ActivityListView 
-            daysAhead={1} 
-            onEdit={handleEdit}
-          />
+          {activeTab === 'today' && (
+            <ActivityListView 
+              daysAhead={1} 
+              onEdit={handleEdit}
+            />
+          )}
         </TabsContent>
 
         <TabsContent value="week" className="mt-6">
-          <ActivityListView 
-            daysAhead={7} 
-            onEdit={handleEdit}
-          />
+          {activeTab === 'week' && (
+            <ActivityListView 
+              daysAhead={7} 
+              onEdit={handleEdit}
+            />
+          )}
         </TabsContent>
 
         <TabsContent value="all" className="mt-6">
-          <ActivityListView 
-            daysAhead={365} 
-            onEdit={handleEdit}
-          />
+          {activeTab === 'all' && (
+            <ActivityListView 
+              daysAhead={365} 
+              onEdit={handleEdit}
+            />
+          )}
         </TabsContent>
 
         <TabsContent value="recurring" className="mt-6">
-          <RecurringActivitiesList onEdit={handleEdit} />
+          {activeTab === 'recurring' && (
+            <RecurringActivitiesList onEdit={handleEdit} />
+          )}
         </TabsContent>
       </Tabs>
 
