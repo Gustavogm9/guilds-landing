@@ -40,7 +40,7 @@ serve(async (req) => {
   try {
     console.log('Starting campaign execution process...');
 
-    // Get pending executions that are ready to be processed
+    // Get pending executions with campaign details
     const { data: pendingExecutions, error: executionsError } = await supabase
       .from('feedback_campaign_executions')
       .select(`
@@ -49,8 +49,7 @@ serve(async (req) => {
         crm_contacts:contact_id(*)
       `)
       .eq('status', 'pending')
-      .lte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString()) // At least 1 hour old
-      .limit(50);
+      .limit(100); // Get more to filter by delay
 
     if (executionsError) {
       console.error('Error fetching executions:', executionsError);
@@ -70,10 +69,44 @@ serve(async (req) => {
       );
     }
 
+    // Filter executions that are ready based on trigger_delay_hours
+    const now = Date.now();
+    const readyExecutions = pendingExecutions.filter((execution) => {
+      const campaign = execution.feedback_campaigns;
+      if (!campaign) return false;
+      
+      const createdAt = new Date(execution.created_at).getTime();
+      const delayMs = (campaign.trigger_delay_hours || 0) * 60 * 60 * 1000;
+      const isReady = (now - createdAt) >= delayMs;
+      
+      if (!isReady) {
+        console.log(`Execution ${execution.id} not ready yet. Delay: ${campaign.trigger_delay_hours}h, Age: ${Math.round((now - createdAt) / (60 * 60 * 1000))}h`);
+      }
+      
+      return isReady;
+    });
+
+    console.log(`Found ${pendingExecutions.length} pending, ${readyExecutions.length} ready to process`);
+
+    if (readyExecutions.length === 0) {
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: 'No executions ready to process yet',
+          processed: 0,
+          pending: pendingExecutions.length
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     let processedCount = 0;
     let errorCount = 0;
 
-    for (const execution of pendingExecutions) {
+    // Process only first 50 ready executions
+    const executionsToProcess = readyExecutions.slice(0, 50);
+
+    for (const execution of executionsToProcess) {
       try {
         console.log(`Processing execution ${execution.id} for campaign ${execution.campaign_id}`);
 

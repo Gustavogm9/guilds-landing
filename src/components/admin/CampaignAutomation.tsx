@@ -7,6 +7,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { toast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Play, Pause, AlertTriangle, Clock, CheckCircle, XCircle, Users } from 'lucide-react';
+import { useMultiProduct } from '@/contexts/MultiProductContext';
+import { useCurrentProduct } from '@/hooks/useCurrentProduct';
 
 interface AutomationRule {
   id: string;
@@ -37,6 +39,9 @@ interface PendingExecution {
 }
 
 export const CampaignAutomation = () => {
+  const { activeProduct } = useMultiProduct();
+  const currentProduct = useCurrentProduct(true, activeProduct === 'all' ? 'guilds' : activeProduct);
+  
   const [automationRules, setAutomationRules] = useState<AutomationRule[]>([]);
   const [pendingExecutions, setPendingExecutions] = useState<PendingExecution[]>([]);
   const [campaigns, setCampaigns] = useState<any[]>([]);
@@ -65,7 +70,7 @@ export const CampaignAutomation = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [currentProduct]);
 
   const fetchData = async () => {
     try {
@@ -80,6 +85,7 @@ export const CampaignAutomation = () => {
           contact:crm_contacts(name, email)
         `)
         .eq('status', 'pending')
+        .eq('business_unit', currentProduct)
         .order('created_at', { ascending: true });
 
       if (executionsError) throw executionsError;
@@ -89,7 +95,8 @@ export const CampaignAutomation = () => {
       const { data: campaignsData, error: campaignsError } = await supabase
         .from('feedback_campaigns')
         .select('*')
-        .eq('is_active', true);
+        .eq('is_active', true)
+        .eq('business_unit', currentProduct);
 
       if (campaignsError) throw campaignsError;
       setCampaigns(campaignsData || []);
@@ -120,8 +127,8 @@ export const CampaignAutomation = () => {
     try {
       setProcessingQueue(true);
       
-      // Call the feedback processor edge function
-      const { data, error } = await supabase.functions.invoke('feedback-processor', {
+      // Call the campaign executor edge function
+      const { data, error } = await supabase.functions.invoke('campaign-executor', {
         body: { force_process: true }
       });
 

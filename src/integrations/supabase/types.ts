@@ -2109,6 +2109,7 @@ export type Database = {
       }
       feedback_campaign_executions: {
         Row: {
+          business_unit: string
           campaign_id: string
           channel: string
           contact_id: string | null
@@ -2124,6 +2125,7 @@ export type Database = {
           status: string
         }
         Insert: {
+          business_unit?: string
           campaign_id: string
           channel: string
           contact_id?: string | null
@@ -2139,6 +2141,7 @@ export type Database = {
           status?: string
         }
         Update: {
+          business_unit?: string
           campaign_id?: string
           channel?: string
           contact_id?: string | null
@@ -2186,6 +2189,7 @@ export type Database = {
       }
       feedback_campaigns: {
         Row: {
+          business_unit: string
           channel: string
           created_at: string
           id: string
@@ -2201,6 +2205,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          business_unit?: string
           channel?: string
           created_at?: string
           id?: string
@@ -2216,6 +2221,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          business_unit?: string
           channel?: string
           created_at?: string
           id?: string

@@ -46,6 +46,9 @@ verify_jwt = false
 [functions.campaign-executor]
 verify_jwt = false
 
+[[functions.campaign-executor.cron]]
+schedule = "*/15 * * * *"
+
 [functions.generate-recurring-activities]
 verify_jwt = false
 

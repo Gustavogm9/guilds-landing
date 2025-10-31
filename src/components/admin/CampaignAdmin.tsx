@@ -14,6 +14,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { toast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Plus, Edit, Trash2, Play, Pause, BarChart, MessageSquare, Clock, Users, Target } from 'lucide-react';
+import { useMultiProduct } from '@/contexts/MultiProductContext';
+import { useCurrentProduct } from '@/hooks/useCurrentProduct';
+import { ProductFilter } from '@/components/admin/filters/ProductFilter';
 
 interface Campaign {
   id: string;
@@ -44,6 +47,9 @@ interface CampaignExecution {
 }
 
 export const CampaignAdmin = () => {
+  const { activeProduct } = useMultiProduct();
+  const currentProduct = useCurrentProduct(true, activeProduct === 'all' ? 'guilds' : activeProduct);
+  
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [executions, setExecutions] = useState<CampaignExecution[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
@@ -67,7 +73,7 @@ export const CampaignAdmin = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [currentProduct]);
 
   const fetchData = async () => {
     try {
@@ -77,6 +83,7 @@ export const CampaignAdmin = () => {
       const { data: campaignsData, error: campaignsError } = await supabase
         .from('feedback_campaigns')
         .select('*')
+        .eq('business_unit', currentProduct)
         .order('created_at', { ascending: false });
 
       if (campaignsError) throw campaignsError;
@@ -90,6 +97,7 @@ export const CampaignAdmin = () => {
           campaign:feedback_campaigns(name),
           contact:crm_contacts(name, email)
         `)
+        .eq('business_unit', currentProduct)
         .order('created_at', { ascending: false })
         .limit(100);
 
@@ -124,7 +132,7 @@ export const CampaignAdmin = () => {
     try {
       const { data, error } = await supabase
         .from('feedback_campaigns')
-        .insert([formData])
+        .insert([{ ...formData, business_unit: currentProduct }])
         .select()
         .single();
 
@@ -444,20 +452,24 @@ export const CampaignAdmin = () => {
           </p>
         </div>
         
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Nova Campanha
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Criar Nova Campanha</DialogTitle>
-            </DialogHeader>
-            <CampaignForm onSubmit={handleCreateCampaign} />
-          </DialogContent>
-        </Dialog>
+        <div className="flex items-center gap-2">
+          <ProductFilter compact={true} />
+          
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                Nova Campanha
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Criar Nova Campanha</DialogTitle>
+              </DialogHeader>
+              <CampaignForm onSubmit={handleCreateCampaign} />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <Tabs defaultValue="campaigns" className="space-y-4">
