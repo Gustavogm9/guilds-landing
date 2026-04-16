@@ -1,4 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
+
+const log = logger.scope('LogoService');
 
 interface LogoData {
   name: string;
@@ -16,7 +19,7 @@ export class LogoService {
       // Upload file to Supabase Storage
       const fileExt = file.name.split('.').pop();
       const fileName = `logos/${logoData.name}.${fileExt}`;
-      
+
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('assets')
         .upload(fileName, file, {
@@ -46,7 +49,7 @@ export class LogoService {
 
       return logoRecord;
     } catch (error) {
-      console.error('Error uploading logo:', error);
+      log.error(error instanceof Error ? error : new Error('Error uploading logo'), { action: 'uploadLogo' });
       throw error;
     }
   }
@@ -64,7 +67,7 @@ export class LogoService {
 
       return logoRecord;
     } catch (error) {
-      console.error('Error updating logo:', error);
+      log.error(error instanceof Error ? error : new Error('Error updating logo'), { action: 'updateLogo' });
       throw error;
     }
   }
@@ -77,7 +80,7 @@ export class LogoService {
         .remove([filePath]);
 
       if (storageError) {
-        console.warn('Storage delete error:', storageError);
+        log.warn('Storage delete error, continuing with database deletion', { action: 'deleteLogo', metadata: { error: storageError } });
         // Continue with database deletion even if storage fails
       }
 
@@ -91,7 +94,7 @@ export class LogoService {
 
       return { success: true };
     } catch (error) {
-      console.error('Error deleting logo:', error);
+      log.error(error instanceof Error ? error : new Error('Error deleting logo'), { action: 'deleteLogo' });
       throw error;
     }
   }
@@ -104,7 +107,7 @@ export class LogoService {
         .select('name');
 
       if (existingLogos && existingLogos.length > 0) {
-        console.log('Logos already exist, skipping seed');
+        log.debug('Logos already exist, skipping seed', { action: 'seedDefaultLogos' });
         return;
       }
 
@@ -138,9 +141,9 @@ export class LogoService {
 
       if (error) throw error;
 
-      console.log('Default logos seeded successfully');
+      log.info('Default logos seeded successfully', { action: 'seedDefaultLogos' });
     } catch (error) {
-      console.error('Error seeding default logos:', error);
+      log.error(error instanceof Error ? error : new Error('Error seeding default logos'), { action: 'seedDefaultLogos' });
     }
   }
 }

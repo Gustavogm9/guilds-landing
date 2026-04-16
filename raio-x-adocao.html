@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raio-X de Adoção Digital — Guilds Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy-900: #070E1A;
+  --navy-800: #0F1B2E;
+  --navy-700: #1A2B45;
+  --navy-600: #243450;
+  --navy-500: #2D4060;
+  --blue: #2563EB;
+  --blue-hover: #1D4ED8;
+  --blue-light: #3B82F6;
+  --blue-muted: rgba(37,99,235,0.15);
+  --red: #E63946;
+  --green: #16A34A;
+  --green-light: #22C55E;
+  --amber: #F59E0B;
+  --orange: #F97316;
+  --purple: #7C3AED;
+  --white: #FFFFFF;
+  --gray-50: #F8FAFC;
+  --gray-100: #F1F5F9;
+  --gray-200: #E2E8F0;
+  --gray-400: #94A3B8;
+  --gray-500: #64748B;
+  --gray-700: #334155;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;min-height:100vh;background:var(--navy-800);color:var(--white);overflow-x:hidden;}
+.view{display:none;min-height:100vh;}
+.view.active{display:flex;flex-direction:column;}
+
+/* ─── LANDING ─────────────────────────────────────────── */
+#view-landing{background:var(--navy-800);align-items:center;justify-content:center;padding:40px 24px;}
+.landing-inner{max-width:720px;width:100%;text-align:center;}
+.guilds-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:48px;}
+.guilds-logo svg{width:32px;height:32px;}
+.guilds-logo span{font-size:20px;font-weight:800;letter-spacing:2px;color:var(--white);}
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--blue-muted);border:1px solid rgba(37,99,235,0.3);color:var(--blue-light);font-size:12px;font-weight:600;padding:6px 14px;border-radius:100px;margin-bottom:28px;letter-spacing:0.5px;text-transform:uppercase;}
+.badge::before{content:'';width:6px;height:6px;background:var(--blue-light);border-radius:50%;display:inline-block;}
+h1{font-size:clamp(36px,6vw,60px);font-weight:900;line-height:1.1;margin-bottom:20px;letter-spacing:-1.5px;}
+h1 em{font-style:normal;color:var(--blue-light);}
+.subtitle{font-size:18px;color:var(--gray-400);line-height:1.6;max-width:560px;margin:0 auto 48px;}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px;}
+.feature{background:var(--navy-700);border:1px solid var(--navy-500);border-radius:var(--radius);padding:20px 16px;text-align:left;}
+.feature-icon{width:36px;height:36px;background:var(--blue-muted);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.feature-icon svg{width:18px;height:18px;color:var(--blue-light);}
+.feature h3{font-size:13px;font-weight:700;margin-bottom:6px;color:var(--white);}
+.feature p{font-size:12px;color:var(--gray-400);line-height:1.5;}
+.cta-block{display:flex;flex-direction:column;align-items:center;gap:12px;}
+.btn-primary{background:var(--blue);color:var(--white);border:none;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;padding:0 36px;height:52px;border-radius:var(--radius);cursor:pointer;transition:background 0.2s,transform 0.1s;display:inline-flex;align-items:center;gap:8px;}
+.btn-primary:hover{background:var(--blue-hover);}
+.btn-primary:active{transform:scale(0.98);}
+.cta-note{font-size:13px;color:var(--gray-500);}
+.cta-note strong{color:var(--gray-400);}
+.time-badge{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gray-400);margin-top:8px;}
+
+/* ─── QUIZ ─────────────────────────────────────────────── */
+#view-quiz{background:var(--gray-50);color:var(--gray-700);}
+.quiz-header{background:var(--white);border-bottom:1px solid var(--gray-200);padding:0 24px;position:sticky;top:0;z-index:100;}
+.quiz-header-inner{max-width:640px;margin:0 auto;display:flex;align-items:center;gap:20px;height:64px;}
+.quiz-logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.quiz-logo svg{width:24px;height:24px;}
+.quiz-logo span{font-size:14px;font-weight:800;letter-spacing:1.5px;color:var(--navy-800);}
+.progress-wrap{flex:1;}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:var(--gray-400);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
+.progress-bar{height:4px;background:var(--gray-200);border-radius:100px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--blue);border-radius:100px;transition:width 0.4s ease;}
+
+.quiz-body{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:40px 24px 80px;}
+.section{display:none;width:100%;max-width:640px;}
+.section.active{display:block;}
+.section-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:10px;}
+.section-title{font-size:26px;font-weight:800;color:var(--navy-800);margin-bottom:8px;letter-spacing:-0.5px;}
+.section-sub{font-size:14px;color:var(--gray-500);margin-bottom:36px;line-height:1.5;}
+
+.question{margin-bottom:32px;}
+.question-text{font-size:15px;font-weight:700;color:var(--navy-700);margin-bottom:4px;}
+.question-hint{font-size:13px;color:var(--gray-400);margin-bottom:14px;}
+.options-grid{display:grid;gap:8px;}
+.options-grid.cols2{grid-template-columns:1fr 1fr;}
+.options-grid.cols3{grid-template-columns:1fr 1fr 1fr;}
+.option-card{display:flex;align-items:center;gap:12px;background:var(--white);border:2px solid var(--gray-200);border-radius:var(--radius-sm);padding:14px 16px;cursor:pointer;transition:all 0.15s;position:relative;}
+.option-card:hover{border-color:var(--blue-light);background:#F0F7FF;}
+.option-card.selected{border-color:var(--blue);background:#EEF4FF;}
+.option-card input[type=radio]{position:absolute;opacity:0;width:0;height:0;}
+.option-radio{width:18px;height:18px;border:2px solid var(--gray-300);border-radius:50%;flex-shrink:0;transition:all 0.15s;display:flex;align-items:center;justify-content:center;}
+.option-card.selected .option-radio{border-color:var(--blue);background:var(--blue);}
+.option-card.selected .option-radio::after{content:'';width:6px;height:6px;background:white;border-radius:50%;}
+.option-label{font-size:14px;font-weight:500;color:var(--gray-700);}
+.option-card.selected .option-label{color:var(--navy-800);font-weight:600;}
+.option-card.option-sm{padding:10px 14px;}
+.option-card.option-sm .option-label{font-size:13px;}
+
+/* Checkbox */
+.checkbox-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.check-card{display:flex;align-items:center;gap:10px;background:var(--white);border:2px solid var(--gray-200);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer;transition:all 0.15s;}
+.check-card:hover{border-color:var(--blue-light);}
+.check-card.selected{border-color:var(--blue);background:#EEF4FF;}
+.check-card input[type=checkbox]{position:absolute;opacity:0;width:0;height:0;}
+.check-box{width:18px;height:18px;border:2px solid var(--gray-300);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.check-card.selected .check-box{background:var(--blue);border-color:var(--blue);}
+.check-card.selected .check-box::after{content:'✓';color:white;font-size:11px;font-weight:700;}
+.check-label{font-size:13px;font-weight:500;color:var(--gray-700);}
+.check-card.selected .check-label{color:var(--navy-800);font-weight:600;}
+
+.quiz-nav{display:flex;align-items:center;justify-content:space-between;margin-top:40px;padding-top:24px;border-top:1px solid var(--gray-200);}
+.btn-back{background:none;border:2px solid var(--gray-200);color:var(--gray-500);font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:0 20px;height:44px;border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s;}
+.btn-back:hover{border-color:var(--gray-400);color:var(--gray-700);}
+.btn-next{background:var(--blue);color:var(--white);border:none;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;padding:0 28px;height:44px;border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:8px;}
+.btn-next:hover{background:var(--blue-hover);}
+.error-msg{display:none;color:var(--red);font-size:13px;font-weight:500;margin-top:8px;}
+.error-msg.show{display:block;}
+
+/* ─── PROCESSING ───────────────────────────────────────── */
+#view-processing{background:var(--navy-800);align-items:center;justify-content:center;padding:40px;}
+.processing-inner{text-align:center;max-width:480px;}
+.gforge-letters{display:flex;gap:6px;justify-content:center;margin-bottom:40px;}
+.gf-letter{width:48px;height:48px;background:var(--navy-700);border:1px solid var(--navy-500);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:var(--gray-500);transition:all 0.4s;}
+.gf-letter.lit{background:var(--blue-muted);border-color:var(--blue);color:var(--blue-light);}
+.processing-spinner{width:56px;height:56px;border:3px solid var(--navy-600);border-top-color:var(--blue);border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 28px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.processing-title{font-size:22px;font-weight:800;margin-bottom:10px;letter-spacing:-0.5px;}
+.processing-steps{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:28px;}
+.processing-steps li{font-size:14px;color:var(--gray-400);display:flex;align-items:center;gap:10px;justify-content:center;}
+.step-dot{width:6px;height:6px;background:var(--navy-500);border-radius:50%;transition:background 0.4s;}
+.step-dot.done{background:var(--green);}
+.step-dot.active{background:var(--blue);animation:pulse 1s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+/* ─── RESULTS ──────────────────────────────────────────── */
+#view-results{background:var(--navy-800);padding:0;}
+.results-header{background:var(--navy-900);border-bottom:1px solid var(--navy-600);padding:0 24px;}
+.results-header-inner{max-width:960px;margin:0 auto;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.results-logo{display:flex;align-items:center;gap:8px;}
+.results-logo svg{width:24px;height:24px;}
+.results-logo span{font-size:14px;font-weight:800;letter-spacing:1.5px;}
+.results-meta{font-size:12px;color:var(--gray-400);}
+
+.results-hero{background:linear-gradient(135deg,var(--navy-900) 0%,var(--navy-700) 100%);border-bottom:1px solid var(--navy-600);padding:56px 24px;}
+.results-hero-inner{max-width:960px;margin:0 auto;}
+.results-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue-light);margin-bottom:16px;}
+.results-name{font-size:28px;font-weight:900;margin-bottom:32px;letter-spacing:-0.5px;}
+.hero-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+.hero-card{background:var(--navy-700);border:1px solid var(--navy-500);border-radius:var(--radius);padding:24px;}
+.hero-card.highlight{background:rgba(37,99,235,0.15);border-color:var(--blue);}
+.hero-card-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--gray-400);margin-bottom:10px;}
+.hero-card-value{font-size:36px;font-weight:900;letter-spacing:-1px;margin-bottom:4px;}
+.hero-card-value.red{color:var(--red);}
+.hero-card-value.blue{color:var(--blue-light);}
+.hero-card-value.amber{color:var(--amber);}
+.hero-card-sub{font-size:12px;color:var(--gray-400);}
+
+.results-body{max-width:960px;margin:0 auto;padding:40px 24px;}
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
+.results-card{background:var(--navy-700);border:1px solid var(--navy-500);border-radius:var(--radius);padding:28px;}
+.results-card.full{grid-column:1/-1;}
+.card-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--gray-400);margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+.card-title svg{width:14px;height:14px;}
+
+/* Score bar */
+.gforge-bar{position:relative;margin-bottom:24px;}
+.gforge-phases{display:flex;height:40px;border-radius:8px;overflow:hidden;}
+.gf-phase{flex:1;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;letter-spacing:0.5px;opacity:0.4;transition:opacity 0.4s;cursor:default;text-align:center;padding:0 2px;}
+.gf-phase.active-phase{opacity:1;}
+.gf-ph-0{background:#E63946;}
+.gf-ph-1{background:#F97316;}
+.gf-ph-2{background:#F59E0B;}
+.gf-ph-3{background:#84CC16;}
+.gf-ph-4{background:#22C55E;}
+.gf-ph-5{background:#2563EB;}
+.gf-ph-6{background:#7C3AED;}
+.gforge-pointer{position:absolute;bottom:-22px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;transition:left 0.8s ease;}
+.pointer-arrow{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:8px solid var(--white);}
+.phase-label{font-size:14px;font-weight:800;color:var(--white);margin-top:20px;}
+.phase-desc{font-size:13px;color:var(--gray-400);margin-top:6px;}
+
+/* Benchmark */
+.benchmark-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--navy-600);}
+.benchmark-row:last-child{border:none;}
+.benchmark-label{font-size:13px;color:var(--gray-300);flex:1;}
+.benchmark-bar-wrap{flex:1;height:6px;background:var(--navy-600);border-radius:100px;overflow:hidden;}
+.benchmark-fill{height:100%;border-radius:100px;transition:width 0.8s ease;}
+.benchmark-val{font-size:12px;font-weight:700;color:var(--white);width:40px;text-align:right;}
+
+/* Gaps */
+.gap-item{background:var(--navy-600);border-radius:var(--radius-sm);padding:20px;margin-bottom:12px;position:relative;overflow:hidden;}
+.gap-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
+.gap-critico::before{background:var(--red);}
+.gap-alto::before{background:var(--amber);}
+.gap-medio::before{background:var(--blue);}
+.gap-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;}
+.gap-rank{width:28px;height:28px;background:var(--navy-500);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--white);flex-shrink:0;}
+.gap-title{font-size:15px;font-weight:700;color:var(--white);flex:1;}
+.gap-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:4px 10px;border-radius:100px;flex-shrink:0;}
+.badge-critico{background:rgba(230,57,70,0.2);color:var(--red);}
+.badge-alto{background:rgba(245,158,11,0.2);color:var(--amber);}
+.badge-medio{background:rgba(37,99,235,0.2);color:var(--blue-light);}
+.gap-desc{font-size:13px;color:var(--gray-400);margin-bottom:12px;line-height:1.5;}
+.gap-action{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--blue-light);}
+.gap-action svg{width:12px;height:12px;}
+.gap-cost{font-size:12px;font-weight:700;color:var(--red);margin-top:6px;}
+
+/* Roadmap */
+.roadmap-step{display:flex;gap:20px;margin-bottom:24px;}
+.roadmap-step:last-child{margin-bottom:0;}
+.rm-timeline{display:flex;flex-direction:column;align-items:center;}
+.rm-dot{width:32px;height:32px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;}
+.rm-line{width:2px;flex:1;background:var(--navy-600);margin:6px 0;}
+.roadmap-step:last-child .rm-line{display:none;}
+.rm-content{flex:1;padding-bottom:4px;}
+.rm-period{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--blue-light);margin-bottom:6px;}
+.rm-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:6px;}
+.rm-desc{font-size:13px;color:var(--gray-400);line-height:1.5;}
+.rm-gain{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--green-light);margin-top:8px;background:rgba(22,163,74,0.1);border-radius:4px;padding:4px 10px;}
+
+/* Breakdown */
+.breakdown-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--navy-600);}
+.breakdown-row:last-child{border:none;}
+.breakdown-label{font-size:13px;color:var(--gray-300);}
+.breakdown-amount{font-size:14px;font-weight:700;color:var(--white);}
+.breakdown-total{background:rgba(230,57,70,0.1);border-radius:8px;padding:14px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;}
+.breakdown-total-label{font-size:13px;font-weight:700;color:var(--gray-300);}
+.breakdown-total-value{font-size:22px;font-weight:900;color:var(--red);}
+
+/* Systems map */
+.sys-table{width:100%;border-collapse:collapse;}
+.sys-table th{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--gray-400);padding:8px 12px;text-align:left;border-bottom:1px solid var(--navy-500);}
+.sys-table td{padding:12px;border-bottom:1px solid var(--navy-600);font-size:13px;color:var(--gray-300);}
+.sys-table tr:last-child td{border:none;}
+.sys-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:100px;}
+.sys-active{background:rgba(22,163,74,0.15);color:var(--green-light);}
+.sys-ghost{background:rgba(230,57,70,0.15);color:var(--red);}
+.sys-partial{background:rgba(245,158,11,0.15);color:var(--amber);}
+
+/* CTA block */
+.cta-block-results{background:linear-gradient(135deg,var(--blue) 0%,#1D4ED8 100%);border-radius:var(--radius);padding:36px;text-align:center;margin-top:24px;}
+.cta-block-results h2{font-size:24px;font-weight:900;margin-bottom:10px;letter-spacing:-0.5px;}
+.cta-block-results p{font-size:15px;color:rgba(255,255,255,0.8);margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto;}
+.btn-cta-white{background:var(--white);color:var(--blue);border:none;font-family:'Inter',sans-serif;font-size:15px;font-weight:800;padding:0 32px;height:52px;border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:8px;}
+.btn-cta-white:hover{background:#F0F7FF;}
+.cta-fine{font-size:12px;color:rgba(255,255,255,0.6);margin-top:14px;}
+
+/* Locked section */
+.locked-overlay{position:relative;overflow:hidden;border-radius:var(--radius);}
+.locked-blur{filter:blur(6px);pointer-events:none;user-select:none;opacity:0.4;}
+.lock-gate{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(7,14,26,0.85);border-radius:var(--radius);padding:24px;text-align:center;}
+.lock-gate h3{font-size:18px;font-weight:800;margin-bottom:8px;}
+.lock-gate p{font-size:13px;color:var(--gray-400);margin-bottom:20px;}
+.btn-unlock{background:var(--blue);color:var(--white);border:none;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;padding:0 24px;height:44px;border-radius:var(--radius-sm);cursor:pointer;display:inline-flex;align-items:center;gap:8px;}
+.price-tag{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);color:var(--amber);font-size:13px;font-weight:700;padding:4px 12px;border-radius:100px;margin-bottom:16px;}
+
+@media(max-width:640px){
+  .features{grid-template-columns:1fr;}
+  .hero-cards{grid-template-columns:1fr;}
+  .results-grid{grid-template-columns:1fr;}
+  .options-grid.cols2,.options-grid.cols3{grid-template-columns:1fr;}
+  .checkbox-grid{grid-template-columns:1fr;}
+  h1{font-size:32px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ LANDING ═══════════════ -->
+<div id="view-landing" class="view active">
+<div class="landing-inner">
+  <div class="guilds-logo">
+    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16,1.5 C23,1.5 29,7 29,14 L29,20 Q27.5,29 16,31 Q4.5,29 3,20 L3,14 C3,7 9,1.5 16,1.5Z" fill="none" stroke="white" stroke-width="2.5"/>
+      <path d="M16,5 C22,5 25,9.5 25,15 L25,21 Q23.5,27 16,29 Q8.5,27 7,21 L7,15 C7,9.5 10,5 16,5Z" fill="none" stroke="white" stroke-width="1"/>
+      <line x1="9" y1="11" x2="23" y2="27" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="23" y1="11" x2="9" y2="27" stroke="white" stroke-width="1" stroke-linecap="round"/>
+      <rect x="11" y="8" width="10" height="5" rx="1.5" fill="white"/>
+      <rect x="14" y="18" width="4" height="10" rx="2" fill="white"/>
+    </svg>
+    <span>GUILDS</span>
+  </div>
+  <div class="badge">Ferramenta exclusiva Guilds Lab</div>
+  <h1>Descubra quanto sua empresa <em>perde por ano</em> em sistemas que ninguém usa.</h1>
+  <p class="subtitle">O Raio-X de Adoção Digital calcula a perda real em reais, identifica os 3 maiores gargalos da sua operação e gera um roadmap de 90 dias.</p>
+
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      </div>
+      <h3>8 minutos para completar</h3>
+      <p>18 perguntas objetivas calibradas para o contexto de PMEs em saúde e fintech.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <h3>Perda em R$ calculada</h3>
+      <p>Você vê o custo real de processos manuais e sistemas não adotados — em reais por ano.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <h3>Score G-FORGE™ + Roadmap</h3>
+      <p>Sua fase de maturidade digital e 3 ações priorizadas por ROI para os próximos 90 dias.</p>
+    </div>
+  </div>
+
+  <div class="cta-block">
+    <button class="btn-primary" onclick="startQuiz()">
+      Iniciar Diagnóstico Gratuito
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <p class="cta-note">Score grátis • <strong>Relatório completo por R$47</strong></p>
+    <div class="time-badge">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Tempo estimado: 8 minutos
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ QUIZ ═══════════════ -->
+<div id="view-quiz" class="view">
+  <div class="quiz-header">
+    <div class="quiz-header-inner">
+      <div class="quiz-logo">
+        <svg viewBox="0 0 32 32" fill="none"><path d="M16,1.5 C23,1.5 29,7 29,14 L29,20 Q27.5,29 16,31 Q4.5,29 3,20 L3,14 C3,7 9,1.5 16,1.5Z" fill="none" stroke="#1A2B45" stroke-width="2.5"/><rect x="11" y="8" width="10" height="5" rx="1.5" fill="#1A2B45"/><rect x="14" y="18" width="4" height="10" rx="2" fill="#1A2B45"/></svg>
+        <span>GUILDS</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span id="section-name">Perfil</span><span id="progress-text">Seção 1 de 5</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:20%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-body">
+
+    <!-- SECTION 1: PERFIL -->
+    <div class="section active" id="section-1">
+      <div class="section-tag">Seção 1 de 5</div>
+      <h2 class="section-title">Perfil da empresa</h2>
+      <p class="section-sub">Para calibrar os resultados ao seu contexto real.</p>
+
+      <div class="question">
+        <div class="question-text">Qual é o setor principal da sua empresa?</div>
+        <div class="options-grid" id="q_setor">
+          <label class="option-card" onclick="selectOption(this,'q_setor','saude_ocup')"><input type="radio" name="q_setor"><div class="option-radio"></div><span class="option-label">Saúde Ocupacional / Medicina do Trabalho</span></label>
+          <label class="option-card" onclick="selectOption(this,'q_setor','clinica')"><input type="radio" name="q_setor"><div class="option-radio"></div><span class="option-label">Clínica Médica / Hospital / Saúde</span></label>
+          <label class="option-card" onclick="selectOption(this,'q_setor','fintech')"><input type="radio" name="q_setor"><div class="option-radio"></div><span class="option-label">Fintech / Seguros / Financeiro</span></label>
+          <label class="option-card" onclick="selectOption(this,'q_setor','operacoes')"><input type="radio" name="q_setor"><div class="option-radio"></div><span class="option-label">Operações / Logística / Serviços</span></label>
+          <label class="option-card" onclick="selectOption(this,'q_setor','outro')"><input type="radio" name="q_setor"><div class="option-radio"></div><span class="option-label">Outro setor</span></label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Quantos funcionários tem sua empresa?</div>
+        <div class="options-grid cols2" id="q_funcionarios">
+          <label class="option-card option-sm" onclick="selectOption(this,'q_funcionarios','10-20')"><input type="radio" name="q_funcionarios"><div class="option-radio"></div><span class="option-label">10 a 20 funcionários</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_funcionarios','21-50')"><input type="radio" name="q_funcionarios"><div class="option-radio"></div><span class="option-label">21 a 50 funcionários</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_funcionarios','51-100')"><input type="radio" name="q_funcionarios"><div class="option-radio"></div><span class="option-label">51 a 100 funcionários</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_funcionarios','101-150')"><input type="radio" name="q_funcionarios"><div class="option-radio"></div><span class="option-label">101 a 150 funcionários</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_funcionarios','150mais')"><input type="radio" name="q_funcionarios"><div class="option-radio"></div><span class="option-label">Mais de 150 funcionários</span></label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Qual é o faturamento anual aproximado?</div>
+        <div class="options-grid cols2" id="q_faturamento">
+          <label class="option-card option-sm" onclick="selectOption(this,'q_faturamento','ate1m')"><input type="radio" name="q_faturamento"><div class="option-radio"></div><span class="option-label">Até R$ 1 milhão</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_faturamento','1m-5m')"><input type="radio" name="q_faturamento"><div class="option-radio"></div><span class="option-label">R$ 1 a 5 milhões</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_faturamento','5m-20m')"><input type="radio" name="q_faturamento"><div class="option-radio"></div><span class="option-label">R$ 5 a 20 milhões</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_faturamento','acima20m')"><input type="radio" name="q_faturamento"><div class="option-radio"></div><span class="option-label">Acima de R$ 20 milhões</span></label>
+        </div>
+      </div>
+
+      <div class="quiz-nav">
+        <div></div>
+        <div>
+          <div class="error-msg" id="err-1">Responda todas as perguntas para continuar.</div>
+          <button class="btn-next" onclick="nextSection(1)">Continuar <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: SISTEMAS -->
+    <div class="section" id="section-2">
+      <div class="section-tag">Seção 2 de 5</div>
+      <h2 class="section-title">Seus sistemas digitais</h2>
+      <p class="section-sub">Vamos mapear o que existe e como a equipe realmente usa.</p>
+
+      <div class="question">
+        <div class="question-text">Quais sistemas sua empresa utiliza? <em style="font-weight:400;color:var(--gray-400)">(pode marcar mais de um)</em></div>
+        <div class="checkbox-grid" id="q_sistemas">
+          <label class="check-card" onclick="toggleCheck(this,'q_sistemas','crm')"><input type="checkbox"><div class="check-box"></div><span class="check-label">CRM / Gestão de clientes</span></label>
+          <label class="check-card" onclick="toggleCheck(this,'q_sistemas','erp')"><input type="checkbox"><div class="check-box"></div><span class="check-label">ERP / Sistema de gestão</span></label>
+          <label class="check-card" onclick="toggleCheck(this,'q_sistemas','financeiro')"><input type="checkbox"><div class="check-box"></div><span class="check-label">Sistema Financeiro / Contábil</span></label>
+          <label class="check-card" onclick="toggleCheck(this,'q_sistemas','rh')"><input type="checkbox"><div class="check-box"></div><span class="check-label">Sistema de RH / Folha</span></label>
+          <label class="check-card" onclick="toggleCheck(this,'q_sistemas','agendamento')"><input type="checkbox"><div class="check-box"></div><span class="check-label">Agendamento / Prontuário</span></label>
+          <label class="check-card" onclick="toggleCheck(this,'q_sistemas','bi')"><input type="checkbox"><div class="check-box"></div><span class="check-label">BI / Relatórios automatizados</span></label>
+          <label class="check-card" onclick="toggleCheck(this,'q_sistemas','comunicacao')"><input type="checkbox"><div class="check-box"></div><span class="check-label">Comunicação interna (Slack, Teams)</span></label>
+          <label class="check-card" onclick="toggleCheck(this,'q_sistemas','automacao')"><input type="checkbox"><div class="check-box"></div><span class="check-label">Automações (Make, n8n, Zapier)</span></label>
+          <label class="check-card" onclick="toggleCheck(this,'q_sistemas','nenhum')"><input type="checkbox"><div class="check-box"></div><span class="check-label">Nenhum sistema estruturado</span></label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Qual % da sua equipe usa os sistemas diariamente como deveria?</div>
+        <div class="options-grid" id="q_adocao">
+          <label class="option-card option-sm" onclick="selectOption(this,'q_adocao','menos20')"><input type="radio" name="q_adocao"><div class="option-radio"></div><span class="option-label">Menos de 20% da equipe</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_adocao','20-40')"><input type="radio" name="q_adocao"><div class="option-radio"></div><span class="option-label">20% a 40% da equipe</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_adocao','40-60')"><input type="radio" name="q_adocao"><div class="option-radio"></div><span class="option-label">40% a 60% da equipe</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_adocao','60-80')"><input type="radio" name="q_adocao"><div class="option-radio"></div><span class="option-label">60% a 80% da equipe</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_adocao','mais80')"><input type="radio" name="q_adocao"><div class="option-radio"></div><span class="option-label">Mais de 80% da equipe</span></label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Quantos sistemas sua empresa paga mas a equipe raramente usa?</div>
+        <div class="options-grid cols2" id="q_fantasmas">
+          <label class="option-card option-sm" onclick="selectOption(this,'q_fantasmas','nenhum')"><input type="radio" name="q_fantasmas"><div class="option-radio"></div><span class="option-label">Nenhum</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_fantasmas','1')"><input type="radio" name="q_fantasmas"><div class="option-radio"></div><span class="option-label">1 sistema</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_fantasmas','2')"><input type="radio" name="q_fantasmas"><div class="option-radio"></div><span class="option-label">2 sistemas</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_fantasmas','3mais')"><input type="radio" name="q_fantasmas"><div class="option-radio"></div><span class="option-label">3 ou mais</span></label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Seus sistemas principais se integram ou sua equipe copia dados manualmente?</div>
+        <div class="options-grid" id="q_integracao">
+          <label class="option-card option-sm" onclick="selectOption(this,'q_integracao','sim')"><input type="radio" name="q_integracao"><div class="option-radio"></div><span class="option-label">Sim, a maioria está integrada automaticamente</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_integracao','parcial')"><input type="radio" name="q_integracao"><div class="option-radio"></div><span class="option-label">Parcialmente — algumas integrações funcionam</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_integracao','nao')"><input type="radio" name="q_integracao"><div class="option-radio"></div><span class="option-label">Não — copiamos dados manualmente entre sistemas</span></label>
+        </div>
+      </div>
+
+      <div class="quiz-nav">
+        <button class="btn-back" onclick="prevSection(2)">Voltar</button>
+        <div>
+          <div class="error-msg" id="err-2">Responda todas as perguntas para continuar.</div>
+          <button class="btn-next" onclick="nextSection(2)">Continuar <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: PROCESSOS MANUAIS -->
+    <div class="section" id="section-3">
+      <div class="section-tag">Seção 3 de 5</div>
+      <h2 class="section-title">Processos manuais</h2>
+      <p class="section-sub">Onde sua equipe ainda trabalha para o processo — em vez de o processo trabalhar por ela.</p>
+
+      <div class="question">
+        <div class="question-text">Em média, quantas horas por semana cada funcionário gasta em tarefas que poderiam ser automáticas?</div>
+        <div class="options-grid cols2" id="q_horas">
+          <label class="option-card option-sm" onclick="selectOption(this,'q_horas','menos2')"><input type="radio" name="q_horas"><div class="option-radio"></div><span class="option-label">Menos de 2 horas</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_horas','2-5')"><input type="radio" name="q_horas"><div class="option-radio"></div><span class="option-label">2 a 5 horas</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_horas','5-10')"><input type="radio" name="q_horas"><div class="option-radio"></div><span class="option-label">5 a 10 horas</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_horas','mais10')"><input type="radio" name="q_horas"><div class="option-radio"></div><span class="option-label">Mais de 10 horas</span></label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Quantos processos críticos ainda são gerenciados em planilha, e-mail ou WhatsApp?</div>
+        <div class="options-grid cols2" id="q_processos">
+          <label class="option-card option-sm" onclick="selectOption(this,'q_processos','nenhum')"><input type="radio" name="q_processos"><div class="option-radio"></div><span class="option-label">Nenhum</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_processos','1-2')"><input type="radio" name="q_processos"><div class="option-radio"></div><span class="option-label">1 a 2 processos</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_processos','3-5')"><input type="radio" name="q_processos"><div class="option-radio"></div><span class="option-label">3 a 5 processos</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_processos','mais5')"><input type="radio" name="q_processos"><div class="option-radio"></div><span class="option-label">Mais de 5 processos</span></label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Quanto tempo leva para você ter um relatório gerencial completo e atualizado?</div>
+        <div class="options-grid cols2" id="q_relatorios">
+          <label class="option-card option-sm" onclick="selectOption(this,'q_relatorios','automatico')"><input type="radio" name="q_relatorios"><div class="option-radio"></div><span class="option-label">É automático / tempo real</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_relatorios','dias')"><input type="radio" name="q_relatorios"><div class="option-radio"></div><span class="option-label">Alguns dias</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_relatorios','1semana')"><input type="radio" name="q_relatorios"><div class="option-radio"></div><span class="option-label">Aproximadamente 1 semana</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_relatorios','mais1sem')"><input type="radio" name="q_relatorios"><div class="option-radio"></div><span class="option-label">Mais de 1 semana</span></label>
+        </div>
+      </div>
+
+      <div class="quiz-nav">
+        <button class="btn-back" onclick="prevSection(3)">Voltar</button>
+        <div>
+          <div class="error-msg" id="err-3">Responda todas as perguntas para continuar.</div>
+          <button class="btn-next" onclick="nextSection(3)">Continuar <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: HISTÓRICO -->
+    <div class="section" id="section-4">
+      <div class="section-tag">Seção 4 de 5</div>
+      <h2 class="section-title">Histórico digital</h2>
+      <p class="section-sub">O passado revela os padrões. E os padrões determinam o risco de repetição.</p>
+
+      <div class="question">
+        <div class="question-text">Sua empresa já implementou um sistema que a equipe acabou abandonando?</div>
+        <div class="options-grid" id="q_historico">
+          <label class="option-card option-sm" onclick="selectOption(this,'q_historico','nao')"><input type="radio" name="q_historico"><div class="option-radio"></div><span class="option-label">Nunca — todos os sistemas foram adotados</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_historico','1x')"><input type="radio" name="q_historico"><div class="option-radio"></div><span class="option-label">Sim, uma vez</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_historico','mais1x')"><input type="radio" name="q_historico"><div class="option-radio"></div><span class="option-label">Sim, mais de uma vez</span></label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Se sim, qual foi o principal motivo do abandono?</div>
+        <div class="options-grid" id="q_motivo">
+          <label class="option-card option-sm" onclick="selectOption(this,'q_motivo','treinamento')"><input type="radio" name="q_motivo"><div class="option-radio"></div><span class="option-label">Treinamento insuficiente</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_motivo','processo')"><input type="radio" name="q_motivo"><div class="option-radio"></div><span class="option-label">Sistema não refletia o processo real da equipe</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_motivo','resistencia')"><input type="radio" name="q_motivo"><div class="option-radio"></div><span class="option-label">Resistência da equipe à mudança</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_motivo','acompanhamento')"><input type="radio" name="q_motivo"><div class="option-radio"></div><span class="option-label">Falta de acompanhamento pós-implantação</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_motivo','naoaplica')"><input type="radio" name="q_motivo"><div class="option-radio"></div><span class="option-label">Não se aplica</span></label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Existe alguém dedicado a garantir a adoção de novas tecnologias?</div>
+        <div class="options-grid" id="q_dedicado">
+          <label class="option-card option-sm" onclick="selectOption(this,'q_dedicado','sim')"><input type="radio" name="q_dedicado"><div class="option-radio"></div><span class="option-label">Sim — pessoa ou área dedicada</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_dedicado','parcial')"><input type="radio" name="q_dedicado"><div class="option-radio"></div><span class="option-label">Parcialmente — acumulado com outras funções</span></label>
+          <label class="option-card option-sm" onclick="selectOption(this,'q_dedicado','nao')"><input type="radio" name="q_dedicado"><div class="option-radio"></div><span class="option-label">Não — sem responsável definido</span></label>
+        </div>
+      </div>
+
+      <div class="quiz-nav">
+        <button class="btn-back" onclick="prevSection(4)">Voltar</button>
+        <div>
+          <div class="error-msg" id="err-4">Responda todas as perguntas para continuar.</div>
+          <button class="btn-next" onclick="nextSection(4)">Continuar <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: SETOR (dinâmica) -->
+    <div class="section" id="section-5">
+      <div class="section-tag">Seção 5 de 5</div>
+      <h2 class="section-title" id="s5-title">Especificidades do setor</h2>
+      <p class="section-sub" id="s5-sub">Últimas perguntas — específicas para o seu setor.</p>
+      <div id="s5-questions"><!-- dinâmico --></div>
+      <div class="quiz-nav">
+        <button class="btn-back" onclick="prevSection(5)">Voltar</button>
+        <div>
+          <div class="error-msg" id="err-5">Responda todas as perguntas para continuar.</div>
+          <button class="btn-next" onclick="finishQuiz()">Ver meu Score →</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- quiz-body -->
+</div>
+
+<!-- ═══════════════ PROCESSING ═══════════════ -->
+<div id="view-processing" class="view">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;">
+  <div class="gforge-letters" id="gf-letters">
+    <div class="gf-letter" id="gfl-0">G</div>
+    <div class="gf-letter" id="gfl-1">F</div>
+    <div class="gf-letter" id="gfl-2">O</div>
+    <div class="gf-letter" id="gfl-3">R</div>
+    <div class="gf-letter" id="gfl-4">G</div>
+    <div class="gf-letter" id="gfl-5">E</div>
+  </div>
+  <div class="processing-spinner"></div>
+  <h2 class="processing-title">Calculando seu Raio-X...</h2>
+  <p style="color:var(--gray-400);font-size:14px;margin-top:8px;">Analisando suas respostas e gerando insights personalizados</p>
+  <ul class="processing-steps" id="proc-steps">
+    <li><div class="step-dot active" id="sd-0"></div> Mapeando perfil operacional</li>
+    <li><div class="step-dot" id="sd-1"></div> Calculando custo de ineficiência</li>
+    <li><div class="step-dot" id="sd-2"></div> Identificando gargalos críticos</li>
+    <li><div class="step-dot" id="sd-3"></div> Gerando Score G-FORGE™</li>
+    <li><div class="step-dot" id="sd-4"></div> Montando roadmap de 90 dias</li>
+  </ul>
+</div>
+</div>
+
+<!-- ═══════════════ RESULTS ═══════════════ -->
+<div id="view-results" class="view">
+  <div class="results-header">
+    <div class="results-header-inner">
+      <div class="results-logo">
+        <svg viewBox="0 0 32 32" fill="none"><path d="M16,1.5 C23,1.5 29,7 29,14 L29,20 Q27.5,29 16,31 Q4.5,29 3,20 L3,14 C3,7 9,1.5 16,1.5Z" fill="none" stroke="white" stroke-width="2.5"/><rect x="11" y="8" width="10" height="5" rx="1.5" fill="white"/><rect x="14" y="18" width="4" height="10" rx="2" fill="white"/></svg>
+        <span>GUILDS</span>
+      </div>
+      <div class="results-meta" id="results-date"></div>
+    </div>
+  </div>
+
+  <div class="results-hero">
+    <div class="results-hero-inner">
+      <div class="results-title">Raio-X de Adoção Digital — Resultado</div>
+      <div class="results-name" id="r-subtitle">Diagnóstico para <span id="r-setor"></span></div>
+      <div class="hero-cards">
+        <div class="hero-card highlight">
+          <div class="hero-card-label">Perda anual estimada</div>
+          <div class="hero-card-value red" id="r-loss">R$ —</div>
+          <div class="hero-card-sub">em retrabalho, sistemas não usados e processos manuais</div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card-label">Score G-FORGE™</div>
+          <div class="hero-card-value blue" id="r-score">—</div>
+          <div class="hero-card-sub" id="r-phase-short">Calculando fase...</div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card-label">Vs. média do setor</div>
+          <div class="hero-card-value amber" id="r-benchmark">—</div>
+          <div class="hero-card-sub" id="r-benchmark-sub">benchmark setorial</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-body">
+    <div class="results-grid">
+
+      <!-- Score G-FORGE -->
+      <div class="results-card full">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Score G-FORGE™ — Fase de Maturidade
+        </div>
+        <div class="gforge-bar">
+          <div class="gforge-phases">
+            <div class="gf-phase gf-ph-0" title="Pré-FOUNDRY">PRÉ</div>
+            <div class="gf-phase gf-ph-1" title="FOUNDRY">FOUNDRY</div>
+            <div class="gf-phase gf-ph-2" title="OBSERVE">OBSERVE</div>
+            <div class="gf-phase gf-ph-3" title="REFINE">REFINE</div>
+            <div class="gf-phase gf-ph-4" title="GENERATE">GENERATE</div>
+            <div class="gf-phase gf-ph-5" title="EMPOWER">EMPOWER</div>
+            <div class="gf-phase gf-ph-6" title="EXPAND">EXPAND</div>
+          </div>
+          <div class="gforge-pointer" id="gf-pointer" style="left:25%">
+            <div class="pointer-arrow"></div>
+          </div>
+        </div>
+        <div style="margin-top:36px;">
+          <div class="phase-label" id="r-phase-label">FOUNDRY</div>
+          <div class="phase-desc" id="r-phase-desc">Seus sistemas existem, mas os processos reais da equipe ainda não foram mapeados.</div>
+        </div>
+      </div>
+
+      <!-- Breakdown de custo -->
+      <div class="results-card">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Breakdown da perda anual
+        </div>
+        <div id="r-breakdown"><!-- dinâmico --></div>
+      </div>
+
+      <!-- Benchmark -->
+      <div class="results-card">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Benchmark setorial
+        </div>
+        <div id="r-benchmark-detail"><!-- dinâmico --></div>
+      </div>
+
+      <!-- Mapa de sistemas (LOCKED para demo) -->
+      <div class="results-card full locked-overlay">
+        <div class="locked-blur">
+          <div class="card-title">Mapa de sistemas</div>
+          <table class="sys-table">
+            <thead><tr><th>Sistema</th><th>Status</th><th>Adoção estimada</th><th>Recomendação</th></tr></thead>
+            <tbody>
+              <tr><td>CRM</td><td><span class="sys-badge sys-partial">Parcial</span></td><td>45%</td><td>Revisar processo antes de ampliar</td></tr>
+              <tr><td>ERP</td><td><span class="sys-badge sys-ghost">Fantasma</span></td><td>12%</td><td>Diagnóstico de bloqueios urgente</td></tr>
+              <tr><td>Financeiro</td><td><span class="sys-badge sys-active">Ativo</span></td><td>78%</td><td>Expandir para relatórios automáticos</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="lock-gate">
+          <div class="price-tag">Relatório Completo — R$47</div>
+          <h3>Mapa completo de sistemas</h3>
+          <p>Veja cada sistema com taxa de adoção, custo mensal e ação recomendada — personalizado para as suas respostas.</p>
+          <button class="btn-unlock">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Desbloquear por R$47
+          </button>
+        </div>
+      </div>
+
+      <!-- Top 3 Gargalos -->
+      <div class="results-card full">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Top 3 Gargalos Identificados
+        </div>
+        <div id="r-gaps"><!-- dinâmico --></div>
+      </div>
+
+      <!-- Roadmap (LOCKED para demo parcial) -->
+      <div class="results-card full">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Roadmap de 90 Dias
+        </div>
+        <div id="r-roadmap"><!-- dinâmico --></div>
+      </div>
+
+    </div>
+
+    <!-- CTA Final -->
+    <div class="cta-block-results">
+      <h2 id="r-cta-title">Gargalo #1 identificado. Quer resolver em 30 dias?</h2>
+      <p>A revisão dos resultados é onde a Guilds analisa seu diagnóstico ao vivo e define se faz sentido trabalhar juntos. 30 minutos. Sem compromisso. Sem pitch.</p>
+      <button class="btn-cta-white">
+        Agendar Revisão Gratuita dos Resultados
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <p class="cta-fine">Guilds Lab · A Forja de Operações Digitais · ROI garantido em 90 dias pelo G-FORGE™</p>
+    </div>
+
+    <p style="text-align:center;font-size:11px;color:var(--navy-500);margin-top:24px;padding-bottom:40px;">⚑ PROTÓTIPO — Guilds Lab · Raio-X de Adoção Digital v1.0 · 2026</p>
+  </div>
+</div>
+
+<script>
+// ═══════════════ STATE ═══════════════
+const A = {}; // answers
+
+// ═══════════════ NAVIGATION ═══════════════
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function startQuiz(){
+  renderSection5();
+  showView('quiz');
+  showSection(1);
+}
+
+function showSection(n){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('section-'+n).classList.add('active');
+  const names=['','Perfil','Sistemas','Processos','Histórico','Setor'];
+  document.getElementById('section-name').textContent=names[n];
+  document.getElementById('progress-text').textContent=`Seção ${n} de 5`;
+  document.getElementById('progress-fill').style.width=(n/5*100)+'%';
+  window.scrollTo(0,0);
+}
+
+function nextSection(n){
+  const required = getSectionRequired(n);
+  const missing = required.filter(q=>!A[q]);
+  if(missing.length>0){
+    document.getElementById('err-'+n).classList.add('show');
+    return;
+  }
+  document.getElementById('err-'+n).classList.remove('show');
+  showSection(n+1);
+}
+
+function prevSection(n){showSection(n-1);}
+
+function getSectionRequired(n){
+  if(n===1) return ['q_setor','q_funcionarios','q_faturamento'];
+  if(n===2) return ['q_adocao','q_fantasmas','q_integracao'];
+  if(n===3) return ['q_horas','q_processos','q_relatorios'];
+  if(n===4) return ['q_historico','q_motivo','q_dedicado'];
+  if(n===5) return ['q_setor1','q_setor2','q_setor3'];
+  return [];
+}
+
+function finishQuiz(){
+  const required=['q_setor1','q_setor2','q_setor3'];
+  const missing=required.filter(q=>!A[q]);
+  if(missing.length>0){document.getElementById('err-5').classList.add('show');return;}
+  document.getElementById('err-5').classList.remove('show');
+  showView('processing');
+  runProcessing();
+}
+
+// ═══════════════ OPTION SELECTION ═══════════════
+function selectOption(el,q,val){
+  document.querySelectorAll(`[id="${q}"] .option-card`).forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  A[q]=val;
+}
+
+function toggleCheck(el,q,val){
+  el.classList.toggle('selected');
+  if(!A[q]) A[q]=[];
+  const idx=A[q].indexOf(val);
+  if(idx>-1) A[q].splice(idx,1); else A[q].push(val);
+}
+
+// ═══════════════ SECTION 5 DYNAMIC ═══════════════
+function renderSection5(){
+  const setor=A.q_setor||'saude_ocup';
+  const isHealth=['saude_ocup','clinica'].includes(setor);
+  const isFin=['fintech','operacoes'].includes(setor);
+
+  let qs='';
+  if(isHealth){
+    document.getElementById('s5-title').textContent='Especificidades — Saúde';
+    document.getElementById('s5-sub').textContent='Últimas 3 perguntas sobre o seu contexto de saúde.';
+    qs=`
+    <div class="question">
+      <div class="question-text">Quanto tempo sua equipe gasta preenchendo registros por atendimento?</div>
+      <div class="options-grid cols2" id="q_setor1">
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor1','menos5')"><input type="radio" name="q_setor1"><div class="option-radio"></div><span class="option-label">Menos de 5 minutos</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor1','5-10')"><input type="radio" name="q_setor1"><div class="option-radio"></div><span class="option-label">5 a 10 minutos</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor1','10-20')"><input type="radio" name="q_setor1"><div class="option-radio"></div><span class="option-label">10 a 20 minutos</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor1','mais20')"><input type="radio" name="q_setor1"><div class="option-radio"></div><span class="option-label">Mais de 20 minutos</span></label>
+      </div>
+    </div>
+    <div class="question">
+      <div class="question-text">Sua empresa está adequada à NR-01 (riscos psicossociais)?</div>
+      <div class="options-grid" id="q_setor2">
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor2','adequados')"><input type="radio" name="q_setor2"><div class="option-radio"></div><span class="option-label">Sim, já adequados</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor2','emprocesso')"><input type="radio" name="q_setor2"><div class="option-radio"></div><span class="option-label">Em processo de adequação</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor2','naoiniciou')"><input type="radio" name="q_setor2"><div class="option-radio"></div><span class="option-label">Não iniciamos</span></label>
+      </div>
+    </div>
+    <div class="question">
+      <div class="question-text">Quantos sistemas diferentes sua equipe de saúde usa por dia?</div>
+      <div class="options-grid cols2" id="q_setor3">
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor3','1')"><input type="radio" name="q_setor3"><div class="option-radio"></div><span class="option-label">Apenas 1</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor3','2-3')"><input type="radio" name="q_setor3"><div class="option-radio"></div><span class="option-label">2 a 3 sistemas</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor3','4-5')"><input type="radio" name="q_setor3"><div class="option-radio"></div><span class="option-label">4 a 5 sistemas</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor3','mais5')"><input type="radio" name="q_setor3"><div class="option-radio"></div><span class="option-label">Mais de 5 sistemas</span></label>
+      </div>
+    </div>`;
+  } else {
+    document.getElementById('s5-title').textContent='Especificidades — Operações';
+    document.getElementById('s5-sub').textContent='Últimas 3 perguntas sobre operação e processos financeiros.';
+    qs=`
+    <div class="question">
+      <div class="question-text">Quanto tempo leva seu processo de onboarding de um novo cliente?</div>
+      <div class="options-grid cols2" id="q_setor1">
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor1','ate2')"><input type="radio" name="q_setor1"><div class="option-radio"></div><span class="option-label">Até 2 dias</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor1','3-7')"><input type="radio" name="q_setor1"><div class="option-radio"></div><span class="option-label">3 a 7 dias</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor1','8-14')"><input type="radio" name="q_setor1"><div class="option-radio"></div><span class="option-label">8 a 14 dias</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor1','mais14')"><input type="radio" name="q_setor1"><div class="option-radio"></div><span class="option-label">Mais de 14 dias</span></label>
+      </div>
+    </div>
+    <div class="question">
+      <div class="question-text">Qual % das aprovações internas passa por e-mail ou WhatsApp?</div>
+      <div class="options-grid cols2" id="q_setor2">
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor2','menos20')"><input type="radio" name="q_setor2"><div class="option-radio"></div><span class="option-label">Menos de 20%</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor2','20-50')"><input type="radio" name="q_setor2"><div class="option-radio"></div><span class="option-label">20% a 50%</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor2','50-80')"><input type="radio" name="q_setor2"><div class="option-radio"></div><span class="option-label">50% a 80%</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor2','mais80')"><input type="radio" name="q_setor2"><div class="option-radio"></div><span class="option-label">Mais de 80%</span></label>
+      </div>
+    </div>
+    <div class="question">
+      <div class="question-text">Com que frequência ocorrem erros por dados desatualizados entre sistemas?</div>
+      <div class="options-grid cols2" id="q_setor3">
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor3','raramente')"><input type="radio" name="q_setor3"><div class="option-radio"></div><span class="option-label">Raramente ou nunca</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor3','mensal')"><input type="radio" name="q_setor3"><div class="option-radio"></div><span class="option-label">Mensalmente</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor3','semanal')"><input type="radio" name="q_setor3"><div class="option-radio"></div><span class="option-label">Semanalmente</span></label>
+        <label class="option-card option-sm" onclick="selectOption(this,'q_setor3','diario')"><input type="radio" name="q_setor3"><div class="option-radio"></div><span class="option-label">Diariamente</span></label>
+      </div>
+    </div>`;
+  }
+  document.getElementById('s5-questions').innerHTML=qs;
+}
+
+// ═══════════════ PROCESSING ANIMATION ═══════════════
+function runProcessing(){
+  const letters=document.querySelectorAll('.gf-letter');
+  const dots=document.querySelectorAll('[id^="sd-"]');
+  let li=0,di=0;
+  const litInterval=setInterval(()=>{
+    if(li<letters.length){letters[li].classList.add('lit');li++;}
+    else clearInterval(litInterval);
+  },300);
+  const stepInterval=setInterval(()=>{
+    if(di>0&&di-1<dots.length) dots[di-1].classList.remove('active'),dots[di-1].classList.add('done');
+    if(di<dots.length){dots[di].classList.add('active');di++;}
+    else{clearInterval(stepInterval);setTimeout(showResults,600);}
+  },600);
+}
+
+// ═══════════════ SCORING ═══════════════
+function calcScore(){
+  let s=0;
+  const adocaoMap={menos20:0,'20-40':4,'40-60':9,'60-80':14,mais80:20};
+  const fantasmasMap={nenhum:12,'1':7,'2':3,'3mais':0};
+  const integracaoMap={sim:15,parcial:8,nao:0};
+  const horasMap={menos2:18,'2-5':11,'5-10':5,mais10:0};
+  const processosMap={nenhum:15,'1-2':9,'3-5':4,mais5:0};
+  const relatoriosMap={automatico:10,dias:5,'1semana':2,mais1sem:0};
+  const historicoMap={nao:8,'1x':2,mais1x:0};
+  const dedicadoMap={sim:5,parcial:3,nao:0};
+  s+=(adocaoMap[A.q_adocao]||0)+(fantasmasMap[A.q_fantasmas]||0)+(integracaoMap[A.q_integracao]||0);
+  s+=(horasMap[A.q_horas]||0)+(processosMap[A.q_processos]||0)+(relatoriosMap[A.q_relatorios]||0);
+  s+=(historicoMap[A.q_historico]||0)+(dedicadoMap[A.q_dedicado]||0);
+  // setor points
+  const isHealth=['saude_ocup','clinica'].includes(A.q_setor);
+  if(isHealth){
+    const regMap={menos5:6,'5-10':4,'10-20':2,mais20:0};
+    const nrMap={adequados:4,emprocesso:2,naoiniciou:0};
+    const sysMap={'1':4,'2-3':3,'4-5':1,mais5:0};
+    s+=(regMap[A.q_setor1]||0)+(nrMap[A.q_setor2]||0)+(sysMap[A.q_setor3]||0);
+  } else {
+    const onbMap={ate2:6,'3-7':4,'8-14':2,mais14:0};
+    const aprovMap={menos20:6,'20-50':4,'50-80':2,mais80:0};
+    const errMap={raramente:4,mensal:2,semanal:1,diario:0};
+    s+=(onbMap[A.q_setor1]||0)+(aprovMap[A.q_setor2]||0)+(errMap[A.q_setor3]||0);
+  }
+  return Math.round((s/113)*100);
+}
+
+function calcLoss(){
+  const rates={ate1m:22,'1m-5m':32,'5m-20m':48,acima20m:65};
+  const rate=rates[A.q_faturamento]||32;
+  const empMap={'10-20':15,'21-50':35,'51-100':75,'101-150':125,'150mais':175};
+  const emp=empMap[A.q_funcionarios]||35;
+  const hrsMap={menos2:1,'2-5':3,'5-10':6,mais10:10};
+  const hrs=hrsMap[A.q_horas]||3;
+  const workers=Math.round(emp*0.45);
+  const manualCost=hrs*52*rate*workers;
+  const ghostMap={nenhum:0,'1':1,'2':2,'3mais':3};
+  const ghosts=ghostMap[A.q_fantasmas]||0;
+  const ghostCost=ghosts*750*12;
+  const relMap={automatico:0,dias:rate*4*12,'1semana':rate*8*12,mais1sem:rate*16*12};
+  const relCost=relMap[A.q_relatorios]||0;
+  return {total:Math.round(manualCost+ghostCost+relCost),manual:Math.round(manualCost),ghost:Math.round(ghostCost),rel:Math.round(relCost),rate,workers,hrs,emp};
+}
+
+function getPhase(score){
+  if(score<=15) return {name:'Pré-FOUNDRY',color:'#E63946',pos:7,desc:'Sua operação ainda é essencialmente analógica. A digitalização começa antes de qualquer sistema.'};
+  if(score<=30) return {name:'FOUNDRY',color:'#F97316',pos:19,desc:'Você tem sistemas, mas os processos reais da equipe ainda não foram mapeados ou documentados.'};
+  if(score<=45) return {name:'OBSERVE',color:'#F59E0B',pos:33,desc:'O processo documentado é diferente do processo que a equipe executa. Esse gap gera retrabalho invisível.'};
+  if(score<=60) return {name:'REFINE',color:'#84CC16',pos:47,desc:'Seus sistemas funcionam, mas há muitos workarounds. A equipe criou atalhos fora do sistema.'};
+  if(score<=75) return {name:'GENERATE',color:'#22C55E',pos:62,desc:'Boa adoção, mas falta integração. Os sistemas não conversam e o dado não alimenta decisão.'};
+  if(score<=90) return {name:'EMPOWER',color:'#3B82F6',pos:81,desc:'Operação integrada, mas a equipe ainda precisa de suporte ativo para manter o nível de adoção.'};
+  return {name:'EXPAND',color:'#7C3AED',pos:95,desc:'Operação digital madura. Você está pronto para escalar com confiança metodológica.'};
+}
+
+function getBenchmark(setor){
+  const map={saude_ocup:{score:38,label:'Saúde Ocupacional'},clinica:{score:42,label:'Clínica / Saúde'},fintech:{score:44,label:'Fintech / Financeiro'},operacoes:{score:36,label:'Operações'}};
+  return map[setor]||{score:40,label:'Seu setor'};
+}
+
+// ═══════════════ GAP DETECTION ═══════════════
+function getGaps(){
+  const gaps=[];
+  const adocao=A.q_adocao;
+  const fantasmas=A.q_fantasmas;
+  const integracao=A.q_integracao;
+  const horas=A.q_horas;
+  const processos=A.q_processos;
+  const relatorios=A.q_relatorios;
+  const historico=A.q_historico;
+
+  if(['menos20','20-40'].includes(adocao))
+    gaps.push({priority:adocao==='menos20'?0:2,impact:'CRÍTICO',cls:'gap-critico',badge:'badge-critico',title:'Adoção crítica dos sistemas',desc:`Menos de ${adocao==='menos20'?'20%':'40%'} da equipe usa os sistemas diariamente. Cada R$ investido em tecnologia entrega uma fração do potencial.`,action:'Fase EMPOWER do G-FORGE™ — identificar resistências e adoção ativa por 60 dias',cost:'Corresponde a ~70% da sua perda anual estimada'});
+
+  if(['mais10','5-10'].includes(horas))
+    gaps.push({priority:horas==='mais10'?1:3,impact:'CRÍTICO',cls:'gap-critico',badge:'badge-critico',title:'Horas manuais — equipe trabalha para o processo',desc:`${horas==='mais10'?'Mais de 10':'Entre 5 e 10'} horas por semana em tarefas automatizáveis por funcionário. Sua equipe está executando o que o sistema deveria fazer.`,action:'Fase GENERATE do G-FORGE™ — automações calibradas para adoção real',cost:'Principal componente do custo operacional calculado'});
+
+  if(integracao==='nao')
+    gaps.push({priority:4,impact:'ALTO',cls:'gap-alto',badge:'badge-alto',title:'Zero integração — dado copiado manualmente',desc:'Seus sistemas não conversam. A equipe faz a ponte manualmente — e cada cópia é um ponto de erro, atraso e retrabalho.',action:'Fase REFINE + GENERATE — redesenho de fluxo antes da integração técnica',cost:'Gera erros operacionais e retrabalho não quantificado'});
+
+  if(['3mais','2'].includes(fantasmas))
+    gaps.push({priority:5,impact:'ALTO',cls:'gap-alto',badge:'badge-alto',title:'Sistemas fantasmas — você paga sem usar',desc:`${fantasmas==='3mais'?'3 ou mais':'2'} sistemas ativos com baixo ou nenhum uso. Custo fixo sem retorno — e ocupam espaço mental da equipe que poderia estar adotando o que funciona.`,action:'Fase FOUNDRY do G-FORGE™ — mapeamento e consolidação de sistemas',cost:`Custo estimado: R$${(({'3mais':27000,'2':18000})[fantasmas]||0).toLocaleString('pt-BR')}/ano`});
+
+  if(['mais5','3-5'].includes(processos))
+    gaps.push({priority:6,impact:'ALTO',cls:'gap-alto',badge:'badge-alto',title:'Processos em planilha — operação fora dos sistemas',desc:`${processos==='mais5'?'Mais de 5':'De 3 a 5'} processos críticos em planilha ou e-mail. Dado sem rastreabilidade, sem histórico, sem possibilidade de análise.`,action:'Fase OBSERVE do G-FORGE™ — mapeamento do processo real antes de digitalizar',cost:'Risco de compliance e perda de histórico operacional'});
+
+  if(['mais1sem','1semana'].includes(relatorios))
+    gaps.push({priority:7,impact:'MÉDIO',cls:'gap-medio',badge:'badge-medio',title:'Relatório lento — decisão com dado atrasado',desc:`Relatórios gerenciais levam ${relatorios==='mais1sem'?'mais de 1 semana':'cerca de 1 semana'}. Você decide com dado de semana (ou mês) passada — em um mercado que muda diariamente.`,action:'Fase GENERATE do G-FORGE™ — dashboard gerencial integrado aos processos adotados',cost:'Custo de decisão baseada em informação desatualizada'});
+
+  if(['mais1x','1x'].includes(historico))
+    gaps.push({priority:8,impact:'ALTO',cls:'gap-alto',badge:'badge-alto',title:'Histórico de abandono — padrão de repetição',desc:`Sua empresa já abandonou sistemas antes. Sem mudança de método, a probabilidade de repetição é alta — independente de qual sistema for implementado.`,action:'G-FORGE™ completo — começa pelo diagnóstico do que falhou e por quê',cost:'Risco de perder o investimento na próxima implementação'});
+
+  return gaps.sort((a,b)=>a.priority-b.priority).slice(0,3);
+}
+
+// ═══════════════ ROADMAP GENERATION ═══════════════
+function getRoadmap(gaps){
+  const phaseMap={
+    'FOUNDRY':'Semanas 1–3',
+    'OBSERVE':'Semanas 4–6',
+    'REFINE':'Semanas 5–8',
+    'GENERATE':'Semanas 7–10',
+    'EMPOWER':'Semanas 8–12',
+    'FOUNDRY2':'Semana 1'
+  };
+  const rm=[
+    {period:'Semanas 1–2',title:'Diagnóstico e mapeamento de processo real',desc:'Antes de qualquer sistema ou automação: mapear como a equipe trabalha de verdade, onde cria workarounds e onde o dado existe mas não é usado. Fase FOUNDRY + OBSERVE do G-FORGE™.',gain:'Clareza sobre onde está o maior ROI — sem gastar em solução errada'},
+    {period:'Semanas 3–7',title:'Redesenho de fluxo e entrega calibrada',desc:'Ajustar o processo antes de implementar o sistema. Entregar o sistema configurado para o nível de maturidade da equipe — não para o máximo que a ferramenta permite. Fase REFINE + GENERATE.',gain:'Sistema que a equipe consegue usar desde o primeiro dia'},
+    {period:'Semanas 8–12',title:'Adoção ativa e expansão controlada',desc:'Acompanhar o uso real durante as primeiras 4 semanas. Identificar quem está resistindo e por quê. Ajustar processo e sistema em tempo real. Fase EMPOWER + EXPAND.',gain:'90%+ de adoção sustentada — meta do G-FORGE™'}
+  ];
+  return rm;
+}
+
+// ═══════════════ FORMAT HELPERS ═══════════════
+function fmtBRL(n){return 'R$ '+n.toLocaleString('pt-BR');}
+function animateCount(el,target,duration=1200){
+  const start=Date.now();
+  const tick=()=>{
+    const elapsed=Date.now()-start;
+    const progress=Math.min(elapsed/duration,1);
+    const ease=1-Math.pow(1-progress,3);
+    const current=Math.round(ease*target);
+    el.textContent='R$ '+current.toLocaleString('pt-BR');
+    if(progress<1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+// ═══════════════ RENDER RESULTS ═══════════════
+function showResults(){
+  const score=calcScore();
+  const loss=calcLoss();
+  const phase=getPhase(score);
+  const bench=getBenchmark(A.q_setor);
+  const gaps=getGaps();
+  const roadmap=getRoadmap(gaps);
+  const sectorLabels={saude_ocup:'Saúde Ocupacional',clinica:'Clínica / Saúde',fintech:'Fintech / Financeiro',operacoes:'Operações / Logística',outro:'Seu setor'};
+
+  showView('results');
+
+  // Date
+  document.getElementById('results-date').textContent='Diagnóstico gerado em '+new Date().toLocaleDateString('pt-BR');
+
+  // Subtitle
+  document.getElementById('r-setor').textContent=sectorLabels[A.q_setor]||'sua empresa';
+
+  // Animate loss
+  setTimeout(()=>animateCount(document.getElementById('r-loss'),loss.total),300);
+
+  // Score
+  document.getElementById('r-score').textContent=score+'/100';
+  document.getElementById('r-phase-short').textContent='Fase '+phase.name;
+
+  // Benchmark
+  const diff=score-bench.score;
+  const diffText=diff>=0?'+'+diff+' pts acima':diff+' pts abaixo';
+  const diffColor=diff>=0?'var(--green-light)':'var(--red)';
+  document.getElementById('r-benchmark').textContent=diffText;
+  document.getElementById('r-benchmark').style.color=diffColor;
+  document.getElementById('r-benchmark-sub').textContent=`vs. média de ${bench.label} (${bench.score}/100)`;
+
+  // G-FORGE bar
+  setTimeout(()=>{
+    document.getElementById('gf-pointer').style.left=phase.pos+'%';
+    const phases=document.querySelectorAll('.gf-phase');
+    const phaseNames=['PRÉ','FOUNDRY','OBSERVE','REFINE','GENERATE','EMPOWER','EXPAND'];
+    const activeIdx=phaseNames.findIndex(p=>p===phase.name.toUpperCase().split('-')[0].trim());
+    phases.forEach((p,i)=>{if(i===Math.max(0,activeIdx))p.classList.add('active-phase');});
+  },200);
+  document.getElementById('r-phase-label').textContent=phase.name;
+  document.getElementById('r-phase-desc').textContent=phase.desc;
+
+  // Breakdown
+  const bd=document.getElementById('r-breakdown');
+  bd.innerHTML=`
+    <div class="breakdown-row"><span class="breakdown-label">Processos manuais (${loss.hrs}h/semana × ${loss.workers} pessoas × R$${loss.rate}/h)</span><span class="breakdown-amount">${fmtBRL(loss.manual)}</span></div>
+    <div class="breakdown-row"><span class="breakdown-label">Sistemas não utilizados (${A.q_fantasmas==='nenhum'?'nenhum':A.q_fantasmas} sistema${A.q_fantasmas!=='1'?'s':''} × R$750/mês)</span><span class="breakdown-amount">${fmtBRL(loss.ghost)}</span></div>
+    <div class="breakdown-row"><span class="breakdown-label">Relatórios manuais (tempo de gestor e equipe)</span><span class="breakdown-amount">${fmtBRL(loss.rel)}</span></div>
+    <div class="breakdown-total"><span class="breakdown-total-label">Total estimado / ano</span><span class="breakdown-total-value">${fmtBRL(loss.total)}</span></div>`;
+
+  // Benchmark detail
+  const bdd=document.getElementById('r-benchmark-detail');
+  const metrics=[
+    {label:'Seu Score G-FORGE™',your:score,avg:bench.score,color:diff>=0?'#22C55E':'#E63946'},
+    {label:'Adoção estimada da equipe',your:{'menos20':15,'20-40':30,'40-60':50,'60-80':70,mais80:85}[A.q_adocao]||40,avg:{'saude_ocup':45,clinica:52,fintech:55,operacoes:40}[A.q_setor]||45,color:'#3B82F6'},
+    {label:'Processos digitalizados (estimado)',your:A.q_processos==='nenhum'?90:A.q_processos==='1-2'?75:A.q_processos==='3-5'?50:30,avg:60,color:'#F59E0B'}
+  ];
+  bdd.innerHTML=metrics.map(m=>`
+    <div class="benchmark-row">
+      <span class="benchmark-label">${m.label}</span>
+      <div class="benchmark-bar-wrap"><div class="benchmark-fill" style="width:${m.your}%;background:${m.color}"></div></div>
+      <span class="benchmark-val">${m.your}%</span>
+    </div>`).join('');
+
+  // Gaps
+  const gapsEl=document.getElementById('r-gaps');
+  gapsEl.innerHTML=gaps.map((g,i)=>`
+    <div class="gap-item ${g.cls}">
+      <div class="gap-header">
+        <div class="gap-rank">${i+1}</div>
+        <div class="gap-title">${g.title}</div>
+        <span class="gap-badge ${g.badge}">${g.impact}</span>
+      </div>
+      <div class="gap-desc">${g.desc}</div>
+      ${g.cost?`<div class="gap-cost">💸 ${g.cost}</div>`:''}
+      <div class="gap-action">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        ${g.action}
+      </div>
+    </div>`).join('');
+
+  // CTA title
+  if(gaps[0]) document.getElementById('r-cta-title').textContent=`Gargalo #1 identificado: "${gaps[0].title}". Quer resolver em 30 dias?`;
+
+  // Roadmap
+  const rmEl=document.getElementById('r-roadmap');
+  rmEl.innerHTML=roadmap.map((r,i)=>`
+    <div class="roadmap-step">
+      <div class="rm-timeline"><div class="rm-dot">${i+1}</div><div class="rm-line"></div></div>
+      <div class="rm-content">
+        <div class="rm-period">${r.period}</div>
+        <div class="rm-title">${r.title}</div>
+        <div class="rm-desc">${r.desc}</div>
+        <div class="rm-gain">↑ ${r.gain}</div>
+      </div>
+    </div>`).join('');
+}
+
+// Init
+document.getElementById('results-date').textContent='';
+</script>
+</body>
+</html>

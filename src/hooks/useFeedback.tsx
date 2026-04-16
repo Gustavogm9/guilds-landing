@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
+import { logger } from '@/lib/logger';
+
+const log = logger.scope('Feedback');
 
 export interface FeedbackModule {
   id: string;
@@ -96,6 +98,7 @@ export interface FeedbackMetrics {
 
 export const useFeedback = (projectId?: string) => {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   // Fetch feedback entries
   const {
@@ -108,10 +111,10 @@ export const useFeedback = (projectId?: string) => {
       let query = supabase
         .from('feedback_entries')
         .select(`
-          *,
-          module:feedback_modules(name, key),
-          contact:crm_contacts(name, email)
-        `)
+  *,
+  module: feedback_modules(name, key),
+    contact: crm_contacts(name, email)
+      `)
         .order('created_at', { ascending: false });
 
       if (projectId) {
@@ -143,10 +146,10 @@ export const useFeedback = (projectId?: string) => {
     const { data, error } = await supabase
       .from('feedback_tickets')
       .select(`
-        *,
-        contact:crm_contacts(name, email),
-        feedback:feedback_entries(verbatim, type)
-      `)
+      *,
+      contact: crm_contacts(name, email),
+        feedback: feedback_entries(verbatim, type)
+          `)
       .eq('project_id', projectId)
       .order('created_at', { ascending: false });
 
@@ -160,8 +163,8 @@ export const useFeedback = (projectId?: string) => {
 
   // Fetch feedback metrics
   const fetchMetricsByProject = async (
-    projectId: string, 
-    startDate: string, 
+    projectId: string,
+    startDate: string,
     endDate: string
   ): Promise<FeedbackMetrics[]> => {
     const { data, error } = await supabase
@@ -191,22 +194,16 @@ export const useFeedback = (projectId?: string) => {
       context?: Record<string, any>;
       attachments?: string[];
     }) => {
-      // Call the public edge function
-      const response = await fetch(`https://itvruukwhgttnjpvghzq.supabase.co/functions/v1/feedback-collector`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0dnJ1dWt3aGd0dG5qcHZnaHpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMjQ4MjgsImV4cCI6MjA3MTcwMDgyOH0.NWcAv2VONoAOKiXGHBMZAB42_SCPaI8nTxFTXw6GTBM`
-        },
-        body: JSON.stringify(feedbackData)
+      // Call the public edge function using Supabase client
+      const { data, error } = await supabase.functions.invoke('feedback-collector', {
+        body: feedbackData
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to submit feedback');
+      if (error) {
+        throw new Error(error.message || 'Failed to submit feedback');
       }
 
-      return response.json();
+      return data;
     },
     onSuccess: () => {
       toast({
@@ -226,12 +223,12 @@ export const useFeedback = (projectId?: string) => {
 
   // Update feedback entry (admin)
   const updateFeedbackEntry = useMutation({
-    mutationFn: async ({ 
-      feedbackId, 
-      updates 
-    }: { 
-      feedbackId: string; 
-      updates: Partial<FeedbackEntry> 
+    mutationFn: async ({
+      feedbackId,
+      updates
+    }: {
+      feedbackId: string;
+      updates: Partial<FeedbackEntry>
     }) => {
       const { data, error } = await supabase
         .from('feedback_entries')
@@ -296,12 +293,12 @@ export const useFeedback = (projectId?: string) => {
 
   // Update feedback ticket
   const updateTicket = useMutation({
-    mutationFn: async ({ 
-      ticketId, 
-      updates 
-    }: { 
-      ticketId: string; 
-      updates: Partial<FeedbackTicket> 
+    mutationFn: async ({
+      ticketId,
+      updates
+    }: {
+      ticketId: string;
+      updates: Partial<FeedbackTicket>
     }) => {
       const { data, error } = await supabase
         .from('feedback_tickets')
@@ -336,9 +333,9 @@ export const useFeedback = (projectId?: string) => {
         .from('feedback_entries')
         .select(`
           *,
-          module:feedback_modules(name, key),
-          contact:crm_contacts(name, email)
-        `)
+          module: feedback_modules(name, key),
+            contact: crm_contacts(name, email)
+              `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -355,7 +352,7 @@ export const useFeedback = (projectId?: string) => {
         user_agent: entry.user_agent as string || ''
       })) as FeedbackEntry[];
     } catch (error) {
-      console.error('Error fetching all feedback:', error);
+      log.error('Error fetching all feedback', { metadata: { error } });
       throw error;
     }
   };
@@ -365,10 +362,10 @@ export const useFeedback = (projectId?: string) => {
       const { data, error } = await supabase
         .from('feedback_tickets')
         .select(`
-          *,
-          contact:crm_contacts(name, email),
-          feedback:feedback_entries(verbatim, type)
-        `)
+              *,
+              contact: crm_contacts(name, email),
+                feedback: feedback_entries(verbatim, type)
+                  `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -378,13 +375,13 @@ export const useFeedback = (projectId?: string) => {
         priority: ticket.priority as 'low' | 'medium' | 'high' | 'urgent'
       }));
     } catch (error) {
-      console.error('Error fetching all tickets:', error);
+      log.error('Error fetching all tickets', { metadata: { error } });
       throw error;
     }
   };
 
   const updateFeedbackStatus = async (
-    feedbackId: string, 
+    feedbackId: string,
     status: FeedbackEntry['status']
   ): Promise<void> => {
     try {
@@ -396,13 +393,13 @@ export const useFeedback = (projectId?: string) => {
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ['feedbackEntries'] });
     } catch (error) {
-      console.error('Error updating feedback status:', error);
+      log.error('Error updating feedback status', { metadata: { error } });
       throw error;
     }
   };
 
   const updateTicketStatus = async (
-    ticketId: string, 
+    ticketId: string,
     status: FeedbackTicket['status']
   ): Promise<void> => {
     try {
@@ -414,7 +411,7 @@ export const useFeedback = (projectId?: string) => {
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ['feedbackTickets'] });
     } catch (error) {
-      console.error('Error updating ticket status:', error);
+      log.error('Error updating ticket status', { metadata: { error } });
       throw error;
     }
   };
@@ -433,7 +430,7 @@ export const useFeedback = (projectId?: string) => {
       const bugs = data?.filter(e => e.type === 'bug').length || 0;
       const ideas = data?.filter(e => e.type === 'ideia').length || 0;
       const npsEntries = data?.filter(e => e.type === 'nps' && e.score) || [];
-      const avgNPS = npsEntries.length > 0 
+      const avgNPS = npsEntries.length > 0
         ? npsEntries.reduce((acc, e) => acc + (e.score || 0), 0) / npsEntries.length
         : 0;
 
@@ -461,7 +458,7 @@ export const useFeedback = (projectId?: string) => {
           .reduce((acc, e, _, arr) => acc + (e.rice_score || 0) / arr.length, 0) || 0
       };
     } catch (error) {
-      console.error('Error fetching feedback metrics:', error);
+      log.error('Error fetching feedback metrics', { metadata: { error } });
       throw error;
     }
   };
@@ -470,7 +467,7 @@ export const useFeedback = (projectId?: string) => {
     try {
       const { data, error } = await supabase
         .from('feedback_tickets')
-        .select('*')
+        .select('*, created_at, first_response_at')
         .gte('created_at', startDate)
         .lte('created_at', endDate);
 
@@ -481,16 +478,137 @@ export const useFeedback = (projectId?: string) => {
       const resolved = data?.filter(t => t.status === 'solved' || t.status === 'closed').length || 0;
       const resolutionRate = total > 0 ? (resolved / total) * 100 : 0;
 
+      // Calculate real average response time in hours
+      const ticketsWithResponse = data?.filter(t => t.first_response_at && t.created_at) || [];
+      let avgResponseTime = 0;
+
+      if (ticketsWithResponse.length > 0) {
+        const totalHours = ticketsWithResponse.reduce((sum, t) => {
+          const created = new Date(t.created_at).getTime();
+          const responded = new Date(t.first_response_at).getTime();
+          const hours = (responded - created) / (1000 * 60 * 60); // Convert ms to hours
+          return sum + hours;
+        }, 0);
+        avgResponseTime = Math.round(totalHours / ticketsWithResponse.length * 10) / 10; // Round to 1 decimal
+      }
+
       return {
         total,
         open,
         resolved,
         resolutionRate,
-        avgResponseTime: 24 // Placeholder - would calculate from first_response_at
+        avgResponseTime
       };
     } catch (error) {
-      console.error('Error fetching ticket metrics:', error);
+      log.error('Error fetching ticket metrics', { metadata: { error } });
       throw error;
+    }
+  };
+
+  // GAP 4 FIX: Process high NPS feedback and create upsell opportunities
+  const processHighNPSForUpsell = async (feedbackId: string): Promise<boolean> => {
+    try {
+      // Get the feedback entry
+      const { data: feedback, error: feedbackError } = await supabase
+        .from('feedback_entries')
+        .select('*, contact:crm_contacts(id, name, email)')
+        .eq('id', feedbackId)
+        .single();
+
+      if (feedbackError || !feedback) {
+        log.error('Feedback not found', { metadata: { feedbackId } });
+        return false;
+      }
+
+      // Only process NPS type with score >= 9 (promoters)
+      if (feedback.type !== 'nps' || !feedback.score || feedback.score < 9) {
+        log.info('Feedback not eligible for upsell', {
+          metadata: { type: feedback.type, score: feedback.score }
+        });
+        return false;
+      }
+
+      // Check if contact exists
+      const contact = feedback.contact as any;
+      if (!contact?.id) {
+        log.warn('No contact linked to feedback', { metadata: { feedbackId } });
+        return false;
+      }
+
+      // Get default pipeline for upsell deals
+      const { data: pipeline } = await supabase
+        .from('crm_pipelines')
+        .select('id')
+        .eq('is_default', true)
+        .eq('is_active', true)
+        .single();
+
+      if (!pipeline) {
+        log.error('No default pipeline found');
+        return false;
+      }
+
+      // Get first stage
+      const { data: firstStage } = await supabase
+        .from('crm_stages')
+        .select('id')
+        .eq('pipeline_id', pipeline.id)
+        .eq('is_active', true)
+        .order('display_order')
+        .limit(1)
+        .single();
+
+      if (!firstStage) {
+        log.error('No stage found in pipeline');
+        return false;
+      }
+
+      // Create upsell deal
+      const { error: dealError } = await supabase
+        .from('crm_deals')
+        .insert({
+          pipeline_id: pipeline.id,
+          stage_id: firstStage.id,
+          contact_id: contact.id,
+          title: `Upsell - NPS Promotor (${contact.name || contact.email})`,
+          description: `Cliente deu NPS ${feedback.score}. Oportunidade de upsell/cross-sell. Feedback: "${feedback.verbatim?.substring(0, 200)}"`,
+          probability: 70,
+          currency: 'BRL',
+          source: 'nps_promoter',
+          tags: ['nps-upsell', 'promotor'],
+          is_active: true,
+          custom_fields: {
+            feedback_id: feedbackId,
+            nps_score: feedback.score
+          }
+        } as any);
+
+      if (dealError) {
+        log.error('Error creating upsell deal', { metadata: { error: dealError } });
+        return false;
+      }
+
+      // Mark feedback as processed
+      await supabase
+        .from('feedback_entries')
+        .update({
+          status: 'triaged',
+          resolution_note: 'Oportunidade de upsell criada no CRM automaticamente.'
+        })
+        .eq('id', feedbackId);
+
+      queryClient.invalidateQueries({ queryKey: ['crm-deals'] });
+      queryClient.invalidateQueries({ queryKey: ['feedbackEntries'] });
+
+      toast({
+        title: '🎯 Oportunidade criada!',
+        description: `Deal de upsell criado para ${contact.name || contact.email}.`,
+      });
+
+      return true;
+    } catch (error) {
+      log.error('Error processing NPS for upsell', { metadata: { error } });
+      return false;
     }
   };
 
@@ -516,6 +634,7 @@ export const useFeedback = (projectId?: string) => {
     // Admin functions
     updateFeedbackStatus,
     updateTicketStatus,
+    processHighNPSForUpsell,
 
     // Metrics
     getFeedbackMetrics,

@@ -12,9 +12,8 @@ import { QualificationProvider } from "./components/forms/QualificationProvider"
 import { QualificationTrigger } from "./components/forms/QualificationTrigger";
 import { ConsentProvider } from "./hooks/useConsent";
 import { ConsentBanner } from "./components/legal/ConsentBanner";
-import { AuthProvider } from "./contexts/AuthContext";
+import { Navigate } from "react-router-dom";
 import { TranslationProvider } from "./contexts/TranslationContext";
-import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { SkipLinks } from "./components/a11y/SkipLink";
 import { initPerformanceMonitoring } from "./lib/performanceMonitor";
 import { DynamicColorProvider } from "./components/providers/DynamicColorProvider";
@@ -43,22 +42,12 @@ const ThankYou = React.lazy(() => import("./pages/ThankYou"));
 const Search = React.lazy(() => import("./pages/Search"));
 const ServerError = React.lazy(() => import("./pages/ServerError"));
 
-// Admin and auth pages - separate chunks with preloading strategy
-const Admin = React.lazy(() => import("./pages/Admin"));
-const Auth = React.lazy(() => import("./pages/Auth"));
-
 // Lab and Craft pages - feature-specific chunks with priority loading
 const Lab = React.lazy(() => import("./pages/Lab"));
 const LabWorkshop = React.lazy(() => import("./pages/LabWorkshop"));
 const Craft = React.lazy(() => import("./pages/Craft"));
 const CraftIdea = React.lazy(() => import("./pages/CraftIdea"));
 const CraftPortfolio = React.lazy(() => import("./pages/CraftPortfolio"));
-
-// Client Portal - secure client access
-const ClientPortal = React.lazy(() => import("./pages/ClientPortal"));
-
-// Proposal Public View - token-based proposal access
-const ProposalPublicView = React.lazy(() => import("./pages/ProposalPublicView"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -95,7 +84,6 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ConsentProvider>
-          <AuthProvider>
             <TranslationProvider>
               <DynamicColorProvider>
                 <QualificationProvider>
@@ -109,39 +97,6 @@ const App = () => {
                     <ScrollToTop />
                     
                     <Routes>
-                      {/* Admin Routes - WITHOUT site layout */}
-                      <Route 
-                        path="/admin/*" 
-                        element={
-                          <ProtectedRoute>
-                            <Suspense fallback={<PageLoader />}>
-                              <Admin />
-                            </Suspense>
-                          </ProtectedRoute>
-                        } 
-                      />
-                      
-                      {/* Auth Routes - WITHOUT site layout */}
-                      <Route path="/auth" element={
-                        <Suspense fallback={<PageLoader />}>
-                          <Auth />
-                        </Suspense>
-                      } />
-                      
-                      {/* Client Portal - WITHOUT site layout */}
-                      <Route path="/portal/cliente" element={
-                        <Suspense fallback={<PageLoader />}>
-                          <ClientPortal />
-                        </Suspense>
-                      } />
-                      
-                      {/* Proposal Public View - WITHOUT site layout */}
-                      <Route path="/propostas/visualizar" element={
-                        <Suspense fallback={<PageLoader />}>
-                          <ProposalPublicView />
-                        </Suspense>
-                      } />
-                      
                       {/* Public Routes - WITH site layout */}
                       <Route path="/*" element={
                         <Layout>
@@ -154,7 +109,8 @@ const App = () => {
                               <Route path="/servicos/automacao-ia" element={<AutomacaoIA />} />
                               <Route path="/servicos/jogos-gamificacao" element={<JogosGamificacao />} />
                               <Route path="/servicos/consultoria" element={<Consultoria />} />
-                              <Route path="/cases" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Cases</h1><p className="mt-4">Em desenvolvimento...</p></div>} />
+                              <Route path="/cases" element={<Navigate to="/em-breve" replace />} />
+                              <Route path="/em-breve" element={<div className="min-h-screen py-24 flex flex-col items-center justify-center container text-center"><h1 className="text-4xl md:text-5xl font-bold">Em breve</h1><p className="mt-4 text-muted-foreground text-lg max-w-lg">Estamos preparando algo incrível. Nossos cases de sucesso estarão disponíveis em breve.</p></div>} />
                               <Route path="/lab" element={<Lab />} />
                               <Route path="/lab/workshops/:slug" element={<LabWorkshop />} />
                               <Route path="/craft" element={<Craft />} />
@@ -180,7 +136,8 @@ const App = () => {
                               <Route path="/en/services/automation-ai" element={<AutomacaoIA />} />
                               <Route path="/en/services/games-gamification" element={<JogosGamificacao />} />
                               <Route path="/en/services/consulting" element={<Consultoria />} />
-                              <Route path="/en/cases" element={<div className="min-h-screen py-24 container"><h1 className="text-4xl font-bold">Cases</h1><p className="mt-4">Under development...</p></div>} />
+                              <Route path="/en/cases" element={<Navigate to="/en/coming-soon" replace />} />
+                              <Route path="/en/coming-soon" element={<div className="min-h-screen py-24 flex flex-col items-center justify-center container text-center"><h1 className="text-4xl md:text-5xl font-bold">Coming soon</h1><p className="mt-4 text-muted-foreground text-lg max-w-lg">We are preparing something amazing. Our success cases will be available soon.</p></div>} />
                               <Route path="/en/lab" element={<Lab />} />
                               <Route path="/en/lab/workshops/:slug" element={<LabWorkshop />} />
                               <Route path="/en/craft" element={<Craft />} />
@@ -213,8 +170,7 @@ const App = () => {
               </QualificationProvider>
             </DynamicColorProvider>
           </TranslationProvider>
-        </AuthProvider>
-      </ConsentProvider>
+        </ConsentProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

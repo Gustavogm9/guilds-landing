@@ -3,17 +3,22 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { 
-  RefreshCw, 
-  Settings, 
-  Maximize2, 
-  Minimize2, 
+import {
+  RefreshCw,
+  Settings,
+  Maximize2,
+  Minimize2,
   X,
   AlertTriangle,
-  Clock
+  Clock,
+  Trash2,
+  GripVertical
 } from 'lucide-react';
 import { WidgetComponentProps, WidgetSize } from '@/types/widgets';
 import { cn } from '@/lib/utils';
+import { logger } from '@/lib/logger';
+
+const log = logger.scope('BaseWidget');
 
 interface BaseWidgetProps extends WidgetComponentProps {
   children: React.ReactNode;
@@ -64,22 +69,26 @@ export function BaseWidget({
     onRefresh();
   };
 
-  const handleRemove = () => {
-    // This would be handled by parent component
-    console.log('Remove widget:', config.id);
+  const handleRemove = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    log.debug('Removing widget', { metadata: { widgetId: config.id } });
+    // Assuming onRemove is passed as a prop or handled by a context
+    // For now, it's just logging as per the original comment's intent
+    // If onRemove is meant to be called, it needs to be passed as a prop.
+    // onRemove(config.id);
   };
 
   const formatLastUpdate = (timestamp: Date) => {
     const now = new Date();
     const diff = now.getTime() - timestamp.getTime();
     const minutes = Math.floor(diff / 60000);
-    
+
     if (minutes < 1) return 'agora mesmo';
     if (minutes < 60) return `${minutes}m atrás`;
-    
+
     const hours = Math.floor(minutes / 60);
     if (hours < 24) return `${hours}h atrás`;
-    
+
     const days = Math.floor(hours / 24);
     return `${days}d atrás`;
   };
@@ -91,7 +100,7 @@ export function BaseWidget({
   };
 
   return (
-    <Card 
+    <Card
       className={cn(
         'relative transition-all duration-200 group',
         sizeClasses[isExpanded ? 'full' : config.size],
@@ -101,7 +110,7 @@ export function BaseWidget({
       )}
     >
       {/* Status indicator */}
-      <div 
+      <div
         className="absolute top-0 left-0 w-full h-1 rounded-t-lg"
         style={{ backgroundColor: statusColors[status] }}
       />
@@ -115,10 +124,10 @@ export function BaseWidget({
               </CardTitle>
               {getStatusIcon()}
             </div>
-            
+
             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
               {actions}
-              
+
               <Button
                 size="sm"
                 variant="ghost"
@@ -157,7 +166,7 @@ export function BaseWidget({
                   >
                     <Settings className="h-3 w-3" />
                   </Button>
-                  
+
                   <Button
                     size="sm"
                     variant="ghost"
@@ -176,7 +185,7 @@ export function BaseWidget({
             <Badge variant="secondary" className="text-xs">
               {config.category}
             </Badge>
-            
+
             {showFooter && (
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Clock className="h-3 w-3" />
@@ -230,7 +239,7 @@ export function BaseWidget({
               <X className="h-3 w-3" />
             </Button>
           </div>
-          
+
           <div className="space-y-3">
             <div>
               <label className="text-sm font-medium">Título</label>
@@ -241,7 +250,7 @@ export function BaseWidget({
                 className="w-full mt-1 px-3 py-2 border rounded-md text-sm"
               />
             </div>
-            
+
             <div>
               <label className="text-sm font-medium">Intervalo de Atualização</label>
               <select

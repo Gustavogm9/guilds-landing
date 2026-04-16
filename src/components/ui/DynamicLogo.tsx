@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLogos } from '@/hooks/useLogos';
 import { cn } from '@/lib/utils';
+import { logger } from '@/lib/logger';
 import fallbackShield from '@/assets/guilds-logo-shield.svg';
+
+const log = logger.scope('DynamicLogo');
 import fallbackFull from '@/assets/guilds-logo-full.svg';
 
 interface DynamicLogoProps {
@@ -16,7 +19,7 @@ interface DynamicLogoProps {
   height?: number;
 }
 
-export function DynamicLogo({ 
+export function DynamicLogo({
   type = 'full',
   variant = 'color',
   name,
@@ -26,28 +29,30 @@ export function DynamicLogo({
   fallback,
   width,
   height,
-  ...props 
+  ...props
 }: DynamicLogoProps & React.ImgHTMLAttributes<HTMLImageElement>) {
   const { getLogoByType, getLogoByName, getLogoByContext, loading, error } = useLogos();
-  
-  const logo = name 
-    ? getLogoByName(name) 
-    : usageContext 
+
+  const logo = name
+    ? getLogoByName(name)
+    : usageContext
       ? getLogoByContext(usageContext, type, variant)
       : getLogoByType(type, variant);
 
   // Add debug logging for DynamicLogo
   if (usageContext) {
-    console.log(`DynamicLogo searching for: context="${usageContext}", type="${type}", variant="${variant}"`);
-    console.log('Logo found:', logo);
+    log.debug('Logo search', {
+      action: 'search',
+      metadata: { usageContext, type, variant, logoFound: !!logo }
+    });
   }
 
   // Show loading state
   if (loading) {
     return (
-      <div 
+      <div
         className={cn(
-          "animate-pulse bg-muted rounded", 
+          "animate-pulse bg-muted rounded",
           className,
           !width && !height && "w-32 h-8"
         )}
@@ -61,24 +66,24 @@ export function DynamicLogo({
     if (fallback) {
       return <>{fallback}</>;
     }
-    
+
     // Default fallback - use imported SVG logos as backup
     if (type === 'symbol') {
       return (
-        <img 
+        <img
           src={fallbackShield}
           alt={alt}
-          className={className}
           width={width || 32}
           height={height || 32}
-          style={{ width: width ? `${width}px` : 'auto', height: height ? `${height}px` : '32px' }}
+          className={cn("object-contain", className)}
+          style={{ width: width ? `${width}px` : 'auto', height: height ? `${height}px` : 'auto' }}
           {...props}
         />
       );
     }
-    
+
     return (
-      <img 
+      <img
         src={fallbackFull}
         alt={alt}
         className={className}
@@ -97,9 +102,9 @@ export function DynamicLogo({
       className={className}
       width={width || logo.width}
       height={height || logo.height}
-      style={{ 
-        width: width ? `${width}px` : 'auto', 
-        height: height ? `${height}px` : (logo.height ? `${logo.height}px` : '32px') 
+      style={{
+        width: width ? `${width} px` : 'auto',
+        height: height ? `${height} px` : (logo.height ? `${logo.height} px` : '32px')
       }}
       {...props}
     />

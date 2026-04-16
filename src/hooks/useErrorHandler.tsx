@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 export interface SystemError {
   id?: string;
@@ -18,11 +19,11 @@ export function useErrorHandler() {
 
   const logError = useCallback(async (error: SystemError) => {
     setIsLogging(true);
-    
+
     try {
       // Add to local state
       setErrors(prev => [...prev, { ...error, timestamp: new Date() }]);
-      
+
       // Log to Supabase
       const { error: dbError } = await supabase.rpc('log_system_error', {
         p_error_type: error.type,
@@ -31,20 +32,20 @@ export function useErrorHandler() {
         p_component_name: error.component || null,
         p_metadata: error.metadata || {}
       });
-      
+
       if (dbError) {
-        console.error('Failed to log error to database:', dbError);
+        logger.error('Failed to log error to database', { component: 'ErrorHandler', metadata: { dbError } });
       }
-    } catch (logError) {
-      console.error('Error logging system error:', logError);
+    } catch (err) {
+      logger.error('Error logging system error', { component: 'ErrorHandler', metadata: { error: err } });
     } finally {
       setIsLogging(false);
     }
   }, []);
 
   const handleError = useCallback((
-    error: Error | string, 
-    component?: string, 
+    error: Error | string,
+    component?: string,
     metadata?: Record<string, any>,
     showToast = true
   ) => {
@@ -65,10 +66,11 @@ export function useErrorHandler() {
       toast.error('Ocorreu um erro inesperado. Nossa equipe foi notificada.');
     }
 
-    // Console log for development
-    if (process.env.NODE_ENV === 'development') {
-      console.error('System Error:', errorObj);
-    }
+    // Structured logging
+    logger.error(errorObj.message, {
+      component: component || errorObj.component || 'ErrorHandler',
+      metadata: errorObj.metadata
+    });
   }, [logError]);
 
   const clearErrors = useCallback(() => {

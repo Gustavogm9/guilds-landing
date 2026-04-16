@@ -1,4 +1,7 @@
 // Performance monitoring utilities for Core Web Vitals and bundle optimization
+import { logger } from './logger';
+
+const log = logger.scope('PerformanceMonitor');
 
 interface PerformanceMetrics {
   fcp: number; // First Contentful Paint
@@ -102,9 +105,8 @@ export class PerformanceMonitor {
   // Send metrics to analytics (placeholder)
   reportMetrics() {
     const thresholds = this.checkThresholds();
-    console.log('Performance Metrics:', this.metrics);
-    console.log('Core Web Vitals Status:', thresholds);
-    
+    log.debug('Performance Metrics', { metadata: { metrics: this.metrics, thresholds } });
+
     // In production, send to analytics service
     // gtag('event', 'web_vitals', { ...this.metrics, ...thresholds });
   }
@@ -131,10 +133,10 @@ export const bundleAnalyzer = {
       // Mock analysis - in production this would read actual bundle stats
       if (typeof window !== 'undefined' && 'performance' in window) {
         const resourceEntries = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
-        
+
         let jsTotal = 0;
         let cssTotal = 0;
-        
+
         resourceEntries.forEach(entry => {
           const size = entry.transferSize || 0;
           if (entry.name.includes('.js')) {
@@ -189,7 +191,7 @@ let globalMonitor: PerformanceMonitor | null = null;
 export const initPerformanceMonitoring = (): PerformanceMonitor => {
   if (!globalMonitor && typeof window !== 'undefined') {
     globalMonitor = new PerformanceMonitor();
-    
+
     // Report metrics after page load
     window.addEventListener('load', () => {
       setTimeout(() => {
@@ -197,7 +199,7 @@ export const initPerformanceMonitoring = (): PerformanceMonitor => {
       }, 2000);
     });
   }
-  
+
   return globalMonitor!;
 };
 

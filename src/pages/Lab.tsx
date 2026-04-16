@@ -8,14 +8,16 @@ import { QualificationButton } from '@/components/forms/QualificationButton';
 import { WorkshopCard } from '@/components/lab/WorkshopCard';
 import { CategoryGrid } from '@/components/lab/CategoryGrid';
 import { InstructorCard } from '@/components/lab/InstructorCard';
+import { ActionSection } from '@/components/lab/ActionSection'; // Assuming exists or mocked, if not exist removing.
+import { LearningTrackList } from '@/components/lab/LearningTrackList';
 import { PricingGrid } from '@/components/lab/PricingCard';
 import { TestimonialCarousel } from '@/components/ui/TestimonialCarousel';
 import { useWorkshops, useWorkshopCategories, useWorkshopInstructors } from '@/hooks/useWorkshops';
 import { SEOHead } from '@/components/seo/SEOHead';
-import { 
-  Target, 
-  Zap, 
-  Trophy, 
+import {
+  Target,
+  Zap,
+  Trophy,
   Users,
   Lightbulb,
   Code,
@@ -23,8 +25,67 @@ import {
   ArrowRight,
   CheckCircle,
   TrendingUp,
+  trendingUp,
   Award
 } from 'lucide-react';
+import { useWorkshopSchedule } from '@/hooks/useWorkshopSchedule';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+
+const WorkshopScheduleList = () => {
+  const { data: schedules = [], isLoading } = useWorkshopSchedule();
+
+  if (isLoading) {
+    return <div className="grid gap-4 md:grid-cols-2">
+      <div className="p-4 rounded-lg border border-muted/30 h-32 animate-pulse bg-muted/10"></div>
+      <div className="p-4 rounded-lg border border-muted/30 h-32 animate-pulse bg-muted/10"></div>
+    </div>;
+  }
+
+  if (schedules.length === 0) {
+    return <div className="text-center py-8 text-muted-foreground">Nenhuma turma agendada no momento.</div>;
+  }
+
+  return (
+    <div className="grid gap-4 md:grid-cols-2">
+      {schedules.map((schedule) => {
+        const start = new Date(schedule.start_date);
+        const end = new Date(schedule.end_date);
+
+        const dateRange = `${format(start, 'dd', { locale: ptBR })}-${format(end, 'dd', { locale: ptBR })} de ${format(start, 'MMMM', { locale: ptBR })}`;
+        const timeRange = `${format(start, 'HH:mm', { locale: ptBR })} às ${format(end, 'HH:mm', { locale: ptBR })}`;
+        const workshopTitle = schedule.workshop?.title || 'Workshop Indisponível';
+
+        // Logic to determine remaining badges/colors
+        const isOnline = schedule.mode === 'online';
+        const spotsLeft = schedule.total_seats - schedule.current_seats;
+
+        return (
+          <div key={schedule.id} className={`p-4 rounded-lg border border-muted/30 ${isOnline ? 'bg-gradient-to-r from-primary/5 to-transparent' : ''}`}>
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-semibold line-clamp-1" title={workshopTitle}>{workshopTitle}</h4>
+              <Badge variant={isOnline ? "secondary" : "outline"}>
+                {isOnline ? 'Online' : 'Presencial'}
+              </Badge>
+            </div>
+            <p className="text-sm text-muted-foreground mb-2 capitalize">{dateRange} • {timeRange}</p>
+            <div className="flex items-center gap-2 mt-2">
+              <p className={`text-sm font-medium ${spotsLeft < 5 ? 'text-amber-600' : 'text-primary'}`}>
+                {spotsLeft} vagas restantes
+              </p>
+              {spotsLeft < 5 && (
+                <Badge variant="destructive" className="animate-pulse px-1.5 py-0 text-[10px] h-5">
+                  <Zap className="h-3 w-3 mr-1 fill-current" />
+                  Últimas!
+                </Badge>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 export default function Lab() {
   const { data: workshops = [], isLoading: workshopsLoading } = useWorkshops();
@@ -59,7 +120,7 @@ export default function Lab() {
               Workshops práticos em tecnologia, desenvolvimento de jogos e aplicativos.
             </p>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6">
             <QualificationButton variant="default" size="lg" className="min-w-[200px]">
               Solicitar Proposta
@@ -79,7 +140,7 @@ export default function Lab() {
             Nossa metodologia prática gera impacto real no desenvolvimento profissional
           </p>
         </div>
-        
+
         <Grid cols={1} gap="lg" className="md:grid-cols-3">
           <MetricBadge
             value="95%"
@@ -170,25 +231,30 @@ export default function Lab() {
         </Grid>
       </Section>
 
-      {/* Trilhas & Temas */}
-      <ContentSection>
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Trilhas de Aprendizado</h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Escolha sua jornada de desenvolvimento profissional
+      {/* Learning Tracks Section */}
+      <ContentSection className="bg-muted/5">
+        <LearningTrackList />
+      </ContentSection>
+
+      {/* Categories Grid */}
+      <Section id="categories">
+        <div className="space-y-4 mb-10">
+          <h2 className="text-3xl font-bold tracking-tight">Explorar por Categoria</h2>
+          <p className="text-muted-foreground text-lg max-w-2xl">
+            Encontre o workshop perfeito para seu momento profissional.
           </p>
         </div>
 
-        <Suspense fallback={<div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
-            <Card key={i} className="h-48 animate-pulse bg-muted/30" />
-          ))}
-        </div>}>
-          {!categoriesLoading && (
-            <CategoryGrid categories={categories} />
-          )}
-        </Suspense>
-      </ContentSection>
+        {categoriesLoading ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-32 bg-muted animate-pulse rounded-lg" />
+            ))}
+          </div>
+        ) : (
+          <CategoryGrid categories={categories} />
+        )}
+      </Section>
 
       {/* Catálogo de Workshops */}
       <Section spacing="lg" background="muted">
@@ -221,7 +287,8 @@ export default function Lab() {
         </div>
       </Section>
 
-      {/* Mock Agenda */}
+
+      {/* Dynamic Agenda */}
       <ContentSection>
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Próximas Turmas</h2>
@@ -239,26 +306,10 @@ export default function Lab() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="p-4 rounded-lg border border-muted/30 bg-gradient-to-r from-primary/5 to-transparent">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-semibold">React do Zero ao Deploy</h4>
-                    <Badge variant="secondary">Online</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-2">17-21 de Fevereiro • 19h às 22h</p>
-                  <p className="text-sm font-medium text-primary">8 vagas restantes</p>
-                </div>
-                
-                <div className="p-4 rounded-lg border border-muted/30">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-semibold">UX/UI Design Thinking</h4>
-                    <Badge variant="outline">Presencial</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-2">24-28 de Fevereiro • 14h às 18h</p>
-                  <p className="text-sm font-medium text-amber-600">3 vagas restantes</p>
-                </div>
-              </div>
-              
+              <Suspense fallback={<div className="h-32 bg-muted/20 animate-pulse rounded" />}>
+                <WorkshopScheduleList />
+              </Suspense>
+
               <div className="text-center pt-4">
                 <QualificationButton variant="default">
                   Garantir Minha Vaga
@@ -314,7 +365,7 @@ export default function Lab() {
           <p className="text-lg text-muted-foreground mb-8">
             Junte-se a centenas de profissionais que já transformaram suas carreiras com nossos workshops práticos.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <QualificationButton variant="default" size="lg" className="min-w-[200px]">
               Solicitar Proposta

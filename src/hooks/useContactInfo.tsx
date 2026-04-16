@@ -4,6 +4,65 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { BusinessUnit } from './useCurrentProduct';
 
+// Specific interfaces to replace any types
+export interface ContactMetadata {
+  icon?: string;
+  country_code?: string;
+  extension?: string;
+  platform?: string;
+  verified?: boolean;
+  [key: string]: string | boolean | undefined;
+}
+
+export interface ContactEmail {
+  email: string;
+  label: string;
+  is_primary: boolean;
+}
+
+export interface ContactPhone {
+  phone: string;
+  label: string;
+  country_code?: string;
+  is_primary: boolean;
+}
+
+export interface Address {
+  street: string;
+  number?: string;
+  complement?: string;
+  neighborhood?: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  country: string;
+  is_primary?: boolean;
+  isPrimary?: boolean; // Alternative naming
+}
+
+export interface SocialMediaLinks {
+  linkedin?: string;
+  instagram?: string;
+  facebook?: string;
+  twitter?: string;
+  youtube?: string;
+  github?: string;
+  tiktok?: string;
+  whatsapp?: string;
+  [key: string]: string | undefined;
+}
+
+export interface BusinessHours {
+  monday?: { open: string; close: string; closed?: boolean };
+  tuesday?: { open: string; close: string; closed?: boolean };
+  wednesday?: { open: string; close: string; closed?: boolean };
+  thursday?: { open: string; close: string; closed?: boolean };
+  friday?: { open: string; close: string; closed?: boolean };
+  saturday?: { open: string; close: string; closed?: boolean };
+  sunday?: { open: string; close: string; closed?: boolean };
+  timezone?: string;
+}
+
 export interface ContactInfoItem {
   id?: string;
   type: 'email' | 'phone' | 'address' | 'social' | 'other';
@@ -12,7 +71,7 @@ export interface ContactInfoItem {
   is_primary: boolean;
   is_active: boolean;
   is_public: boolean;
-  metadata?: any;
+  metadata?: ContactMetadata;
   display_order: number;
   business_unit: string;
 }
@@ -22,11 +81,11 @@ export interface CompanySettings {
   company_name: string;
   support_email: string;
   whatsapp_number: string;
-  contact_emails: any[];
-  contact_phones: any[];
-  addresses: any[];
-  social_media: any;
-  business_hours: any;
+  contact_emails: ContactEmail[];
+  contact_phones: ContactPhone[];
+  addresses: Address[];
+  social_media: SocialMediaLinks;
+  business_hours: BusinessHours;
   response_time_hours: number;
   auto_response_message: string;
 }
@@ -42,9 +101,10 @@ export const useContactInfo = (selectedProduct?: BusinessUnit) => {
         .from('company_settings')
         .select('*')
         .single();
-      
+
       if (error) throw error;
-      return data as CompanySettings;
+      // Cast through unknown for Supabase Json compatibility
+      return data as unknown as CompanySettings;
     },
   });
 
@@ -56,14 +116,14 @@ export const useContactInfo = (selectedProduct?: BusinessUnit) => {
         .from('contact_info')
         .select('*')
         .eq('is_active', true);
-      
+
       // Filter by business_unit if in admin context
       if (selectedProduct) {
         query = query.eq('business_unit', selectedProduct);
       }
-      
+
       const { data, error } = await query.order('display_order');
-      
+
       if (error) throw error;
       return data as ContactInfoItem[];
     },
@@ -72,13 +132,14 @@ export const useContactInfo = (selectedProduct?: BusinessUnit) => {
   // Update company settings
   const updateSettingsMutation = useMutation({
     mutationFn: async (settings: Partial<CompanySettings>) => {
+      // Cast to unknown for Supabase compatibility
       const { data, error } = await supabase
         .from('company_settings')
-        .update(settings)
+        .update(settings as unknown as Record<string, unknown>)
         .eq('id', companySettings?.id)
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -106,7 +167,7 @@ export const useContactInfo = (selectedProduct?: BusinessUnit) => {
         .insert(itemWithUnit)
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -129,7 +190,7 @@ export const useContactInfo = (selectedProduct?: BusinessUnit) => {
         .eq('id', id)
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -150,7 +211,7 @@ export const useContactInfo = (selectedProduct?: BusinessUnit) => {
         .from('contact_info')
         .delete()
         .eq('id', id);
-      
+
       if (error) throw error;
     },
     onSuccess: () => {
@@ -165,26 +226,26 @@ export const useContactInfo = (selectedProduct?: BusinessUnit) => {
 
   // Helper functions to get specific contact types
   const getPrimaryEmail = () => {
-    return contactItems.find(item => item.type === 'email' && item.is_primary)?.value || 
-           companySettings?.support_email || 
-           'contato@guilds.com.br';
+    return contactItems.find(item => item.type === 'email' && item.is_primary)?.value ||
+      companySettings?.support_email ||
+      'contato@guilds.com.br';
   };
 
   const getPrimaryPhone = () => {
-    return contactItems.find(item => item.type === 'phone' && item.is_primary)?.value || 
-           companySettings?.whatsapp_number || 
-           '+5511999999999';
+    return contactItems.find(item => item.type === 'phone' && item.is_primary)?.value ||
+      companySettings?.whatsapp_number ||
+      '+5511999999999';
   };
 
   const getSocialMediaLinks = () => {
     const socialItems = contactItems.filter(item => item.type === 'social');
     const socialObj: Record<string, string> = {};
-    
+
     socialItems.forEach(item => {
       const platform = item.label.toLowerCase();
       socialObj[platform] = item.value;
     });
-    
+
     return {
       ...companySettings?.social_media,
       ...socialObj
@@ -200,11 +261,11 @@ export const useContactInfo = (selectedProduct?: BusinessUnit) => {
         return null;
       }
     }
-    
+
     if (companySettings?.addresses && companySettings.addresses.length > 0) {
-      return companySettings.addresses.find((addr: any) => addr.isPrimary) || companySettings.addresses[0];
+      return companySettings.addresses.find((addr) => addr.isPrimary || addr.is_primary) || companySettings.addresses[0];
     }
-    
+
     return null;
   };
 
@@ -216,22 +277,22 @@ export const useContactInfo = (selectedProduct?: BusinessUnit) => {
     // Data
     companySettings,
     contactItems,
-    
+
     // Loading states
     isLoading: settingsLoading || itemsLoading,
-    
+
     // Mutations
     updateSettings: updateSettingsMutation.mutate,
     addContact: addContactMutation.mutate,
     updateContact: updateContactMutation.mutate,
     deleteContact: deleteContactMutation.mutate,
-    
+
     // Mutation states
     isUpdatingSettings: updateSettingsMutation.isPending,
     isAddingContact: addContactMutation.isPending,
     isUpdatingContact: updateContactMutation.isPending,
     isDeletingContact: deleteContactMutation.isPending,
-    
+
     // Helper functions
     getPrimaryEmail,
     getPrimaryPhone,

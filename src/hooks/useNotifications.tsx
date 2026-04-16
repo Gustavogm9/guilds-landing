@@ -3,6 +3,22 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
+// Typed interfaces for notification data
+export interface NotificationMetadata {
+  template_id?: string;
+  priority?: 'low' | 'medium' | 'high';
+  attachments?: string[];
+  tracking_id?: string;
+  [key: string]: unknown;
+}
+
+export interface WebhookPayload {
+  event: string;
+  timestamp: string;
+  data: Record<string, unknown>;
+  source?: string;
+}
+
 export interface EmailNotification {
   id: string;
   project_id: string;
@@ -14,7 +30,7 @@ export interface EmailNotification {
   status: 'pending' | 'sent' | 'failed';
   sent_at?: string;
   retry_count: number;
-  metadata?: any;
+  metadata?: NotificationMetadata;
   created_at: string;
   updated_at: string;
 }
@@ -23,7 +39,7 @@ export interface WebhookEvent {
   id: string;
   project_id: string;
   event_type: string;
-  payload: any;
+  payload: WebhookPayload;
   webhook_url?: string;
   status: 'pending' | 'sent' | 'failed';
   response_code?: number;
@@ -56,7 +72,7 @@ export const useNotifications = () => {
         .from('project_email_notifications')
         .select('*')
         .order('created_at', { ascending: false });
-      
+
       if (error) throw error;
       return data as EmailNotification[];
     },
@@ -70,9 +86,9 @@ export const useNotifications = () => {
         .from('project_webhook_events')
         .select('*')
         .order('created_at', { ascending: false });
-      
+
       if (error) throw error;
-      return data as WebhookEvent[];
+      return data as unknown as WebhookEvent[];
     },
   });
 
@@ -84,7 +100,7 @@ export const useNotifications = () => {
         .from('client_notification_preferences')
         .select('*')
         .order('created_at', { ascending: false });
-      
+
       if (error) throw error;
       return data as NotificationPreferences[];
     },
@@ -130,7 +146,7 @@ export const useNotifications = () => {
         .insert([preference])
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -145,9 +161,9 @@ export const useNotifications = () => {
 
   // Update notification preference
   const updateNotificationPreference = useMutation({
-    mutationFn: async ({ id, updates }: { 
-      id: string; 
-      updates: Partial<NotificationPreferences> 
+    mutationFn: async ({ id, updates }: {
+      id: string;
+      updates: Partial<NotificationPreferences>
     }) => {
       const { data, error } = await supabase
         .from('client_notification_preferences')
@@ -155,7 +171,7 @@ export const useNotifications = () => {
         .eq('id', id)
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -173,14 +189,14 @@ export const useNotifications = () => {
     mutationFn: async (notificationId: string) => {
       const { data, error } = await supabase
         .from('project_email_notifications')
-        .update({ 
+        .update({
           status: 'pending',
-          retry_count: 0 
+          retry_count: 0
         })
         .eq('id', notificationId)
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },

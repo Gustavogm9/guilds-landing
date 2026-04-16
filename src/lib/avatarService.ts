@@ -1,4 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from './logger';
+
+const log = logger.scope('AvatarService');
 
 export class AvatarService {
   static async resizeImage(file: File, maxSize: number = 400): Promise<File> {
@@ -6,7 +9,7 @@ export class AvatarService {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d')!;
       const img = new Image();
-      
+
       img.onload = () => {
         // Calculate new dimensions maintaining aspect ratio
         let { width, height } = img;
@@ -21,10 +24,10 @@ export class AvatarService {
             height = maxSize;
           }
         }
-        
+
         canvas.width = width;
         canvas.height = height;
-        
+
         // Draw and compress
         ctx.drawImage(img, 0, 0, width, height);
         canvas.toBlob((blob) => {
@@ -37,7 +40,7 @@ export class AvatarService {
           }
         }, 'image/jpeg', 0.8);
       };
-      
+
       img.src = URL.createObjectURL(file);
     });
   }
@@ -56,11 +59,11 @@ export class AvatarService {
 
       // Resize image
       const resizedFile = await this.resizeImage(file);
-      
+
       // Generate unique filename
       const fileExt = 'jpg'; // Always use jpg after compression
       const fileName = `avatars/${memberId || Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      
+
       // Upload to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('assets')
@@ -78,7 +81,7 @@ export class AvatarService {
 
       return urlData.publicUrl;
     } catch (error) {
-      console.error('Error uploading avatar:', error);
+      log.error('Error uploading avatar', { metadata: { error } });
       throw error;
     }
   }
@@ -97,11 +100,11 @@ export class AvatarService {
         .remove([filePath]);
 
       if (error) {
-        console.warn('Storage delete error:', error);
+        log.warn('Storage delete error', { metadata: { error } });
         // Don't throw - avatar might have been manually deleted
       }
     } catch (error) {
-      console.error('Error deleting avatar:', error);
+      log.error('Error deleting avatar', { metadata: { error } });
       // Don't throw - this is a cleanup operation
     }
   }

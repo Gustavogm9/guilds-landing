@@ -52,13 +52,13 @@ export default {
 					primary: 'hsl(var(--brand-primary))',
 					accent: 'hsl(var(--brand-accent))',
 				},
-				
+
 				// Accent Colors  
 				accent: {
 					DEFAULT: 'hsl(var(--accent))',
 					foreground: 'hsl(var(--accent-foreground))'
 				},
-				
+
 				// Neutral Scale
 				neutral: {
 					50: 'hsl(var(--neutral-50))',
@@ -72,12 +72,12 @@ export default {
 					800: 'hsl(var(--neutral-800))',
 					900: 'hsl(var(--neutral-900))',
 				},
-				
+
 				// Semantic Colors
 				success: 'hsl(var(--success))',
 				warning: 'hsl(var(--warning))',
 				danger: 'hsl(var(--danger))',
-				
+
 				// System Colors
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -108,6 +108,17 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+			},
+			fontSize: {
+				'guild-xs': ['0.75rem', { lineHeight: '1rem' }],
+				'guild-sm': ['0.875rem', { lineHeight: '1.25rem' }],
+				'guild-base': ['1rem', { lineHeight: '1.5rem' }],
+				'guild-lg': ['1.125rem', { lineHeight: '1.75rem' }],
+				'guild-xl': ['1.25rem', { lineHeight: '1.75rem' }],
+				'guild-2xl': ['1.5rem', { lineHeight: '2rem' }],
+				'guild-3xl': ['1.875rem', { lineHeight: '2.25rem' }],
+				'guild-4xl': ['2.25rem', { lineHeight: '2.5rem' }],
+				'guild-5xl': ['3rem', { lineHeight: '1' }],
 			},
 			spacing: {
 				'guild-1': '4px',
@@ -152,25 +163,25 @@ export default {
 					'100%': { boxShadow: '0 0 30px hsl(var(--brand-primary) / 0.8), 0 0 40px hsl(var(--brand-accent) / 0.3)' }
 				},
 				'forge': {
-					'0%': { 
+					'0%': {
 						transform: 'scale(1) rotate(0deg)',
 						boxShadow: '0 0 20px hsl(var(--brand-accent) / 0.3)'
 					},
-					'50%': { 
+					'50%': {
 						transform: 'scale(1.05) rotate(1deg)',
 						boxShadow: '0 0 30px hsl(var(--brand-accent) / 0.6), 0 0 50px hsl(var(--brand-primary) / 0.2)'
 					},
-					'100%': { 
+					'100%': {
 						transform: 'scale(1) rotate(0deg)',
 						boxShadow: '0 0 20px hsl(var(--brand-accent) / 0.3)'
 					}
 				},
 				'shield-pulse': {
-					'0%, 100%': { 
+					'0%, 100%': {
 						transform: 'scale(1)',
 						filter: 'drop-shadow(0 0 10px hsl(var(--brand-primary) / 0.3))'
 					},
-					'50%': { 
+					'50%': {
 						transform: 'scale(1.02)',
 						filter: 'drop-shadow(0 0 20px hsl(var(--brand-primary) / 0.6))'
 					}
@@ -183,6 +194,9 @@ export default {
 				'glow': 'glow 2s ease-in-out infinite alternate',
 				'forge': 'forge 3s ease-in-out infinite',
 				'shield-pulse': 'shield-pulse 4s ease-in-out infinite'
+			},
+			transitionTimingFunction: {
+				'forge': 'cubic-bezier(0.23, 1, 0.32, 1)',
 			}
 		}
 	},

@@ -43,46 +43,73 @@ export const usePermissions = () => {
       setUserRoles([]);
       setPermissions({});
       setLoading(false);
-      return; // ← PARA AQUI, sem fazer requests ao Supabase!
+      return;
     }
 
     try {
-      // Fetch user profile (silently fail if table doesn't exist or RLS blocks)
-      const { data: profile, error: profileError } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
+      // Fetch profile, roles, role_permissions, and user_permissions in parallel
+      const [profileResult, rolesResult, rolePermsResult, userPermsResult] = await Promise.all([
+        supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle(),
+        supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .eq('is_active', true)
+          .or('expires_at.is.null,expires_at.gt.now()'),
+        supabase
+          .from('role_permissions')
+          .select('role, resource, action, is_granted'),
+        supabase
+          .from('user_permissions')
+          .select('resource, action, is_granted, expires_at')
+          .eq('user_id', user.id)
+      ]);
 
-      if (!profileError) {
-        setUserProfile(profile);
+      // Set profile
+      if (profileResult.data && !profileResult.error) {
+        setUserProfile(profileResult.data);
       }
 
-      // Fetch user roles
-      const { data: roles } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .eq('is_active', true)
-        .or('expires_at.is.null,expires_at.gt.now()');
-
-      const roleList = roles?.map(r => r.role as AppRole) || [];
+      // Get user roles
+      const roleList = rolesResult.data?.map(r => r.role as AppRole) || [];
       setUserRoles(roleList);
 
-      // Cache permissions for common operations
+      // Build permissions cache from role_permissions
       const permissionCache: Record<string, boolean> = {};
       const resources: AppResource[] = ['crm', 'financial', 'projects', 'feedback', 'analytics', 'settings', 'users', 'campaigns'];
       const actions: PermissionAction[] = ['create', 'read', 'update', 'delete', 'approve', 'manage'];
 
+      // Initialize all permissions as false
       for (const resource of resources) {
         for (const action of actions) {
-          const key = `${resource}:${action}`;
-          const { data } = await supabase.rpc('has_permission', {
-            p_user_id: user.id,
-            p_resource: resource,
-            p_action: action
-          });
-          permissionCache[key] = data || false;
+          permissionCache[`${resource}:${action}`] = false;
+        }
+      }
+
+      // Apply role-based permissions
+      if (rolePermsResult.data) {
+        for (const perm of rolePermsResult.data) {
+          if (roleList.includes(perm.role as AppRole) && perm.is_granted) {
+            const key = `${perm.resource}:${perm.action}`;
+            permissionCache[key] = true;
+          }
+        }
+      }
+
+      // Apply user-specific overrides (takes precedence)
+      if (userPermsResult.data) {
+        const now = new Date();
+        for (const perm of userPermsResult.data) {
+          // Check if permission is not expired
+          const isExpired = perm.expires_at && new Date(perm.expires_at) <= now;
+          if (!isExpired) {
+            const key = `${perm.resource}:${perm.action}`;
+            permissionCache[key] = perm.is_granted;
+          }
         }
       }
 
@@ -104,7 +131,7 @@ export const usePermissions = () => {
 
   const hasPermission = async (resource: AppResource, action: PermissionAction): Promise<boolean> => {
     if (!user) return false;
-    
+
     // Check cache first
     const cacheKey = `${resource}:${action}`;
     if (permissions[cacheKey] !== undefined) {
@@ -118,7 +145,7 @@ export const usePermissions = () => {
         p_resource: resource,
         p_action: action
       });
-      
+
       // Update cache
       setPermissions(prev => ({ ...prev, [cacheKey]: data || false }));
       return data || false;

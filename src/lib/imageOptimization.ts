@@ -1,4 +1,7 @@
 // Image optimization utilities for better Core Web Vitals
+import { logger } from './logger';
+
+const log = logger.scope('ImageOptimization');
 
 export interface ImageOptimizationOptions {
   src: string;
@@ -19,7 +22,7 @@ export const generateImageSources = (options: ImageOptimizationOptions): {
   fallback: string;
 } => {
   const { src } = options;
-  
+
   // Return only the original source to avoid trying to load non-existent formats
   // In production, you'd have a build process or CDN that generates these formats
   return {
@@ -30,7 +33,7 @@ export const generateImageSources = (options: ImageOptimizationOptions): {
 // Generate responsive sizes attribute
 export const generateSizes = (breakpoints: Record<string, string>): string => {
   return Object.entries(breakpoints)
-    .map(([breakpoint, size]) => 
+    .map(([breakpoint, size]) =>
       breakpoint === 'default' ? size : `(${breakpoint}) ${size}`
     )
     .join(', ');
@@ -47,10 +50,10 @@ export const generateResponsiveSrcset = (src: string, sizes: number[] = [320, 64
 export const createOptimizedImageProps = (options: ImageOptimizationOptions) => {
   const { src, alt, width, height, priority = false, loading = 'lazy', sizes } = options;
   const sources = generateImageSources(options);
-  
+
   // Generate srcset for responsive images
   const srcset = generateResponsiveSrcset(src);
-  
+
   return {
     src: sources.fallback,
     srcSet: srcset,
@@ -71,9 +74,8 @@ export const generateImagePreloads = (images: ImageOptimizationOptions[]): strin
     .filter(img => img.priority)
     .map(img => {
       const sources = generateImageSources(img);
-      return `<link rel="preload" as="image" href="${sources.fallback}" ${
-        sources.webp ? `imagesrcset="${sources.webp}" ` : ''
-      }${img.sizes ? `imagesizes="${img.sizes}"` : ''}>`;
+      return `<link rel="preload" as="image" href="${sources.fallback}" ${sources.webp ? `imagesrcset="${sources.webp}" ` : ''
+        }${img.sizes ? `imagesizes="${img.sizes}"` : ''}>`;
     });
 };
 
@@ -82,23 +84,23 @@ export const createLazyLoadObserver = (callback: (entries: IntersectionObserverE
   if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
     return null;
   }
-  
+
   // Debounce and batch callbacks using RAF to prevent forced reflows
   let rafId: number | null = null;
   let pendingEntries: IntersectionObserverEntry[] = [];
-  
+
   const debouncedCallback = (entries: IntersectionObserverEntry[]) => {
     pendingEntries.push(...entries);
-    
+
     if (rafId) return; // Already scheduled
-    
+
     rafId = requestAnimationFrame(() => {
       callback(pendingEntries);
       pendingEntries = [];
       rafId = null;
     });
   };
-  
+
   return new IntersectionObserver(debouncedCallback, {
     rootMargin: '50px 0px',
     threshold: 0.1
@@ -112,7 +114,7 @@ export const generateBlurDataURL = (width = 10, height = 10): string => {
       <rect width="100%" height="100%" fill="#f5f5f5" />
     </svg>
   `;
-  
+
   return `data:image/svg+xml;base64,${btoa(svg)}`;
 };
 
@@ -121,10 +123,10 @@ export const optimizeForCLS = {
   // Ensure images have dimensions to prevent layout shift
   ensureDimensions: (img: HTMLImageElement) => {
     if (!img.width || !img.height) {
-      console.warn('Image missing dimensions, this may cause Cumulative Layout Shift:', img.src);
+      log.warn('Image missing dimensions, this may cause Cumulative Layout Shift', { metadata: { src: img.src } });
     }
   },
-  
+
   // Add aspect ratio container
   createAspectRatioContainer: (aspectRatio: number) => ({
     position: 'relative' as const,
@@ -132,7 +134,7 @@ export const optimizeForCLS = {
     height: 0,
     overflow: 'hidden' as const
   }),
-  
+
   // Image styles to prevent CLS
   imageStyles: {
     position: 'absolute' as const,
@@ -154,13 +156,13 @@ export const fontOptimizations = {
       font-display: swap;
     }
   `,
-  
+
   // Preload critical fonts
-  generateFontPreloads: (fonts: Array<{ href: string; type?: string }>) => 
-    fonts.map(font => 
+  generateFontPreloads: (fonts: Array<{ href: string; type?: string }>) =>
+    fonts.map(font =>
       `<link rel="preload" href="${font.href}" as="font" type="${font.type || 'font/woff2'}" crossorigin>`
     ),
-  
+
   // Resource hints for font optimization
   generateFontResourceHints: () => [
     '<link rel="preconnect" href="https://fonts.googleapis.com">',

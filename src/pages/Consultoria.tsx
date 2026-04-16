@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { MetricBadge } from "@/components/ui/MetricBadge";
 import { FAQ } from "@/components/ui/FAQ";
 import { QualificationButton } from "@/components/forms/QualificationButton";
-import { 
-  consultoriaServices, 
-  consultoriaDeliverables, 
-  consultoriaProcess, 
-  consultoriaCases, 
-  consultoriaFAQ 
-} from "@/data/mockData";
+import {
+  consultoriaServices,
+  consultoriaDeliverables,
+  consultoriaProcess,
+  consultoriaCases,
+  consultoriaFAQ
+} from "@/data/defaultContent";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -48,10 +48,10 @@ export default function Consultoria() {
               Mapeamento estratégico. Decisões assertivas.
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl">
-              Diagnóstico completo, arquitetura de soluções e roadmaps trimestrais 
+              Diagnóstico completo, arquitetura de soluções e roadmaps trimestrais
               para acelerar sua transformação digital com decisões baseadas em dados.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
               <QualificationButton size="lg" className="text-lg px-8 btn-forge">
                 <Search className="mr-2 h-5 w-5" />
@@ -63,19 +63,19 @@ export default function Consultoria() {
             </div>
 
             <div className="flex flex-wrap gap-6">
-              <MetricBadge 
-                value="30%" 
-                label="Aceleração na execução" 
+              <MetricBadge
+                value="30%"
+                label="Aceleração na execução"
                 icon={TrendingUp}
               />
-              <MetricBadge 
-                value="95%" 
-                label="Assertividade dos roadmaps" 
+              <MetricBadge
+                value="95%"
+                label="Assertividade dos roadmaps"
                 icon={Target}
               />
-              <MetricBadge 
-                value="40+" 
-                label="Empresas atendidas" 
+              <MetricBadge
+                value="40+"
+                label="Empresas atendidas"
                 icon={Users}
               />
             </div>
@@ -91,7 +91,7 @@ export default function Consultoria() {
               Serviços de Consultoria
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Mapeamento completo do cenário atual e planejamento estratégico 
+              Mapeamento completo do cenário atual e planejamento estratégico
               para sua transformação digital
             </p>
           </div>
@@ -143,7 +143,7 @@ export default function Consultoria() {
               Entregáveis Estratégicos
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Documentação completa e roadmaps detalhados para guiar 
+              Documentação completa e roadmaps detalhados para guiar
               sua estratégia de transformação digital
             </p>
           </div>
@@ -200,7 +200,7 @@ export default function Consultoria() {
               Metodologia & Processo
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Framework próprio testado em 40+ empresas para garantir 
+              Framework próprio testado em 40+ empresas para garantir
               máxima assertividade nos diagnósticos e roadmaps
             </p>
           </div>
@@ -208,7 +208,7 @@ export default function Consultoria() {
           <div className="relative">
             {/* Timeline line */}
             <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary to-secondary hidden md:block" />
-            
+
             <div className="space-y-12">
               {consultoriaProcess.map((step, index) => (
                 <div key={index} className="relative flex flex-col md:flex-row items-start gap-6">
@@ -216,7 +216,7 @@ export default function Consultoria() {
                   <div className="flex-shrink-0 w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-lg relative z-10">
                     {step.number}
                   </div>
-                  
+
                   {/* Content */}
                   <div className="flex-1">
                     <Card className="border-2">
@@ -255,7 +255,7 @@ export default function Consultoria() {
               Casos de Sucesso
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Diagnósticos e roadmaps que geraram resultados comprovados 
+              Diagnósticos e roadmaps que geraram resultados comprovados
               em empresas de diversos portes
             </p>
           </div>
@@ -279,12 +279,12 @@ export default function Consultoria() {
                     <h4 className="font-semibold text-sm text-muted-foreground mb-1">SITUAÇÃO</h4>
                     <p className="text-sm leading-relaxed">{caseStudy.situation}</p>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-semibold text-sm text-muted-foreground mb-1">SOLUÇÃO</h4>
                     <p className="text-sm leading-relaxed">{caseStudy.solution}</p>
                   </div>
-                  
+
                   <div className="pt-2 border-t">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">Resultado:</span>
@@ -311,7 +311,7 @@ export default function Consultoria() {
               Esclarecemos as principais dúvidas sobre nossos serviços de consultoria
             </p>
           </div>
-          
+
           <FAQ questions={consultoriaFAQ} />
         </div>
       </section>
@@ -324,10 +324,10 @@ export default function Consultoria() {
               Pronto para acelerar sua transformação digital?
             </h2>
             <p className="text-xl mb-8 opacity-90">
-              Comece com um diagnóstico gratuito e descubra as oportunidades 
+              Comece com um diagnóstico gratuito e descubra as oportunidades
               que sua empresa está perdendo.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <QualificationButton size="lg" className="text-lg px-8 bg-gradient-to-r from-white to-white/90 text-primary hover:from-white/90 hover:to-white/80">
                 <Target className="mr-2 h-5 w-5" />

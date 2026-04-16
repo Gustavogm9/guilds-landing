@@ -1,6 +1,53 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+const log = logger.scope('Legal');
+
+// Specific types to replace any
+export interface ClauseCondition {
+  field: string;
+  operator: 'equals' | 'not_equals' | 'contains' | 'greater_than' | 'less_than';
+  value: string | number | boolean;
+  action: 'show' | 'hide' | 'require';
+}
+
+export interface VariableMapping {
+  variable_name: string;
+  source: 'contact' | 'deal' | 'company' | 'custom';
+  field: string;
+  default_value?: string;
+  format?: string;
+}
+
+export interface ContractVariable {
+  name: string;
+  value: string | number | boolean;
+  type: 'text' | 'number' | 'date' | 'currency' | 'boolean';
+}
+
+export interface AIReviewResult {
+  reviewed_at: string;
+  risk_areas: Array<{
+    clause_id?: string;
+    description: string;
+    severity: 'low' | 'medium' | 'high';
+    suggestion?: string;
+  }>;
+  overall_assessment: string;
+  compliance_score: number;
+}
+
+export interface ContractSigner {
+  name: string;
+  email: string;
+  cpf?: string;
+  role: 'signer' | 'witness' | 'approver';
+  sign_order?: number;
+  signed_at?: string;
+  signature_url?: string;
+}
 
 export interface LegalClauseGroup {
   id: string;
@@ -19,8 +66,8 @@ export interface LegalClause {
   group_id: string;
   title: string;
   content_markdown: string;
-  variables: string[]; // placeholders
-  conditions: Record<string, any>; // regras condicionais
+  variables: string[];
+  conditions: Record<string, ClauseCondition>;
   tags: string[];
   is_locked_by_legal: boolean;
   display_order: number;
@@ -36,7 +83,7 @@ export interface LegalTemplate {
   contract_type: string;
   default_groups: string[];
   default_clauses: string[];
-  variables_mapping: Record<string, any>;
+  variables_mapping: Record<string, VariableMapping>;
   is_default: boolean;
   created_by?: string;
   is_active: boolean;
@@ -53,12 +100,12 @@ export interface LegalContract {
   template_id: string;
   title: string;
   content_markdown?: string;
-  variables_data: any; // Changed from Record<string, any> to any for Supabase compatibility
+  variables_data: Record<string, ContractVariable>;
   selected_clauses: string[];
   status: 'draft' | 'review' | 'approved' | 'signed' | 'cancelled';
   pdf_url?: string;
   pdf_hash?: string;
-  ai_draft_review?: any; // Changed from Record<string, any> to any for Supabase compatibility
+  ai_draft_review?: AIReviewResult;
   ai_risk_score?: number;
   ai_law_design_summary?: string;
   created_by?: string;
@@ -74,10 +121,10 @@ export interface LegalContractSignature {
   provider: string;
   envelope_id?: string;
   status: 'pending' | 'sent' | 'signed' | 'cancelled';
-  signers: any[];
+  signers: ContractSigner[];
   sent_at?: string;
   signed_at?: string;
-  webhook_data?: Record<string, any>;
+  webhook_data?: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }
@@ -98,7 +145,7 @@ export const useLegal = () => {
         .select('*')
         .eq('is_active', true)
         .order('display_order');
-      
+
       if (error) throw error;
       return data as LegalClauseGroup[];
     }
@@ -112,9 +159,9 @@ export const useLegal = () => {
       .eq('group_id', groupId)
       .eq('is_active', true)
       .order('display_order');
-    
+
     if (error) throw error;
-    return data as LegalClause[];
+    return data as unknown as LegalClause[];
   };
 
   // Fetch templates
@@ -129,9 +176,9 @@ export const useLegal = () => {
         .select('*')
         .eq('is_active', true)
         .order('is_default', { ascending: false });
-      
+
       if (error) throw error;
-      return data as LegalTemplate[];
+      return data as unknown as LegalTemplate[];
     }
   });
 
@@ -145,27 +192,28 @@ export const useLegal = () => {
       const { data, error } = await supabase
         .from('legal_contracts')
         .select(`
-          *,
-          client_contact:crm_contacts(name, email, company),
-          deal:crm_deals(title, value),
-          template:legal_templates(name, contract_type)
+  *,
+  client_contact: crm_contacts(name, email, company),
+    deal: crm_deals(title, value),
+      template: legal_templates(name, contract_type)
         `)
         .order('created_at', { ascending: false });
-      
+
       if (error) throw error;
-      return data as LegalContract[];
+      return data as unknown as LegalContract[];
     }
   });
 
   // Create contract mutation
   const createContract = useMutation({
-    mutationFn: async (contractData: any) => {
+    mutationFn: async (contractData: Omit<LegalContract, 'id' | 'created_at' | 'updated_at'>) => {
       const { data, error } = await supabase
         .from('legal_contracts')
-        .insert([contractData])
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .insert(contractData as any)
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -174,21 +222,22 @@ export const useLegal = () => {
       toast.success('Contrato criado com sucesso!');
     },
     onError: (error) => {
-      console.error('Erro ao criar contrato:', error);
+      log.error('Erro ao criar contrato', { metadata: { error } });
       toast.error('Erro ao criar contrato');
     }
   });
 
   // Update contract mutation
   const updateContract = useMutation({
-    mutationFn: async ({ id, ...updates }: any) => {
+    mutationFn: async ({ id, ...updates }: { id: string } & Partial<LegalContract>) => {
       const { data, error } = await supabase
         .from('legal_contracts')
-        .update(updates)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .update(updates as any)
         .eq('id', id)
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -197,7 +246,7 @@ export const useLegal = () => {
       toast.success('Contrato atualizado com sucesso!');
     },
     onError: (error) => {
-      console.error('Erro ao atualizar contrato:', error);
+      log.error('Erro ao atualizar contrato', { metadata: { error } });
       toast.error('Erro ao atualizar contrato');
     }
   });
@@ -211,7 +260,7 @@ export const useLegal = () => {
           contract_id: contractId
         }
       });
-      
+
       if (error) throw error;
       return data;
     },
@@ -220,7 +269,7 @@ export const useLegal = () => {
       toast.success('Rascunho gerado com IA!');
     },
     onError: (error) => {
-      console.error('Erro ao gerar rascunho:', error);
+      log.error('Erro ao gerar rascunho', { metadata: { error } });
       toast.error('Erro ao gerar rascunho com IA');
     }
   });
@@ -234,7 +283,7 @@ export const useLegal = () => {
           contract_id: contractId
         }
       });
-      
+
       if (error) throw error;
       return data;
     },
@@ -243,7 +292,7 @@ export const useLegal = () => {
       toast.success('Revisão jurídica concluída!');
     },
     onError: (error) => {
-      console.error('Erro na revisão jurídica:', error);
+      log.error('Erro na revisão jurídica', { metadata: { error } });
       toast.error('Erro na revisão jurídica com IA');
     }
   });
@@ -257,7 +306,7 @@ export const useLegal = () => {
           contract_id: contractId
         }
       });
-      
+
       if (error) throw error;
       return data;
     },
@@ -266,7 +315,7 @@ export const useLegal = () => {
       toast.success('Resumo visual gerado!');
     },
     onError: (error) => {
-      console.error('Erro ao gerar resumo visual:', error);
+      log.error('Erro ao gerar resumo visual', { metadata: { error } });
       toast.error('Erro ao gerar resumo visual');
     }
   });
@@ -280,7 +329,7 @@ export const useLegal = () => {
           contract_id: contractId
         }
       });
-      
+
       if (error) throw error;
       return data;
     },
@@ -289,7 +338,7 @@ export const useLegal = () => {
       toast.success('Contrato enviado para assinatura!');
     },
     onError: (error) => {
-      console.error('Erro ao enviar para Clicksign:', error);
+      log.error('Erro ao enviar para Clicksign', { metadata: { error } });
       toast.error('Erro ao enviar para assinatura');
     }
   });
@@ -302,7 +351,7 @@ export const useLegal = () => {
         .insert([groupData])
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -311,7 +360,7 @@ export const useLegal = () => {
       toast.success('Grupo de cláusulas criado!');
     },
     onError: (error) => {
-      console.error('Erro ao criar grupo:', error);
+      log.error('Erro ao criar grupo', { metadata: { error } });
       toast.error('Erro ao criar grupo de cláusulas');
     }
   });
@@ -324,7 +373,7 @@ export const useLegal = () => {
         .insert([clauseData])
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -333,7 +382,7 @@ export const useLegal = () => {
       toast.success('Cláusula criada!');
     },
     onError: (error) => {
-      console.error('Erro ao criar cláusula:', error);
+      log.error('Erro ao criar cláusula', { metadata: { error } });
       toast.error('Erro ao criar cláusula');
     }
   });
@@ -347,7 +396,7 @@ export const useLegal = () => {
         .eq('id', id)
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -356,7 +405,7 @@ export const useLegal = () => {
       toast.success('Cláusula atualizada com sucesso!');
     },
     onError: (error) => {
-      console.error('Erro ao atualizar cláusula:', error);
+      log.error('Erro ao atualizar cláusula', { metadata: { error } });
       toast.error('Erro ao atualizar cláusula');
     }
   });
@@ -371,7 +420,7 @@ export const useLegal = () => {
         .contains('selected_clauses', [clauseId]);
 
       if (contractsUsing && contractsUsing.length > 0) {
-        throw new Error(`Não é possível deletar. Cláusula está sendo usada em ${contractsUsing.length} contrato(s).`);
+        throw new Error(`Não é possível deletar.Cláusula está sendo usada em ${contractsUsing.length} contrato(s).`);
       }
 
       const { data, error } = await supabase
@@ -380,7 +429,7 @@ export const useLegal = () => {
         .eq('id', clauseId)
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -389,8 +438,8 @@ export const useLegal = () => {
       toast.success('Cláusula removida com sucesso!');
     },
     onError: (error) => {
-      console.error('Erro ao remover cláusula:', error);
-      toast.error(error.message || 'Erro ao remover cláusula');
+      log.error('Erro ao remover cláusula', { metadata: { error } });
+      toast.error(error instanceof Error ? error.message : 'Erro ao remover cláusula');
     }
   });
 
@@ -420,7 +469,7 @@ export const useLegal = () => {
         .insert([duplicateData])
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -442,7 +491,7 @@ export const useLegal = () => {
         .insert([templateData])
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -465,7 +514,7 @@ export const useLegal = () => {
         .eq('id', id)
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -484,18 +533,18 @@ export const useLegal = () => {
     clauseGroups,
     contracts,
     templates,
-    
+
     // Loading states
     clauseGroupsLoading,
     contractsLoading,
     templatesLoading,
-    
+
     // Error states
     clauseGroupsError,
-    
+
     // Functions
     fetchClausesByGroup,
-    
+
     // Mutations
     createContract,
     updateContract,
@@ -510,7 +559,7 @@ export const useLegal = () => {
     duplicateClause,
     createTemplate,
     updateTemplate,
-    
+
     // Mutation states
     isCreatingContract: createContract.isPending,
     isUpdatingContract: updateContract.isPending,

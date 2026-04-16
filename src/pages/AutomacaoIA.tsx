@@ -4,28 +4,23 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MetricBadge } from "@/components/ui/MetricBadge";
 import { FAQ } from "@/components/ui/FAQ";
-import { 
-  Breadcrumb, 
-  BreadcrumbItem, 
-  BreadcrumbLink, 
-  BreadcrumbList, 
-  BreadcrumbPage, 
-  BreadcrumbSeparator 
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
-import { 
-  Bot, 
-  Workflow, 
-  BrainCircuit, 
-  Zap, 
-  MessageSquare, 
+import {
+  Bot,
+  Workflow,
+  BrainCircuit,
+  Zap,
   BarChart3,
   Users,
-  Shield,
   Database,
-  Lock,
   Eye,
-  RefreshCw,
-  TrendingUp,
   Clock,
   DollarSign,
   CheckCircle2,
@@ -33,46 +28,62 @@ import {
   Phone,
   MessageCircle
 } from "lucide-react";
-import { 
-  automationUseCases, 
-  automationIntegrations, 
+import {
+  automationUseCases,
+  automationIntegrations,
   automationDeliverables,
   automationCases,
   automationSecurity,
-  automationFAQ 
-} from "@/data/mockData";
+  automationFAQ
+} from "@/data/defaultContent";
+import { useContent } from "@/hooks/useContent";
+import { DynamicIcon } from "@/components/ui/DynamicIcon";
 
 const AutomacaoIA = () => {
-  const useCaseIcons = {
-    workflow: Workflow,
-    bot: Bot,
-    brain: BrainCircuit,
-    analytics: BarChart3,
-    message: MessageSquare,
-    chart: TrendingUp
+  const { getContent } = useContent('services');
+
+  const defaultContent = {
+    useCases: automationUseCases,
+    integrations: automationIntegrations,
+    deliverables: automationDeliverables,
+    cases: automationCases,
+    security: automationSecurity,
+    faq: automationFAQ
   };
 
-  const integrationIcons = {
-    users: Users,
-    message: MessageCircle,
-    database: Database,
-    workflow: Workflow,
-    zap: Zap,
-    chart: BarChart3
+  const content = getContent('page_automation', defaultContent);
+
+  // Mapping internal keys (from mock/DB) to Lucide Icon names (for DynamicIcon)
+  const useCaseIcons: Record<string, string> = {
+    workflow: 'Workflow',
+    bot: 'Bot',
+    brain: 'BrainCircuit',
+    analytics: 'BarChart3',
+    message: 'MessageSquare',
+    chart: 'TrendingUp'
   };
 
-  const deliverableIcons = {
-    workflow: Workflow,
-    bot: Bot,
-    brain: BrainCircuit,
-    chart: BarChart3
+  const integrationIcons: Record<string, string> = {
+    users: 'Users',
+    message: 'MessageCircle',
+    database: 'Database',
+    workflow: 'Workflow',
+    zap: 'Zap',
+    chart: 'BarChart3'
   };
 
-  const securityIcons = {
-    shield: Shield,
-    eye: Eye,
-    lock: Lock,
-    refresh: RefreshCw
+  const deliverableIcons: Record<string, string> = {
+    workflow: 'Workflow',
+    bot: 'Bot',
+    brain: 'BrainCircuit',
+    chart: 'BarChart3'
+  };
+
+  const securityIcons: Record<string, string> = {
+    shield: 'Shield',
+    eye: 'Eye',
+    lock: 'Lock',
+    refresh: 'RefreshCw'
   };
 
   return (
@@ -152,10 +163,10 @@ const AutomacaoIA = () => {
                 Automatize fluxos. Decida melhor com IA.
               </h1>
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                Otimize processos, elimine tarefas repetitivas e tome decisões mais inteligentes 
+                Otimize processos, elimine tarefas repetitivas e tome decisões mais inteligentes
                 com soluções de automação e inteligência artificial sob medida para sua empresa.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Button size="lg" className="flex items-center gap-2">
                   <Zap className="w-5 h-5" />
@@ -168,17 +179,17 @@ const AutomacaoIA = () => {
               </div>
 
               <div className="flex flex-wrap gap-4">
-                <MetricBadge 
+                <MetricBadge
                   icon={Clock}
                   value="70%"
                   label="Redução tempo administrativo"
                 />
-                <MetricBadge 
+                <MetricBadge
                   icon={DollarSign}
                   value="40%"
                   label="Economia em operações"
                 />
-                <MetricBadge 
+                <MetricBadge
                   icon={CheckCircle2}
                   value="85%"
                   label="Redução de erros"
@@ -235,19 +246,19 @@ const AutomacaoIA = () => {
               Casos de Uso que Transformam Negócios
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Descubra como nossa automação e IA podem revolucionar seus processos, 
+              Descubra como nossa automação e IA podem revolucionar seus processos,
               desde workflows simples até análises avançadas com machine learning.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {automationUseCases.map((useCase, index) => {
-              const Icon = useCaseIcons[useCase.icon as keyof typeof useCaseIcons];
+            {content.useCases.map((useCase: any, index: number) => {
+              const iconName = useCaseIcons[useCase.icon] || useCase.icon;
               return (
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <div className="flex items-center gap-3 mb-3">
-                      {Icon && <Icon className="w-8 h-8 text-primary" />}
+                      <DynamicIcon name={iconName} className="w-8 h-8 text-primary" />
                       <Badge variant="secondary">{useCase.category}</Badge>
                     </div>
                     <CardTitle className="text-xl">{useCase.title}</CardTitle>
@@ -255,7 +266,7 @@ const AutomacaoIA = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
-                      {useCase.benefits.map((benefit, i) => (
+                      {useCase.benefits.map((benefit: string, i: number) => (
                         <div key={i} className="flex items-center gap-2 text-sm">
                           <CheckCircle2 className="w-4 h-4 text-green-500" />
                           <span>{benefit}</span>
@@ -278,25 +289,27 @@ const AutomacaoIA = () => {
               Integrações que Conectam Tudo
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Conectamos seus sistemas existentes para criar fluxos automatizados 
+              Conectamos seus sistemas existentes para criar fluxos automatizados
               que funcionam perfeitamente com as ferramentas que você já usa.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {automationIntegrations.map((integration, index) => {
-              const Icon = integrationIcons[integration.icon as keyof typeof integrationIcons];
+            {content.integrations.map((integration: any, index: number) => {
+              const iconName = integrationIcons[integration.icon] || integration.icon;
               return (
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardHeader className="text-center">
-                    {Icon && <Icon className="w-12 h-12 text-primary mx-auto mb-4" />}
+                    <div className="mx-auto mb-4">
+                      <DynamicIcon name={iconName} className="w-12 h-12 text-primary" />
+                    </div>
                     <CardTitle className="text-xl">{integration.name}</CardTitle>
                     <CardDescription>{integration.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
                       <div className="flex flex-wrap gap-2">
-                        {integration.tools.map((tool, i) => (
+                        {integration.tools.map((tool: string, i: number) => (
                           <Badge key={i} variant="outline" className="text-xs">
                             {tool}
                           </Badge>
@@ -322,24 +335,26 @@ const AutomacaoIA = () => {
               O que Você Recebe
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Soluções completas, prontas para usar e monitorar, 
+              Soluções completas, prontas para usar e monitorar,
               com documentação detalhada e suporte contínuo.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {automationDeliverables.map((deliverable, index) => {
-              const Icon = deliverableIcons[deliverable.icon as keyof typeof deliverableIcons];
+            {content.deliverables.map((deliverable: any, index: number) => {
+              const iconName = deliverableIcons[deliverable.icon] || deliverable.icon;
               return (
                 <Card key={index} className="text-center hover:shadow-lg transition-shadow">
                   <CardHeader>
-                    {Icon && <Icon className="w-12 h-12 text-primary mx-auto mb-4" />}
+                    <div className="mx-auto mb-4">
+                      <DynamicIcon name={iconName} className="w-12 h-12 text-primary" />
+                    </div>
                     <CardTitle className="text-lg">{deliverable.title}</CardTitle>
                     <CardDescription>{deliverable.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <ul className="text-sm space-y-2">
-                      {deliverable.features.map((feature, i) => (
+                      {deliverable.features.map((feature: string, i: number) => (
                         <li key={i} className="flex items-center gap-2">
                           <CheckCircle2 className="w-3 h-3 text-green-500 flex-shrink-0" />
                           <span>{feature}</span>
@@ -362,13 +377,13 @@ const AutomacaoIA = () => {
               Resultados Reais, Impacto Mensurável
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Veja como empresas como a sua alcançaram resultados extraordinários 
+              Veja como empresas como a sua alcançaram resultados extraordinários
               com nossas soluções de automação e inteligência artificial.
             </p>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {automationCases.map((caseItem, index) => (
+            {content.cases.map((caseItem: any, index: number) => (
               <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-center gap-3 mb-3">
@@ -416,24 +431,26 @@ const AutomacaoIA = () => {
               Segurança & Privacidade em Primeiro Lugar
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Seus dados estão seguros. Seguimos as melhores práticas de segurança 
+              Seus dados estão seguros. Seguimos as melhores práticas de segurança
               e compliance para garantir proteção total em todas as automações.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {automationSecurity.map((security, index) => {
-              const Icon = securityIcons[security.icon as keyof typeof securityIcons];
+            {content.security.map((security: any, index: number) => {
+              const iconName = securityIcons[security.icon] || security.icon;
               return (
                 <Card key={index} className="text-center hover:shadow-lg transition-shadow">
                   <CardHeader>
-                    {Icon && <Icon className="w-12 h-12 text-primary mx-auto mb-4" />}
+                    <div className="mx-auto mb-4">
+                      <DynamicIcon name={iconName} className="w-12 h-12 text-primary" />
+                    </div>
                     <CardTitle className="text-lg">{security.title}</CardTitle>
                     <CardDescription>{security.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <ul className="text-sm space-y-2">
-                      {security.features.map((feature, i) => (
+                      {security.features.map((feature: string, i: number) => (
                         <li key={i} className="flex items-center gap-2">
                           <CheckCircle2 className="w-3 h-3 text-green-500 flex-shrink-0" />
                           <span>{feature}</span>
@@ -456,13 +473,13 @@ const AutomacaoIA = () => {
               Perguntas Frequentes
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Tire suas dúvidas sobre automação, inteligência artificial, 
+              Tire suas dúvidas sobre automação, inteligência artificial,
               custos, segurança e prazos de implementação.
             </p>
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <FAQ questions={automationFAQ} />
+            <FAQ questions={content.faq} />
           </div>
         </div>
       </section>
@@ -475,10 +492,10 @@ const AutomacaoIA = () => {
               Pronto para Automatizar e Crescer?
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Comece com um diagnóstico gratuito dos seus processos. 
+              Comece com um diagnóstico gratuito dos seus processos.
               Identifique oportunidades de automação e veja o potencial de economia.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <Button size="lg" className="flex items-center gap-2">
                 <Eye className="w-5 h-5" />

@@ -1,4 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
+import { logger } from '@/lib/logger';
+
+const log = logger.scope('useRecaptcha');
 
 interface RecaptchaConfig {
   siteKey: string;
@@ -75,16 +78,15 @@ export const useRecaptcha = (config?: Partial<RecaptchaConfig>): UseRecaptchaRet
 
     try {
       const token = await window.grecaptcha.execute(siteKey, { action });
-      
+
       // Optional: Verify score on client side (server-side verification is recommended)
       if (scoreThreshold > 0) {
-        // This would typically be done on the server
-        console.log('reCAPTCHA token generated for action:', action);
+        log.debug('reCAPTCHA token generated', { action: 'execute', metadata: { action } });
       }
-      
+
       return token;
     } catch (err) {
-      console.error('reCAPTCHA execution failed:', err);
+      log.error(err instanceof Error ? err : new Error('reCAPTCHA execution failed'), { action: 'execute' });
       setError('Failed to execute reCAPTCHA');
       return null;
     }

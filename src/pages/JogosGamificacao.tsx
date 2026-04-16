@@ -4,10 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { MetricBadge } from "@/components/ui/MetricBadge";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { FAQ } from "@/components/ui/FAQ";
-import { 
-  Gamepad2, 
-  Users, 
-  Trophy, 
+import {
+  Gamepad2,
+  Users,
+  Trophy,
   Target,
   TrendingUp,
   Shield,
@@ -18,16 +18,27 @@ import {
   Clock,
   CheckCircle,
   ArrowRight,
-  BarChart3,
   Play,
-  Award
+  Award,
+  BarChart3
 } from "lucide-react";
-import { gamificationFormats, gamificationObjectives, gamificationMetrics, gamificationProcess, gamificationCases, gamificationFAQ } from "@/data/mockData";
+import { gamificationFormats, gamificationObjectives, gamificationMetrics, gamificationProcess, gamificationCases, gamificationFAQ } from "@/data/defaultContent";
+import { useContent } from "@/hooks/useContent";
+import { DynamicIcon } from "@/components/ui/DynamicIcon";
 
 const JogosGamificacao = () => {
-  const iconMap: { [key: string]: any } = {
-    Users, BarChart3, Gamepad2, Trophy, UserPlus, TrendingUp, Shield, FileCheck, Heart, Crown
+  const { getContent } = useContent('services');
+
+  const defaultContent = {
+    formats: gamificationFormats,
+    objectives: gamificationObjectives,
+    metrics: gamificationMetrics,
+    process: gamificationProcess,
+    cases: gamificationCases,
+    faq: gamificationFAQ
   };
+
+  const content = getContent('page_gamification', defaultContent);
 
   return (
     <div className="min-h-screen">
@@ -54,15 +65,15 @@ const JogosGamificacao = () => {
                 <Gamepad2 className="w-4 h-4 mr-2" />
                 Jogos & Gamificação
               </Badge>
-              
+
               <h1 className="text-4xl lg:text-5xl font-bold leading-tight mb-6">
                 Aprendizado que engaja.{" "}
                 <span className="text-primary">Cultura que fica.</span>
               </h1>
-              
+
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                Transformamos treinamentos corporativos em experiências memoráveis através de 
-                gamificação, simulações empresariais e serious games que realmente engajam 
+                Transformamos treinamentos corporativos em experiências memoráveis através de
+                gamificação, simulações empresariais e serious games que realmente engajam
                 e geram resultados duradouros.
               </p>
 
@@ -128,36 +139,33 @@ const JogosGamificacao = () => {
             </Badge>
             <h2 className="text-3xl font-bold mb-4">Soluções para cada necessidade</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Do workshop presencial ao serious game customizado, criamos experiências 
+              Do workshop presencial ao serious game customizado, criamos experiências
               de aprendizado que se adaptam à sua cultura e objetivos.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {gamificationFormats.map((format, index) => {
-              const Icon = iconMap[format.icon];
-              return (
-                <Card key={index} className="h-full hover:shadow-lg transition-shadow">
-                  <CardHeader className="text-center">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                      <Icon className="w-6 h-6 text-primary" />
-                    </div>
-                    <CardTitle className="text-xl">{format.title}</CardTitle>
-                    <CardDescription>{format.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      {format.features.map((feature, featureIndex) => (
-                        <div key={featureIndex} className="flex items-center text-sm">
-                          <CheckCircle className="w-4 h-4 text-primary mr-2 flex-shrink-0" />
-                          {feature}
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            {content.formats.map((format: any, index: number) => (
+              <Card key={index} className="h-full hover:shadow-lg transition-shadow">
+                <CardHeader className="text-center">
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <DynamicIcon name={format.icon} className="w-6 h-6 text-primary" />
+                  </div>
+                  <CardTitle className="text-xl">{format.title}</CardTitle>
+                  <CardDescription>{format.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {format.features.map((feature: string, featureIndex: number) => (
+                      <div key={featureIndex} className="flex items-center text-sm">
+                        <CheckCircle className="w-4 h-4 text-primary mr-2 flex-shrink-0" />
+                        {feature}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
@@ -172,37 +180,34 @@ const JogosGamificacao = () => {
             </Badge>
             <h2 className="text-3xl font-bold mb-4">Objetivos que atingimos</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Cada contexto empresarial tem suas particularidades. Desenvolvemos soluções 
+              Cada contexto empresarial tem suas particularidades. Desenvolvemos soluções
               gamificadas específicas para diferentes necessidades organizacionais.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {gamificationObjectives.map((objective, index) => {
-              const Icon = iconMap[objective.icon];
-              return (
-                <Card key={index} className="h-full hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-center mb-3">
-                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
-                        <Icon className="w-5 h-5 text-primary" />
-                      </div>
-                      <CardTitle className="text-xl">{objective.title}</CardTitle>
+            {content.objectives.map((objective: any, index: number) => (
+              <Card key={index} className="h-full hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-center mb-3">
+                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
+                      <DynamicIcon name={objective.icon} className="w-5 h-5 text-primary" />
                     </div>
-                    <CardDescription>{objective.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 gap-2">
-                      {objective.benefits.map((benefit, benefitIndex) => (
-                        <Badge key={benefitIndex} variant="secondary" className="justify-center">
-                          {benefit}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                    <CardTitle className="text-xl">{objective.title}</CardTitle>
+                  </div>
+                  <CardDescription>{objective.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 gap-2">
+                    {objective.benefits.map((benefit: string, benefitIndex: number) => (
+                      <Badge key={benefitIndex} variant="secondary" className="justify-center">
+                        {benefit}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
@@ -217,31 +222,28 @@ const JogosGamificacao = () => {
             </Badge>
             <h2 className="text-3xl font-bold mb-4">Engajamento & Retenção comprovados</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Métricas reais dos nossos projetos mostram a eficácia da gamificação 
+              Métricas reais dos nossos projetos mostram a eficácia da gamificação
               comparada aos métodos tradicionais de treinamento.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {gamificationMetrics.map((metric, index) => {
-              const Icon = iconMap[metric.icon] || Target;
-              return (
-                <Card key={index} className="text-center hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                      <Icon className="w-6 h-6 text-primary" />
-                    </div>
-                    <div className="text-3xl font-bold text-primary mb-2">{metric.title}</div>
-                    <CardDescription>{metric.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Badge variant="outline" className="text-primary">
-                      {metric.highlight}
-                    </Badge>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            {content.metrics.map((metric: any, index: number) => (
+              <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <DynamicIcon name={metric.icon || 'Target'} className="w-6 h-6 text-primary" />
+                  </div>
+                  <div className="text-3xl font-bold text-primary mb-2">{metric.title}</div>
+                  <CardDescription>{metric.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Badge variant="outline" className="text-primary">
+                    {metric.highlight}
+                  </Badge>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
@@ -256,13 +258,13 @@ const JogosGamificacao = () => {
             </Badge>
             <h2 className="text-3xl font-bold mb-4">Processo comprovado em 5 etapas</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Nossa metodologia estruturada garante que cada solução gamificada 
+              Nossa metodologia estruturada garante que cada solução gamificada
               seja desenvolvida com foco nos seus objetivos específicos.
             </p>
           </div>
 
           <div className="space-y-8">
-            {gamificationProcess.map((step, index) => (
+            {content.process.map((step: any, index: number) => (
               <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-8">
                   <div className="grid lg:grid-cols-4 gap-6">
@@ -272,16 +274,16 @@ const JogosGamificacao = () => {
                       </div>
                       <div className="text-sm text-primary font-semibold mb-2">{step.duration}</div>
                     </div>
-                    
+
                     <div className="lg:col-span-2">
                       <h3 className="text-xl font-bold mb-3">{step.title}</h3>
                       <p className="text-muted-foreground">{step.description}</p>
                     </div>
-                    
+
                     <div>
                       <h4 className="font-semibold mb-3">Entregas:</h4>
                       <div className="space-y-2">
-                        {step.deliverables.map((deliverable, deliverableIndex) => (
+                        {step.deliverables.map((deliverable: string, deliverableIndex: number) => (
                           <div key={deliverableIndex} className="flex items-center text-sm">
                             <CheckCircle className="w-4 h-4 text-primary mr-2 flex-shrink-0" />
                             {deliverable}
@@ -307,13 +309,13 @@ const JogosGamificacao = () => {
             </Badge>
             <h2 className="text-3xl font-bold mb-4">Resultados reais, impacto mensurável</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Conheça como empresas transformaram seus processos de treinamento 
+              Conheça como empresas transformaram seus processos de treinamento
               e desenvolvimento através da gamificação.
             </p>
           </div>
 
           <div className="space-y-12">
-            {gamificationCases.map((caseItem, index) => (
+            {content.cases.map((caseItem: any, index: number) => (
               <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="aspect-video lg:aspect-square bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
@@ -323,17 +325,17 @@ const JogosGamificacao = () => {
                       <p className="text-muted-foreground">{caseItem.title}</p>
                     </div>
                   </div>
-                  
+
                   <CardContent className="p-8">
                     <div className="mb-6">
                       <h3 className="text-xl font-bold mb-4">{caseItem.title}</h3>
-                      
+
                       <div className="space-y-4 mb-6">
                         <div>
                           <h4 className="font-semibold text-sm uppercase tracking-wide text-primary mb-2">Desafio</h4>
                           <p className="text-sm text-muted-foreground">{caseItem.problem}</p>
                         </div>
-                        
+
                         <div>
                           <h4 className="font-semibold text-sm uppercase tracking-wide text-primary mb-2">Solução</h4>
                           <p className="text-sm text-muted-foreground">{caseItem.solution}</p>
@@ -341,7 +343,7 @@ const JogosGamificacao = () => {
                       </div>
 
                       <div className="grid grid-cols-3 gap-4 mb-6">
-                        {caseItem.metrics.map((metric, metricIndex) => (
+                        {caseItem.metrics.map((metric: any, metricIndex: number) => (
                           <div key={metricIndex} className="text-center">
                             <div className="text-2xl font-bold text-primary">{metric.value}</div>
                             <div className="text-xs text-muted-foreground">{metric.label}</div>
@@ -385,13 +387,13 @@ const JogosGamificacao = () => {
             </Badge>
             <h2 className="text-3xl font-bold mb-4">Perguntas frequentes</h2>
             <p className="text-lg text-muted-foreground">
-              Esclarecemos as principais dúvidas sobre gamificação corporativa 
+              Esclarecemos as principais dúvidas sobre gamificação corporativa
               e como ela pode transformar seus treinamentos.
             </p>
           </div>
 
           <div className="max-w-3xl mx-auto">
-            <FAQ questions={gamificationFAQ} />
+            <FAQ questions={content.faq} />
           </div>
         </div>
       </section>
@@ -403,10 +405,10 @@ const JogosGamificacao = () => {
             Pronto para gamificar seu treinamento?
           </h2>
           <p className="text-lg mb-8 text-primary-foreground/90 max-w-2xl mx-auto">
-            Comece com um diagnóstico gratuito e descubra como a gamificação pode 
+            Comece com um diagnóstico gratuito e descubra como a gamificação pode
             revolucionar o aprendizado na sua empresa.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Button size="lg" variant="secondary" className="group">
               Diagnóstico gratuito

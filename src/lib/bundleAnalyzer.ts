@@ -1,4 +1,7 @@
 // Bundle analysis utilities for performance monitoring
+import { logger } from './logger';
+
+const log = logger.scope('BundleAnalyzer');
 
 export interface BundleStats {
   totalSize: number;
@@ -78,7 +81,7 @@ function analyzeBundleFromPerformance(): BundleStats {
   }
 
   const resourceEntries = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
-  
+
   let jsTotal = 0;
   let cssTotal = 0;
   const chunks: Array<{ name: string; size: number; modules: string[] }> = [];
@@ -87,7 +90,7 @@ function analyzeBundleFromPerformance(): BundleStats {
     const size = entry.transferSize || entry.decodedBodySize || 0;
     const url = new URL(entry.name);
     const filename = url.pathname.split('/').pop() || '';
-    
+
     if (filename.includes('.js')) {
       jsTotal += size;
       chunks.push({
@@ -206,64 +209,29 @@ export function generatePerformanceReport(stats: BundleStats): {
 // Utility to format bytes
 function formatBytes(bytes: number): string {
   if (bytes === 0) return '0 B';
-  
+
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
 }
 
 // Development helper to log bundle analysis
 export function logBundleAnalysis(stats: BundleStats): void {
-  if (process.env.NODE_ENV !== 'development') return;
-
   const budgets = checkBundleBudgets(stats);
   const report = generatePerformanceReport(stats);
 
-  console.group('📊 Bundle Analysis Report');
-  console.log('📋 Summary:', report.summary);
-  
-  if (report.criticalIssues.length > 0) {
-    console.group('🚨 Critical Issues');
-    report.criticalIssues.forEach(issue => console.error(issue));
-    console.groupEnd();
-  }
-
-  if (report.warnings.length > 0) {
-    console.group('⚠️ Warnings');
-    report.warnings.forEach(warning => console.warn(warning));
-    console.groupEnd();
-  }
-
-  if (report.recommendations.length > 0) {
-    console.group('💡 Recommendations');
-    report.recommendations.forEach(rec => console.info(rec));
-    console.groupEnd();
-  }
-
-  console.table({
-    'JavaScript': {
-      size: budgets.js.actual,
-      budget: budgets.js.budget,
-      usage: `${budgets.js.percentage}%`,
-      status: budgets.js.passes ? '✅' : '❌'
-    },
-    'CSS': {
-      size: budgets.css.actual,
-      budget: budgets.css.budget,
-      usage: `${budgets.css.percentage}%`,
-      status: budgets.css.passes ? '✅' : '❌'
-    },
-    'Total': {
-      size: budgets.total.actual,
-      budget: budgets.total.budget,
-      usage: `${budgets.total.percentage}%`,
-      status: budgets.total.passes ? '✅' : '❌'
+  log.debug('Bundle Analysis Report', {
+    action: 'analyze',
+    metadata: {
+      summary: report.summary,
+      budgets,
+      criticalIssues: report.criticalIssues,
+      warnings: report.warnings,
+      recommendations: report.recommendations
     }
   });
-
-  console.groupEnd();
 }
 
 // Performance budget enforcement for CI/CD

@@ -4,27 +4,31 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { MetricBadge } from "@/components/ui/MetricBadge";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { FAQ } from "@/components/ui/FAQ";
-import { 
-  Code, 
-  Smartphone, 
-  Database, 
-  Zap, 
-  Shield, 
-  Clock, 
-  CheckCircle, 
-  ArrowRight,
-  Globe,
-  MonitorSpeaker,
-  Workflow,
-  Link,
-  TestTube,
-  GitBranch,
-  Lock,
-  BarChart3
+import {
+  Code,
+  Smartphone,
+  Clock,
+  CheckCircle,
+  ArrowRight
 } from "lucide-react";
-import { softwareProblems, softwareDeliverables, softwareProcess, softwareQuality, softwareCases, softwareFAQ } from "@/data/mockData";
+import { softwareProblems, softwareDeliverables, softwareProcess, softwareQuality, softwareCases, softwareFAQ } from "@/data/defaultContent";
+import { useContent } from "@/hooks/useContent";
+import { DynamicIcon } from "@/components/ui/DynamicIcon";
 
 const SoftwareApps = () => {
+  const { getContent } = useContent('services');
+
+  const defaultContent = {
+    problems: softwareProblems,
+    deliverables: softwareDeliverables,
+    process: softwareProcess,
+    quality: softwareQuality,
+    cases: softwareCases,
+    faq: softwareFAQ
+  };
+
+  const content = getContent('page_software', defaultContent);
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -54,8 +58,8 @@ const SoftwareApps = () => {
                 Produtos digitais sob medida, do zero ao lançamento
               </h1>
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                Transformamos suas ideias em soluções digitais robustas e escaláveis. 
-                Do MVP ao produto final, desenvolvemos software que realmente funciona 
+                Transformamos suas ideias em soluções digitais robustas e escaláveis.
+                Do MVP ao produto final, desenvolvemos software que realmente funciona
                 para o seu negócio.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -71,20 +75,20 @@ const SoftwareApps = () => {
             </div>
             <div className="relative">
               <div className="card-glass p-8 space-y-4">
-                <MetricBadge 
+                <MetricBadge
                   icon={Clock}
                   value="12-16"
                   suffix=" semanas"
                   label="Tempo médio de entrega"
                   variant="primary"
                 />
-                <MetricBadge 
+                <MetricBadge
                   icon={CheckCircle}
                   value="95%"
                   label="Taxa de aprovação em produção"
                   variant="success"
                 />
-                <MetricBadge 
+                <MetricBadge
                   icon={Code}
                   value="50+"
                   label="Projetos entregues"
@@ -109,11 +113,25 @@ const SoftwareApps = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {softwareProblems.map((problem, index) => (
+            {content.problems.map((problem: any, index: number) => (
               <Card key={index} className="card-elevated h-full">
                 <CardHeader>
                   <div className="w-12 h-12 rounded-xl bg-destructive/10 flex items-center justify-center mb-4">
-                    <problem.icon className="w-6 h-6 text-destructive" />
+                    {/* Note: Icons handling for dynamic content would need a mapping component in a real dynamic scenario, 
+                        but for now falling back to hardcoded icons or assuming they match if using the fallback.
+                        If strictly dynamic, we'd need a StringToIcon mapper. 
+                        For 100% fidelity with the mock data structure which has component references, 
+                        the JSON in DB stored icon names strings. We would need a mapper.
+                        Since we are reusing the mock logic which had component refs, but the DB has strings...
+                        This will break if we don't handle the icon mapping.
+                        
+                        However, the fallback `softwareProblems` has direct component refs. 
+                        The DB content has strings "AlertTriangle", etc.
+                        
+                        I need to import Lucide icons and map them OR just accept that dynamic icons need a mapper.
+                        For this refactor, I will add a simple icon mapper.
+                    */}
+                    <DynamicIcon name={problem.icon} className="w-6 h-6 text-destructive" />
                   </div>
                   <CardTitle className="text-lg">{problem.title}</CardTitle>
                 </CardHeader>
@@ -141,11 +159,11 @@ const SoftwareApps = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {softwareDeliverables.map((deliverable, index) => (
+            {content.deliverables.map((deliverable: any, index: number) => (
               <Card key={index} className="card-shield h-full">
                 <CardHeader>
                   <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-                    <deliverable.icon className="w-8 h-8 text-primary" />
+                    <DynamicIcon name={deliverable.icon} className="w-8 h-8 text-primary" />
                   </div>
                   <CardTitle className="text-xl">{deliverable.title}</CardTitle>
                 </CardHeader>
@@ -154,7 +172,7 @@ const SoftwareApps = () => {
                     {deliverable.description}
                   </CardDescription>
                   <div className="flex flex-wrap gap-2">
-                    {deliverable.features.map((feature, idx) => (
+                    {deliverable.features.map((feature: string, idx: number) => (
                       <Badge key={idx} variant="secondary" className="text-xs">
                         {feature}
                       </Badge>
@@ -180,7 +198,7 @@ const SoftwareApps = () => {
           </div>
 
           <div className="space-y-8">
-            {softwareProcess.map((step, index) => (
+            {content.process.map((step: any, index: number) => (
               <div key={index} className="flex flex-col lg:flex-row gap-8 items-center">
                 <div className="flex-shrink-0 w-24 h-24 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-xl">
                   {step.number}
@@ -195,7 +213,7 @@ const SoftwareApps = () => {
                   </div>
                   <p className="text-muted-foreground text-lg mb-4">{step.description}</p>
                   <div className="flex flex-wrap gap-2">
-                    {step.deliverables.map((deliverable, idx) => (
+                    {step.deliverables.map((deliverable: string, idx: number) => (
                       <Badge key={idx} variant="secondary">
                         {deliverable}
                       </Badge>
@@ -221,11 +239,11 @@ const SoftwareApps = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {softwareQuality.map((item, index) => (
+            {content.quality.map((item: any, index: number) => (
               <Card key={index} className="card-elevated text-center h-full">
                 <CardHeader>
                   <div className="w-16 h-16 rounded-2xl bg-success/10 flex items-center justify-center mx-auto mb-4">
-                    <item.icon className="w-8 h-8 text-success" />
+                    <DynamicIcon name={item.icon} className="w-8 h-8 text-success" />
                   </div>
                   <CardTitle className="text-lg">{item.title}</CardTitle>
                 </CardHeader>
@@ -234,7 +252,7 @@ const SoftwareApps = () => {
                     {item.description}
                   </CardDescription>
                   <div className="space-y-2">
-                    {item.features.map((feature, idx) => (
+                    {item.features.map((feature: string, idx: number) => (
                       <div key={idx} className="flex items-center text-sm text-muted-foreground">
                         <CheckCircle className="w-4 h-4 text-success mr-2 flex-shrink-0" />
                         {feature}
@@ -261,18 +279,18 @@ const SoftwareApps = () => {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8">
-            {softwareCases.map((caseStudy, index) => (
+            {content.cases.map((caseStudy: any, index: number) => (
               <Card key={index} className="card-elevated overflow-hidden">
                 <div className="aspect-video bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-700">
-                  <img 
-                    src={caseStudy.image} 
+                  <img
+                    src={caseStudy.image}
                     alt={caseStudy.title}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <CardHeader>
                   <div className="flex flex-wrap gap-2 mb-3">
-                    {caseStudy.technologies.map((tech, idx) => (
+                    {caseStudy.technologies.map((tech: string, idx: number) => (
                       <Badge key={idx} variant="outline" className="text-xs">
                         {tech}
                       </Badge>
@@ -294,7 +312,7 @@ const SoftwareApps = () => {
                       <p className="text-sm text-muted-foreground">{caseStudy.solution}</p>
                     </div>
                     <div className="flex items-center gap-4 pt-4 border-t">
-                      <MetricBadge 
+                      <MetricBadge
                         icon={BarChart3}
                         value={caseStudy.metric}
                         label={caseStudy.metricLabel}
@@ -327,7 +345,7 @@ const SoftwareApps = () => {
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <FAQ questions={softwareFAQ} />
+            <FAQ questions={content.faq} />
           </div>
         </div>
       </section>
@@ -340,7 +358,7 @@ const SoftwareApps = () => {
               Pronto para transformar sua ideia em realidade?
             </h2>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Nossa equipe sênior está pronta para desenvolver a solução digital 
+              Nossa equipe sênior está pronta para desenvolver a solução digital
               que seu negócio precisa. Vamos conversar sobre seu projeto.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -372,6 +390,29 @@ const SoftwareApps = () => {
       </section>
     </div>
   );
+};
+
+import * as Icons from "lucide-react";
+import { BarChart3 } from "lucide-react";
+
+// Helper component to render icons dynamically
+const DynamicIcon = ({ name, className }: { name: any; className?: string }) => {
+  // If name is already a component (from mockData fallback), render it
+  if (typeof name !== 'string') {
+    const IconComponent = name;
+    return <IconComponent className={className} />;
+  }
+
+  // If name is a string (from DB), look it up in Lucide icons
+  // @ts-ignore
+  const Icon = Icons[name];
+
+  if (!Icon) {
+    // Fallback icon if not found
+    return <Icons.HelpCircle className={className} />;
+  }
+
+  return <Icon className={className} />;
 };
 
 export default SoftwareApps;

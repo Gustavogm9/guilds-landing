@@ -2,13 +2,17 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+// Typed values for scoring conditions
+export type ConditionValue = string | number | boolean | string[] | null;
+export type TargetValue = string | number | { min?: number; max?: number };
+
 export interface LeadScoringRule {
   id: string;
   rule_name: string;
   rule_type: string;
   condition_field: string;
   condition_operator: string;
-  condition_value: any;
+  condition_value: ConditionValue;
   points: number;
   score_type: string;
   is_active: boolean;
@@ -23,7 +27,7 @@ export interface ICPCriteria {
   criterion_name: string;
   criterion_type: string;
   criterion_field: string;
-  target_values: any[];
+  target_values: TargetValue[];
   weight: number;
   is_active: boolean;
   description?: string;
@@ -35,7 +39,7 @@ export function useLeadScoring() {
   const queryClient = useQueryClient();
 
   // ==================== FETCH DATA ====================
-  
+
   const { data: rules, isLoading: rulesLoading } = useQuery({
     queryKey: ["lead-scoring-rules"],
     queryFn: async () => {
@@ -67,9 +71,9 @@ export function useLeadScoring() {
     queryKey: ["icp-health"],
     queryFn: async () => {
       const { data, error } = await supabase.rpc("get_icp_health_stats");
-      
+
       if (error) throw error;
-      
+
       // Get missing fields from criteria
       const missingFields: string[] = [];
       if (icpCriteria) {
@@ -77,15 +81,15 @@ export function useLeadScoring() {
           'name', 'email', 'phone', 'company', 'role', 'company_size',
           'budget_range', 'timeline', 'source', 'product_interest'
         ];
-        
+
         icpCriteria.forEach(c => {
-          if (!CONTACT_FORM_FIELDS.includes(c.criterion_field) && 
-              !c.criterion_field.startsWith('custom_fields.')) {
+          if (!CONTACT_FORM_FIELDS.includes(c.criterion_field) &&
+            !c.criterion_field.startsWith('custom_fields.')) {
             missingFields.push(c.criterion_field);
           }
         });
       }
-      
+
       return {
         incompleteContactsPercent: data?.[0]?.incomplete_percent || 0,
         totalContacts: data?.[0]?.total_contacts || 0,
@@ -231,16 +235,57 @@ export function useLeadScoring() {
         .eq("is_active", true);
 
       if (fetchError) throw fetchError;
+      if (!contacts || contacts.length === 0) {
+        return { processed: 0, total: 0 };
+      }
 
-      // TODO: Chamar edge function para processar cada contato
-      // Por enquanto, apenas simula o processamento
-      toast.info(`Recalculando scores de ${contacts?.length || 0} contatos...`);
-      
-      return contacts;
+      // Process contacts in batches to avoid overwhelming the server
+      const BATCH_SIZE = 10;
+      let processed = 0;
+      const errors: string[] = [];
+
+      for (let i = 0; i < contacts.length; i += BATCH_SIZE) {
+        const batch = contacts.slice(i, i + BATCH_SIZE);
+
+        // Process batch in parallel
+        const batchPromises = batch.map(async (contact) => {
+          try {
+            const { error } = await supabase.functions.invoke('advanced-lead-processor', {
+              body: {
+                contact_id: contact.id,
+                source: 'manual_recalculation',
+                behavioral_data: {
+                  recalculated_at: new Date().toISOString()
+                }
+              }
+            });
+            if (error) throw error;
+            return true;
+          } catch (err) {
+            errors.push(`${contact.id}: ${(err as Error).message}`);
+            return false;
+          }
+        });
+
+        const results = await Promise.all(batchPromises);
+        processed += results.filter(Boolean).length;
+
+        // Show progress
+        toast.info(`Processando... ${processed}/${contacts.length} contatos`);
+      }
+
+      return { processed, total: contacts.length, errors };
     },
-    onSuccess: (contacts) => {
+    onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["crm-contacts"] });
-      toast.success(`Scores recalculados para ${contacts?.length || 0} contatos!`);
+      queryClient.invalidateQueries({ queryKey: ["icp-health"] });
+
+      if (result.errors && result.errors.length > 0) {
+        toast.warning(`Scores recalculados: ${result.processed}/${result.total}. ${result.errors.length} erros.`);
+        console.warn('Recalculation errors:', result.errors);
+      } else {
+        toast.success(`Scores recalculados para ${result.processed} contatos!`);
+      }
     },
     onError: (error: any) => {
       toast.error("Erro ao recalcular scores: " + error.message);
@@ -252,12 +297,12 @@ export function useLeadScoring() {
     rules,
     icpCriteria,
     icpHealthData,
-    
+
     // Loading states
     rulesLoading,
     criteriaLoading,
     healthLoading,
-    
+
     // Mutations
     createRule: createRule.mutate,
     updateRule: updateRule.mutate,
@@ -266,7 +311,7 @@ export function useLeadScoring() {
     updateCriteria: updateCriteria.mutate,
     deleteCriteria: deleteCriteria.mutate,
     recalculateScores: recalculateScores.mutate,
-    
+
     // Pending states
     isCreatingRule: createRule.isPending,
     isUpdatingRule: updateRule.isPending,

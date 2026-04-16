@@ -1,4 +1,7 @@
 // Analytics utilities and event definitions
+import { logger } from './logger';
+
+const log = logger.scope('Analytics');
 export interface BaseAnalyticsEvent {
   event: string;
   page?: string;
@@ -46,14 +49,14 @@ export interface NewsletterSubscribeEvent extends BaseAnalyticsEvent {
   success: boolean;
 }
 
-export type AnalyticsEvent = 
-  | CTAClickEvent 
-  | LeadSubmitEvent 
-  | FileDownloadEvent 
-  | WhatsAppClickEvent 
+export type AnalyticsEvent =
+  | CTAClickEvent
+  | LeadSubmitEvent
+  | FileDownloadEvent
+  | WhatsAppClickEvent
   | NewsletterSubscribeEvent
-  | { event: 'view_item'; [key: string]: any }
-  | { event: 'add_to_cart'; [key: string]: any };
+  | { event: 'view_item';[key: string]: any }
+  | { event: 'add_to_cart';[key: string]: any };
 
 // GTM DataLayer interface
 declare global {
@@ -81,7 +84,7 @@ export class AnalyticsManager {
   initialize(debugMode = false) {
     this.debugMode = debugMode;
     this.isInitialized = true;
-    
+
     // Initialize dataLayer if not exists
     if (typeof window !== 'undefined') {
       window.dataLayer = window.dataLayer || [];
@@ -91,7 +94,7 @@ export class AnalyticsManager {
   // Get UTM parameters from URL
   private getUTMParameters(): Record<string, string> {
     if (typeof window === 'undefined') return {};
-    
+
     const urlParams = new URLSearchParams(window.location.search);
     return {
       utm_source: urlParams.get('utm_source') || '',
@@ -124,7 +127,7 @@ export class AnalyticsManager {
   // Core tracking method
   track<T extends AnalyticsEvent>(event: Omit<T, keyof BaseAnalyticsEvent> & Partial<BaseAnalyticsEvent>): void {
     if (!this.isInitialized) {
-      console.warn('Analytics not initialized. Call initialize() first.');
+      log.warn('Analytics not initialized. Call initialize() first.');
       return;
     }
 
@@ -139,10 +142,10 @@ export class AnalyticsManager {
 
     // Debug logging
     if (this.debugMode) {
-      console.group('🔍 Analytics Event');
-      console.log('Event:', enrichedEvent.event);
-      console.table(enrichedEvent);
-      console.groupEnd();
+      log.debug('Analytics Event', {
+        action: enrichedEvent.event,
+        metadata: enrichedEvent as unknown as Record<string, unknown>
+      });
     }
   }
 

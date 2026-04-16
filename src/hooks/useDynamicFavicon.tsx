@@ -1,5 +1,8 @@
 import { useEffect, useMemo } from 'react';
 import { useLogos } from './useLogos';
+import { logger } from '@/lib/logger';
+
+const log = logger.scope('useDynamicFavicon');
 
 export function useDynamicFavicon() {
   const { logos, loading } = useLogos();
@@ -7,7 +10,7 @@ export function useDynamicFavicon() {
   // Memoize the favicon logo to prevent unnecessary effects
   const faviconLogo = useMemo(() => {
     if (loading || !logos.length) return null;
-    
+
     // Try to get a logo for favicon usage - flexible search
     return logos.find(logo => {
       if (!logo.usage_context) return false;
@@ -23,11 +26,11 @@ export function useDynamicFavicon() {
   useEffect(() => {
     if (!faviconLogo?.public_url) return;
 
-    console.log('Updating favicon to:', faviconLogo.public_url);
+    log.debug('Updating favicon', { action: 'update', metadata: { url: faviconLogo.public_url } });
 
     // Simple favicon update without complex DOM manipulation
     const existingFavicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
-    
+
     if (existingFavicon) {
       existingFavicon.href = faviconLogo.public_url;
     } else {

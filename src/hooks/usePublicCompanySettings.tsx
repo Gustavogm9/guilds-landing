@@ -1,14 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useCurrentProduct } from './useCurrentProduct';
+import { BusinessHours, SocialMediaLinks } from './useContactInfo';
 
 export interface PublicCompanySettings {
   id?: string;
   company_name: string;
   brand_primary_color: string;
   brand_accent_color: string;
-  business_hours: any;
-  social_media: any;
+  business_hours: BusinessHours;
+  social_media: SocialMediaLinks;
   public_whatsapp_number?: string;
   public_support_email?: string;
   business_unit: string;
@@ -26,7 +27,7 @@ export const usePublicCompanySettings = () => {
         .select('*')
         .eq('business_unit', currentProduct)
         .maybeSingle();
-      
+
       if (error) throw error;
       return data as PublicCompanySettings;
     },
