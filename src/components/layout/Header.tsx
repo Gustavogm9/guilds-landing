@@ -28,7 +28,6 @@ import { cn } from "@/lib/utils";
 import { GuildShield } from "@/components/icons";
 import { DynamicLogo } from "@/components/ui/DynamicLogo";
 import { QualificationButton } from "@/components/forms/QualificationButton";
-import { LanguageSelector } from "@/components/ui/LanguageSelector";
 import { useTranslation } from "@/contexts/TranslationContext";
 import { useLocalizedNavigation } from "@/hooks/useLocalizedNavigation";
 import { FeedbackWidget } from "@/components/feedback/FeedbackWidget";
@@ -41,51 +40,18 @@ const Header = () => {
   const { t } = useTranslation();
   const { getLocalizedPath } = useLocalizedNavigation();
 
-  // Generate services with localized paths and translations
-  const services = [
-    {
-      title: t('common.services.softwareApps.title'),
-      href: getLocalizedPath('/servicos/software-apps'),
-      description: t('common.services.softwareApps.description'),
-      icon: Code
-    },
-    {
-      title: t('common.services.automationAi.title'),
-      href: getLocalizedPath('/servicos/automacao-ia'), 
-      description: t('common.services.automationAi.description'),
-      icon: Zap
-    },
-    {
-      title: t('common.services.gamesGamification.title'),
-      href: getLocalizedPath('/servicos/jogos-gamificacao'),
-      description: t('common.services.gamesGamification.description'),
-      icon: Gamepad2
-    },
-    {
-      title: t('common.services.consulting.title'),
-      href: getLocalizedPath('/servicos/consultoria'),
-      description: t('common.services.consulting.description'),
-      icon: Users
-    }
-  ];
-
-  // Generate navigation with localized paths and translations
+  // Clean Funnel Navigation
   const navigation = [
-    { name: t('common.navigation.cases'), href: getLocalizedPath('/cases') },
-    { name: t('common.navigation.lab'), href: getLocalizedPath('/lab') },
-    { name: t('common.navigation.craft'), href: getLocalizedPath('/craft') },
-    { name: t('common.navigation.content'), href: "https://blog.guilds.com.br", external: true },
-    { name: t('common.navigation.about'), href: getLocalizedPath('/sobre') },
-    { name: t('common.navigation.team'), href: getLocalizedPath('/equipe') },
-    { name: t('common.navigation.careers'), href: getLocalizedPath('/carreiras') },
-    { name: t('common.navigation.contact'), href: getLocalizedPath('/contato') }
+    { name: 'Portfólio & Cases', href: getLocalizedPath('/cases') },
+    { name: 'Diagnóstico Raio-X', href: getLocalizedPath('/raio-x') },
+    { name: 'Nossa Metodologia', href: getLocalizedPath('/#solucao') }
   ];
 
   const isActive = (path: string) => location.pathname === path;
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md border-b border-border">
+      <header className="sticky top-0 z-50 w-full bg-slate-950/80 backdrop-blur-md border-b border-white/5">
         <div className="container">
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
@@ -113,46 +79,6 @@ const Header = () => {
 
             {/* Desktop Navigation */}
             <nav id="main-navigation" className="hidden md:flex items-center space-x-6">
-              {/* Services Mega Menu */}
-              <NavigationMenu>
-                <NavigationMenuList>
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger className="bg-transparent">
-                      {t('common.navigation.services')}
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <div className="grid w-[600px] gap-3 p-4 md:grid-cols-2">
-                        {services.map((service) => {
-                          const Icon = service.icon;
-                          return (
-                            <NavigationMenuLink key={service.href} asChild>
-                              <Link
-                                to={service.href}
-                                className={cn(
-                                  "group grid h-auto w-full items-center justify-start gap-1 rounded-md bg-background p-4 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
-                                )}
-                              >
-                                <div className="flex items-start gap-3">
-                                  <Icon className="h-5 w-5 text-brand-primary mt-1" />
-                                  <div>
-                                    <div className="text-sm font-medium leading-none">
-                                      {service.title}
-                                    </div>
-                                    <p className="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
-                                      {service.description}
-                                    </p>
-                                  </div>
-                                </div>
-                              </Link>
-                            </NavigationMenuLink>
-                          );
-                        })}
-                      </div>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </NavigationMenu>
-
               {/* Regular Navigation Links */}
               {navigation.map((item) => 
                 item.external ? (
@@ -161,7 +87,7 @@ const Header = () => {
                     href={item.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm font-medium transition-colors hover:text-brand-primary text-foreground"
+                    className="text-sm font-medium transition-colors hover:text-blue-400 text-slate-300"
                   >
                     {item.name}
                   </a>
@@ -170,10 +96,10 @@ const Header = () => {
                     key={item.name}
                     to={item.href}
                     className={cn(
-                      "text-sm font-medium transition-colors hover:text-brand-primary",
+                      "text-sm font-medium transition-colors hover:text-blue-400",
                       isActive(item.href) 
-                        ? "text-brand-primary" 
-                        : "text-foreground"
+                        ? "text-blue-400" 
+                        : "text-slate-300"
                     )}
                   >
                     {item.name}
@@ -181,8 +107,7 @@ const Header = () => {
                 )
               )}
 
-              {/* Language Selector */}
-              <LanguageSelector />
+              {/* Language Selector removed */}
             </nav>
 
             {/* CTA Button */}
@@ -200,16 +125,16 @@ const Header = () => {
             {/* Mobile Menu Toggle */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild className="md:hidden">
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="text-slate-300 hover:text-white hover:bg-slate-900">
                   <Menu className="h-5 w-5" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
               
-              <SheetContent side="right" className="w-full sm:w-80">
+              <SheetContent side="right" className="w-full sm:w-80 bg-slate-950 border-l border-white/10 text-slate-300">
                 <div className="flex flex-col h-full">
                   {/* Mobile Logo */}
-                  <div className="flex items-center justify-between pb-4 border-b">
+                  <div className="flex items-center justify-between pb-4 border-b border-white/5">
                     <Link to={getLocalizedPath('/')} className="flex items-center" onClick={() => setIsOpen(false)}>
                       <DynamicLogo 
                         type="symbol"
@@ -235,28 +160,7 @@ const Header = () => {
 
                   {/* Mobile Navigation */}
                   <nav className="flex flex-col py-6 space-y-4 flex-1">
-                    {/* Services */}
-                    <div>
-                      <h3 className="font-semibold text-brand-primary mb-3">{t('common.navigation.services')}</h3>
-                      <div className="space-y-2 pl-4">
-                        {services.map((service) => {
-                          const Icon = service.icon;
-                          return (
-                            <Link
-                              key={service.href}
-                              to={service.href}
-                              onClick={() => setIsOpen(false)}
-                              className="flex items-center gap-3 py-2 text-sm hover:text-brand-primary transition-colors"
-                            >
-                              <Icon className="h-4 w-4" />
-                              {service.title}
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Other Navigation */}
+                    {/* Main Navigation Links */}
                     <div className="space-y-2">
                       {navigation.map((item) => 
                         item.external ? (
@@ -266,7 +170,7 @@ const Header = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={() => setIsOpen(false)}
-                            className="block py-2 text-sm font-medium transition-colors hover:text-brand-primary text-foreground"
+                            className="block py-2 text-sm font-medium transition-colors hover:text-blue-400 text-slate-300"
                           >
                             {item.name}
                           </a>
@@ -276,8 +180,8 @@ const Header = () => {
                             to={item.href}
                             onClick={() => setIsOpen(false)}
                             className={cn(
-                              "block py-2 text-sm font-medium transition-colors hover:text-brand-primary",
-                              isActive(item.href) ? "text-brand-primary" : "text-foreground"
+                              "block py-2 text-sm font-medium transition-colors hover:text-blue-400",
+                              isActive(item.href) ? "text-blue-400" : "text-slate-300"
                             )}
                           >
                             {item.name}
@@ -286,10 +190,7 @@ const Header = () => {
                       )}
                     </div>
 
-                    {/* Language Selector */}
-                    <div className="pt-4 border-t">
-                      <LanguageSelector variant="mobile" />
-                    </div>
+                    {/* Language Selector removed */}
                   </nav>
 
                   {/* Mobile CTA */}

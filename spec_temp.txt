@@ -1,0 +1,523 @@
+
+GUILDS
+guilds.com.br
+ESPECIFICAÇÃO COMPLETA DO SITE — BRASIL
+Documento de referência para desenvolvimento
+Versão 1.0 — Abril 2026
+Owner: Gustavo Macedo (CMO)
+
+1. Visão Geral e Contexto
+Objetivo do Site
+O guilds.com.br é o hub central de conversão da Guilds no Brasil. Não é um site institucional — é uma máquina de geração de leads qualificados. Todo caminho leva a uma de duas ações: (1) comprar o Raio-X de Adoção Digital por R$47, ou (2) agendar uma conversa para o Diagnóstico Pago R$2.500.
+Posicionamento Central
+"A Guilds transforma processos críticos de PMEs em máquinas digitais que sua equipe realmente usa — com metodologia G-FORGE™, entrega em semanas e ROI mensurável em 90 dias."
+Identidade Visual
+Paleta principal
+#060C18 (background) · #2563EB (accent azul) · #FFFFFF (texto primário)
+Paleta de suporte
+#10B981 (verde resultado) · #DC2626 (vermelho problema) · #F59E0B (âmbar autoridade)
+Fontes
+Inter ou Geist Sans — weights 400/600/800/900
+Estética
+Dark mode by default. Grid sutil em 54px. Glows radiais por seção. Cards com borda sutil.
+Referências
+Linear.app · Vercel.com · Railway.app — dark tech premium
+Tom visual
+Sério, técnico, premium. Não startup colorida. Não consultoria tradicional.
+Stack Recomendado
+Next.js 14+ (App Router) com TypeScript
+Tailwind CSS — sem bibliotecas de UI pré-prontas (Chakra, MUI)
+Framer Motion para animações suaves
+Vercel para deploy (já integrado com Next.js)
+Hotmart para checkout Raio-X R$47 (ou Stripe se preferir)
+Brevo (Sendinblue) para captura de email e integração com funil
+Google Analytics 4 + Meta Pixel (futuro ads)
+Notion API ou Airtable como CMS temporário para cases (até ter CMS próprio)
+Mapa de Páginas
+Página
+URL
+Objetivo
+Home
+guilds.com.br/
+Posicionamento + duplo CTA Raio-X / Diagnóstico
+Raio-X
+guilds.com.br/raio-x
+Landing page produto R$47 — conversão direta
+Diagnóstico
+guilds.com.br/diagnostico
+Venda do Diagnóstico R$2.500 — para leads qualificados
+G-FORGE™
+guilds.com.br/metodo
+Explicação completa do método — educa e converte
+Cases
+guilds.com.br/cases
+Portfolio de resultados — prova social principal
+Sobre
+guilds.com.br/sobre
+Gustavo + empresa + missão — credibilidade
+Contato
+guilds.com.br/contato
+Formulário + WhatsApp direto
+
+PÁGINA 01 / GUILDS.COM.BR/
+HOME — Página Principal
+A home posiciona a Guilds, ativa o problema do visitante, apresenta o método e direciona para um dos dois produtos de entrada. Não é brochure — é funil.
+
+Seções e Blocos
+■ HERO — Above the fold
+Frase-núcleo + subtítulo + dois botões CTA lado a lado. Background dark navy com grid sutil e glow azul. Sem imagem genérica de negócio.
+Título: "Sua equipe vai realmente usar o sistema que você vai implementar."
+Subtítulo: "A Guilds aplica o G-FORGE™ — metodologia que garante 90%+ de adoção em PMEs de 20 a 150 funcionários. ROI mensurável em 90 dias."
+CTA primário: [Diagnóstico em 15 min — R$47] → /raio-x
+CTA secundário: [Falar com a Guilds] → /contato (ou WhatsApp direto)
+Abaixo do hero: logos/nomes anônimos de setores atendidos (SST, Fintech, Imobiliário, Farmácias)
+
+■ PROBLEMA — Seção de dor
+Nomeia o problema antes de qualquer solução. Três colunas: situação, consequência, custo real.
+"Você implementou o sistema. A equipe voltou para a planilha."
+Dado âncora: "7 em cada 10 implementações digitais falham por falta de método de adoção — não por causa da tecnologia." (McKinsey 2026)
+Três cards: Adoção < 30% · Investimento sem ROI · Equipe resiste e ninguém resolve
+
+■ MÉTODO — G-FORGE™ resumo
+6 fases do método com ícone e uma frase por fase. Apresentação linear com progress indicator.
+F — FOUNDRY: Mapear antes de implementar
+O — OBSERVE: Entender como a equipe aprende
+R — REFINE: Ajuste contínuo até hábito formar
+G — GENERATE: Operação gera resultado sozinha
+E — EMPOWER: Equipe defende o sistema sem suporte externo
+Second G — GOVERN: Governança que escala sem depender de uma pessoa
+CTA inline: [Ver o método completo] → /metodo
+
+■ RESULTADOS — Números âncora
+Três métricas em destaque + texto de contexto.
+90%+ de adoção média nos projetos Guilds
+14 dias para primeiros resultados mensuráveis (case SST)
+20+ empresas atendidas · múltiplos setores · Brasil e Canadá
+Nota: adicionar logo abaixo os cases quando disponíveis
+
+■ PARA QUEM É — ICP
+Dois blocos: PME 20–150 funcionários que já tentou digitalizar + gestores que não conseguem escalar porque a operação depende deles.
+Card 1: "Você já investiu em sistema. A equipe não aderiu. Você quer entender por quê — e resolver de vez."
+Card 2: "Sua empresa cresce, mas o processo vive na sua cabeça. Você não consegue sair sem que algo trave."
+
+■ PRODUTOS DE ENTRADA — Dupla oferta
+Dois cards de produto lado a lado, com preço, o que inclui e CTA.
+Card A — Raio-X de Adoção Digital: R$47 · 15 minutos · Score G-FORGE™ + 3 maiores gargalos + diagnóstico por área · [Fazer o Raio-X]
+Card B — Diagnóstico Pago Completo: R$2.500 · Abatível se fechar projeto em 15 dias · 2h de análise profunda + relatório completo + call com Gustavo · [Solicitar Diagnóstico]
+Design: card A menor e mais acessível, card B maior com badge "Recomendado para projetos acima de R$15K"
+
+■ CASES — Preview portfolio
+Grid 2x2 ou 3x1 com os cases mais impactantes. Cada card: setor, problema, resultado em número, CTA "ver case".
+Mostrar: setor (sem nome de cliente se não autorizado) · Problema central · Resultado com número · Tempo do projeto
+CTA: [Ver todos os cases] → /cases
+Se ainda sem cases publicados: placeholder elegante com "Cases sendo documentados — disponíveis em breve"
+
+■ DEPOIMENTOS
+Slider ou grid com depoimentos de clientes. Pode ser anônimo por cargo/setor se cliente não autorizar nome público.
+
+■ CTA FINAL — Closing section
+Repetição do CTA principal antes do footer. Fundo diferenciado (azul sólido ou navy mais escuro).
+"Qual é o maior gargalo da sua operação hoje?"
+"15 minutos para descobrir. R$47."
+Botão: [Fazer o Raio-X] + link secundário [Falar com a Guilds]
+
+■ FOOTER
+Minimalista. Logo · links das páginas · email · LinkedIn · Instagram · copyright.
+
+CTA Principal e Fluxo
+CTA primário → /raio-x (compra direta R$47)
+CTA secundário → /contato ou WhatsApp api.whatsapp.com/send/?phone=55...
+Após compra Raio-X: redirect para página de confirmação + email automático via Brevo
+UTM obrigatório em todos os links de conteúdo (LinkedIn, Instagram) → ?utm_source=linkedin&utm_medium=post&utm_campaign=...
+Requisitos Técnicos
+Open Graph tags completos para compartilhamento (LinkedIn preview rico)
+Animação do hero: parallax leve ou partículas sutis — não impactar LCP (< 2.5s)
+Mobile-first: menu hamburger · botões full-width no mobile · hero em coluna única
+Formulário de email no footer: integrado ao Brevo (tag: home-footer)
+Lazy load em todas as imagens abaixo do fold
+Cookie banner LGPD compliant (banner simples, não bloquear conteúdo)
+SEO / Meta
+Title: Guilds — Transformação Digital com Adoção Garantida para PMEs
+Description: A Guilds aplica o G-FORGE™ para garantir que sua equipe realmente use os sistemas implementados. ROI mensurável em 90 dias.
+Keywords primárias: transformação digital PME, adoção digital, implementação de sistemas, digitalização PME Brasil
+Schema.org: Organization + LocalBusiness
+Sitemap.xml + robots.txt configurados
+
+PÁGINA 02 / GUILDS.COM.BR/RAIO-X
+RAIO-X DE ADOÇÃO DIGITAL — Landing Page R$47
+Página de conversão direta do produto de entrada do funil. Objetivo único: vender o Raio-X por R$47. Sem distrações. Layout longo com todas as objeções respondidas antes do checkout.
+
+Seções e Blocos
+■ HERO — Proposta de valor imediata
+Título direto, benefício claro, preço visível, CTA above the fold.
+Título: "Em 15 minutos, você sabe onde está o maior gargalo da sua operação digital."
+Subtítulo: "O Raio-X de Adoção Digital mapeia sua maturidade digital com o G-FORGE™ Score — e entrega os 3 maiores gargalos da sua operação com custo estimado e próximo passo concreto."
+Badge: R$47 · Diagnóstico imediato · Sem call necessária
+CTA: [Fazer o Raio-X agora — R$47]
+Subtext: Acesso imediato após pagamento · Relatório gerado em até 24h · Satisfação garantida
+
+■ PARA QUEM É — Qualificação
+Dois blocos: para quem É + para quem NÃO É (cria autoridade e reduz suporte).
+É para você se: já implementou sistema com adoção < 80% · vai implementar algo novo e quer acertar · sente que tem gargalo mas não sabe qual é · quer dado antes de investir R$15K+ num projeto
+Não é para você se: quer consultoria completa (esse é o Diagnóstico R$2.500) · empresa < 5 funcionários · processo ainda 100% analógico sem intenção de digitalizar
+
+■ O QUE VOCÊ RECEBE — Entregável detalhado
+Lista visual de cada item do relatório com screenshot/mockup.
+Score G-FORGE™: de 0 a 100, com faixa de maturidade (Analógico / Em transição / Digital Ativo / Escalável)
+3 maiores gargalos identificados da sua operação específica
+Diagnóstico por área: Processos · Tecnologia · Equipe · Governança
+Custo estimado de cada gargalo (em horas/mês ou R$/mês)
+Próximo passo concreto por gargalo
+Benchmark: onde sua empresa está vs. média do setor
+
+■ COMO FUNCIONA — 3 passos
+Fluxo visual simples: 1. Pague R$47 → 2. Responda 25 perguntas (15 min) → 3. Receba seu relatório por email.
+
+■ PROVAS SOCIAIS
+Depoimentos de quem já fez o Raio-X + dado de contexto sobre implementações.
+Placeholder: "Mais de X diagnósticos realizados" (atualizar com dado real)
+Depoimentos: anônimos por cargo/setor se sem autorização
+
+■ FAQ — Objeções respondidas
+Accordion com 5-7 perguntas frequentes.
+"O relatório é gerado por IA ou por humano?" → Análise automatizada pelo G-FORGE™ Score + revisão humana antes do envio
+"Em quanto tempo recebo?" → Imediatamente após preencher o formulário. Relatório em até 24 horas úteis.
+"Posso usar como argumento para contratar a Guilds?" → Sim. Se fechar projeto em até 15 dias após o Raio-X, o valor é abatido.
+"É seguro? Meus dados ficam com a Guilds?" → Sim, LGPD compliant. Dados usados apenas para gerar o diagnóstico.
+"E se eu não ficar satisfeito?" → Reembolso integral em até 7 dias.
+
+■ CTA FINAL — Repetição
+Mesma proposta do hero, scroll-aware. Aparece como sticky button no mobile após scroll de 50%.
+
+CTA Principal e Fluxo
+CTA → Hotmart ou Stripe para checkout R$47
+Após pagamento: redirect para formulário de 25 perguntas (Typeform, Tally ou custom)
+Após formulário: email automático Brevo com 'recebemos seu formulário' + previsão
+Email de entrega do relatório: enviado pelo Gustavo (via Brevo template personalizado)
+Tag no Brevo: raio-x-comprador → entra na sequência de nurture pós-compra
+Pixel de conversão: Google Ads + Meta Pixel (evento Purchase, value: 47.00, currency: BRL)
+Requisitos Técnicos
+Página single-purpose: sem menu de navegação completo (só logo + voltar)
+Checkout: Hotmart (prioridade) ou Stripe + Pagar.me para PIX
+Social proof dinâmica: contador de compras (pode ser manual no início)
+Sticky CTA button no mobile (aparece após 300px de scroll)
+Tempo de carregamento < 2s — sem animações pesadas
+Formulário pós-compra: pode ser Typeform embutido ou Tally (gratuito)
+SEO / Meta
+Title: Raio-X de Adoção Digital — Diagnóstico em 15 min por R$47 | Guilds
+Description: Descubra onde está o maior gargalo da sua operação digital. Score G-FORGE™ + 3 gargalos identificados + custo estimado. Acesso imediato.
+URL canônica: guilds.com.br/raio-x
+OG Image: card visual do produto com R$47 em destaque
+
+PÁGINA 03 / GUILDS.COM.BR/DIAGNOSTICO
+DIAGNÓSTICO PAGO — Landing Page R$2.500
+Para leads mais avançados no funil que já entendem o problema e querem a análise completa antes de um projeto. Funil de saída via formulário + call, não checkout direto.
+
+Seções e Blocos
+■ HERO
+Posicionamento de autoridade + benefício claro para quem está considerando um projeto G-FORGE™.
+Título: "Antes de investir R$15K+ num projeto — descubra exatamente o que sua operação precisa."
+Subtítulo: "2 horas de análise profunda com o Gustavo Macedo. Relatório G-FORGE™ completo. Abatível no projeto se fechar em 15 dias."
+Badge: R$2.500 · Abatível no projeto · Vagas limitadas (X por mês)
+CTA: [Solicitar Diagnóstico] → formulário de qualificação
+
+■ O QUE INCLUI — Entregável
+Cada item do diagnóstico detalhado.
+2h de sessão com Gustavo Macedo (video call)
+Mapeamento completo dos processos críticos (até 5)
+Relatório G-FORGE™: 15–20 páginas com análise por área
+Score de maturidade digital + benchmark do setor
+Roadmap de implementação com priorização por impacto/esforço
+Proposta de projeto (se aplicável) com escopo, prazo e investimento
+Caso não feche: relatório fica com o cliente, sem vínculo
+
+■ PARA QUEM É
+Qualificação clara.
+Empresa 20–150 funcionários com processo crítico travando crescimento
+Já tentou implementar e teve adoção < 60%
+Budget disponível para projeto de R$15K–R$60K se necessário
+CEO / Diretor de Operações que decide — não analista que vai apresentar internamente
+
+■ COMO FUNCIONA
+4 passos: Formulário → Confirmação + pagamento → Sessão → Relatório.
+
+■ GARANTIA
+Se ao final da sessão o Gustavo entender que o diagnóstico não se aplica ao seu caso, reembolso integral.
+
+■ DEPOIMENTOS
+Depoimentos específicos de clientes que fizeram o diagnóstico antes de fechar projeto.
+
+CTA Principal e Fluxo
+CTA → formulário de qualificação (nome, empresa, cargo, setor, desafio atual, budget estimado)
+Formulário pode ser Typeform ou página própria — integrado ao CRM (Notion ou HubSpot)
+Após formulário: email automático 'Recebemos sua solicitação' + Gustavo envia email pessoal em 24h
+Pagamento: link de pagamento enviado por email após qualificação (não checkout direto na página)
+Tag Brevo: diagnostico-solicitado → entra na sequência de qualificação
+Requisitos Técnicos
+Sem preço explícito no checkout direto — valor revelado após qualificação (ou mostrar diretamente se preferir)
+Calendly integrado para agendamento após qualificação aprovada
+Formulário de qualificação: máximo 6 campos para não assustar
+WhatsApp como alternativa ao formulário: api.whatsapp.com/send com mensagem pré-preenchida
+SEO / Meta
+Title: Diagnóstico de Adoção Digital — R$2.500 com Abate no Projeto | Guilds
+Description: 2h com Gustavo Macedo, relatório G-FORGE™ completo, roadmap de implementação. Para PMEs prontas para transformar a operação.
+noindex se a página for para leads já aquecidos (opcional)
+
+PÁGINA 04 / GUILDS.COM.BR/METODO
+MÉTODO G-FORGE™ — Página Educacional
+Página de autoridade e educação. Explica o método por completo, com o objetivo de converter visitantes que querem entender 'como funciona' antes de comprar.
+
+Seções e Blocos
+■ HERO
+Posicionamento do G-FORGE™ como metodologia proprietária, não como software.
+Título: "G-FORGE™ — O método que garante que a sua equipe realmente use o sistema implementado."
+Subtítulo: "6 fases. Ciência comportamental aplicada à digitalização. 90%+ de adoção média."
+CTA inline: [Ver diagnóstico gratuito] → /raio-x
+
+■ O PROBLEMA QUE O G-FORGE™ RESOLVE
+Dado âncora + explicação do ciclo de falha.
+70% das implementações digitais falham por falta de metodologia de adoção
+O ciclo clássico: implementação → treinamento → resistência → volta à planilha
+O que está faltando: método que atravessa a resistência humana à mudança
+
+■ AS 6 FASES — Detalhe por fase
+Accordion ou seções alternadas com visual por fase.
+F — FOUNDRY: Mapeamento profundo antes de qualquer sistema. Duração: 1–2 semanas. Entregável: mapa de processos críticos.
+O — OBSERVE: Análise do padrão de aprendizado de cada equipe. Duração: 1 semana. Entregável: perfil de adoção por time.
+R — REFINE: Ajuste contínuo do sistema para a realidade do time. Duração: 2–4 semanas. Entregável: sistema configurado para adoção.
+G — GENERATE: Ativação do sistema com suporte intensivo. Duração: 2–4 semanas. Entregável: primeiros resultados mensuráveis.
+E — EMPOWER: Equipe defende o sistema sem suporte externo. Duração: 2–3 semanas. Entregável: 80%+ de adoção autônoma.
+Second G — GOVERN: Governança que escala sem depender de uma pessoa. Duração: ongoing. Entregável: processo documentado e replicável.
+
+■ DIFERENCIAL vs. MERCADO
+Tabela comparativa: Guilds G-FORGE™ vs. consultoria tradicional vs. implementação do fornecedor.
+Métrica: Adoção em 90 dias | Consultoria tradicional: 30–50% | Guilds G-FORGE™: 90%+
+Metodologia proprietária: Não | Sim
+Foco em ciência comportamental: Não | Sim
+Resultado garantido: Raro | Sim (ou continuamos)
+
+■ PARA QUAIS PROJETOS FUNCIONA
+Setores e tipos de projeto já executados.
+SST / Saúde Ocupacional: laudos, PGR, trilha de auditoria
+Fintech / Cobranças: automação de cobrança, split payment prep
+Imobiliário / Consórcio: CRM, pipeline, cross-sell
+Gestão interna: processos, KPIs, documentação operacional
+Automações com IA: n8n, WhatsApp Business, integrações
+
+■ CTA FINAL
+Dois caminhos: Raio-X (R$47) ou Diagnóstico Completo (R$2.500).
+
+CTA Principal e Fluxo
+CTA principal → /raio-x
+CTA secundário → /diagnostico
+Links internos para /cases dentro das seções de setores
+Requisitos Técnicos
+Animação leve nas 6 fases (scroll-triggered, uma por vez)
+Tabela comparativa responsiva (stacked no mobile)
+Potencial para versão em inglês futura — usar i18n-ready desde o início
+SEO / Meta
+Title: G-FORGE™ — Metodologia de Adoção Digital para PMEs | Guilds
+Description: 6 fases de implementação que garantem 90%+ de adoção real. Ciência comportamental aplicada à digitalização de operações.
+Keywords: metodologia adoção digital, G-FORGE, implementação sistemas PME
+
+PÁGINA 05 / GUILDS.COM.BR/CASES
+CASES — Portfolio de Resultados
+A página mais importante para conversão de prospects avançados. Prova social concreta com números reais. Pode ser lançada inicialmente com 1–2 cases.
+
+Seções e Blocos
+■ HERO
+Chamada direta ao ponto.
+Título: "Resultados reais. Números mensuráveis. PMEs que transformaram a operação."
+Subtext: "Cada case documenta o antes, o que fizemos, e o resultado em número."
+Filtros: por setor (SST · Fintech · Imobiliário · Gestão) e por resultado (adoção · automação · tempo)
+
+■ GRID DE CASES
+Cards com preview do case.
+Card: Logo ou ícone do setor + título do problema + resultado âncora em destaque + botão 'Ver case'
+Exemplo card SST: 'Saúde Ocupacional — SST' | '80% menos tarefas manuais em 14 dias' | Adoção: 94% | [Ver case completo]
+Exemplo card Fintech: 'Fintech — Cobrança' | 'De 15h para 20 min de processamento por semana' | [Ver case completo]
+
+■ PÁGINA DE CASE INDIVIDUAL — /cases/[slug]
+Layout detalhado por case.
+Setor + empresa (anônima ou com nome se autorizado)
+O desafio: descrição do problema antes
+O que fizemos: fases G-FORGE™ aplicadas
+Resultados: métricas com antes e depois
+Depoimento do gestor (se disponível)
+Tempo do projeto
+CTA: 'Minha empresa tem um desafio parecido' → /diagnostico
+
+■ CTA FINAL
+Se não tiver case publicado: placeholder elegante com 'Cases sendo documentados — disponíveis em [mês]' + formulário 'Seja avisado quando publicarmos'.
+
+CTA Principal e Fluxo
+Cada case tem CTA → /diagnostico ou /raio-x dependendo do perfil do setor
+Compartilhamento individual por case (URL única por case para LinkedIn)
+Requisitos Técnicos
+CMS para cases: Notion API + next-mdx-remote (simples) ou Contentful (se escalar)
+URL por case: /cases/sst-80-reducao-manual (slug descritivo para SEO)
+Schema.org: Article ou CaseStudy por case individual
+Animação de métricas: contador animado ao entrar na viewport
+SEO / Meta
+Cada case indexado individualmente para palavras-chave long-tail
+Title padrão case: '[Resultado âncora] — Case [Setor] | Guilds'
+Link building: cada case é um ativo de link (LinkedIn posts → case individual)
+
+PÁGINA 06 / GUILDS.COM.BR/SOBRE
+SOBRE — Guilds e Gustavo Macedo
+Credibilidade e conexão humana. Gustavo é o diferencial — background único de engenharia + medicina que fundamenta o G-FORGE™.
+
+Seções e Blocos
+■ HERO — Apresentação da empresa
+Missão da Guilds em uma frase.
+"A Guilds nasceu de uma observação simples: a maioria das empresas implementa sistema sem metodologia para garantir que a equipe adote."
+
+■ GUSTAVO MACEDO — Founder
+Foto profissional + bio detalhada.
+Engenharia — FEI São Paulo
+Medicina — FAMERP
+Experiências: Suzano S/A, Eldorado Research Institute
+600+ livros lidos (gestão, psicologia comportamental, sistemas)
+O que o background em medicina traz para gestão: diagnóstico diferencial aplicado à operação
+Co-fundador da Guilds · CMO responsável pelo produto e pela metodologia
+
+■ MISSÃO E VALORES
+Três valores com texto curto.
+Adoção antes de implementação: o sistema só tem valor se for usado
+Resultado mensurável: sem número, não existe
+Ciência comportamental: mudança organizacional tem método — não é arte
+
+■ A OPERAÇÃO
+Brasil e Canadá — estrutura bi-country.
+Brasil: São José do Rio Preto, SP · foco PME 20–150 funcionários
+Canadá: Calgary, Alberta · parceria com Evandro Valereto (Managing Director Guilds Canada Inc.)
+Modelo: delivery no Brasil, contratos pela entidade Canada para projetos internacionais
+
+■ CTA FINAL
+Conexão pessoal → LinkedIn do Gustavo + CTA para Raio-X ou Diagnóstico.
+
+CTA Principal e Fluxo
+LinkedIn do Gustavo: link externo (abre em nova aba)
+CTA → /raio-x (principal) ou /contato (secundário)
+Requisitos Técnicos
+Foto do Gustavo: profissional, fundo escuro ou neutro, consistente com identidade visual
+Schema.org: Person (Gustavo) + Organization (Guilds)
+SEO / Meta
+Title: Sobre a Guilds — Gustavo Macedo e a Metodologia G-FORGE™
+Description: Engenheiro e médico, Gustavo Macedo fundou a Guilds para resolver o problema mais caro da digitalização: a falta de adoção real.
+
+2. Componentes Globais e Sistema de Design
+Navbar
+Logo Guilds (esquerda) + links de navegação (centro) + CTA (direita)
+Links: Método · Cases · Sobre · Contato
+CTA navbar: [Raio-X — R$47] — botão com accent azul
+Mobile: hamburger menu. Abrir como full-screen overlay dark
+Sticky: sempre visível no topo com blur backdrop (glassmorphism sutil)
+Componente de CTA
+Variante primária: background azul #2563EB · texto branco · hover: #1D4ED8
+Variante secundária: borda azul · fundo transparente · hover: fill azul
+Variante ghost: só texto + seta → · cor azul
+Nunca usar verde como cor de botão (reservado para 'resultado' em conteúdo)
+Cards de produto
+Background: #0F172A (navy) · borda: 1px rgba(37,99,235,0.25) · border-radius: 12px
+Glow interno: radial-gradient no canto oposto ao conteúdo principal
+Hover: elevar borda para rgba(37,99,235,0.5) + sutil box-shadow azul
+Seções alternadas
+Fundo alternado: #060C18 (muito escuro) · #0F172A (navy) · #0C1428 (intermediário)
+Nunca fundo branco — o site é sempre dark mode
+Tipografia
+Fonte: Inter (Google Fonts) ou Geist Sans (Vercel CDN)
+Tamanhos: 72px hero · 48px título seção · 32px subtítulo · 18px corpo · 13px meta
+Peso: 900 títulos hero · 700 headings · 400 corpo · 300 meta
+Line-height corpo: 1.65
+Animações
+Filosofia: sutis e funcionais — sem distração, sem demora
+Scroll-triggered: fade + translate-y 20px → 0 (300ms ease-out)
+Contador numérico: animar de 0 ao valor final ao entrar em viewport
+Hover em cards: scale(1.01) + shadow — nunca scale > 1.02
+Sem parallax pesado · sem loading screens · sem splash
+
+3. Integrações e Fluxos de Conversão
+Fluxo 1 — Raio-X (Inbound R$47)
+Visitante chega de LinkedIn/Instagram com UTM
+Home ou /raio-x → CTA → Hotmart checkout
+Pagamento confirmado → Typeform/Tally com 25 perguntas → email de confirmação (Brevo)
+Formulário enviado → tag 'raio-x-comprador' no Brevo → sequência pós-compra (3 emails em 7 dias)
+Gustavo analisa + envia relatório em até 24h → email template Brevo
+Relatório contém CTA para Diagnóstico Completo (upsell natural)
+Fluxo 2 — Diagnóstico (Outbound ou nurture R$2.500)
+Lead vem de LinkedIn/Instagram ou sequência de nurture pós Raio-X
+/diagnostico → formulário de qualificação (6 campos)
+Formulário → email para Gustavo + tag 'diagnostico-solicitado' no Brevo
+Gustavo envia email pessoal em 24h + link de pagamento (Hotmart ou Stripe)
+Pagamento → Calendly agendamento da sessão de 2h
+Pós-sessão: relatório enviado por email + proposta de projeto se aplicável
+Integrações necessárias
+Ferramenta
+Uso
+Prioridade
+Hotmart
+Checkout Raio-X R$47 + Diagnóstico R$2.500
+P0 — obrigatório no lançamento
+Brevo (Sendinblue)
+Email transacional + nurture automático
+P0 — obrigatório no lançamento
+Typeform ou Tally
+Formulário 25 perguntas pós-Raio-X
+P0
+Calendly
+Agendamento sessão Diagnóstico
+P1
+Google Analytics 4
+Tracking de tráfego e conversões
+P0
+Meta Pixel
+Retargeting futuro (Instagram Ads)
+P1 — instalar desde início
+Notion API
+CMS para cases (temporário)
+P1
+WhatsApp Business API
+CTA alternativo + notificações
+P1
+
+4. Priorização de Entrega (MVP vs. V2)
+O site deve ir ao ar o mais rápido possível com as páginas críticas. Cases e conteúdo adicional podem ser adicionados depois.
+MVP — Lançamento imediato
+Home completa (com placeholder nos cases se necessário)
+/raio-x — landing page + checkout Hotmart funcionando
+/metodo — explicação G-FORGE™
+/contato — formulário básico + WhatsApp link
+Brevo integrado (captura de email no footer + email pós-Raio-X)
+Google Analytics 4 instalado
+Mobile responsivo em todas as páginas
+V2 — Após lançamento (30–60 dias)
+/diagnostico — landing page Diagnóstico R$2.500
+/cases — com 2–3 cases publicados (depende de entrevistas)
+/sobre — página completa com foto do Gustavo
+Meta Pixel ativado
+Calendly integrado
+Schema.org completo
+V3 — Crescimento (90+ dias)
+Blog / Conteúdo (integração com artigos do LinkedIn)
+Versão em inglês preparada para Canada redirect
+Dashboard de resultados (se Raio-X escalar volume)
+Programa de parceiros CPA (landing page específica)
+
+5. Notas para o Desenvolvedor
+Decisões de produto já tomadas — não questionar
+Dark mode sempre — sem toggle light/dark
+Fonte Inter ou Geist Sans — sem serif
+Checkout via Hotmart (não Stripe como padrão — Hotmart tem melhor suporte a PIX no Brasil)
+Sem chat ao vivo (Intercom, Crisp etc.) no MVP — muito cedo para suportar volume
+Sem área logada no MVP — Raio-X é entregue por email
+Pontos que precisam de decisão antes do dev
+Domínio: guilds.com.br já registrado? (verificar DNS)
+Hospedagem Vercel ou outra plataforma?
+Hotmart: criar conta + produto + configurar webhook de confirmação
+Formulário pós-Raio-X: Typeform (pago) ou Tally (gratuito)?
+Foto do Gustavo: necessária antes de /sobre ir ao ar
+Cases: mínimo 1 case aprovado pelo cliente antes de /cases ir ao ar
+Contato para dúvidas
+Gustavo Macedo — 
+gustavog.macedo16@gmail.com

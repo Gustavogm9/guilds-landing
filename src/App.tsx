@@ -28,6 +28,10 @@ const Services = React.lazy(() => import("./pages/Services"));
 const Privacy = React.lazy(() => import("./pages/Privacy"));
 const Terms = React.lazy(() => import("./pages/Terms"));
 const CookiePolicy = React.lazy(() => import("./pages/CookiePolicy"));
+const RaioX = React.lazy(() => import("./pages/RaioX").then(module => ({ default: module.RaioX })));
+const RaioXShared = React.lazy(() => import("./pages/RaioXShared").then(module => ({ default: module.RaioXShared })));
+const RaioXAdminLeads = React.lazy(() => import("./pages/RaioXAdminLeads").then(module => ({ default: module.RaioXAdminLeads })));
+
 const Contact = React.lazy(() => import("./pages/Contact"));
 const About = React.lazy(() => import("./pages/About"));
 const NewAbout = React.lazy(() => import("./pages/NewAbout"));
@@ -97,6 +101,23 @@ const App = () => {
                     <ScrollToTop />
                     
                     <Routes>
+                      {/* Independent Routes - WITHOUT site layout */}
+                      <Route path="/raio-x" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <RaioX />
+                        </Suspense>
+                      } />
+                      <Route path="/raio-x/share/:token" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <RaioXShared />
+                        </Suspense>
+                      } />
+                      <Route path="/admin/raio-x" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <RaioXAdminLeads />
+                        </Suspense>
+                      } />
+                      
                       {/* Public Routes - WITH site layout */}
                       <Route path="/*" element={
                         <Layout>

@@ -1,0 +1,1448 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Raio-X G-FORGE · Guilds</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #05070C;
+    --panel: #0B1120;
+    --panel-2: #0F172A;
+    --line: rgba(255,255,255,0.06);
+    --line-2: rgba(255,255,255,0.1);
+    --brand: #3B82F6;
+    --brand-soft: rgba(59,130,246,0.12);
+    --accent: #60A5FA;
+    --ok: #22C55E;
+    --warn: #F59E0B;
+    --bad: #EF4444;
+    --muted: #64748B;
+    --text: #E2E8F0;
+    --text-dim: #94A3B8;
+  }
+  html,body{ background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; }
+  .font-display{ font-family: 'Inter', sans-serif; letter-spacing: -0.02em; }
+  .grid-bg{
+    background-image:
+      radial-gradient(circle at 12% -10%, rgba(59,130,246,0.14), transparent 40%),
+      radial-gradient(circle at 100% 10%, rgba(99,102,241,0.08), transparent 35%),
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 28px 28px, 28px 28px;
+  }
+  .panel{ background: var(--panel); border: 1px solid var(--line); border-radius: 18px; }
+  .panel-2{ background: var(--panel-2); border: 1px solid var(--line); border-radius: 14px; }
+  .chip{ display:inline-flex; align-items:center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border:1px solid var(--line-2); }
+  .chip-brand{ background: rgba(59,130,246,0.08); color: #93C5FD; border-color: rgba(59,130,246,0.25); }
+  .chip-guilds{ background: linear-gradient(120deg, rgba(59,130,246,0.25), rgba(99,102,241,0.2)); color: #C7D2FE; border-color: rgba(147,197,253,0.4); }
+  .chip-diy{ background: rgba(34,197,94,0.1); color: #86EFAC; border-color: rgba(34,197,94,0.3); }
+  .chip-warn{ background: rgba(245,158,11,0.1); color: #FCD34D; border-color: rgba(245,158,11,0.3); }
+  .chip-bad{ background: rgba(239,68,68,0.1); color: #FCA5A5; border-color: rgba(239,68,68,0.3); }
+  .btn{ display:inline-flex; align-items:center; gap:8px; padding: 10px 18px; border-radius: 12px; font-weight: 700; font-size: 13px; transition: all .15s ease; cursor: pointer; }
+  .btn-primary{ background: var(--brand); color: white; }
+  .btn-primary:hover{ background: #2563EB; }
+  .btn-ghost{ background: transparent; color: var(--text-dim); border: 1px solid var(--line-2); }
+  .btn-ghost:hover{ background: rgba(255,255,255,0.04); color: var(--text); }
+  .tab-btn{ padding: 14px 20px; font-size: 13px; font-weight: 600; color: var(--text-dim); border-bottom: 2px solid transparent; cursor: pointer; transition: all .15s; display:inline-flex; align-items:center; gap: 8px; }
+  .tab-btn:hover{ color: var(--text); }
+  .tab-btn.active{ color: white; border-bottom-color: var(--brand); }
+  .sub-tab-btn{ padding: 8px 14px; font-size: 12px; font-weight: 600; color: var(--text-dim); border-radius: 10px; cursor: pointer; transition: all .15s; }
+  .sub-tab-btn:hover{ color: var(--text); background: rgba(255,255,255,0.03); }
+  .sub-tab-btn.active{ color: white; background: var(--brand-soft); box-shadow: inset 0 0 0 1px rgba(59,130,246,0.3); }
+  .gforge-letter{ width: 34px; height: 34px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight: 800; font-size: 14px; }
+  .bar-bg{ background: rgba(255,255,255,0.05); border-radius: 999px; overflow: hidden; height: 6px; }
+  .bar-fill{ height:100%; background: linear-gradient(90deg, #3B82F6, #60A5FA); border-radius: 999px; }
+  .signal-dot{ width: 6px; height: 6px; border-radius: 50%; }
+  details summary{ cursor:pointer; list-style: none; }
+  details summary::-webkit-details-marker{ display:none; }
+  details[open] .chev{ transform: rotate(90deg); }
+  .chev{ transition: transform .2s; }
+  .kpi-card{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)); border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
+  .section-title{ font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); }
+  .card-hover:hover{ border-color: var(--line-2); background: rgba(255,255,255,0.015); }
+  .hero-value{ font-family: 'Inter', sans-serif; font-weight: 900; letter-spacing: -0.03em; }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; animation: fade .25s ease; }
+  @keyframes fade{ from{ opacity:0; transform: translateY(6px);} to{ opacity:1; transform:none;} }
+  .glow-guilds{ box-shadow: 0 0 0 1px rgba(147,197,253,0.35), 0 14px 36px rgba(59,130,246,0.18); }
+  /* Radar chart */
+  .radar-axis{ stroke: rgba(255,255,255,0.08); }
+  .radar-grid{ stroke: rgba(255,255,255,0.06); fill: none; }
+  .radar-self{ fill: rgba(59,130,246,0.25); stroke: #60A5FA; stroke-width: 2; }
+  .radar-bench{ fill: rgba(148,163,184,0.06); stroke: rgba(148,163,184,0.6); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  .radar-label{ fill: #CBD5E1; font-size: 11px; font-weight: 600; font-family: 'Inter', sans-serif; }
+  .radar-val{ fill: #60A5FA; font-size: 11px; font-weight: 800; font-family: 'Inter', sans-serif; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- ────────────────────────────────── Topbar ────────────────────────────────── -->
+<header class="border-b border-white/5 sticky top-0 z-40 backdrop-blur bg-[#05070C]/80">
+  <div class="max-w-[1400px] mx-auto px-6 py-3 flex items-center gap-6">
+    <div class="flex items-center gap-2.5">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="#60A5FA" stroke-width="2"/><path d="M12 12l9-5M12 12v10M12 12L3 7" stroke="#60A5FA" stroke-width="2"/></svg>
+      <span class="font-display font-black tracking-[0.18em] text-sm">GUILDS</span>
+      <span class="text-slate-600 text-xs">/</span>
+      <span class="text-slate-400 text-xs font-medium">Raio-X G-FORGE</span>
+    </div>
+    <div class="hidden md:flex items-center gap-1.5 text-xs text-slate-500">
+      <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+      Diagnóstico concluído em 22/abr · salvo automaticamente
+    </div>
+    <div class="flex-1"></div>
+    <button class="btn btn-ghost text-xs"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2v10m0 0l-3-3m3 3l3-3M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Baixar PDF</button>
+    <button class="btn btn-ghost text-xs hidden lg:inline-flex"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v12H5.17L4 17.17V4z" stroke="currentColor" stroke-width="2"/></svg>Enviar por e-mail</button>
+    <div class="flex items-center gap-2 pl-4 border-l border-white/5">
+      <div class="w-8 h-8 rounded-lg bg-blue-500/15 text-blue-300 flex items-center justify-center font-bold text-xs">MS</div>
+      <div class="text-xs leading-tight">
+        <div class="font-semibold text-slate-200">Mariana Silva</div>
+        <div class="text-slate-500">Medtrack Saúde</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ────────────────────────────────── Hero / Resumo executivo ────────────────────────────────── -->
+<section class="grid-bg border-b border-white/5">
+  <div class="max-w-[1400px] mx-auto px-6 pt-10 pb-8">
+    <div class="flex flex-wrap items-end gap-4 mb-8">
+      <div>
+        <span class="chip chip-brand">Relatório · Raio-X G-FORGE™</span>
+        <h1 class="font-display text-[44px] font-black leading-[1.05] mt-4">O custo da sua ineficiência: <span class="text-blue-400">R$ 412.800/ano</span></h1>
+        <p class="text-slate-400 mt-3 max-w-2xl text-[15px] leading-relaxed">Mariana, analisamos as <strong class="text-slate-200">23 respostas</strong> que você nos deu e cruzamos com dados de <strong class="text-slate-200">47 projetos G-FORGE</strong> realizados + benchmarks públicos (CFM, ANS, IBGE). O que encontramos é tratável em <strong class="text-blue-300">90 dias</strong>, com o método certo.</p>
+        <details class="mt-2 text-xs max-w-2xl">
+          <summary class="text-slate-500 hover:text-slate-300 cursor-pointer flex items-center gap-1.5 font-semibold">
+            <svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Metodologia do benchmark
+          </summary>
+          <div class="mt-3 panel-2 p-4 text-slate-300 leading-relaxed space-y-2.5 text-[12px]">
+            <div><strong class="text-slate-100">Amostra Guilds:</strong> 47 diagnósticos G-FORGE realizados em clínicas e operações de saúde entre 2023 e 2026, todas com porte comparável ao seu (30 a 120 funcionários, faturamento R$ 3 a 25M).</div>
+            <div><strong class="text-slate-100">Fontes públicas:</strong> CFM (RAIS médica), ANS (dados de operadoras), IBGE (estrutura de custo do setor de saúde privada). Última atualização: fev/2026.</div>
+            <div><strong class="text-slate-100">O que não dá para afirmar:</strong> benchmark é ponto de referência, não garantia. Seus números reais podem variar ±15% conforme apuração.</div>
+            <div class="text-slate-500 pt-1 border-t border-white/5">Toda fórmula usada neste diagnóstico está documentada. Peça a versão completa no atendimento.</div>
+          </div>
+        </details>
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-2">
+        <span class="chip chip-guilds">● Fit com Guilds: Alto</span>
+        <span class="chip">90 dias para virar o jogo</span>
+      </div>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Perda -->
+      <div class="kpi-card">
+        <div class="section-title text-red-300/80">Perda anual estimada</div>
+        <div class="hero-value text-4xl text-red-400 mt-3">R$ 412,8<span class="text-2xl">k</span></div>
+        <div class="text-xs text-slate-500 mt-2">Horas manuais (R$ 289k) · Sistemas fantasmas (R$ 54k) · Retrabalho em relatórios (R$ 69k)</div>
+        <details class="mt-3 text-xs group">
+          <summary class="text-slate-500 hover:text-slate-300 cursor-pointer flex items-center gap-1.5 font-semibold">
+            <svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Como calculamos
+          </summary>
+          <div class="mt-3 panel-2 p-3.5 text-slate-300 leading-relaxed space-y-2.5 text-[11.5px]">
+            <div><strong class="text-slate-100">Horas manuais (R$ 289k)</strong><br/>50 funcionários × 45% administrativos × 12h/sem × 52 sem × R$ 35/h (CLT + encargos, base RAIS 2025)</div>
+            <div><strong class="text-slate-100">Sistemas fantasmas (R$ 54k)</strong><br/>2 contratos ativos com uso &lt; 3 logins/mês × R$ 2.250/mês médio × 12 meses</div>
+            <div><strong class="text-slate-100">Retrabalho em relatórios (R$ 69k)</strong><br/>5 dias de produção mensal × 16h de consolidação × R$ 72/h (custo de gerência)</div>
+            <div class="text-slate-500 pt-1 border-t border-white/5">Valores conservadores. Intervalos confiáveis e fontes na metodologia completa.</div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Score G-FORGE -->
+      <div class="kpi-card">
+        <div class="section-title">Score G-FORGE™</div>
+        <div class="flex items-baseline gap-2 mt-3">
+          <span class="hero-value text-4xl text-blue-400">38</span>
+          <span class="text-slate-500 text-lg">/ 100</span>
+        </div>
+        <div class="mt-3 bar-bg"><div class="bar-fill" style="width:38%"></div></div>
+        <div class="text-xs text-slate-400 mt-2">Fase atual: <strong class="text-amber-300">OBSERVE</strong> · próxima: REFINE</div>
+        <details class="mt-3 text-xs group">
+          <summary class="text-slate-500 hover:text-slate-300 cursor-pointer flex items-center gap-1.5 font-semibold">
+            <svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Como calculamos
+          </summary>
+          <div class="mt-3 panel-2 p-3.5 text-slate-300 leading-relaxed space-y-1.5 text-[11.5px]">
+            <div class="flex justify-between"><span>Processos (peso 30%)</span><strong class="text-white">1.6 / 5</strong></div>
+            <div class="flex justify-between"><span>Sistemas (peso 25%)</span><strong class="text-white">2.1 / 5</strong></div>
+            <div class="flex justify-between"><span>Dados (peso 25%)</span><strong class="text-white">1.8 / 5</strong></div>
+            <div class="flex justify-between"><span>Pessoas (peso 20%)</span><strong class="text-white">2.2 / 5</strong></div>
+            <div class="pt-2 mt-1 border-t border-white/5 flex justify-between"><span class="text-slate-400">Score ponderado</span><strong class="text-blue-300">1.9 / 5 (38/100)</strong></div>
+            <div class="text-slate-500 pt-1">Cada eixo tem 4 perguntas no questionário. Pesos validados com 47 projetos realizados.</div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Benchmark -->
+      <div class="kpi-card">
+        <div class="section-title">Vs. Clínicas similares</div>
+        <div class="flex items-baseline gap-2 mt-3">
+          <span class="hero-value text-4xl text-amber-400">-4</span>
+          <span class="text-slate-500 text-sm">pts</span>
+        </div>
+        <div class="text-xs text-slate-500 mt-2">Você: 38 · Média setor: 42 · Top 10%: 71</div>
+        <details class="mt-3 text-xs group">
+          <summary class="text-slate-500 hover:text-slate-300 cursor-pointer flex items-center gap-1.5 font-semibold">
+            <svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Composição da amostra
+          </summary>
+          <div class="mt-3 panel-2 p-3.5 text-slate-300 leading-relaxed space-y-2 text-[11.5px]">
+            <div><strong class="text-slate-100">Recorte:</strong> clínicas médicas privadas, 30 a 120 funcionários, faturamento R$ 3 a 25M/ano, Brasil.</div>
+            <div><strong class="text-slate-100">Fontes:</strong> dados públicos CFM e ANS (2024) + 47 diagnósticos G-FORGE realizados pela Guilds entre 2023 e 2026.</div>
+            <div><strong class="text-slate-100">Atualização:</strong> benchmark revalidado a cada trimestre.</div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Fit Guilds -->
+      <div class="kpi-card glow-guilds">
+        <div class="flex items-center justify-between">
+          <div class="section-title" style="color:#C7D2FE">Fit de parceria Guilds</div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="#93C5FD" stroke-width="2"/></svg>
+        </div>
+        <div class="flex items-baseline gap-2 mt-3">
+          <span class="hero-value text-4xl text-blue-300">87</span>
+          <span class="text-slate-400 text-lg">/ 100</span>
+        </div>
+        <div class="text-xs mt-2" style="color:#C7D2FE">Alta prontidão · 3 sinais fortes · agende conversa</div>
+        <details class="mt-3 text-xs group">
+          <summary class="cursor-pointer flex items-center gap-1.5 font-semibold" style="color:#93C5FD">
+            <svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            O que compõe o score
+          </summary>
+          <div class="mt-3 panel-2 p-3.5 text-slate-300 leading-relaxed space-y-1.5 text-[11.5px]" style="border-color: rgba(147,197,253,0.2)">
+            <div class="flex justify-between"><span>Dor clara de adoção</span><strong style="color:#93C5FD">19 / 20</strong></div>
+            <div class="flex justify-between"><span>Orçamento compatível</span><strong style="color:#93C5FD">18 / 20</strong></div>
+            <div class="flex justify-between"><span>Decisor engajado</span><strong style="color:#93C5FD">20 / 20</strong></div>
+            <div class="flex justify-between"><span>Urgência temporal</span><strong class="text-amber-300">15 / 20</strong></div>
+            <div class="flex justify-between"><span>Momento organizacional</span><strong class="text-amber-300">15 / 20</strong></div>
+            <div class="pt-2 mt-1 border-t border-white/5 flex justify-between"><span class="text-slate-400">Total</span><strong class="text-blue-300">87 / 100</strong></div>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- G-FORGE phase strip -->
+    <div class="mt-8 panel px-6 py-5">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <div class="section-title">Jornada G-FORGE · onde você está</div>
+          <div class="text-slate-400 text-xs mt-1">A metodologia Guilds é o caminho, não um sistema. Cada fase resolve uma camada diferente.</div>
+        </div>
+        <button class="btn btn-ghost text-xs">Entender o G-FORGE →</button>
+      </div>
+      <div class="flex items-center justify-between gap-3">
+        <!-- phase items -->
+        <div class="flex-1 grid grid-cols-7 gap-2 items-start">
+          <!-- FOUNDRY -->
+          <div class="text-center opacity-60">
+            <div class="gforge-letter mx-auto" style="background: rgba(249,115,22,0.12); color:#FDBA74;">F</div>
+            <div class="text-[10px] text-slate-500 mt-2 font-semibold tracking-wider">FOUNDRY</div>
+            <div class="text-[10px] text-slate-600">concluída</div>
+          </div>
+          <!-- OBSERVE (current) -->
+          <div class="text-center">
+            <div class="gforge-letter mx-auto ring-2 ring-amber-400/40" style="background: rgba(245,158,11,0.18); color:#FCD34D;">O</div>
+            <div class="text-[10px] text-amber-300 mt-2 font-bold tracking-wider">OBSERVE</div>
+            <div class="text-[10px] text-amber-300/80">você está aqui</div>
+          </div>
+          <!-- REFINE -->
+          <div class="text-center">
+            <div class="gforge-letter mx-auto" style="background: rgba(132,204,22,0.08); color:#86EFAC;">R</div>
+            <div class="text-[10px] text-slate-500 mt-2 font-semibold tracking-wider">REFINE</div>
+            <div class="text-[10px] text-slate-600">próxima</div>
+          </div>
+          <!-- GENERATE -->
+          <div class="text-center opacity-40">
+            <div class="gforge-letter mx-auto" style="background: rgba(34,197,94,0.08); color:#86EFAC;">G</div>
+            <div class="text-[10px] text-slate-500 mt-2 font-semibold tracking-wider">GENERATE</div>
+          </div>
+          <div class="text-center opacity-40">
+            <div class="gforge-letter mx-auto" style="background: rgba(59,130,246,0.08); color:#93C5FD;">E</div>
+            <div class="text-[10px] text-slate-500 mt-2 font-semibold tracking-wider">EMPOWER</div>
+          </div>
+          <div class="text-center opacity-40">
+            <div class="gforge-letter mx-auto" style="background: rgba(124,58,237,0.08); color:#C4B5FD;">X</div>
+            <div class="text-[10px] text-slate-500 mt-2 font-semibold tracking-wider">EXPAND</div>
+          </div>
+          <div class="text-center opacity-40">
+            <div class="gforge-letter mx-auto" style="background: rgba(236,72,153,0.08); color:#F9A8D4;">+</div>
+            <div class="text-[10px] text-slate-500 mt-2 font-semibold tracking-wider">MADURO</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────────── Se você não fizer nada ────────────────────────────────── -->
+<section class="border-b border-white/5 bg-gradient-to-b from-red-950/10 to-transparent">
+  <div class="max-w-[1400px] mx-auto px-6 py-8">
+    <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+      <div>
+        <span class="chip chip-bad">Projeção 12 meses sem mudança</span>
+        <h2 class="font-display text-2xl font-bold mt-3">Se você não fizer nada</h2>
+        <p class="text-slate-400 text-sm mt-1 max-w-2xl">Esta é a matemática conservadora do custo de inação. Não é chantagem, é o que as variáveis que você reportou tendem a produzir nos próximos 12 meses.</p>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-4 gap-4">
+      <div class="panel-2 p-5 border border-red-500/15">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-red-300">Perda anual projetada</div>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span class="text-slate-500 line-through text-base">R$ 412k</span>
+          <span class="font-display text-2xl font-black text-red-400">R$ 461k</span>
+        </div>
+        <div class="text-xs text-slate-400 mt-2">Inflação salarial (+6,5%) + novo sistema que a equipe vai abandonar.</div>
+      </div>
+      <div class="panel-2 p-5 border border-red-500/15">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-red-300">Rotatividade administrativa</div>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span class="text-slate-500 line-through text-base">12%/ano</span>
+          <span class="font-display text-2xl font-black text-red-400">19%/ano</span>
+        </div>
+        <div class="text-xs text-slate-400 mt-2">Equipe satura em processo manual, gera turnover e custo de reposição.</div>
+      </div>
+      <div class="panel-2 p-5 border border-red-500/15">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-red-300">Risco regulatório NR-01</div>
+        <div class="mt-2">
+          <span class="font-display text-2xl font-black text-red-400">Dez/2026</span>
+        </div>
+        <div class="text-xs text-slate-400 mt-2">Prazo para adequação em riscos psicossociais. Multa até R$ 6.708 por item não adequado.</div>
+      </div>
+      <div class="panel-2 p-5 border border-red-500/15">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-red-300">Janela competitiva</div>
+        <div class="mt-2">
+          <span class="font-display text-2xl font-black text-red-400">~18 meses</span>
+        </div>
+        <div class="text-xs text-slate-400 mt-2">Prazo estimado antes dos consolidadores (2 identificados na sua região) fecharem o cerco.</div>
+      </div>
+    </div>
+    <div class="mt-5 text-xs text-slate-500 flex items-center gap-2">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"/></svg>
+      <span>Projeções baseadas em dados CAGED (2024-2025), NR-01 (portaria MTE 1419/2024) e nossa base de 47 projetos.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────────── Tabs Layout ────────────────────────────────── -->
+<section>
+  <div class="max-w-[1400px] mx-auto px-6">
+    <!-- Main Tabs -->
+    <nav class="flex items-center gap-2 border-b border-white/5">
+      <button class="tab-btn active" data-tab="raiox">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Raio-X do negócio
+      </button>
+      <button class="tab-btn" data-tab="plan">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Planejamento
+      </button>
+      <button class="tab-btn" data-tab="guilds">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="currentColor" stroke-width="2"/></svg>
+        <span>Caminho Guilds</span>
+        <span class="chip chip-guilds !py-0.5 !px-2 !text-[9px] ml-1">Exclusivo</span>
+      </button>
+      <button class="tab-btn" data-tab="profile">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="currentColor" stroke-width="2"/></svg>
+        Sua empresa
+      </button>
+    </nav>
+
+    <div class="grid lg:grid-cols-[1fr_340px] gap-8 py-8">
+      <!-- ─── Main content column ─── -->
+      <main class="space-y-8">
+
+        <!-- ═══════════════════ TAB 1: RAIO-X ═══════════════════ -->
+        <div class="tab-panel active" data-panel="raiox">
+
+          <!-- sub-tabs -->
+          <div class="flex flex-wrap items-center gap-2 mb-6">
+            <button class="sub-tab-btn active" data-sub="mat">Maturidade Digital</button>
+            <button class="sub-tab-btn" data-sub="merc">Mercado &amp; Concorrência</button>
+            <button class="sub-tab-btn" data-sub="comm">Comunicação &amp; Marca</button>
+          </div>
+
+          <!-- ── Sub-panel: Maturidade Digital ── -->
+          <div class="sub-panel active space-y-6" data-sub-panel="mat">
+            <div class="panel p-7">
+              <div class="flex flex-col lg:flex-row gap-8 items-start">
+
+                <!-- Radar chart -->
+                <div class="flex-shrink-0 mx-auto lg:mx-0">
+                  <svg width="340" height="340" viewBox="-170 -170 340 340">
+                    <!-- zona saudável (3.5–5) como fundo verde leve -->
+                    <polygon points="0,-98 98,0 0,98 -98,0" fill="rgba(34,197,94,0.06)" stroke="rgba(34,197,94,0.15)" stroke-width="1" stroke-dasharray="2 3"/>
+                    <!-- concentric grid -->
+                    <g class="radar-grid">
+                      <polygon points="0,-140 140,0 0,140 -140,0" />
+                      <polygon points="0,-105 105,0 0,105 -105,0" />
+                      <polygon points="0,-70 70,0 0,70 -70,0" />
+                      <polygon points="0,-35 35,0 0,35 -35,0" />
+                    </g>
+                    <g class="radar-axis">
+                      <line x1="0" y1="-140" x2="0" y2="140"/>
+                      <line x1="-140" y1="0" x2="140" y2="0"/>
+                    </g>
+                    <!-- grid scale labels -->
+                    <text x="3" y="-35" fill="#475569" font-size="9" font-family="Inter">1</text>
+                    <text x="3" y="-70" fill="#475569" font-size="9" font-family="Inter">2</text>
+                    <text x="3" y="-105" fill="#475569" font-size="9" font-family="Inter">3</text>
+                    <text x="3" y="-140" fill="#475569" font-size="9" font-family="Inter">4</text>
+                    <!-- setor (Processos 2.5 / Sistemas 2.4 / Dados 2.2 / Pessoas 2.3) -->
+                    <polygon class="radar-bench" points="0,-70 67.2,0 0,61.6 -64.4,0"/>
+                    <!-- Medtrack (Processos 1.6 / Sistemas 2.1 / Dados 1.8 / Pessoas 2.2) -->
+                    <polygon class="radar-self" points="0,-44.8 58.8,0 0,50.4 -61.6,0"/>
+                    <!-- axis labels só com nome do eixo -->
+                    <text class="radar-label" x="0" y="-150" text-anchor="middle">Processos</text>
+                    <text class="radar-label" x="150" y="5" text-anchor="end">Sistemas</text>
+                    <text class="radar-label" x="0" y="160" text-anchor="middle">Dados</text>
+                    <text class="radar-label" x="-150" y="5" text-anchor="start">Pessoas</text>
+                    <!-- indicador da zona saudável -->
+                    <text x="-95" y="-155" fill="#4ADE80" font-size="9" font-family="Inter" font-weight="700" opacity="0.7">◌ zona saudável (3.5–5)</text>
+                  </svg>
+                  <div class="flex items-center justify-center gap-5 text-xs mt-2">
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-blue-500/60 border border-blue-400"></span>Medtrack</span>
+                    <span class="flex items-center gap-1.5 text-slate-500"><span class="w-2.5 h-2.5 rounded-sm border border-slate-500 border-dashed"></span>Setor</span>
+                    <span class="flex items-center gap-1.5 text-green-400"><span class="w-2.5 h-2.5 rounded-sm bg-green-500/10 border border-green-500/30"></span>Saudável</span>
+                  </div>
+                  <!-- Tabela de delta -->
+                  <table class="mt-5 w-full text-xs">
+                    <thead>
+                      <tr class="text-slate-500 text-[10px] uppercase tracking-wider font-bold">
+                        <th class="text-left py-2 pr-2">Eixo</th>
+                        <th class="text-right py-2 px-2">Você</th>
+                        <th class="text-right py-2 px-2">Setor</th>
+                        <th class="text-right py-2 pl-2">Delta</th>
+                      </tr>
+                    </thead>
+                    <tbody class="font-medium">
+                      <tr class="border-t border-white/5">
+                        <td class="py-2 pr-2 text-slate-300">Processos</td>
+                        <td class="py-2 px-2 text-right text-white font-bold">1.6</td>
+                        <td class="py-2 px-2 text-right text-slate-400">2.5</td>
+                        <td class="py-2 pl-2 text-right text-red-400 font-bold">−0.9</td>
+                      </tr>
+                      <tr class="border-t border-white/5">
+                        <td class="py-2 pr-2 text-slate-300">Sistemas</td>
+                        <td class="py-2 px-2 text-right text-white font-bold">2.1</td>
+                        <td class="py-2 px-2 text-right text-slate-400">2.4</td>
+                        <td class="py-2 pl-2 text-right text-amber-400 font-bold">−0.3</td>
+                      </tr>
+                      <tr class="border-t border-white/5">
+                        <td class="py-2 pr-2 text-slate-300">Dados</td>
+                        <td class="py-2 px-2 text-right text-white font-bold">1.8</td>
+                        <td class="py-2 px-2 text-right text-slate-400">2.2</td>
+                        <td class="py-2 pl-2 text-right text-amber-400 font-bold">−0.4</td>
+                      </tr>
+                      <tr class="border-t border-white/5">
+                        <td class="py-2 pr-2 text-slate-300">Pessoas</td>
+                        <td class="py-2 px-2 text-right text-white font-bold">2.2</td>
+                        <td class="py-2 px-2 text-right text-slate-400">2.3</td>
+                        <td class="py-2 pl-2 text-right text-slate-300 font-bold">−0.1</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Narrative -->
+                <div class="flex-1">
+                  <span class="chip chip-warn">Fase OBSERVE · Score 1.9/5</span>
+                  <h3 class="font-display text-2xl font-bold mt-3 mb-3">Seus sistemas funcionam. Seu processo não.</h3>
+                  <p class="text-slate-300 text-[14.5px] leading-relaxed">
+                    A clínica tem CRM, ERP e um sistema de prontuário, mas <strong class="text-white">apenas 34% da equipe</strong> usa esses sistemas como deveria. O dado entra em um lugar, o processo decide em outro, e a equipe cria atalhos em planilhas e WhatsApp para dar conta do dia. Você não tem um problema de software; tem um <strong class="text-blue-300">processo documentado que não bate com o processo real</strong>. Antes de automatizar qualquer coisa, isso precisa ser mapeado.
+                  </p>
+                  <div class="grid grid-cols-2 gap-3 mt-5">
+                    <div class="panel-2 p-4">
+                      <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Maior gap</div>
+                      <div class="font-semibold mt-1">Processos manuais</div>
+                      <div class="text-xs text-slate-400 mt-1">12h/sem por funcionário em tarefas automatizáveis</div>
+                    </div>
+                    <div class="panel-2 p-4">
+                      <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Ponto forte</div>
+                      <div class="font-semibold mt-1">Pessoas engajadas</div>
+                      <div class="text-xs text-slate-400 mt-1">Histórico de apenas 1 abandono de sistema em 5 anos</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gargalos críticos -->
+            <div>
+              <div class="flex items-baseline justify-between mb-4">
+                <h3 class="font-display text-xl font-bold">Gargalos críticos identificados</h3>
+                <span class="text-xs text-slate-500">3 de 7 priorizados por impacto financeiro</span>
+              </div>
+              <div class="space-y-3">
+                <!-- Gap 1 -->
+                <div class="panel p-5 card-hover">
+                  <div class="flex gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center font-black flex-shrink-0">1</div>
+                    <div class="flex-1">
+                      <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                        <h4 class="font-bold text-[15px]">Adoção crítica: 34% da equipe usa o CRM</h4>
+                        <span class="chip chip-bad">CRÍTICO</span>
+                        <span class="chip chip-guilds">G-FORGE</span>
+                      </div>
+                      <p class="text-sm text-slate-400 leading-relaxed">Menos da metade da equipe operacionaliza o CRM. Cada R$ pago em licença entrega ~30% do potencial. A dor não está no software. Está na resistência e na ausência de um dono do ciclo de adoção.</p>
+                      <div class="flex flex-wrap items-center gap-4 mt-3 text-xs">
+                        <span class="text-blue-300"><strong>Ação:</strong> Fase EMPOWER · sprint de adoção ativa (6 semanas)</span>
+                        <span class="text-red-300/80">Representa ~70% da perda anual</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Gap 2 -->
+                <div class="panel p-5 card-hover">
+                  <div class="flex gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center font-black flex-shrink-0">2</div>
+                    <div class="flex-1">
+                      <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                        <h4 class="font-bold text-[15px]">Equipe executa 12h/semana em tarefas que o sistema deveria fazer</h4>
+                        <span class="chip chip-bad">CRÍTICO</span>
+                        <span class="chip chip-guilds">G-FORGE</span>
+                      </div>
+                      <p class="text-sm text-slate-400 leading-relaxed">Geração de relatórios, consolidação de agendamentos, confirmação de consulta, cobrança de atrasados: tudo manual. Em 50 funcionários, isso custa R$ 289k/ano em horas não-produtivas.</p>
+                      <div class="flex flex-wrap items-center gap-4 mt-3 text-xs">
+                        <span class="text-blue-300"><strong>Ação:</strong> Fase GENERATE · automações calibradas à adoção real</span>
+                        <span class="text-red-300/80">R$ 289.000 por ano</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Gap 3 -->
+                <div class="panel p-5 card-hover">
+                  <div class="flex gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-black flex-shrink-0">3</div>
+                    <div class="flex-1">
+                      <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                        <h4 class="font-bold text-[15px]">2 sistemas pagos que quase ninguém usa</h4>
+                        <span class="chip chip-warn">ALTO</span>
+                        <span class="chip chip-diy">Você faz</span>
+                      </div>
+                      <p class="text-sm text-slate-400 leading-relaxed">Plataforma de BI e ferramenta de pesquisa de satisfação: R$ 54k/ano em licenças ociosas. Esse você consegue cortar sozinho. Só precisa de uma reunião de 2h com o responsável por cada contrato.</p>
+                      <div class="flex flex-wrap items-center gap-4 mt-3 text-xs">
+                        <span class="text-green-300"><strong>Ação:</strong> Auditoria de licenças (template Guilds grátis, abaixo)</span>
+                        <span class="text-slate-500">R$ 54.000/ano recuperados</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Sub-panel: Mercado ── -->
+          <div class="sub-panel hidden space-y-6" data-sub-panel="merc">
+            <div class="panel p-7">
+              <span class="chip chip-brand">Setor: Saúde · Clínicas médicas médio porte · Região Sudeste</span>
+              <h3 class="font-display text-2xl font-bold mt-3 mb-4">Onde Medtrack se posiciona no mercado</h3>
+
+              <!-- Concorrentes identificados -->
+              <div class="panel-2 p-5 mb-4">
+                <div class="flex items-center justify-between flex-wrap gap-2 mb-4">
+                  <div class="section-title" style="color:#C7D2FE">Concorrentes identificados na sua região</div>
+                  <span class="text-[10px] text-slate-500">curadoria por setor · atualizado fev/2026</span>
+                </div>
+                <div class="grid md:grid-cols-2 gap-3">
+                  <div class="panel-2 p-4 border-l-2 border-l-red-500/40">
+                    <div class="flex items-center justify-between mb-1"><div class="font-bold text-[14px] text-white">Grupo Fleury · Rede Amil</div><span class="chip chip-bad !text-[9px]">Ameaça direta</span></div>
+                    <div class="text-xs text-slate-400">Consolidadores ativos comprando clínicas de 30–80 funcionários em SP/RJ desde 2023. Estratégia: ticket médio + escala de convênios.</div>
+                  </div>
+                  <div class="panel-2 p-4 border-l-2 border-l-amber-500/40">
+                    <div class="flex items-center justify-between mb-1"><div class="font-bold text-[14px] text-white">Dasa · Alta Diagnósticos</div><span class="chip chip-warn !text-[9px]">Flanco lateral</span></div>
+                    <div class="text-xs text-slate-400">Digitalização avançada e integração com operadoras. Força: execução. Fraqueza: atendimento impessoal. É aí que você ganha.</div>
+                  </div>
+                  <div class="panel-2 p-4 border-l-2 border-l-slate-500/40">
+                    <div class="flex items-center justify-between mb-1"><div class="font-bold text-[14px] text-white">Notre Dame Intermédica</div><span class="chip !text-[9px]">Indireto</span></div>
+                    <div class="text-xs text-slate-400">Operadora verticalizada. Pressiona via planos PME na sua faixa de ticket.</div>
+                  </div>
+                  <div class="panel-2 p-4 border-l-2 border-l-slate-500/40">
+                    <div class="flex items-center justify-between mb-1"><div class="font-bold text-[14px] text-white">Clínicas independentes (3 identificadas)</div><span class="chip !text-[9px]">Pares</span></div>
+                    <div class="text-xs text-slate-400">Clínicas do mesmo porte, mesma região, posicionamento semelhante. A Guilds atendeu 2 delas — benchmark mais justo do seu score.</div>
+                  </div>
+                </div>
+                <div class="mt-3 text-[11px] text-slate-500 flex items-center gap-2 flex-wrap">
+                  <span>Fontes:</span>
+                  <span>Relatórios ANS 2024/25</span><span class="text-slate-700">·</span>
+                  <span>Press releases públicos 2023–2026</span><span class="text-slate-700">·</span>
+                  <span>Junta Comercial SP (M&A tracker)</span>
+                </div>
+              </div>
+
+              <div class="grid md:grid-cols-3 gap-4">
+                <div class="panel-2 p-5">
+                  <div class="section-title text-green-300/80">Oportunidades</div>
+                  <ul class="text-sm text-slate-300 mt-3 space-y-2">
+                    <li>→ 78% das clínicas do seu porte ainda não digitalizaram prontuário corretamente <span class="text-slate-500 text-[10px]">(CFM, 2024)</span></li>
+                    <li>→ NR-01 obriga registro psicossocial, diferencial competitivo real até dez/2026</li>
+                    <li>→ Telemedicina assíncrona cresceu 34% em 12 meses no seu ticket médio <span class="text-slate-500 text-[10px]">(ANS, 2025)</span></li>
+                  </ul>
+                </div>
+                <div class="panel-2 p-5">
+                  <div class="section-title text-amber-300/80">Ameaças</div>
+                  <ul class="text-sm text-slate-300 mt-3 space-y-2">
+                    <li>→ Fleury e Amil compraram 14 clínicas mid-market em SP nos últimos 18 meses</li>
+                    <li>→ Planos de saúde (Unimed, Bradesco, SulAmérica) exigindo integração com prontuário, prazo 2027</li>
+                    <li>→ LGPD: auditoria ANPD crescente no setor saúde (32 processos abertos em 2025)</li>
+                  </ul>
+                </div>
+                <div class="panel-2 p-5">
+                  <div class="section-title" style="color:#C7D2FE">Posicionamento sugerido</div>
+                  <p class="text-sm text-slate-300 mt-3 leading-relaxed">Em 12 meses: <strong class="text-blue-200">"A clínica que entrega diagnóstico em 24h com atendimento humanizado"</strong>. Sua força está na retenção (NPS 71), não no preço. Dobre a aposta aí.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Sub-panel: Comunicação ── -->
+          <div class="sub-panel hidden space-y-6" data-sub-panel="comm">
+            <div class="panel p-7">
+              <div class="flex items-start justify-between gap-6 flex-wrap">
+                <div>
+                  <span class="chip chip-warn">Score de comunicação: 2.4/5</span>
+                  <h3 class="font-display text-2xl font-bold mt-3 mb-3">Sua mensagem não sustenta seu preço</h3>
+                  <p class="text-slate-300 text-[14.5px] leading-relaxed max-w-2xl">
+                    Auditei <strong class="text-white">medtrack.com.br</strong> e seus 3 canais ativos (Instagram, LinkedIn, Google Business). A comunicação é funcional (horários, especialidades, convênios) mas <strong class="text-blue-300">não comunica o que te faz caro</strong>. O cliente chega preparado para comparar preço, não para escolher você.
+                  </p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <div class="hero-value text-5xl text-blue-400">2.4</div>
+                  <div class="text-xs text-slate-500">Média setor: 3.1</div>
+                </div>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-3 mt-6">
+                <div class="panel-2 p-4">
+                  <div class="flex items-center justify-between">
+                    <div class="font-semibold text-sm">Clareza da proposta de valor</div>
+                    <span class="chip chip-bad">1.8 / 5</span>
+                  </div>
+                  <div class="text-xs text-slate-400 mt-2">O hero do site lista 6 especialidades. Ninguém contrata "especialidades". Contrata resultado.</div>
+                </div>
+                <div class="panel-2 p-4">
+                  <div class="flex items-center justify-between">
+                    <div class="font-semibold text-sm">Prova social operacional</div>
+                    <span class="chip chip-bad">1.9 / 5</span>
+                  </div>
+                  <div class="text-xs text-slate-400 mt-2">Depoimentos sem rosto, sem caso, sem número. Concorrentes já usam NPS público.</div>
+                </div>
+                <div class="panel-2 p-4">
+                  <div class="flex items-center justify-between">
+                    <div class="font-semibold text-sm">Consistência entre canais</div>
+                    <span class="chip chip-warn">3.1 / 5</span>
+                  </div>
+                  <div class="text-xs text-slate-400 mt-2">LinkedIn profissional, Instagram descolado demais, Google Business vazio. Cada canal conta uma história diferente.</div>
+                </div>
+                <div class="panel-2 p-4">
+                  <div class="flex items-center justify-between">
+                    <div class="font-semibold text-sm">Jornada de conversão</div>
+                    <span class="chip chip-warn">2.8 / 5</span>
+                  </div>
+                  <div class="text-xs text-slate-400 mt-2">CTA único ("Agendar") sem pré-qualificação. Perde lead de ticket alto.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Auditoria visual do site -->
+            <div class="panel p-6">
+              <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                <div>
+                  <div class="section-title">Auditoria visual · medtrack.com.br</div>
+                  <div class="text-slate-400 text-xs mt-1">Não é opinião genérica. Cada marca vermelha abaixo aponta um problema específico da home.</div>
+                </div>
+                <div class="flex items-center gap-2 text-[10px] text-slate-500">
+                  <span class="chip !text-[9px]">capturado 22/abr/2026</span>
+                </div>
+              </div>
+              <!-- browser mock -->
+              <div class="rounded-xl overflow-hidden border border-white/10 bg-white">
+                <div class="bg-slate-100 px-3 py-2 flex items-center gap-1.5 border-b border-slate-200">
+                  <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-green-400"></span>
+                  <div class="flex-1 mx-3 px-3 py-1 bg-white rounded-md text-[11px] text-slate-500 font-mono">medtrack.com.br</div>
+                </div>
+                <!-- Simulated homepage -->
+                <div class="relative bg-slate-50 p-6">
+                  <!-- nav -->
+                  <div class="flex items-center justify-between pb-4 border-b border-slate-200 relative">
+                    <div class="flex items-center gap-8">
+                      <div class="font-black text-slate-800 text-lg">MEDTRACK</div>
+                      <div class="flex gap-4 text-xs text-slate-500 font-medium">
+                        <span>Especialidades</span><span>Convênios</span><span>Blog</span><span>Contato</span>
+                      </div>
+                    </div>
+                    <button class="text-[11px] font-bold px-3 py-1.5 rounded bg-emerald-500 text-white">Agendar</button>
+                    <!-- annotation 4 -->
+                    <div class="absolute -top-1 right-20 z-10">
+                      <div class="w-6 h-6 rounded-full bg-red-500 border-2 border-white text-white text-[11px] font-black flex items-center justify-center shadow-lg">4</div>
+                    </div>
+                  </div>
+                  <!-- hero -->
+                  <div class="pt-6 pb-4 relative">
+                    <div class="flex items-start gap-6">
+                      <div class="flex-1">
+                        <!-- annotation 1 -->
+                        <div class="absolute -left-3 top-4 z-10">
+                          <div class="w-6 h-6 rounded-full bg-red-500 border-2 border-white text-white text-[11px] font-black flex items-center justify-center shadow-lg">1</div>
+                        </div>
+                        <div class="text-slate-800 text-xl font-bold leading-tight">Clínica médica com várias especialidades para cuidar de você</div>
+                        <div class="text-slate-500 text-xs mt-2">Cardiologia · Ortopedia · Pediatria · Ginecologia · Dermatologia · Neurologia</div>
+                        <!-- annotation 2 -->
+                        <div class="mt-4 p-2.5 bg-slate-100 rounded text-[10px] text-slate-500 italic relative">
+                          "Atendimento excelente!" <span class="text-slate-400 not-italic">— Maria, paciente</span>
+                          <div class="absolute -right-3 -top-2">
+                            <div class="w-6 h-6 rounded-full bg-red-500 border-2 border-white text-white text-[11px] font-black flex items-center justify-center shadow-lg">2</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="w-32 h-24 bg-gradient-to-br from-emerald-200 to-emerald-400 rounded flex-shrink-0"></div>
+                    </div>
+                  </div>
+                  <!-- footer canais -->
+                  <div class="pt-4 border-t border-slate-200 flex items-center gap-3 relative">
+                    <span class="text-[10px] text-slate-500">Siga:</span>
+                    <div class="flex gap-1.5">
+                      <span class="w-5 h-5 rounded bg-pink-400"></span>
+                      <span class="w-5 h-5 rounded bg-blue-600"></span>
+                      <span class="w-5 h-5 rounded bg-red-400"></span>
+                    </div>
+                    <!-- annotation 3 -->
+                    <div class="absolute left-14 -top-1 z-10">
+                      <div class="w-6 h-6 rounded-full bg-red-500 border-2 border-white text-white text-[11px] font-black flex items-center justify-center shadow-lg">3</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- legenda das anotações -->
+              <div class="grid md:grid-cols-2 gap-3 mt-5">
+                <div class="flex gap-3 items-start panel-2 p-3">
+                  <div class="w-6 h-6 rounded-full bg-red-500 text-white text-xs font-black flex items-center justify-center flex-shrink-0">1</div>
+                  <div>
+                    <div class="text-sm font-semibold">Hero que não vende</div>
+                    <div class="text-xs text-slate-400 mt-0.5">"Clínica com várias especialidades" é o oposto de posicionamento. Sugestão concreta: "Diagnóstico em 24h, sem precisar de duas consultas".</div>
+                  </div>
+                </div>
+                <div class="flex gap-3 items-start panel-2 p-3">
+                  <div class="w-6 h-6 rounded-full bg-red-500 text-white text-xs font-black flex items-center justify-center flex-shrink-0">2</div>
+                  <div>
+                    <div class="text-sm font-semibold">Depoimento sem prova</div>
+                    <div class="text-xs text-slate-400 mt-0.5">"Atendimento excelente" de "Maria, paciente" não convence ninguém acima de 30 anos. Troque por 3 casos com nome, foto e número (NPS, tempo).</div>
+                  </div>
+                </div>
+                <div class="flex gap-3 items-start panel-2 p-3">
+                  <div class="w-6 h-6 rounded-full bg-red-500 text-white text-xs font-black flex items-center justify-center flex-shrink-0">3</div>
+                  <div>
+                    <div class="text-sm font-semibold">Canais inconsistentes</div>
+                    <div class="text-xs text-slate-400 mt-0.5">Instagram posta meme, LinkedIn posta congresso, Google Business está vazio. Mesmo cliente, 3 empresas diferentes na cabeça dele.</div>
+                  </div>
+                </div>
+                <div class="flex gap-3 items-start panel-2 p-3">
+                  <div class="w-6 h-6 rounded-full bg-red-500 text-white text-xs font-black flex items-center justify-center flex-shrink-0">4</div>
+                  <div>
+                    <div class="text-sm font-semibold">CTA único perde ticket alto</div>
+                    <div class="text-xs text-slate-400 mt-0.5">"Agendar" trata lead de R$ 200 igual ao de R$ 2.000. Adicione "Falar com um médico" para consultas premium e mude a cor da ação principal.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 bg-blue-500/5 border border-blue-500/15 rounded-lg p-3 text-xs text-blue-200">
+                <strong>Template Guilds grátis:</strong> 3 variações de hero copy testadas em clínicas similares, com instruções de A/B test em 30 dias.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ═══════════════════ TAB 2: PLANEJAMENTO ═══════════════════ -->
+        <div class="tab-panel" data-panel="plan">
+          <div class="flex flex-wrap items-center gap-2 mb-6">
+            <button class="sub-tab-btn active" data-sub2="obj">Objetivos SMART</button>
+            <button class="sub-tab-btn" data-sub2="plano">Plano de ação 90 dias</button>
+            <button class="sub-tab-btn" data-sub2="kpi">KPIs &amp; Métricas</button>
+          </div>
+
+          <!-- Objetivos -->
+          <div class="sub-panel2 active space-y-4" data-sub-panel2="obj">
+            <div class="panel p-6">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="chip chip-brand">Objetivo principal</span>
+                <span class="text-xs text-slate-500">com base no seu diagnóstico</span>
+              </div>
+              <h3 class="font-display text-2xl font-bold mb-2">Levar a adoção do CRM de 34% para 85% em 90 dias, recuperando R$ 289k/ano em horas operacionais.</h3>
+              <div class="grid md:grid-cols-5 gap-3 mt-5">
+                <div class="panel-2 p-3"><div class="text-[10px] font-bold uppercase tracking-wider text-blue-300">Específico</div><div class="text-xs text-slate-300 mt-1.5">34% → 85% no uso diário</div></div>
+                <div class="panel-2 p-3"><div class="text-[10px] font-bold uppercase tracking-wider text-blue-300">Mensurável</div><div class="text-xs text-slate-300 mt-1.5">Log de acesso por usuário/dia</div></div>
+                <div class="panel-2 p-3"><div class="text-[10px] font-bold uppercase tracking-wider text-blue-300">Atingível</div><div class="text-xs text-slate-300 mt-1.5">Benchmark clínicas maduras: 89%</div></div>
+                <div class="panel-2 p-3"><div class="text-[10px] font-bold uppercase tracking-wider text-blue-300">Relevante</div><div class="text-xs text-slate-300 mt-1.5">70% da perda anual depende disso</div></div>
+                <div class="panel-2 p-3"><div class="text-[10px] font-bold uppercase tracking-wider text-blue-300">Temporal</div><div class="text-xs text-slate-300 mt-1.5">90 dias · checkpoints semanais</div></div>
+              </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="panel p-6">
+                <span class="chip chip-brand">Objetivo 2</span>
+                <h4 class="font-bold text-[15px] mt-3 mb-2">Reduzir horas manuais de 12h/sem para 4h/sem por funcionário administrativo</h4>
+                <div class="text-xs text-slate-400">Meta: 180 dias · economia anual: R$ 192k</div>
+              </div>
+              <div class="panel p-6">
+                <span class="chip chip-brand">Objetivo 3</span>
+                <h4 class="font-bold text-[15px] mt-3 mb-2">Reposicionar comunicação digital em torno de "diagnóstico em 24h"</h4>
+                <div class="text-xs text-slate-400">Meta: 120 dias · impacto esperado: ticket +18%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plano de ação -->
+          <div class="sub-panel2 hidden space-y-6" data-sub-panel2="plano">
+            <div class="panel p-5 flex items-center gap-4 flex-wrap">
+              <div class="text-sm"><strong class="text-blue-300">10 ações priorizadas</strong> <span class="text-slate-500">· 6 você faz · 4 com Guilds</span></div>
+              <div class="flex-1"></div>
+              <div class="flex gap-2 text-xs">
+                <span class="chip chip-diy">● Você faz (DIY)</span>
+                <span class="chip chip-guilds">● Com Guilds</span>
+              </div>
+            </div>
+
+            <!-- GANTT TIMELINE -->
+            <div class="panel p-6">
+              <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                <div>
+                  <div class="section-title">Linha do tempo · 90 dias</div>
+                  <div class="text-slate-400 text-xs mt-1">Dependências entre ações. Clique em cada barra para ver o card completo abaixo.</div>
+                </div>
+                <button class="btn btn-ghost text-xs">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 2v10m0 0l-3-3m3 3l3-3M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  Baixar Gantt em PNG
+                </button>
+              </div>
+              <!-- Week header -->
+              <div class="grid grid-cols-[180px_repeat(12,1fr)] gap-1 text-[10px] text-slate-500 font-semibold uppercase tracking-wider mb-3 pb-2 border-b border-white/5">
+                <div></div>
+                <div class="text-center">S1</div><div class="text-center">S2</div><div class="text-center">S3</div><div class="text-center">S4</div>
+                <div class="text-center">S5</div><div class="text-center">S6</div><div class="text-center">S7</div><div class="text-center">S8</div>
+                <div class="text-center">S9</div><div class="text-center">S10</div><div class="text-center">S11</div><div class="text-center">S12</div>
+              </div>
+              <!-- Rows -->
+              <div class="space-y-2">
+                <!-- Ação 1 -->
+                <div class="grid grid-cols-[180px_repeat(12,1fr)] gap-1 items-center group">
+                  <div class="text-xs truncate pr-3 text-slate-300 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>1. Mapear processo real</div>
+                  <div class="col-span-2 h-6 rounded bg-green-500/20 border border-green-500/40 flex items-center px-2"><span class="text-[10px] text-green-200 font-semibold">DIY · 6h</span></div>
+                </div>
+                <!-- Ação 2 (com Guilds) -->
+                <div class="grid grid-cols-[180px_repeat(12,1fr)] gap-1 items-center group">
+                  <div class="text-xs truncate pr-3 text-slate-300 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>2. Redesenho + adoção CRM</div>
+                  <div></div>
+                  <div class="col-span-11 h-6 rounded bg-blue-500/25 border border-blue-500/50 flex items-center px-2"><span class="text-[10px] text-blue-100 font-semibold">Guilds · Semanas 2–12 · squad dedicado</span></div>
+                </div>
+                <!-- Ação 3 -->
+                <div class="grid grid-cols-[180px_repeat(12,1fr)] gap-1 items-center group">
+                  <div class="text-xs truncate pr-3 text-slate-300 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>3. Cortar sistemas fantasmas</div>
+                  <div class="col-span-2 h-6 rounded bg-green-500/20 border border-green-500/40 flex items-center px-2"><span class="text-[10px] text-green-200 font-semibold">DIY · 4h</span></div>
+                </div>
+                <!-- Ação 4 -->
+                <div class="grid grid-cols-[180px_repeat(12,1fr)] gap-1 items-center group">
+                  <div class="text-xs truncate pr-3 text-slate-300 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>4. Reescrever proposta de valor</div>
+                  <div class="col-span-2"></div>
+                  <div class="col-span-2 h-6 rounded bg-green-500/20 border border-green-500/40 flex items-center px-2"><span class="text-[10px] text-green-200 font-semibold">DIY · 4h</span></div>
+                </div>
+                <!-- Ação 5 -->
+                <div class="grid grid-cols-[180px_repeat(12,1fr)] gap-1 items-center group">
+                  <div class="text-xs truncate pr-3 text-slate-300 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>5. Dashboard gerencial</div>
+                  <div class="col-span-5"></div>
+                  <div class="col-span-4 h-6 rounded bg-blue-500/25 border border-blue-500/50 flex items-center px-2"><span class="text-[10px] text-blue-100 font-semibold">Guilds · S6–9</span></div>
+                </div>
+                <!-- Ação 6 -->
+                <div class="grid grid-cols-[180px_repeat(12,1fr)] gap-1 items-center group">
+                  <div class="text-xs truncate pr-3 text-slate-300 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>6. Renegociar licenças</div>
+                  <div class="col-span-3"></div>
+                  <div class="col-span-2 h-6 rounded bg-green-500/20 border border-green-500/40 flex items-center px-2"><span class="text-[10px] text-green-200 font-semibold">DIY · 3h</span></div>
+                </div>
+                <!-- Ação 7 -->
+                <div class="grid grid-cols-[180px_repeat(12,1fr)] gap-1 items-center group">
+                  <div class="text-xs truncate pr-3 text-slate-300 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>7. Coaching de adoção</div>
+                  <div class="col-span-7"></div>
+                  <div class="col-span-5 h-6 rounded bg-blue-500/25 border border-blue-500/50 flex items-center px-2"><span class="text-[10px] text-blue-100 font-semibold">Guilds · Fase EMPOWER</span></div>
+                </div>
+                <!-- Ação 8 -->
+                <div class="grid grid-cols-[180px_repeat(12,1fr)] gap-1 items-center group">
+                  <div class="text-xs truncate pr-3 text-slate-300 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>8. Prova social no site</div>
+                  <div class="col-span-7"></div>
+                  <div class="col-span-2 h-6 rounded bg-green-500/20 border border-green-500/40 flex items-center px-2"><span class="text-[10px] text-green-200 font-semibold">DIY · 8h</span></div>
+                </div>
+              </div>
+              <!-- Legend & totals -->
+              <div class="mt-5 pt-4 border-t border-white/5 flex flex-wrap items-center gap-5 text-xs text-slate-400">
+                <div><span class="text-white font-bold">Seu esforço total:</span> <span class="text-green-300">~35h distribuídas em 12 semanas</span></div>
+                <div><span class="text-white font-bold">Esforço da sua equipe:</span> <span class="text-slate-300">~60h (líderes e administrativo)</span></div>
+                <div><span class="text-white font-bold">Esforço Guilds:</span> <span class="text-blue-300">squad dedicado, fora dessa conta</span></div>
+              </div>
+            </div>
+
+            <!-- Ações -->
+            <details class="panel card-hover" open>
+              <summary class="p-5 flex items-center gap-4">
+                <div class="w-9 h-9 rounded-lg bg-red-500/10 text-red-400 flex items-center justify-center font-black flex-shrink-0 text-sm">1</div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-semibold text-[14.5px]">Mapear o processo real do agendamento em 2 dias</span>
+                    <span class="chip chip-bad">Prioridade Alta</span>
+                    <span class="chip chip-diy">Você faz</span>
+                  </div>
+                  <div class="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                    <span>Semana 1 · sem custo</span>
+                    <span class="text-slate-700">·</span>
+                    <span><strong class="text-slate-300">Seu tempo:</strong> 6h</span>
+                    <span class="text-slate-700">·</span>
+                    <span><strong class="text-slate-300">Equipe:</strong> 4h (3 atendentes × 1h + 2 entrevistas)</span>
+                    <span class="text-slate-700">·</span>
+                    <span class="text-green-400"><strong>Guilds:</strong> 0h</span>
+                  </div>
+                </div>
+                <svg class="chev text-slate-500" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </summary>
+              <div class="px-5 pb-5 pl-[72px] text-sm text-slate-300 space-y-3 border-t border-white/5 pt-4">
+                <p><strong class="text-white">Por que isso primeiro:</strong> antes de qualquer sistema ou automação, você precisa saber como a equipe realmente trabalha, não como o manual diz.</p>
+                <div>
+                  <div class="text-[11px] font-bold uppercase tracking-wider text-blue-300 mb-2">O que fazer (checklist)</div>
+                  <ul class="space-y-1.5">
+                    <li class="flex gap-2"><span class="text-blue-400">☐</span>Observar 3 atendentes durante 1 dia cada (sem intervir)</li>
+                    <li class="flex gap-2"><span class="text-blue-400">☐</span>Anotar toda vez que a pessoa sai do CRM para WhatsApp, planilha ou papel</li>
+                    <li class="flex gap-2"><span class="text-blue-400">☐</span>Mapear os 5 momentos de dor mais repetidos</li>
+                    <li class="flex gap-2"><span class="text-blue-400">☐</span>Entrevistar 2 funcionários com menos de 1 ano de casa (têm olhar fresco)</li>
+                  </ul>
+                </div>
+                <div class="bg-blue-500/5 border border-blue-500/15 rounded-lg p-3 text-xs text-blue-200">
+                  <strong>Template Guilds grátis:</strong> <a class="underline">Roteiro de Observação G-FORGE · fase OBSERVE</a>
+                </div>
+              </div>
+            </details>
+
+            <details class="panel card-hover glow-guilds">
+              <summary class="p-5 flex items-center gap-4">
+                <div class="w-9 h-9 rounded-lg bg-blue-500/15 text-blue-300 flex items-center justify-center font-black flex-shrink-0 text-sm">2</div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-semibold text-[14.5px]">Redesenhar fluxo de CRM antes de treinar (Sprint EMPOWER)</span>
+                    <span class="chip chip-bad">Prioridade Alta</span>
+                    <span class="chip chip-guilds">Com Guilds</span>
+                  </div>
+                  <div class="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                    <span>Semanas 2–12 · Fase REFINE + GENERATE + EMPOWER</span>
+                    <span class="text-slate-700">·</span>
+                    <span><strong class="text-slate-300">Seu tempo:</strong> 2h/sem (comitê semanal)</span>
+                    <span class="text-slate-700">·</span>
+                    <span><strong class="text-slate-300">Equipe:</strong> 4h/sem (líderes)</span>
+                    <span class="text-slate-700">·</span>
+                    <span class="text-blue-400"><strong>Guilds:</strong> squad dedicado</span>
+                  </div>
+                </div>
+                <svg class="chev text-slate-500" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </summary>
+              <div class="px-5 pb-5 pl-[72px] text-sm text-slate-300 space-y-3 border-t border-white/5 pt-4">
+                <p><strong class="text-white">Por que com Guilds:</strong> esse é o ponto que, historicamente, você tentou sozinha e não funcionou (você marcou <em>"1x abandonamos sistema"</em> no diagnóstico). O método G-FORGE trata a causa (processo + adoção), não o sintoma.</p>
+                <div class="grid md:grid-cols-2 gap-3">
+                  <div class="panel-2 p-3">
+                    <div class="text-[10px] font-bold uppercase tracking-wider text-blue-300">Entregáveis da sprint</div>
+                    <ul class="text-xs mt-2 space-y-1 text-slate-300">
+                      <li>→ Processo redesenhado + aprovado pela equipe</li>
+                      <li>→ CRM reconfigurado no fluxo real</li>
+                      <li>→ 6 semanas de adoção ativa + coaching</li>
+                      <li>→ Dashboard de uso por usuário</li>
+                    </ul>
+                  </div>
+                  <div class="panel-2 p-3">
+                    <div class="text-[10px] font-bold uppercase tracking-wider text-green-300">Retorno projetado</div>
+                    <ul class="text-xs mt-2 space-y-1 text-slate-300">
+                      <li>→ Adoção 34% → 85% em 90d</li>
+                      <li>→ R$ 289k/ano recuperados</li>
+                      <li>→ NPS interno da equipe</li>
+                      <li>→ Payback &lt; 60 dias</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="panel card-hover">
+              <summary class="p-5 flex items-center gap-4">
+                <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-black flex-shrink-0 text-sm">3</div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-semibold text-[14.5px]">Cortar os 2 sistemas fantasmas em 2 semanas</span>
+                    <span class="chip chip-warn">Prioridade Alta</span>
+                    <span class="chip chip-diy">Você faz</span>
+                  </div>
+                  <div class="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                    <span>Semana 1–2 · economia imediata R$ 54k/ano</span>
+                    <span class="text-slate-700">·</span>
+                    <span><strong class="text-slate-300">Seu tempo:</strong> 4h (2 reuniões de cancelamento)</span>
+                    <span class="text-slate-700">·</span>
+                    <span class="text-green-400"><strong>Guilds:</strong> 0h</span>
+                  </div>
+                </div>
+                <svg class="chev text-slate-500" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </summary>
+              <div class="px-5 pb-5 pl-[72px] text-sm text-slate-300 space-y-3 border-t border-white/5 pt-4">
+                <p>Plataforma de BI e ferramenta de pesquisa: nenhuma passa de 3 logins/mês. Lista de fornecedores abaixo, template de carta de cancelamento no link.</p>
+                <div class="bg-blue-500/5 border border-blue-500/15 rounded-lg p-3 text-xs text-blue-200">
+                  <strong>Template Guilds grátis:</strong> <a class="underline">Carta-padrão de cancelamento + checklist de portabilidade de dados</a>
+                </div>
+              </div>
+            </details>
+
+            <details class="panel card-hover">
+              <summary class="p-5 flex items-center gap-4">
+                <div class="w-9 h-9 rounded-lg bg-slate-500/10 text-slate-400 flex items-center justify-center font-black flex-shrink-0 text-sm">4</div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-semibold text-[14.5px]">Reescrever proposta de valor do site em 1 tarde</span>
+                    <span class="chip chip-warn">Prioridade Média</span>
+                    <span class="chip chip-diy">Você faz</span>
+                  </div>
+                  <div class="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                    <span>Semana 3 · impacto: ticket médio +8 a 18%</span>
+                    <span class="text-slate-700">·</span>
+                    <span><strong class="text-slate-300">Seu tempo:</strong> 4h</span>
+                    <span class="text-slate-700">·</span>
+                    <span><strong class="text-slate-300">Equipe:</strong> 2h (aprovação sócios)</span>
+                  </div>
+                </div>
+                <svg class="chev text-slate-500" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </summary>
+              <div class="px-5 pb-5 pl-[72px] text-sm text-slate-400 space-y-2 border-t border-white/5 pt-4">
+                Trocar "Clínica médica com várias especialidades" por "A clínica que entrega diagnóstico em 24h". Template de copy com 3 variações no link. Você escolhe, publica, mede em 30 dias.
+              </div>
+            </details>
+
+            <div class="text-center pt-2">
+              <button class="btn btn-ghost text-xs">Ver as outras 6 ações →</button>
+            </div>
+          </div>
+
+          <!-- KPIs -->
+          <div class="sub-panel2 hidden space-y-4" data-sub-panel2="kpi">
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="panel p-5">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="chip chip-bad">Prioridade Alta</span>
+                  <span class="text-xs text-slate-500">KPI 1</span>
+                </div>
+                <div class="font-bold text-[15px]">Adoção diária do CRM (% da equipe)</div>
+                <div class="flex items-baseline gap-3 mt-3">
+                  <span class="hero-value text-3xl text-red-400">34%</span>
+                  <span class="text-sm text-slate-500">→ alvo <strong class="text-blue-300">85%</strong> em 90d</span>
+                </div>
+                <div class="bar-bg mt-3"><div class="bar-fill" style="width:34%;background:linear-gradient(90deg,#EF4444,#F59E0B)"></div></div>
+              </div>
+              <div class="panel p-5">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="chip chip-bad">Prioridade Alta</span>
+                  <span class="text-xs text-slate-500">KPI 2</span>
+                </div>
+                <div class="font-bold text-[15px]">Horas manuais por funcionário / semana</div>
+                <div class="flex items-baseline gap-3 mt-3">
+                  <span class="hero-value text-3xl text-red-400">12h</span>
+                  <span class="text-sm text-slate-500">→ alvo <strong class="text-blue-300">4h</strong> em 180d</span>
+                </div>
+              </div>
+              <div class="panel p-5">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="chip chip-warn">Prioridade Média</span>
+                  <span class="text-xs text-slate-500">KPI 3</span>
+                </div>
+                <div class="font-bold text-[15px]">Tempo de emissão de relatório gerencial</div>
+                <div class="flex items-baseline gap-3 mt-3">
+                  <span class="hero-value text-3xl text-amber-400">5 dias</span>
+                  <span class="text-sm text-slate-500">→ alvo <strong class="text-blue-300">tempo real</strong></span>
+                </div>
+              </div>
+              <div class="panel p-5">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="chip chip-warn">Prioridade Média</span>
+                  <span class="text-xs text-slate-500">KPI 4</span>
+                </div>
+                <div class="font-bold text-[15px]">NPS de paciente</div>
+                <div class="flex items-baseline gap-3 mt-3">
+                  <span class="hero-value text-3xl text-green-400">71</span>
+                  <span class="text-sm text-slate-500">→ alvo manter &gt; 70 após mudanças</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════ TAB 3: CAMINHO GUILDS (exclusivo) ═══════════════════ -->
+        <div class="tab-panel" data-panel="guilds">
+          <div class="panel glow-guilds p-8 relative overflow-hidden">
+            <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full" style="background: radial-gradient(circle, rgba(59,130,246,0.2), transparent 70%);"></div>
+            <div class="relative">
+              <span class="chip chip-guilds">Exclusivo para clientes com Fit &gt; 80</span>
+              <h2 class="font-display text-3xl lg:text-4xl font-black mt-4 leading-[1.05]">O que só faz sentido fazer com a Guilds.</h2>
+              <p class="text-slate-300 mt-3 max-w-2xl text-[15px] leading-relaxed">Das 10 ações do seu plano, <strong class="text-white">6 você executa sozinha, e deixamos todos os templates grátis</strong>. Mas 4 delas envolvem o mesmo risco: você já tentou antes e o projeto travou na adoção. Esse é o ponto onde a gente entra.</p>
+              <div class="grid md:grid-cols-3 gap-4 mt-6">
+                <div class="panel-2 p-4">
+                  <div class="text-xs text-slate-400">Seu problema raiz</div>
+                  <div class="font-semibold text-[15px] text-white mt-1.5">Adoção, não software</div>
+                  <div class="text-xs text-slate-400 mt-2">Você tem os sistemas. A equipe não os opera.</div>
+                </div>
+                <div class="panel-2 p-4">
+                  <div class="text-xs text-slate-400">Nosso método</div>
+                  <div class="font-semibold text-[15px] text-white mt-1.5">G-FORGE™</div>
+                  <div class="text-xs text-slate-400 mt-2">Processo → Sistema → Adoção, nessa ordem. Nunca o contrário.</div>
+                </div>
+                <div class="panel-2 p-4">
+                  <div class="text-xs text-slate-400">Retorno projetado</div>
+                  <div class="font-semibold text-[15px] text-blue-300 mt-1.5">R$ 289k em 90 dias</div>
+                  <div class="text-xs text-slate-400 mt-2">Payback estimado &lt; 60 dias a partir do início.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CASE ILUSTRATIVO -->
+          <div class="panel mt-6 p-7 relative overflow-hidden" style="background: linear-gradient(145deg, rgba(30,41,59,0.6), rgba(15,23,42,0.8));">
+            <div class="absolute top-4 right-4 z-10">
+              <span class="chip chip-warn" title="Este case é um exemplo ilustrativo. Substituir por case real antes de produção.">⚠ Exemplo ilustrativo · trocar por case real</span>
+            </div>
+            <div class="flex flex-col lg:flex-row gap-8 items-start">
+              <div class="flex-shrink-0">
+                <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 flex items-center justify-center text-3xl font-black text-blue-200">C+</div>
+                <div class="mt-4 text-xs text-slate-400 text-center">
+                  <div class="font-semibold text-slate-200">Clínica C+</div>
+                  <div>Curitiba/PR</div>
+                  <div class="mt-1">72 funcionários</div>
+                  <div>R$ 14M/ano</div>
+                </div>
+              </div>
+              <div class="flex-1">
+                <span class="chip chip-brand">Case · Sprint G-FORGE 2024</span>
+                <h3 class="font-display text-2xl lg:text-3xl font-bold mt-3 leading-tight">"Tínhamos o CRM há 3 anos. Em 94 dias, a equipe começou a usar de verdade."</h3>
+                <div class="text-xs text-slate-500 mt-2">Ricardo M., sócio-diretor e CMO</div>
+                <p class="text-slate-300 mt-5 text-[14px] leading-relaxed">"Já tínhamos passado por duas consultorias que implementaram sistemas. Dos 28% de adoção inicial, uma chegou a subir para 40% por um mês, depois caiu. A Guilds foi a primeira que parou antes de mexer no sistema: mapearam como a recepção realmente trabalhava, redesenharam o fluxo, depois reconfiguraram. Hoje rodamos em 81% sustentados há 11 meses."</p>
+                <div class="grid grid-cols-3 gap-3 mt-6">
+                  <div class="panel-2 p-4">
+                    <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Adoção CRM</div>
+                    <div class="mt-1 flex items-baseline gap-1.5">
+                      <span class="text-slate-400 line-through text-sm">28%</span>
+                      <span class="font-display text-2xl font-black text-green-400">81%</span>
+                    </div>
+                    <div class="text-[10px] text-green-300/70 mt-1">em 94 dias</div>
+                  </div>
+                  <div class="panel-2 p-4">
+                    <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Horas manuais / func</div>
+                    <div class="mt-1 flex items-baseline gap-1.5">
+                      <span class="text-slate-400 line-through text-sm">14h/sem</span>
+                      <span class="font-display text-2xl font-black text-green-400">3h/sem</span>
+                    </div>
+                    <div class="text-[10px] text-green-300/70 mt-1">em 6 meses</div>
+                  </div>
+                  <div class="panel-2 p-4">
+                    <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Retorno financeiro</div>
+                    <div class="font-display text-2xl font-black text-green-400 mt-1">R$ 340k</div>
+                    <div class="text-[10px] text-green-300/70 mt-1">em 14 meses</div>
+                  </div>
+                </div>
+                <div class="mt-5 flex flex-wrap gap-4 text-xs text-slate-500">
+                  <span>Investimento: R$ 52.000</span>
+                  <span>Payback: 54 dias</span>
+                  <span>Fases aplicadas: REFINE → GENERATE → EMPOWER</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4 mt-6">
+            <div class="panel p-6">
+              <div class="section-title">Oferta recomendada</div>
+              <h3 class="font-display text-2xl font-bold mt-3">Sprint G-FORGE · Adoção de CRM</h3>
+              <div class="text-slate-400 text-sm mt-2">12 semanas · squad Guilds dedicado · entrega em 3 fases (REFINE → GENERATE → EMPOWER).</div>
+              <div class="mt-5 space-y-2.5">
+                <div class="flex gap-3 text-sm"><span class="text-blue-400 font-bold mt-0.5">01</span><div><strong class="text-white">Semanas 1–2:</strong> redesenho do fluxo real, aprovação da equipe</div></div>
+                <div class="flex gap-3 text-sm"><span class="text-blue-400 font-bold mt-0.5">02</span><div><strong class="text-white">Semanas 3–6:</strong> reconfiguração do CRM, automações pontuais, dashboard de uso</div></div>
+                <div class="flex gap-3 text-sm"><span class="text-blue-400 font-bold mt-0.5">03</span><div><strong class="text-white">Semanas 7–12:</strong> adoção ativa com coaching 1:1 por operação, ajuste em tempo real</div></div>
+              </div>
+              <div class="mt-5 pt-5 border-t border-white/5 flex items-center justify-between">
+                <div>
+                  <div class="text-xs text-slate-500">Investimento estimado</div>
+                  <div class="font-display text-2xl font-bold mt-1">R$ 58.000 <span class="text-slate-500 text-sm font-normal">· parcelável em até 6x</span></div>
+                </div>
+                <div>
+                  <div class="text-xs text-slate-500">Retorno projetado (12m)</div>
+                  <div class="font-display text-2xl font-bold text-green-400 mt-1">R$ 289.000</div>
+                </div>
+              </div>
+              <details class="mt-4 text-xs">
+                <summary class="text-slate-400 hover:text-slate-200 cursor-pointer flex items-center gap-1.5 font-semibold">
+                  <svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  Como chegamos em R$ 58.000
+                </summary>
+                <div class="mt-3 panel-2 p-4 text-slate-300 leading-relaxed space-y-2.5 text-[12px]">
+                  <div class="flex justify-between"><span><strong class="text-slate-100">Squad dedicado:</strong> 3 pessoas (Lead, Process Designer, Adoption Coach)</span></div>
+                  <div class="grid grid-cols-2 gap-2 pl-3 border-l border-white/5">
+                    <div>Lead G-FORGE · 8h/sem × 12 sem</div><div class="text-right">R$ 24.000</div>
+                    <div>Process Designer · 10h/sem × 8 sem</div><div class="text-right">R$ 18.000</div>
+                    <div>Adoption Coach · 8h/sem × 6 sem (fase EMPOWER)</div><div class="text-right">R$ 12.000</div>
+                    <div>Ferramentas e licenças de observação</div><div class="text-right">R$ 4.000</div>
+                  </div>
+                  <div class="flex justify-between pt-2 border-t border-white/5"><strong class="text-slate-100">Total fechado</strong><strong class="text-blue-300">R$ 58.000</strong></div>
+                  <div class="text-slate-500 pt-1 border-t border-white/5"><strong class="text-slate-300">Se o projeto estourar 12 semanas por razão nossa</strong>, continuamos até a entrega sem cobrar extra. Se estourar por razão sua (mudança de escopo aprovada), acertamos em aditivo transparente.</div>
+                </div>
+              </details>
+            </div>
+
+            <div class="panel p-6">
+              <div class="section-title">Como a conversa vai ser</div>
+              <h3 class="font-display text-2xl font-bold mt-3">Reunião de 30 min, com diagnóstico na mão</h3>
+              <div class="text-slate-400 text-sm mt-2">Você não vai ouvir pitch. O consultor já tem esse raio-X aberto. Começa perguntando pela <em>causa</em> que você acha que explica o gap de adoção.</div>
+              <ul class="mt-5 space-y-2 text-sm text-slate-300">
+                <li class="flex gap-2"><span class="text-green-400 mt-0.5">✓</span>Validação do diagnóstico com a sua percepção</li>
+                <li class="flex gap-2"><span class="text-green-400 mt-0.5">✓</span>2–3 perguntas sobre histórico de tentativas passadas</li>
+                <li class="flex gap-2"><span class="text-green-400 mt-0.5">✓</span>Proposta ajustada em até 48h depois, não no ato</li>
+                <li class="flex gap-2"><span class="text-green-400 mt-0.5">✓</span>Se não fizer sentido, te mandamos os templates extras e encerramos sem fricção</li>
+              </ul>
+
+              <!-- Consultor -->
+              <div class="mt-6 pt-5 border-t border-white/5 relative">
+                <div class="absolute top-4 right-0"><span class="chip chip-warn !text-[9px]" title="Placeholder — ajuste bio/foto antes de produção">⚠ ajuste sua bio</span></div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-3">Quem vai estar na call</div>
+                <div class="flex items-start gap-4">
+                  <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500/30 to-indigo-500/30 border border-blue-500/40 flex items-center justify-center font-black text-lg text-blue-200 flex-shrink-0">GM</div>
+                  <div class="flex-1">
+                    <div class="font-bold text-[15px] text-white">Gustavo Macedo</div>
+                    <div class="text-xs text-blue-300 font-semibold">Fundador Guilds · Lead G-FORGE</div>
+                    <p class="text-xs text-slate-400 mt-2 leading-relaxed">Consultor B2B com foco em adoção de tecnologia em operações médias. Desenhou o G-FORGE depois de ver 3 projetos de software travarem por falta de método. Já liderou 47 diagnósticos no setor saúde e serviços.</p>
+                    <div class="flex gap-3 mt-3 text-xs">
+                      <a class="text-blue-400 hover:text-blue-300 cursor-pointer flex items-center gap-1">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3A2 2 0 0121 5V19A2 2 0 0119 21H5A2 2 0 013 19V5A2 2 0 015 3H19M18.5 18.5V13.2A3.26 3.26 0 0015.24 9.94C14.39 9.94 13.4 10.46 12.92 11.24V10.13H10.13V18.5H12.92V13.57C12.92 12.8 13.54 12.17 14.31 12.17A1.4 1.4 0 0115.71 13.57V18.5H18.5M6.88 8.56A1.68 1.68 0 008.56 6.88C8.56 5.95 7.81 5.19 6.88 5.19A1.69 1.69 0 005.19 6.88C5.19 7.81 5.95 8.56 6.88 8.56M8.27 18.5V10.13H5.5V18.5H8.27Z"/></svg>
+                        LinkedIn
+                      </a>
+                      <span class="text-slate-600">·</span>
+                      <span class="text-slate-500">47 projetos realizados</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6 flex gap-2">
+                <button class="btn btn-primary flex-1 justify-center">Agendar conversa de 30 min</button>
+                <button class="btn btn-ghost">Baixar PDF desta página</button>
+              </div>
+              <div class="mt-3 flex items-center gap-1.5 text-[11px] text-slate-500">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 11V17M12 7H12.01M5 21H19A2 2 0 0021 19V5A2 2 0 0019 3H5A2 2 0 003 5V19A2 2 0 005 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                Seus dados não são compartilhados com terceiros. Política de privacidade em finalização.
+              </div>
+            </div>
+          </div>
+
+          <div class="panel mt-6 p-6 border-dashed border-white/10">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 8v8m-4-4h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <div>
+                <div class="font-semibold text-[15px]">Ainda não é hora de contratar?</div>
+                <div class="text-xs text-slate-400">Tudo bem. Coloque este diagnóstico na gaveta e volte quando decidir atacar. Seu Raio-X fica salvo por 12 meses.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rota alternativa: Fit baixo -->
+          <div class="panel mt-4 p-5" style="background: linear-gradient(145deg, rgba(15,23,42,0.5), rgba(15,23,42,0.3)); border-style: dashed;">
+            <div class="flex items-start gap-3">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-slate-500 mt-0.5 flex-shrink-0"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zM12 12l10-5M12 12v10M12 12L2 7" stroke="currentColor" stroke-width="2"/></svg>
+              <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Nota de transparência</div>
+                <div class="font-semibold text-[14px] text-slate-200 mt-1">Esta aba muda conforme seu Fit.</div>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed max-w-3xl">
+                  Se o seu Fit de parceria tivesse dado abaixo de 60, em vez de "Oferta recomendada" você veria um <strong class="text-slate-300">Caminho de Maturação</strong>: uma sequência de templates Guilds grátis + um checklist de 90 dias para sua empresa chegar ao estágio em que o método G-FORGE faz sentido. A gente só vende quando vende resolve. Se o seu momento não é agora, a gente diz, e você volta em 6 meses muito mais preparada.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════ TAB 4: PERFIL ═══════════════════ -->
+        <div class="tab-panel" data-panel="profile">
+          <div class="panel p-7">
+            <h3 class="font-display text-2xl font-bold mb-1">Medtrack Saúde</h3>
+            <div class="text-slate-400 text-sm">Clínica médica multiprofissional · São Paulo/SP</div>
+            <div class="grid md:grid-cols-4 gap-3 mt-5">
+              <div class="panel-2 p-3"><div class="text-[10px] text-slate-500 font-bold uppercase">Setor</div><div class="font-semibold mt-1 text-sm">Saúde · Clínicas</div></div>
+              <div class="panel-2 p-3"><div class="text-[10px] text-slate-500 font-bold uppercase">Funcionários</div><div class="font-semibold mt-1 text-sm">51 a 100</div></div>
+              <div class="panel-2 p-3"><div class="text-[10px] text-slate-500 font-bold uppercase">Faturamento</div><div class="font-semibold mt-1 text-sm">R$ 5M–20M/ano</div></div>
+              <div class="panel-2 p-3"><div class="text-[10px] text-slate-500 font-bold uppercase">Ticket médio</div><div class="font-semibold mt-1 text-sm">R$ 480 · consulta privada</div></div>
+            </div>
+            <div class="mt-6">
+              <div class="section-title">Síntese executiva</div>
+              <p class="text-slate-300 mt-3 text-[14.5px] leading-relaxed">Clínica estabelecida, NPS alto, operação engajada, porém amarrada em processo manual. O gap não está em falta de recursos nem em falta de sistema; está na camada entre os dois. A fase OBSERVE do G-FORGE indica que existe energia para mudar (não é resistência), mas falta um método que respeite o processo real da equipe. Condições típicas de empresa que recupera 3x o investimento em 12 meses.</p>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- ─── Right rail: Qualificação dupla ─── -->
+      <aside class="space-y-5">
+        <div class="panel p-5">
+          <div class="flex items-center justify-between mb-1">
+            <span class="chip chip-guilds">Fit de parceria</span>
+            <span class="hero-value text-2xl text-blue-300">87<span class="text-slate-500 text-sm font-medium"> / 100</span></span>
+          </div>
+          <div class="text-xs text-slate-400 mt-2">Quanto este diagnóstico sugere que a Guilds pode ajudar <em>agora</em>. Composto de 5 sinais, cada um vale até 20 pontos.</div>
+          <div class="space-y-4 mt-5">
+            <!-- Sinal 1 -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-sm font-semibold flex items-center gap-2"><span class="signal-dot bg-green-500"></span>Dor clara de adoção</span>
+                <span class="text-xs font-bold text-green-300">19 / 20</span>
+              </div>
+              <div class="bar-bg mb-1"><div class="bar-fill" style="width:95%;background:linear-gradient(90deg,#22C55E,#4ADE80)"></div></div>
+              <div class="text-[11px] text-slate-500">Histórico de 1 abandono + 34% de uso atual do CRM</div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-sm font-semibold flex items-center gap-2"><span class="signal-dot bg-green-500"></span>Orçamento compatível</span>
+                <span class="text-xs font-bold text-green-300">18 / 20</span>
+              </div>
+              <div class="bar-bg mb-1"><div class="bar-fill" style="width:90%;background:linear-gradient(90deg,#22C55E,#4ADE80)"></div></div>
+              <div class="text-[11px] text-slate-500">Faturamento R$ 5–20M · perda anual 7x maior que investimento típico</div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-sm font-semibold flex items-center gap-2"><span class="signal-dot bg-green-500"></span>Decisor engajado</span>
+                <span class="text-xs font-bold text-green-300">20 / 20</span>
+              </div>
+              <div class="bar-bg mb-1"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,#22C55E,#4ADE80)"></div></div>
+              <div class="text-[11px] text-slate-500">Preencheu 23/23 perguntas · cargo de decisão confirmado</div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-sm font-semibold flex items-center gap-2"><span class="signal-dot bg-amber-500"></span>Urgência temporal</span>
+                <span class="text-xs font-bold text-amber-300">15 / 20</span>
+              </div>
+              <div class="bar-bg mb-1"><div class="bar-fill" style="width:75%;background:linear-gradient(90deg,#F59E0B,#FCD34D)"></div></div>
+              <div class="text-[11px] text-slate-500">Sem prazo regulatório imediato, mas NR-01 é gatilho até dez/2026</div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-sm font-semibold flex items-center gap-2"><span class="signal-dot bg-amber-500"></span>Momento organizacional</span>
+                <span class="text-xs font-bold text-amber-300">15 / 20</span>
+              </div>
+              <div class="bar-bg mb-1"><div class="bar-fill" style="width:75%;background:linear-gradient(90deg,#F59E0B,#FCD34D)"></div></div>
+              <div class="text-[11px] text-slate-500">Sem responsável dedicado, precisa definir no kickoff</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel p-5">
+          <div class="section-title">Próximo passo sugerido</div>
+          <h4 class="font-bold text-[15px] mt-2">Agende uma conversa de 30 min com consultor Guilds</h4>
+          <p class="text-xs text-slate-400 mt-2">O consultor vai abrir este raio-X com você e validar a hipótese antes de qualquer proposta.</p>
+          <button class="btn btn-primary w-full justify-center mt-4">Agendar conversa</button>
+        </div>
+
+        <!-- Share with board -->
+        <div class="panel p-5">
+          <div class="flex items-center gap-2">
+            <div class="section-title">Compartilhar com diretoria</div>
+          </div>
+          <p class="text-xs text-slate-400 mt-2">Gere um link somente-leitura para seu sócio ou CFO abrirem sem precisar criar conta. Sem dados sensíveis da análise comercial.</p>
+          <div class="mt-3 flex gap-2">
+            <div class="flex-1 panel-2 p-2.5 flex items-center gap-2 min-w-0">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="text-slate-500 flex-shrink-0"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span class="text-[11px] text-slate-400 font-mono truncate">guilds.com.br/r/8FXm2p</span>
+            </div>
+            <button class="btn btn-ghost !py-2 !px-3 text-xs">Copiar</button>
+          </div>
+          <div class="mt-3 flex items-center gap-2 text-[10px] text-slate-500">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            Link válido por 30 dias · expira automaticamente
+          </div>
+        </div>
+
+        <div class="panel p-5">
+          <div class="section-title">Outros ativos do diagnóstico</div>
+          <div class="mt-3 space-y-2">
+            <a class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition cursor-pointer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="#60A5FA" stroke-width="2"/></svg>
+              <div class="flex-1"><div class="text-sm font-semibold">Relatório completo em PDF</div><div class="text-xs text-slate-500">24 páginas · pronto para apresentar à sua diretoria</div></div>
+            </a>
+            <a class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition cursor-pointer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/></svg>
+              <div class="flex-1"><div class="text-sm font-semibold">Checklist G-FORGE · fase OBSERVE</div><div class="text-xs text-slate-500">Template editável para sua equipe</div></div>
+            </a>
+            <a class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition cursor-pointer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="#60A5FA" stroke-width="2"/></svg>
+              <div class="flex-1"><div class="text-sm font-semibold">Explicação do G-FORGE™</div><div class="text-xs text-slate-500">Framework · 8 min de leitura</div></div>
+            </a>
+          </div>
+        </div>
+
+        <div class="panel-2 p-4 border-dashed">
+          <div class="flex items-center gap-2 text-xs text-slate-400"><span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>Seu diagnóstico fica salvo por 12 meses. Você pode voltar a qualquer momento.</div>
+        </div>
+      </aside>
+    </div>
+
+  </div>
+</section>
+
+<footer class="border-t border-white/5 py-6 mt-8">
+  <div class="max-w-[1400px] mx-auto px-6 flex items-center justify-between text-xs text-slate-500 flex-wrap gap-3">
+    <div class="flex items-center gap-4">
+      <span>© Guilds · Raio-X G-FORGE™ é uma metodologia proprietária · 2026</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-1.5 text-slate-400">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 15V17M6 21H18A2 2 0 0020 19V11A2 2 0 0018 9H6A2 2 0 004 11V19A2 2 0 006 21M16 9V7A4 4 0 008 7V9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Dados protegidos. Política de privacidade e LGPD em finalização.
+      </div>
+      <span class="text-slate-600">·</span>
+      <a class="hover:text-slate-300 cursor-pointer">Termos</a>
+      <a class="hover:text-slate-300 cursor-pointer">Metodologia</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // main tabs
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelector('[data-panel="' + btn.dataset.tab + '"]').classList.add('active');
+    });
+  });
+  // sub tabs (raio-x)
+  document.querySelectorAll('.sub-tab-btn[data-sub]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sub-tab-btn[data-sub]').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.sub-panel').forEach(p => { p.classList.add('hidden'); p.classList.remove('active'); });
+      btn.classList.add('active');
+      const target = document.querySelector('[data-sub-panel="' + btn.dataset.sub + '"]');
+      target.classList.remove('hidden'); target.classList.add('active');
+    });
+  });
+  // sub tabs (plan)
+  document.querySelectorAll('.sub-tab-btn[data-sub2]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sub-tab-btn[data-sub2]').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.sub-panel2').forEach(p => { p.classList.add('hidden'); p.classList.remove('active'); });
+      btn.classList.add('active');
+      const target = document.querySelector('[data-sub-panel2="' + btn.dataset.sub2 + '"]');
+      target.classList.remove('hidden'); target.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

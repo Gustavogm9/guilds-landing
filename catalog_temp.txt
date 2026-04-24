@@ -1,0 +1,553 @@
+
+Guilds Canada — Product Catalog
+Fixed-scope services. Guaranteed delivery. Canadian entity.
+
+5 products. Each designed to deliver a measurable outcome in a defined timeframe.
+
+Products covered in this document: Digital Diagnostic  ·  Process Automation  ·  AI & LLM Solutions  ·  Software on Demand (14-day MVP)  ·  Monthly Retainer
+
+Product 01 — Digital Diagnostic
+
+Digital Diagnostic  ENTRY PRODUCT
+We map your operations, find the bottlenecks, and tell you exactly what to fix first.
+Investment
+CAD $5,000 – $8,000
+Timeline
+2 weeks
+Who it's for
+CEOs, COOs, and Operations Directors who suspect their processes have inefficiencies but aren't sure where to start. Ideal before any automation or AI investment.
+What's included
+Process mapping session (2h with your team) — current-state operations audit
+Bottleneck identification across 3–5 critical workflows
+ROI-ranked opportunity backlog: top 3–5 automation candidates with estimated impact
+Technical feasibility assessment for each opportunity
+Implementation roadmap with milestones and effort estimates
+60-minute findings presentation with your leadership team
+Written report (20–30 pages) delivered within 2 weeks
+Expected outcome
+A clear, prioritized action plan. You know what to fix, in what order, and why. No guesswork before you invest.
+Guarantee
+If the Diagnostic does not identify at least 3 concrete automation opportunities, we refund 100%.
+Note: 70% of Diagnostic clients invest in 1–2 follow-on projects. The fee is fully credited toward your first project if you proceed within 30 days.
+
+Product 02 — Process Automation (RPA)
+
+Process Automation (RPA)  CORE PRODUCT
+Eliminate repetitive manual workflows. Fixed price, milestone payments, guaranteed delivery.
+Investment
+CAD $15,000 – $50,000
+Timeline
+4–10 weeks
+Who it's for
+Operations teams with 1–3 workflows that are done manually today and could be automated — data entry, approvals, reporting, document generation, system sync.
+What's included
+Process discovery and documentation (AS-IS + TO-BE design)
+Custom automation build (n8n, Python, or platform-native — we choose what fits)
+Integration with your existing tools (ERP, CRM, email, spreadsheets)
+Testing with real data before go-live
+Team training and adoption session (2–4 hours)
+90-day post-delivery support window included
+ROI measurement baseline defined before we start
+Expected outcome
+The target workflow runs automatically. No manual intervention required for the automated steps. Measured against the baseline defined at kickoff.
+Guarantee
+If the automated workflow doesn't perform as specified within 30 days of go-live, we fix it at no additional cost.
+Note: Typical result: 4–8 hours/week saved per automated workflow. We scope conservatively and deliver on scope.
+
+
+Product 03 — AI & LLM Solutions
+
+AI & LLM Solutions  HIGH IMPACT
+AI that actually works inside your operation — not a demo, not a prototype.
+Investment
+CAD $25,000 – $80,000
+Timeline
+6–16 weeks
+Who it's for
+Companies with a specific, high-value problem that requires AI: customer-facing chatbots, internal knowledge assistants, document processing, predictive models, or data pipelines for decision-making.
+What's included
+Requirements workshop: define the problem, success criteria, and constraints
+Model selection and architecture design (we choose the right tool, not the trendy one)
+Custom LLM/ML build with your data (fine-tuning or RAG as appropriate)
+Integration into your existing stack (CRM, ERP, website, internal tools)
+Testing, validation, and performance benchmarking
+User onboarding and adoption plan
+SR&ED documentation (if project qualifies — 35% refundable tax credit)
+90-day post-delivery support window
+Expected outcome
+A working AI system embedded in your operation with measurable performance metrics. Not a pilot — production-ready.
+Guarantee
+Milestone-based payments. You approve each milestone before the next one starts. No milestone, no payment.
+Note: AI projects often qualify for Canada's SR&ED tax incentive (35% refundable credit). We provide the documentation — your accountant files it.
+
+Product 04 — Software on Demand (14-Day MVP)
+
+Software on Demand  FAST TRACK
+A working MVP in 14 days. Not a prototype — production-ready with real users.
+Investment
+CAD $8,000 – $18,000 (setup) + CAD $1,500 – $5,000/mo (evolution)
+Timeline
+14 days to go-live
+Who it's for
+Businesses with a specific operational gap that needs a custom tool — a workflow app, internal dashboard, client portal, or integration layer that off-the-shelf software doesn't cover.
+What's included
+Sprint Zero (days 1–7): process map, validated prototype, team sign-off
+Sprint Build (days 8–14): build, test, go-live with real users
+SLA: validated prototype in 48h · minimum working flow in 7 days · MVP live in 14 days
+Monthly Evolution plan available (1,500–5,000 CAD/mo for ongoing improvements)
+ROI baseline defined before we start (hours saved or conversion metric)
+Expected outcome
+A live, production-ready MVP used by real users on day 14. Measured against the ROI baseline defined at kickoff.
+Guarantee
+If no MVP and no measurable initial impact by day 14, we extend 30 days at no cost OR refund 50% of the setup fee.
+Note: Best for teams with a clear, scoped problem. Not for open-ended 'build us a platform' requests.
+
+
+Product 05 — Monthly Retainer (Post-Project)
+
+Monthly Retainer  ONGOING
+Your systems keep improving after delivery. Predictable cost, embedded partnership.
+Investment
+CAD $3,000 – $8,000/month
+Timeline
+Ongoing (monthly, cancel anytime)
+Who it's for
+Companies that completed a project with Guilds and want continuous improvement, expansion of existing systems, and priority access for new initiatives.
+What's included
+Monthly scope: defined hours for improvements, additions, and fixes
+1 monthly checkpoint call with Evandro (30 min)
+SLA-backed response time for critical issues
+Backlog managed by us — you prioritize, we execute
+Priority access for new project scoping (no waiting queue)
+Quarterly review: what was built, what it's delivering, what's next
+Expected outcome
+Your digital systems evolve with your business instead of becoming legacy immediately after delivery.
+Guarantee
+Cancel anytime with 30 days notice. No lock-in beyond the monthly commitment.
+Note: Clients on retainer see 2.3x faster ROI on subsequent initiatives (internal data, 2023–2025).
+
+Quick Reference — All Products
+
+Product
+Investment
+Timeline
+SR&ED?
+Guarantee
+Digital Diagnostic
+CAD $5K – $8K
+2 weeks
+No
+100% refund if <3 opps
+Process Automation
+CAD $15K – $50K
+4–10 weeks
+Sometimes
+Fix at no cost if spec not met
+AI & LLM Solutions
+CAD $25K – $80K
+6–16 weeks
+Yes (35%)
+Milestone approvals
+Software on Demand
+CAD $8K – $18K + MRR
+14 days
+Sometimes
+Extend 30d or 50% refund
+Monthly Retainer
+CAD $3K – $8K/mo
+Ongoing
+No
+Cancel with 30d notice
+
+
+Built by Guilds — Live Systems
+These aren't mockups or demos. Each product below is running in production with real users.
+
+Guilds builds software products — not just automation scripts. Below are five platforms currently in production, each built end-to-end by our team. We share them here so Canadian prospects can see the depth of what we deliver across sectors.
+
+Portfolio 01 — NeoSaúde
+
+NeoSaúde   ● LIVE — In Production
+Occupational Health  ·  SaaS  ·  B2B2C  ·  White-label
+NR-1 compliance management platform connecting psychologists, SST professionals, companies, and employees.
+What it does
+A white-label SaaS that lets occupational health administrators onboard companies, psychologists, and employees under one platform. Centralizes health indicators, engagement scores, incident tracking, and action plans. Admins charge companies; Guilds charges the admin. Multiple companies run under one white-label license.
+Key capabilities
+Multi-role access: admin, company, psychologist, SST professional, employee
+Custom questionnaire builder with QR code + web delivery
+Health, safety, engagement, and cost-impact KPI dashboards
+Incident tracking with structured action plans per employee
+White-label setup: client logo, domain, color scheme per admin
+B2B2C billing logic: admin monetizes companies independently
+Compliance documentation package ready for regulatory inspections
+Tech / Stack
+React frontend · Node.js API · PostgreSQL · AWS · WhatsApp notification layer
+Reference
+neosystem.guilds.com.br — Live
+Build something like this  →  CAD $35,000 – $60,000
+Multi-role SaaS with white-label + B2B2C billing. Includes 90-day post-delivery support. SR&ED may apply.
+
+Portfolio 02 — PsicoLab
+
+PsicoLab   ● LIVE — Active Users
+Corporate Mental Health  ·  SaaS  ·  White-label  ·  Consulting Firms
+Complete operating system for psychologists and organizational consulting firms running corporate mental health programs.
+What it does
+PsicoLab centralizes everything a mental health consulting firm needs to run B2B programs: lead capture, CRM pipeline, custom diagnostic questionnaires, intervention scheduling, and executive ROI reports — all under the client's own brand. White-label from day one.
+Key capabilities
+CRM pipeline for corporate clients — from lead to active program
+Custom questionnaire builder with configurable scoring and reporting
+Scheduling and tracking of psychological interventions by company/sector
+KPI dashboard: absenteeism, engagement, health cost impact per client
+White-label: each consulting firm deploys under their own brand
+Payment integration for billing corporate clients
+Multi-brand architecture: one SaaS instance, multiple firms
+Tech / Stack
+React · Node.js · PostgreSQL · Asaas payment API · AWS · White-label subdomain routing
+Reference
+psicosystem.guilds.com.br — Live
+Build something like this  →  CAD $28,000 – $50,000
+Health consulting SaaS with white-label + CRM + custom assessments + payment billing. SR&ED eligible.
+
+
+Portfolio 03 — Doavya
+
+Doavya   ● LIVE — Final Integration Phase
+InsurTech  ·  Philanthropy  ·  E-commerce  ·  B2C Lottery
+Platform for selling philanthropy-linked lottery products with automated draws and insurance provider integration.
+What it does
+Doavya enables brokers to configure and sell charitable lottery products directly to consumers. Integrates with an insurance provider for product backing and a payment processor for transactions. Runs automated lottery draws via RPA. Customers track purchase history, vouchers, and draw status from their account.
+Key capabilities
+Broker-configurable lottery products with philanthropy attribution
+Customer auto-account creation on first purchase
+Full purchase history, voucher tracking, and draw status per user
+RPA-automated lottery draw execution (200–300 draws/month capacity)
+Insurance provider API integration for product compliance
+PIX and card payment processing
+Real-time draw results and buyer notifications
+Tech / Stack
+Bubble (AWS-hosted) · Payment API · Insurance provider API · RPA automation layer
+Reference
+Live — final API integration underway
+Build something like this  →  CAD $22,000 – $40,000
+E-commerce + lottery automation + insurance API + RPA. Milestone payments. SR&ED may apply.
+
+Portfolio 04 — Urban.AI
+
+Urban.AI   ● LIVE — Ongoing Development
+PropTech  ·  AI / ML  ·  Real Estate Analytics  ·  Data Platform
+Full-stack AI platform for real estate market intelligence — automated scraping, ML pipelines, and actionable analytics.
+What it does
+Urban.AI scrapes property and listing data from 7+ sources, processes it through a Python/ML pipeline, and surfaces market insights for real estate professionals. Built end-to-end by Guilds: NestJS API, React frontend, Prefect-orchestrated data pipelines, AWS S3 + MySQL data architecture.
+Key capabilities
+Automated scraping from 7+ listing platforms
+Prefect-orchestrated pipeline: extract → transform → load → serve
+ML models for market trend prediction and property scoring
+React dashboard with real-time analytics and filters
+AWS S3 raw storage + MySQL structured layer with Parquet processing
+Full E2E test suite with mock AWS services
+Phased engagement: Platform → Analytics → Growth
+Tech / Stack
+NestJS (API) · Next.js/React · Python + Prefect · AWS S3 + MySQL · PyArrow / Pandas
+Reference
+In production — active engagement
+Build something like this  →  CAD $45,000 – $80,000
+AI + data pipeline + scraping + analytics dashboard. SR&ED eligible (35% refundable). Milestone payments.
+
+
+Portfolio 05 — Órbita Educa
+
+Órbita Educa   ● LIVE — User Testing
+EdTech  ·  Language Learning  ·  EAD Platform  ·  AI Audio
+Gamified language learning platform with AI-powered pronunciation feedback, daily missions, and institution management.
+What it does
+Órbita Educa is a structured e-learning platform for language acquisition. Students complete daily missions — listening, speaking, writing. The platform includes AI pronunciation analysis, QR code lesson access, progress tracking, and a mobile-first experience. Designed for both institutions and self-directed learners.
+Key capabilities
+Daily mission system: listening, speaking, writing, and gap-fill exercises
+AI pronunciation feedback: real-time audio analysis and scoring
+QR code lesson access for classroom or self-study hybrid delivery
+Progress dashboard: streak tracking, skill levels, achievement badges
+Admin/instructor panel: create and manage custom learning paths
+Mobile-first responsive design with offline-tolerant exercise handling
+Institution license: one platform instance, multiple learner cohorts
+Tech / Stack
+React (web + mobile-responsive) · AI audio processing layer · QR code integration · Cloud-hosted
+Reference
+Live — active learner base
+Build something like this  →  CAD $28,000 – $50,000
+EAD platform with AI audio layer + gamification + institution management. SR&ED eligible.
+
+Portfolio 06 — LexFlow
+
+LexFlow   ● IN BUILD — Active Project
+LegalTech  ·  Law Firm Operations  ·  CRM  ·  AI Intake
+All-in-one commercial platform for law firms — WhatsApp inbox, AI lead qualification, CRM pipeline, and e-sign proposals in one system.
+What it does
+LexFlow replaces three separate SaaS tools (WhatsApp inbox manager, generic CRM, e-signature platform) with one integrated system built for how law firms actually sell. An AI bot qualifies leads 24/7 via WhatsApp, creates CRM entries automatically, and the lawyer receives a warm handoff. Proposals are generated from templates and sent with embedded e-sign links.
+Key capabilities
+WhatsApp multi-agent inbox: centralized, assigned, with conversation history in CRM
+AI qualification bot: collects name, case type, urgency, legal area — 24/7, no human needed
+Kanban CRM pipeline: visual stages from lead to signed contract
+Proposal builder: templates by legal specialty, auto-filled from lead data
+ClickSign integration: e-sign embedded directly in proposal delivery
+Commercial dashboard: leads, conversions, fees, multi-firm panel
+Reduces 3 SaaS subscriptions into 1 — net savings up to CAD $600/month per firm
+Tech / Stack
+React · Node.js · PostgreSQL · n8n (WhatsApp automation) · OpenAI · ClickSign API
+Reference
+75-day build — delivery Q2 2026
+Build something like this  →  CAD $25,000 – $45,000
+Custom CRM + AI intake + e-sign + WhatsApp — adapted for your sector. LegalTech, FinTech, or B2B services. SR&ED may apply.
+
+
+Portfolio 07 — NutriMatch
+
+NutriMatch   ● IN BUILD — Active Project
+HealthTech  ·  Telehealth  ·  AI Engagement  ·  Patient Retention
+Patient management portal for nutritionists with an AI engagement motor that reduces abandonment by 35%+ between consultations.
+What it does
+NutriMatch solves the core problem in nutrition coaching: 60% of patients abandon follow-up in the first 3 months. The platform gives nutritionists a full patient management portal and deploys an AI agent on WhatsApp that sends personalized daily messages, tracks adherence, answers questions from the patient's history, and alerts the nutritionist when a patient is at risk of dropping out.
+Key capabilities
+Patient portal: records, anthropometric data, meal plans, appointment scheduling
+AI engagement motor: daily personalized WhatsApp messages by clinical profile
+Conversational AI agent: answers patient questions based on history and goals
+Abandonment risk alert: notifies nutritionist when response rate drops below threshold
+Progress visualization for patients: weight, measurements, BMI, gamification
+Engagement dashboard: adherence rate, messages sent/responded, low-engagement alerts
+Scalable to marketplace model (Phase 2): first-consultation booking with payment split
+Tech / Stack
+React · Node.js · PostgreSQL · n8n (WhatsApp automation) · OpenAI GPT-4o-mini
+Reference
+45-day build — delivery Q2 2026
+Build something like this  →  CAD $20,000 – $38,000
+Patient management + AI WhatsApp engagement. Applicable to any health practice (physio, psychology, wellness). SR&ED eligible.
+
+Portfolio 08 — ConsHub
+
+ConsHub   ● IN BUILD — MVP Delivered
+Real Estate  ·  Consortium Management  ·  WhatsApp AI  ·  Client Portal
+Integrated digital hub connecting consortium management, real estate inventory, and an AI WhatsApp assistant for real estate brokerages.
+What it does
+ConsHub eliminates the most painful part of running a real estate brokerage with consortium products: dispersed information across spreadsheets, manual client follow-up, and zero cross-sell visibility. The hub connects consortium portfolios with property inventory, giving salespeople one place to see clients, quotas, contracts, and opportunities — while a WhatsApp AI assistant handles inbound inquiries and captures leads automatically.
+Key capabilities
+Consortium management: clients, quotas, bids, contracts, compliance documents
+Property portfolio: listings with photos, descriptions, consortium compatibility
+AI WhatsApp assistant: answers client questions, captures leads, routes to salesperson
+CRM integration: client journey tracked from first message to signed contract
+Cross-sell engine: surfaces consortium + property opportunities for same client
+Manager dashboard: sales velocity, open opportunities, team activity
+Document storage: contracts, compliance docs, organized per client/quota
+Tech / Stack
+React · Node.js · PostgreSQL · n8n · WhatsApp Business API · Cloud-hosted
+Reference
+MVP live — Phase 2 in planning
+Build something like this  →  CAD $18,000 – $32,000
+Custom real estate ops hub + AI WhatsApp + CRM. Adaptable to any brokerage or asset management operation.
+
+
+Portfolio 09 — OuroGest
+
+OuroGest   ● PROPOSED — Ready to Build
+Precious Metals  ·  Gold Trading  ·  Financial Operations  ·  Inventory
+Complete financial management system for gold buy/sell/production operations — inventory, commissions, cash position, all in one place.
+What it does
+OuroGest solves the core problem of precious metals trading operations: no visibility. Purchases, sales, commission calculations, personal vs. business separation, and stock position are all managed manually across spreadsheets. OuroGest centralizes everything — 60 hours/month of administrative work reduced to minutes, with zero commission errors and real-time inventory + cash position in under 5 seconds.
+Key capabilities
+Gold buy/sell/production transaction management with complete audit trail
+Automatic commission calculation per agent, batch, and period
+Personal vs. business financial separation with clean P&L
+Real-time inventory: stock position and cash position in <5 seconds
+Operations dashboard: daily volume, margins, outstanding settlements
+PDF report generation for regulatory compliance
+Multi-user access: owner, operator, external agent roles
+Tech / Stack
+React · Node.js · PostgreSQL · G-FORGE™ 3-sprint delivery model
+Reference
+Proposed — 45-day delivery
+Build something like this  →  CAD $12,000 – $22,000
+Custom financial ops system for any commodity or trading business. Fixed price, milestone payments.
+
+Portfolio 10 — GeoMapper
+
+GeoMapper   ● PROPOSED — Ready to Build
+GovTech  ·  Urban Mapping  ·  Gamification  ·  Crowdsourcing
+Gamified urban mapping platform that turns students and citizens into crowdsourced data collectors — Pokémon GO mechanics applied to city infrastructure mapping.
+What it does
+GeoMapper solves the cost and accuracy problem of traditional urban data collection: expensive surveys, low participation, outdated maps. By applying gamification (XP, badges, missions, school leaderboards), GeoMapper converts students into active mappers. Municipalities get real-time, high-density urban data at a fraction of the cost of conventional surveys — 3x more engagement, 70% reduction in mapping time.
+Key capabilities
+Mission system: students receive daily mapping tasks with points and badges
+Real-time map: every mapped element visible immediately on interactive city map
+School/team leaderboard: competitive ranking drives participation
+Admin panel: municipal manager configures zones, missions, validation rules
+AI-assisted validation: auto-classifies submitted map elements by type
+500+ mappable urban elements per cohort at scale
+Government procurement ready: modular scope, phased delivery
+Tech / Stack
+React (web + mobile-responsive) · Node.js · PostgreSQL · Mapping API (Mapbox/Google) · AI classification layer
+Reference
+Proposed — 60-day delivery
+Build something like this  →  CAD $30,000 – $55,000
+Gamified data platform — applicable to environmental monitoring, utility mapping, or smart city programs. SR&ED eligible.
+
+
+Portfolio 11 — EduFlow
+
+EduFlow   ● PROPOSED — 3-Phase Build
+EdTech  ·  Language Schools  ·  Student Management  ·  Digital Products
+Three-phase platform turning a language teacher into a scalable digital education business — automation, student CRM, and full EAD in 90 days.
+What it does
+EduFlow was designed for independent language educators. Phase 1 eliminates 6–8 hours/week of manual admin (confirmations, billing, class links, attendance) via WhatsApp automation. Phase 2 delivers a full student management CRM with class history, progress reports, and contracts. Phase 3 transforms the operation into a digital education business with an EAD platform, digital products, and paid traffic — conservative revenue potential: R$23K–R$31K/month.
+Key capabilities
+Phase 1: WhatsApp automation — confirmations, billing, links, lead follow-up (R$4,950)
+Phase 2: Student CRM — profiles, class history, visual progress, parent reports, contracts (R$10,500)
+Phase 3: EAD platform — course tracks, digital products, payment gateway, paid ads (R$18,500+)
+Payback: 6 weeks (Phase 1), 3 months (Phase 2), 4 months (Phase 3)
+End state: multi-stream education business from a single-teacher operation
+Stack: n8n (automation), React + Node.js + PostgreSQL (CRM + EAD)
+Applicable to any professional service: coaches, therapists, tutors, consultants
+Tech / Stack
+n8n (Phase 1 automation) · React + Node.js + PostgreSQL (Phase 2–3) · Payment gateway · WhatsApp API
+Reference
+Proposed — 90-day full build (phased)
+Build something like this  →  CAD $18,000 – $38,000
+Phased delivery: automation → CRM → EAD. Each phase delivers standalone value. Applicable to any professional practice.
+
+Portfolio 12 — PharmaBot
+
+PharmaBot   ● PROPOSED — Ready to Build
+Healthcare  ·  Pharmacy  ·  WhatsApp Automation  ·  Patient Communications
+Automated WhatsApp system for pharmacies — prescription confirmations, order status, and patient notifications with response times under 1 second.
+What it does
+PharmaBot eliminates the single biggest time drain in pharmacy operations: manual patient communication. Prescription ready? Automatic WhatsApp message. Order delayed? Auto-notification with updated ETA. Patient follow-up? Scheduled, no staff needed. Reduces manual communication work from 150 minutes/day to 30 minutes/day — an 80% reduction — with a 30-day payback.
+Key capabilities
+Prescription ready notifications: automatic WhatsApp when medication is prepared
+Order status updates: delay alerts with new ETA, auto-sent to patient
+Appointment confirmations with automated 24h and 2h reminders
+Inbound message routing: common questions auto-answered, complex ones routed to staff
+Response time: <1 second for automated replies
+Delivery tracking integration for home delivery pharmacies
+60+ hours/month of manual communication time eliminated
+Tech / Stack
+n8n · WhatsApp Business API · Pharmacy management system integration · Cloud-hosted
+Reference
+Proposed — 14-day delivery
+Build something like this  →  CAD $8,000 – $15,000
+WhatsApp automation for any healthcare practice — clinics, physio, dental, lab results. Fast payback cycle.
+
+
+Portfolio 13 — PharmSync
+
+PharmSync   ● PROPOSED — Ready to Build
+Pharmacy  ·  E-commerce Integration  ·  Operations Automation  ·  Label Generation
+Full automation layer between an e-commerce platform and a pharmacy management system — order sync, label generation, and error elimination.
+What it does
+PharmSync was built for compounding pharmacies selling online. Without it: every web order is manually re-entered into the pharmacy management system, shipping labels are generated one by one, and errors cost real money. With PharmSync: orders flow automatically from the e-commerce store (Nuvemshop) into Fórmula Certa, labels are auto-generated, and a real-time ROI dashboard shows exactly what was saved. 8 hours/day of manual work eliminated on day one.
+Key capabilities
+Automatic order sync: Nuvemshop → Fórmula Certa via webhook, zero re-keying
+Shipping label auto-generation for every order, batched or individual
+2–5% manual error rate reduced to zero
+ROI dashboard: daily/monthly savings report with hours and revenue impact
+Exception handling: failed syncs flagged with reason and retry logic
+Extensible: add new e-commerce channels or pharmacy systems without rebuild
+Payback: 2–3 months (R$48K–R$50K first-year savings)
+Tech / Stack
+n8n · Nuvemshop API · Fórmula Certa API · VPS-hosted · Webhook architecture
+Reference
+Proposed — 35-day delivery
+Build something like this  →  CAD $10,000 – $20,000
+E-commerce ↔ operations system integration. Applicable to any retail + back-office sync (ERP, WMS, POS). Fast payback.
+
+Portfolio 14 — PsiConsult
+
+PsiConsult   ● PROPOSED — Ready to Build
+Organizational Psychology  ·  Consulting CRM  ·  Assessment Platform  ·  White-label
+Operating system for solo organizational psychology consultants — CRM, customizable assessments, QR-coded reports, and integrated billing in one platform.
+What it does
+PsiConsult is the lean version of PsicoLab — built for the solo practitioner or small consulting firm that can't justify an enterprise platform. It includes everything a corporate psychology consultant needs to run professionally: a B2B CRM, custom diagnostic questionnaires, auto-generated reports with QR verification, intervention tracking, a client-facing landing page, and integrated payment processing — all LGPD-compliant.
+Key capabilities
+B2B CRM: corporate client pipeline from lead to active engagement
+Custom assessment builder: diagnostic questionnaires with configurable scoring
+Auto-generated PDF reports with QR code verification
+Intervention scheduling and tracking by client/sector
+Client landing page + digital portfolio included
+Asaas or Stripe payment integration for professional billing
+LGPD-compliant data architecture — required for health data in Brazil / PIPEDA-ready for Canada
+Tech / Stack
+React · Node.js · PostgreSQL · Payment API · QR code generation · 45-day / 4-sprint delivery
+Reference
+Proposed — 45-day delivery
+Build something like this  →  CAD $15,000 – $28,000
+Consultant CRM + assessment + billing. Applicable to HR consultants, coaches, therapists in private practice.
+
+
+Portfolio 15 — BizOps
+
+BizOps   ● PROPOSED — Ready to Build
+SME Operations  ·  CRM  ·  Quote Management  ·  Inventory Alerts
+All-in-one business operations system for small B2B service businesses — client CRM, PDF quote generation, margin reports, and reorder alerts.
+What it does
+BizOps is the system small B2B businesses build from scratch in spreadsheets — and eventually outgrow. It centralizes client management, generates professional PDF quotes in seconds, tracks margins per job, and triggers reorder alerts before stock runs out. Built for the business owner who is doing everything manually across 4 different tools and losing clients to slow follow-up.
+Key capabilities
+Client CRM: full profile, purchase history, segment tags, reactivation flags
+PDF quote builder: branded, auto-populated from client data, sent via email/WhatsApp
+Margin calculator: cost vs. quote vs. realized margin per job
+Inventory alerts: auto-notification when stock falls below defined threshold
+Inactive client dashboard: reactivation opportunities surfaced automatically
+Monthly performance report: revenue, top clients, margin trends
+Payback: <3 months (from 5 inactive client reactivations at average ticket)
+Tech / Stack
+React · Node.js · PostgreSQL · PDF generation · WhatsApp/email notification layer · 35–45-day delivery
+Reference
+Proposed — 35–45-day delivery
+Build something like this  →  CAD $10,000 – $18,000
+Custom business ops CRM. Applicable to any B2B SME: printing, supplies, services, maintenance. Fixed price.
+
+Portfolio 16 — BrandLaunch
+
+BrandLaunch   ● PROPOSED — Active Engagement
+Digital Presence  ·  Brand Launch  ·  Paid Traffic  ·  Insurance / FinTech
+Full digital launch package for a new brand — institutional site, social media setup, Meta/Google paid ads, and monthly performance reporting from day one.
+What it does
+BrandLaunch was designed for companies launching a new product or brand into the market and needing digital presence, credibility, and traffic from day one — not six months from now. It covers the complete foundation: site, social profiles, tracking infrastructure (Meta Pixel + GA4), and a running paid ads campaign — all coordinated and delivered in a single engagement. Ongoing management available monthly.
+Key capabilities
+Institutional site: 6–8 pages, responsive, conversion-focused, SEO on-page
+Instagram + YouTube channel setup with branding alignment
+Meta Pixel + Google Analytics 4 tracking from day one
+Paid ad campaigns (Meta Ads + Google Ads): setup, targeting, creative guidelines
+Monthly editorial calendar (posts + stories + reels structure)
+Performance reports: reach, leads, CAC, ROAS — monthly delivery
+Complete brand launch in one coordinated engagement — no 4-vendor juggling
+Tech / Stack
+CMS-based site (Webflow/WordPress) · Meta Ads API · Google Ads + GA4 · WhatsApp integration · Monthly retainer model
+Reference
+Active engagement — valid Q2 2026
+Build something like this  →  CAD $8,000 – $18,000 setup + CAD $1,500–3,000/mo
+Brand launch package: site + social + ads setup. Monthly management optional. Applicable to any new market entry.
+
+Every system above was designed, built, and delivered by the same team.
+
+Guilds Canada is not a consulting firm that outsources development. We scope, build, and own the delivery. The team behind NeoSaúde, Urban.AI, LexFlow, and NutriMatch is the same team serving Canadian clients — under Canadian law, with Canadian contracts.
+
+Every 'Build something like this' price is indicative. The confirmed price comes after a scoping session — that's Product 01: Digital Diagnostic.
+
+How Every Project Works
+
+Every engagement follows the same structure — regardless of product:
+
+1. Scope first.
+We define what we're building, what success looks like, and what it costs — before you commit to anything.
+2. Fixed price.
+No hourly billing surprises. The price you agree to is the price you pay.
+3. Milestone payments.
+You pay in stages, when agreed milestones are accepted. Not upfront, not at the end.
+4. Outcome defined.
+Every project starts with a measurable baseline. If we don't move the needle, we know it.
+5. 90-day support.
+Every project includes a 90-day support window post-delivery. Not a separate contract.
+
+Not sure which product fits your situation?
+Book a free 30-minute discovery call. We'll tell you exactly which product makes sense — or if none do.
+
+guildscanada.ca/discovery  ·  evandro@guildscanada.ca  ·  Calgary, Alberta
+
+All investments listed are indicative and subject to scoping. Fixed prices are confirmed after a scoping session. SR&ED eligibility is subject to CRA assessment — documentation provided, filing done by your accountant. Guilds Canada Inc. is incorporated under the CBCA. All contracts under Canadian law.
